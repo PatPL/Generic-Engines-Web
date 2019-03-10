@@ -3,6 +3,11 @@ body {
     padding: 0;
     width: 100vw;
     height: 100vh;
+    
+    overflow: hidden; /* Small screen? ¯\_(ツ)_/¯ */
+    
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #444;
 }
 
 /**/
@@ -20,8 +25,12 @@ body {
 }
 
 .flex-spacer {
+    padding: 4px;
     flex: auto;
     background: #CCC;
+    line-height: 24px;
+    font-size: 20px;
+    text-align: center;
 }
 
 .option-container > img {

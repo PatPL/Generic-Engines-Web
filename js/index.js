@@ -127,6 +127,51 @@ var FileType;
     FileType[FileType["Text"] = 0] = "Text";
     FileType[FileType["Binary"] = 1] = "Binary";
 })(FileType || (FileType = {}));
+var HtmlTable = (function () {
+    function HtmlTable(container) {
+        this.Items = [];
+        this.Columns = {};
+        this.TableContainer = container;
+    }
+    HtmlTable.AutoGenerateColumns = function (exampleObject) {
+        var output = {};
+        for (var i in exampleObject) {
+            output[i] = i.toUpperCase();
+        }
+        return output;
+    };
+    HtmlTable.prototype.RebuildTable = function () {
+        if (Object.getOwnPropertyNames(this.Columns).length == 0) {
+            console.log(this);
+            console.log("No columns were set.");
+            return;
+        }
+        var tableElement = document.createElement("div");
+        tableElement.classList.add("content-table");
+        var _loop_1 = function (columnID) {
+            var column = document.createElement("div");
+            column.classList.add("content-column");
+            var columnHeader = document.createElement("div");
+            columnHeader.classList.add("content-header");
+            columnHeader.innerHTML = this_1.Columns[columnID];
+            column.appendChild(columnHeader);
+            this_1.Items.forEach(function (item) {
+                var columnCell = document.createElement("div");
+                columnCell.classList.add("content-cell");
+                columnCell.innerHTML = item[columnID];
+                column.appendChild(columnCell);
+            });
+            tableElement.appendChild(column);
+        };
+        var this_1 = this;
+        for (var columnID in this.Columns) {
+            _loop_1(columnID);
+        }
+        this.TableContainer.innerHTML = "";
+        this.TableContainer.appendChild(tableElement);
+    };
+    return HtmlTable;
+}());
 addEventListener("DOMContentLoaded", function () {
     var images = document.querySelectorAll(".option-button");
     images.forEach(function (image) {
@@ -143,6 +188,16 @@ addEventListener("DOMContentLoaded", function () {
     document.getElementById("option-button-remove").addEventListener("click", RemoveButton_Click);
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
+    var test = new HtmlTable(document.getElementById("list-container"));
+    var test1 = [
+        new Engine(),
+        new Engine(),
+        new Engine(),
+    ];
+    test.Columns = HtmlTable.AutoGenerateColumns(new Engine());
+    test.Items = test1;
+    test.RebuildTable();
+    console.log(test);
 });
 function NewButton_Click() {
 }

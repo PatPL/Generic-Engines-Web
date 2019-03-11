@@ -17,6 +17,19 @@ addEventListener ("DOMContentLoaded", () => {
     
     document.getElementById ("option-button-settings")!.addEventListener ("click", SettingsButton_Click);
     document.getElementById ("option-button-help")!.addEventListener ("click", HelpButton_Click);
+    
+    let test = new HtmlTable (document.getElementById ("list-container")!);
+    let test1: Engine[] = [
+        new Engine (),
+        new Engine (),
+        new Engine (),
+    ];
+    
+    test.Columns = HtmlTable.AutoGenerateColumns (new Engine ());
+    test.Items = test1;
+    test.RebuildTable ();
+    
+    console.log (test);
 });
 
 function NewButton_Click () {

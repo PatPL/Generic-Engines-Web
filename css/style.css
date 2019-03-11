@@ -4,6 +4,11 @@ body {
     width: 100vw;
     height: 100vh;
     
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    
     overflow: hidden; /* Small screen? ¯\_(ツ)_/¯ */
     
     font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -58,10 +63,6 @@ body {
 
 .option-button {
     cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
 }
 
 .option-button:hover {
@@ -82,4 +83,69 @@ body {
     width: 100%;
     height: calc(100vh - 40px);
     background: #BBB;
+}
+
+.content-table {
+    white-space: nowrap;
+    overflow: auto;
+    
+    height: 100%;
+    width: auto;
+    background: #BBB;
+    color: white;
+}
+
+.content-column {
+    display: inline-block;
+    white-space: normal;
+    
+    width: 400px;
+    height: auto;
+}
+
+.content-header {
+    box-sizing: border-box;
+    border-color: #444;
+    border-style: solid;
+    border-width: 0px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    
+    width: 100%;
+    height: 24px;
+    padding: 2px 4px 2px 4px;
+    line-height: 18px;
+    font-size: 16px;
+    
+    overflow: hidden;
+    
+    background: #999;
+    color: #222;
+}
+
+.content-cell {
+    box-sizing: border-box;
+    border-color: #444;
+    border-style: solid;
+    border-width: 0px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    
+    width: 100%;
+    height: 24px;
+    padding: 2px 4px 2px 4px;
+    line-height: 18px;
+    font-size: 16px;
+    
+    overflow: hidden;
+    
+    color: #222;
+}
+
+.content-cell:nth-child(odd) {
+    background: #AAA;
+}
+
+.content-cell:nth-child(even) {
+    background: #CCC;
 }

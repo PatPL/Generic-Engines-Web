@@ -1,5 +1,31 @@
-class FileIO {
+declare let JSZip: any;
 
+class FileIO {
+    
+    public static ZipBlobs (rootDirName: string, blobs: {[blobname: string]: Uint8Array | string}, callback: (zipBlob: Uint8Array) => void) {
+        let zip = new JSZip ();
+        let zipRoot = zip.folder (rootDirName);
+        
+        for (let blobname in blobs) {
+            let blob = blobs[blobname];
+            
+            if (blob instanceof Uint8Array) {
+                zipRoot.file (blobname, blob, {
+                    binary: true
+                });
+            } else {
+                zipRoot.file (blobname, blob, {
+                    binary: false
+                });
+            }
+        }
+        
+        zip.generateAsync ({
+            type: "uint8array"
+        }).then (callback);
+        
+    }
+    
     public static OpenText(extensions?: string, callback?: (data: string | null) => void) {
         this.Open(FileType.Text, extensions, (result) => {
             if (callback) {
@@ -89,8 +115,6 @@ class FileIO {
         let blob = new Blob ([contents], {
             type: "application/octet-stream"
         });
-        
-        console.log (URL.createObjectURL (blob));
         
         saveDialog.href = URL.createObjectURL (blob);
         saveDialog.download = filename;

@@ -12,6 +12,26 @@ var Engine = (function () {
 var FileIO = (function () {
     function FileIO() {
     }
+    FileIO.ZipBlobs = function (rootDirName, blobs, callback) {
+        var zip = new JSZip();
+        var zipRoot = zip.folder(rootDirName);
+        for (var blobname in blobs) {
+            var blob = blobs[blobname];
+            if (blob instanceof Uint8Array) {
+                zipRoot.file(blobname, blob, {
+                    binary: true
+                });
+            }
+            else {
+                zipRoot.file(blobname, blob, {
+                    binary: false
+                });
+            }
+        }
+        zip.generateAsync({
+            type: "uint8array"
+        }).then(callback);
+    };
     FileIO.OpenText = function (extensions, callback) {
         this.Open(FileType.Text, extensions, function (result) {
             if (callback) {
@@ -94,7 +114,6 @@ var FileIO = (function () {
         var blob = new Blob([contents], {
             type: "application/octet-stream"
         });
-        console.log(URL.createObjectURL(blob));
         saveDialog.href = URL.createObjectURL(blob);
         saveDialog.download = filename;
         var evt = document.createEvent("MouseEvents");

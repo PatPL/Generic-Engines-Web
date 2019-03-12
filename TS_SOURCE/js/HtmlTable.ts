@@ -4,9 +4,18 @@ class HtmlTable {
     Columns: { [propertyName: string]: string } = {};
     
     TableContainer: HTMLElement;
+    DragInterval: number | null = null;
     
     constructor (container: HTMLElement) {
         this.TableContainer = container;
+        window.addEventListener ("pointerup", () => {
+            if (this.DragInterval) {
+                console.log ("STOP");
+                clearInterval (this.DragInterval);
+            }
+            
+            this.DragInterval = null;
+        });
     }
     
     public static AutoGenerateColumns (exampleObject: any) {
@@ -33,6 +42,19 @@ class HtmlTable {
         for (let columnID in this.Columns) {
             let column = document.createElement ("div");
             column.classList.add ("content-column");
+            
+            let columnResizer = document.createElement ("div");
+            columnResizer.classList.add ("content-column-resizer");
+            columnResizer.onpointerdown = () => {
+                let originalX = Input.MouseX;
+                let originalWidth = column.style.width ? parseInt (column.style.width) : 400;
+                this.DragInterval = setInterval (() => {
+                    let newWidth = originalWidth + Input.MouseX - originalX;
+                    newWidth = Math.max (24, newWidth);
+                    column.style.width = `${newWidth}px`;
+                }, 10);
+            }
+            column.appendChild (columnResizer);
             
             let columnHeader = document.createElement ("div");
             columnHeader.classList.add ("content-header");

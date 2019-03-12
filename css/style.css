@@ -96,11 +96,23 @@ body {
 }
 
 .content-column {
+    position: relative;
     display: inline-block;
     white-space: normal;
     
     width: 400px;
     height: auto;
+}
+
+.content-column-resizer {
+    position: absolute;
+    top: 0px;
+    right: -2px;
+    
+    width: 8px;
+    height: 24px;
+    
+    cursor: ew-resize;
 }
 
 .content-header {

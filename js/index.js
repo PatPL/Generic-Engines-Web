@@ -129,9 +129,18 @@ var FileType;
 })(FileType || (FileType = {}));
 var HtmlTable = (function () {
     function HtmlTable(container) {
+        var _this = this;
         this.Items = [];
         this.Columns = {};
+        this.DragInterval = null;
         this.TableContainer = container;
+        window.addEventListener("pointerup", function () {
+            if (_this.DragInterval) {
+                console.log("STOP");
+                clearInterval(_this.DragInterval);
+            }
+            _this.DragInterval = null;
+        });
     }
     HtmlTable.AutoGenerateColumns = function (exampleObject) {
         var output = {};
@@ -141,6 +150,7 @@ var HtmlTable = (function () {
         return output;
     };
     HtmlTable.prototype.RebuildTable = function () {
+        var _this = this;
         if (Object.getOwnPropertyNames(this.Columns).length == 0) {
             console.log(this);
             console.log("No columns were set.");
@@ -151,6 +161,18 @@ var HtmlTable = (function () {
         var _loop_1 = function (columnID) {
             var column = document.createElement("div");
             column.classList.add("content-column");
+            var columnResizer = document.createElement("div");
+            columnResizer.classList.add("content-column-resizer");
+            columnResizer.onpointerdown = function () {
+                var originalX = Input.MouseX;
+                var originalWidth = column.style.width ? parseInt(column.style.width) : 400;
+                _this.DragInterval = setInterval(function () {
+                    var newWidth = originalWidth + Input.MouseX - originalX;
+                    newWidth = Math.max(24, newWidth);
+                    column.style.width = newWidth + "px";
+                }, 10);
+            };
+            column.appendChild(columnResizer);
             var columnHeader = document.createElement("div");
             columnHeader.classList.add("content-header");
             columnHeader.innerHTML = this_1.Columns[columnID];
@@ -172,6 +194,17 @@ var HtmlTable = (function () {
     };
     return HtmlTable;
 }());
+var Input = (function () {
+    function Input() {
+    }
+    Input.MouseX = 0;
+    Input.MouseY = 0;
+    return Input;
+}());
+window.onpointermove = function (event) {
+    Input.MouseX = event.clientX;
+    Input.MouseY = event.clientY;
+};
 addEventListener("DOMContentLoaded", function () {
     var images = document.querySelectorAll(".option-button");
     images.forEach(function (image) {

@@ -30,10 +30,9 @@ body {
 }
 
 .flex-spacer {
-    padding: 4px;
     flex: auto;
     background: #CCC;
-    line-height: 24px;
+    line-height: 28px;
     font-size: 20px;
     text-align: center;
 }
@@ -145,13 +144,23 @@ body {
     
     width: 100%;
     height: 24px;
-    padding: 2px 4px 2px 4px;
+    
     line-height: 18px;
     font-size: 16px;
-    
     overflow: hidden;
-    
     color: #222;
+}
+
+.content-cell-content {
+    box-sizing: border-box;
+    
+    text-align: inherit;
+    font-size: inherit;
+    color: inherit;
+    
+    width: 100%;
+    height: 100%;
+    padding: 2px 4px 2px 4px;
 }
 
 .content-cell:nth-child(odd) {

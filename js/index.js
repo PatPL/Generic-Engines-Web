@@ -1,8 +1,199 @@
 "use strict";
+var EditableField = (function () {
+    function EditableField(valueOwner, valueName, container) {
+        this.FieldID = EditableField.IDCounter++;
+        this.ValueOwner = valueOwner;
+        this.ValueName = valueName;
+        this.Container = container;
+        this.Container.setAttribute("data-FieldID", this.FieldID.toString());
+        this.DisplayElement = this.GetDisplayElement();
+        this.EditElement = this.GetEditElement();
+        this.ApplyValueToDisplayElement();
+        this.ShowEditMode(false);
+        this.Container.appendChild(this.DisplayElement);
+        this.Container.appendChild(this.EditElement);
+    }
+    EditableField.prototype.ShowEditMode = function (editMode) {
+        if (editMode) {
+            this.DisplayElement.style.display = "none";
+            this.EditElement.style.display = "block";
+        }
+        else {
+            this.DisplayElement.style.display = "block";
+            this.EditElement.style.display = "none";
+        }
+    };
+    EditableField.prototype.StartEdit = function () {
+        if (EditableField.EditedField) {
+            EditableField.EditedField.EndEdit();
+        }
+        EditableField.EditedField = this;
+        this.ApplyValueToEditElement();
+        this.ShowEditMode(true);
+    };
+    EditableField.prototype.EndEdit = function (saveChanges) {
+        if (saveChanges === void 0) { saveChanges = true; }
+        if (EditableField.EditedField && EditableField.EditedField.FieldID != this.FieldID) {
+            console.warn("Tried to end edit of not edited field. Maybe throw?");
+        }
+        if (saveChanges) {
+            this.ApplyChangesToValue();
+            this.ApplyValueToDisplayElement();
+        }
+        EditableField.EditedField = null;
+        this.ShowEditMode(false);
+    };
+    EditableField.prototype.GetDisplayElement = function () {
+        var _this = this;
+        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
+            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+        }
+        var output;
+        if (typeof this.ValueOwner[this.ValueName] == "string") {
+            var tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            output = tmp;
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "number") {
+            var tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            output = tmp;
+        }
+        else if ("GetDisplayElement" in this.ValueOwner[this.ValueName]) {
+            output = this.ValueOwner[this.ValueName].GetDisplayElement();
+        }
+        else {
+            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
+        }
+        output.addEventListener("dblclick", function () {
+            _this.StartEdit();
+        });
+        return output;
+    };
+    EditableField.prototype.GetEditElement = function () {
+        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
+            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+        }
+        var output;
+        if (typeof this.ValueOwner[this.ValueName] == "string") {
+            var tmp = document.createElement("input");
+            tmp.classList.add("content-cell-content");
+            output = tmp;
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "number") {
+            var tmp = document.createElement("input");
+            tmp.classList.add("content-cell-content");
+            output = tmp;
+        }
+        else if ("GetEditElement" in this.ValueOwner[this.ValueName]) {
+            output = this.ValueOwner[this.ValueName].GetEditElement();
+        }
+        else {
+            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
+        }
+        return output;
+    };
+    EditableField.prototype.ApplyValueToDisplayElement = function () {
+        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
+            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+        }
+        if (typeof this.ValueOwner[this.ValueName] == "string") {
+            this.DisplayElement.innerHTML = this.ValueOwner[this.ValueName];
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "number") {
+            this.DisplayElement.innerHTML = this.ValueOwner[this.ValueName].toString();
+        }
+        else if ("ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
+            this.ValueOwner[this.ValueName].ApplyValueToDisplayElement();
+        }
+        else {
+            console.warn(this.ValueOwner[this.ValueName]);
+            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
+            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
+        }
+    };
+    EditableField.prototype.ApplyValueToEditElement = function () {
+        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
+            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+        }
+        if (typeof this.ValueOwner[this.ValueName] == "string") {
+            this.EditElement.value = this.ValueOwner[this.ValueName];
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "number") {
+            this.EditElement.value = this.ValueOwner[this.ValueName].toString();
+        }
+        else if ("ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
+            this.ValueOwner[this.ValueName].ApplyValueToEditElement();
+        }
+        else {
+            console.warn(this.ValueOwner[this.ValueName]);
+            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
+            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
+        }
+    };
+    EditableField.prototype.ApplyChangesToValue = function () {
+        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
+            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+        }
+        if (typeof this.ValueOwner[this.ValueName] == "string") {
+            this.ValueOwner[this.ValueName] = this.EditElement.value;
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "number") {
+            this.ValueOwner[this.ValueName] = parseFloat(this.EditElement.value.replace(",", "."));
+        }
+        else if ("ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
+            this.ValueOwner[this.ValueName].ApplyValueToEditElement();
+        }
+        else {
+            console.warn(this.ValueOwner[this.ValueName]);
+            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
+            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
+        }
+    };
+    EditableField.EditedField = null;
+    EditableField.IDCounter = 0;
+    return EditableField;
+}());
+window.addEventListener("pointerup", function (e) {
+    if (EditableField.EditedField) {
+        if (e.srcElement) {
+            var currentElement = e.srcElement;
+            var foundEdited = false;
+            while (currentElement != null) {
+                if (currentElement.getAttribute("data-FieldID") == EditableField.EditedField.FieldID.toString() ||
+                    currentElement.getAttribute("data-FieldID") == "-1") {
+                    foundEdited = true;
+                    break;
+                }
+                currentElement = currentElement.parentElement;
+            }
+            if (foundEdited) {
+            }
+            else {
+                EditableField.EditedField.EndEdit();
+            }
+        }
+    }
+    else {
+    }
+});
+window.addEventListener("keyup", function (e) {
+    if (EditableField.EditedField) {
+        switch (e.key) {
+            case "Escape":
+                EditableField.EditedField.EndEdit(false);
+                break;
+            case "Enter":
+                EditableField.EditedField.EndEdit();
+                break;
+        }
+    }
+});
 var Engine = (function () {
     function Engine() {
-        this.Name = "";
+        this.Name = "DEFAULT";
         this.TT = 0;
+        this.TestNumber = 1234.5678;
     }
     Engine.prototype.GetStuff = function () {
         return this.Name + "-" + this.TT;
@@ -136,7 +327,6 @@ var HtmlTable = (function () {
         this.TableContainer = container;
         window.addEventListener("pointerup", function () {
             if (_this.DragInterval) {
-                console.log("STOP");
                 clearInterval(_this.DragInterval);
             }
             _this.DragInterval = null;
@@ -145,6 +335,9 @@ var HtmlTable = (function () {
     HtmlTable.AutoGenerateColumns = function (exampleObject) {
         var output = {};
         for (var i in exampleObject) {
+            if (typeof exampleObject[i] == "function") {
+                continue;
+            }
             output[i] = i.toUpperCase();
         }
         return output;
@@ -163,6 +356,7 @@ var HtmlTable = (function () {
             column.classList.add("content-column");
             var columnResizer = document.createElement("div");
             columnResizer.classList.add("content-column-resizer");
+            columnResizer.setAttribute("data-FieldID", "-1");
             columnResizer.onpointerdown = function () {
                 var originalX = Input.MouseX;
                 var originalWidth = column.style.width ? parseInt(column.style.width) : 400;
@@ -180,7 +374,7 @@ var HtmlTable = (function () {
             this_1.Items.forEach(function (item) {
                 var columnCell = document.createElement("div");
                 columnCell.classList.add("content-cell");
-                columnCell.innerHTML = item[columnID];
+                var cellField = new EditableField(item, columnID, columnCell);
                 column.appendChild(columnCell);
             });
             tableElement.appendChild(column);
@@ -205,6 +399,7 @@ window.onpointermove = function (event) {
     Input.MouseX = event.clientX;
     Input.MouseY = event.clientY;
 };
+var ListName = "Unnamed";
 addEventListener("DOMContentLoaded", function () {
     var images = document.querySelectorAll(".option-button");
     images.forEach(function (image) {
@@ -221,6 +416,7 @@ addEventListener("DOMContentLoaded", function () {
     document.getElementById("option-button-remove").addEventListener("click", RemoveButton_Click);
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
+    var ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     var test = new HtmlTable(document.getElementById("list-container"));
     var test1 = [
         new Engine(),
@@ -230,7 +426,7 @@ addEventListener("DOMContentLoaded", function () {
     test.Columns = HtmlTable.AutoGenerateColumns(new Engine());
     test.Items = test1;
     test.RebuildTable();
-    console.log(test);
+    console.log(test1);
 });
 function NewButton_Click() {
 }

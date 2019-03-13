@@ -1,6 +1,7 @@
 class Engine {
-    Name: string = "";
+    Name: string = "DEFAULT";
     TT: number = 0;
+    TestNumber: number = 1234.5678;
     
     constructor () {
         

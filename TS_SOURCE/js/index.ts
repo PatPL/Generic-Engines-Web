@@ -1,3 +1,5 @@
+let ListName = "Unnamed";
+
 addEventListener ("DOMContentLoaded", () => {
     //Disable option image dragging (user-select: none; doesn't do it)
     let images = document.querySelectorAll<HTMLElement> (".option-button");
@@ -18,6 +20,10 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-settings")!.addEventListener ("click", SettingsButton_Click);
     document.getElementById ("option-button-help")!.addEventListener ("click", HelpButton_Click);
     
+    //=
+    
+    let ListNameDisplay = new EditableField (window, "ListName", document.getElementById ("list-name")!);
+    
     let test = new HtmlTable (document.getElementById ("list-container")!);
     let test1: Engine[] = [
         new Engine (),
@@ -29,7 +35,8 @@ addEventListener ("DOMContentLoaded", () => {
     test.Items = test1;
     test.RebuildTable ();
     
-    console.log (test);
+    console.log (test1);
+    
 });
 
 function NewButton_Click () {

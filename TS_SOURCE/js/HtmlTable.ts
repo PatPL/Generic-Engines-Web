@@ -10,7 +10,6 @@ class HtmlTable {
         this.TableContainer = container;
         window.addEventListener ("pointerup", () => {
             if (this.DragInterval) {
-                console.log ("STOP");
                 clearInterval (this.DragInterval);
             }
             
@@ -22,6 +21,10 @@ class HtmlTable {
         let output: { [propertyName: string]: string } = {};
         
         for (let i in exampleObject) {
+            if (typeof exampleObject[i] == "function") {
+                continue;
+            }
+            
             output[i] = i.toUpperCase ();
         }
         
@@ -45,6 +48,7 @@ class HtmlTable {
             
             let columnResizer = document.createElement ("div");
             columnResizer.classList.add ("content-column-resizer");
+            columnResizer.setAttribute ("data-FieldID", "-1");
             columnResizer.onpointerdown = () => {
                 let originalX = Input.MouseX;
                 let originalWidth = column.style.width ? parseInt (column.style.width) : 400;
@@ -64,7 +68,7 @@ class HtmlTable {
             this.Items.forEach (item => {
                 let columnCell = document.createElement ("div");
                 columnCell.classList.add ("content-cell");
-                columnCell.innerHTML = item[columnID];
+                let cellField = new EditableField (item, columnID, columnCell);
                 column.appendChild (columnCell);
             });
             

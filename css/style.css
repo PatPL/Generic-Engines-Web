@@ -163,6 +163,10 @@ body {
     padding: 2px 4px 2px 4px;
 }
 
+.selected {
+    background: #88F !important;
+}
+
 .content-cell:nth-child(odd) {
     background: #AAA;
 }

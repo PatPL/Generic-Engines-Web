@@ -192,8 +192,11 @@ window.addEventListener("keyup", function (e) {
 var Engine = (function () {
     function Engine() {
         this.Name = "DEFAULT";
-        this.TT = 0;
+        this.TT = Math.random();
         this.TestNumber = 1234.5678;
+        this.debug1 = "placeholder";
+        this.debug2 = "text";
+        this.debug3 = "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
     }
     Engine.prototype.GetStuff = function () {
         return this.Name + "-" + this.TT;
@@ -323,6 +326,8 @@ var HtmlTable = (function () {
         var _this = this;
         this.Items = [];
         this.Columns = {};
+        this.Rows = [];
+        this.SelectedRows = [];
         this.DragInterval = null;
         this.TableContainer = container;
         window.addEventListener("pointerup", function () {
@@ -332,6 +337,17 @@ var HtmlTable = (function () {
             _this.DragInterval = null;
         });
     }
+    HtmlTable.prototype.AddItem = function (newItem) {
+    };
+    HtmlTable.prototype.RemoveSelectedItems = function () {
+        var _this = this;
+        this.SelectedRows.sort(function (a, b) { return b - a; }).forEach(function (row) {
+            _this.Rows[row].forEach(function (element) {
+                element.remove();
+            });
+            _this.Rows.splice(row, 1);
+        });
+    };
     HtmlTable.AutoGenerateColumns = function (exampleObject) {
         var output = {};
         for (var i in exampleObject) {
@@ -342,6 +358,34 @@ var HtmlTable = (function () {
         }
         return output;
     };
+    HtmlTable.prototype.SelectRow = function (appendToggle, row) {
+        var _this = this;
+        if (appendToggle) {
+            if (this.SelectedRows.some(function (x) { return x == row; })) {
+                this.SelectedRows = this.SelectedRows.filter(function (x) { return x != row; });
+                this.Rows[row].forEach(function (cell) {
+                    cell.classList.remove("selected");
+                });
+            }
+            else {
+                this.SelectedRows.push(row);
+                this.Rows[row].forEach(function (cell) {
+                    cell.classList.add("selected");
+                });
+            }
+        }
+        else {
+            this.SelectedRows.forEach(function (rowNumber) {
+                _this.Rows[rowNumber].forEach(function (cell) {
+                    cell.classList.remove("selected");
+                });
+            });
+            this.SelectedRows = [row];
+            this.Rows[row].forEach(function (cell) {
+                cell.classList.add("selected");
+            });
+        }
+    };
     HtmlTable.prototype.RebuildTable = function () {
         var _this = this;
         if (Object.getOwnPropertyNames(this.Columns).length == 0) {
@@ -351,6 +395,12 @@ var HtmlTable = (function () {
         }
         var tableElement = document.createElement("div");
         tableElement.classList.add("content-table");
+        this.Rows = [];
+        var colCount = Object.getOwnPropertyNames(this.Columns).length;
+        for (var i = 0; i < this.Items.length; ++i) {
+            this.Rows.push(new Array(colCount));
+        }
+        var x = 0;
         var _loop_1 = function (columnID) {
             var column = document.createElement("div");
             column.classList.add("content-column");
@@ -371,13 +421,24 @@ var HtmlTable = (function () {
             columnHeader.classList.add("content-header");
             columnHeader.innerHTML = this_1.Columns[columnID];
             column.appendChild(columnHeader);
-            this_1.Items.forEach(function (item) {
+            var _loop_2 = function (y) {
                 var columnCell = document.createElement("div");
                 columnCell.classList.add("content-cell");
-                var cellField = new EditableField(item, columnID, columnCell);
+                columnCell.setAttribute("data-tableRow", y.toString());
+                columnCell.addEventListener("pointerdown", function (e) {
+                    console.log(e.ctrlKey);
+                    console.log(y);
+                    _this.SelectRow(e.ctrlKey, y);
+                });
+                var cellField = new EditableField(this_1.Items[y], columnID, columnCell);
+                this_1.Rows[y][x] = columnCell;
                 column.appendChild(columnCell);
-            });
+            };
+            for (var y = 0; y < this_1.Items.length; ++y) {
+                _loop_2(y);
+            }
             tableElement.appendChild(column);
+            ++x;
         };
         var this_1 = this;
         for (var columnID in this.Columns) {
@@ -400,6 +461,7 @@ window.onpointermove = function (event) {
     Input.MouseY = event.clientY;
 };
 var ListName = "Unnamed";
+var test;
 addEventListener("DOMContentLoaded", function () {
     var images = document.querySelectorAll(".option-button");
     images.forEach(function (image) {
@@ -417,8 +479,12 @@ addEventListener("DOMContentLoaded", function () {
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
     var ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
-    var test = new HtmlTable(document.getElementById("list-container"));
+    test = new HtmlTable(document.getElementById("list-container"));
     var test1 = [
+        new Engine(),
+        new Engine(),
+        new Engine(),
+        new Engine(),
         new Engine(),
         new Engine(),
         new Engine(),
@@ -426,7 +492,6 @@ addEventListener("DOMContentLoaded", function () {
     test.Columns = HtmlTable.AutoGenerateColumns(new Engine());
     test.Items = test1;
     test.RebuildTable();
-    console.log(test1);
 });
 function NewButton_Click() {
 }
@@ -445,8 +510,10 @@ function DuplicateButton_Click() {
 function AddButton_Click() {
 }
 function RemoveButton_Click() {
+    test.RemoveSelectedItems();
 }
 function SettingsButton_Click() {
 }
 function HelpButton_Click() {
 }
+//# sourceMappingURL=index.js.map

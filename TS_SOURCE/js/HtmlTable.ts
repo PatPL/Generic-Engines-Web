@@ -2,6 +2,9 @@ class HtmlTable {
     
     Items: any[] = [];
     Columns: { [propertyName: string]: string } = {};
+    Rows: HTMLElement[][] = [];
+    
+    SelectedRows: number[] = [];
     
     TableContainer: HTMLElement;
     DragInterval: number | null = null;
@@ -15,6 +18,21 @@ class HtmlTable {
             
             this.DragInterval = null;
         });
+    }
+    
+    public AddItem (newItem: any) {
+        
+    }
+    
+    public RemoveSelectedItems () {
+        this.SelectedRows.sort ((a, b) => { return b - a; }).forEach (row => {
+            this.Rows[row].forEach (element => {
+                element.remove ();
+            });
+            
+            this.Rows.splice (row, 1);
+        });
+        
     }
     
     public static AutoGenerateColumns (exampleObject: any) {
@@ -31,6 +49,32 @@ class HtmlTable {
         return output;
     }
     
+    public SelectRow (appendToggle: boolean, row: number) {
+        if (appendToggle) {
+            if (this.SelectedRows.some (x => x == row)) {
+                this.SelectedRows = this.SelectedRows.filter (x => x != row);
+                this.Rows[row].forEach (cell => {
+                    cell.classList.remove ("selected");
+                });
+            } else {
+                this.SelectedRows.push (row);
+                this.Rows[row].forEach (cell => {
+                    cell.classList.add ("selected");
+                });
+            }
+        } else {
+            this.SelectedRows.forEach (rowNumber => {
+                this.Rows[rowNumber].forEach (cell => {
+                    cell.classList.remove ("selected");
+                });
+            });
+            this.SelectedRows = [row];
+            this.Rows[row].forEach (cell => {
+                cell.classList.add ("selected");
+            });
+        }
+    }
+    
     public RebuildTable () {
         
         if (Object.getOwnPropertyNames (this.Columns).length == 0) {
@@ -42,6 +86,14 @@ class HtmlTable {
         let tableElement: HTMLElement = document.createElement ("div");
         tableElement.classList.add ("content-table");
         
+        this.Rows = [];
+        let colCount = Object.getOwnPropertyNames (this.Columns).length;
+        
+        for (let i = 0; i < this.Items.length; ++i) {
+            this.Rows.push (new Array<HTMLElement> (colCount));
+        }
+        
+        let x = 0;
         for (let columnID in this.Columns) {
             let column = document.createElement ("div");
             column.classList.add ("content-column");
@@ -65,14 +117,24 @@ class HtmlTable {
             columnHeader.innerHTML = this.Columns[columnID];
             column.appendChild (columnHeader);
             
-            this.Items.forEach (item => {
+            for (let y = 0; y < this.Items.length; ++y) {
                 let columnCell = document.createElement ("div");
                 columnCell.classList.add ("content-cell");
-                let cellField = new EditableField (item, columnID, columnCell);
+                columnCell.setAttribute ("data-tableRow", y.toString ());
+                columnCell.addEventListener ("pointerdown", (e) => {
+                    console.log (e.ctrlKey);
+                    console.log (y);
+                    this.SelectRow (e.ctrlKey, y);
+                });
+                let cellField = new EditableField (this.Items[y], columnID, columnCell);
+                
+                this.Rows[y][x] = columnCell;
+                
                 column.appendChild (columnCell);
-            });
+            }
             
             tableElement.appendChild (column);
+            ++x;
         }
         
         this.TableContainer.innerHTML = "";
@@ -80,3 +142,28 @@ class HtmlTable {
     }
     
 }
+/*
+window.addEventListener ("pointerdown", (e) => {
+    if (e.srcElement) {
+        let currentElement: Element | null = e.srcElement;
+        let pressedOnRow: number | null = null;
+        
+        let i : number | string | null;
+        while (currentElement != null) {
+            
+            if (i = currentElement.getAttribute ("data-tableRow")) {
+                pressedOnRow = parseInt (i);
+                break;
+            }
+            
+            currentElement = currentElement.parentElement;
+        }
+        
+        if (pressedOnRow) {
+            HtmlTable
+        } else {
+            
+        }
+        
+    }
+});*/

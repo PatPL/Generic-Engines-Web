@@ -1,4 +1,5 @@
 let ListName = "Unnamed";
+let test: HtmlTable;
 
 addEventListener ("DOMContentLoaded", () => {
     //Disable option image dragging (user-select: none; doesn't do it)
@@ -24,8 +25,12 @@ addEventListener ("DOMContentLoaded", () => {
     
     let ListNameDisplay = new EditableField (window, "ListName", document.getElementById ("list-name")!);
     
-    let test = new HtmlTable (document.getElementById ("list-container")!);
+    test = new HtmlTable (document.getElementById ("list-container")!);
     let test1: Engine[] = [
+        new Engine (),
+        new Engine (),
+        new Engine (),
+        new Engine (),
         new Engine (),
         new Engine (),
         new Engine (),
@@ -34,8 +39,6 @@ addEventListener ("DOMContentLoaded", () => {
     test.Columns = HtmlTable.AutoGenerateColumns (new Engine ());
     test.Items = test1;
     test.RebuildTable ();
-    
-    console.log (test1);
     
 });
 
@@ -72,7 +75,7 @@ function AddButton_Click () {
 }
 
 function RemoveButton_Click () {
-    
+    test.RemoveSelectedItems ();
 }
 
 function SettingsButton_Click () {

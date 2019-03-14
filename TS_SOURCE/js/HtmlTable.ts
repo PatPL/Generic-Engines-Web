@@ -1,9 +1,12 @@
 class HtmlTable {
     
     Items: any[] = [];
-    Columns: { [propertyName: string]: string } = {};
-    Rows: HTMLElement[][] = [];
+    ColumnsDefinitions: { [propertyName: string]: string } = {};
     
+    Columns: { [columnID: string]: HTMLElement } = {};
+    Rows: { [rowID: number]: [HTMLElement[], any] } = {};
+    
+    static RowCounter: number = 1;
     SelectedRows: number[] = [];
     
     TableContainer: HTMLElement;
@@ -11,6 +14,7 @@ class HtmlTable {
     
     constructor (container: HTMLElement) {
         this.TableContainer = container;
+        
         window.addEventListener ("pointerup", () => {
             if (this.DragInterval) {
                 clearInterval (this.DragInterval);
@@ -18,21 +22,62 @@ class HtmlTable {
             
             this.DragInterval = null;
         });
+        
+        window.addEventListener ("pointerdown", (e) => {
+            if (e.srcElement) {
+                let currentElement: Element | null = e.srcElement;
+                let pressedOnRow: number | null = null;
+                
+                let i : number | string | null;
+                while (currentElement != null) {
+                    
+                    if (i = currentElement.getAttribute ("data-tableRow")) {
+                        pressedOnRow = parseInt (i);
+                        break;
+                    }
+                    
+                    currentElement = currentElement.parentElement;
+                }
+                
+                if (pressedOnRow) {
+                    this.SelectRow (e.ctrlKey, pressedOnRow);
+                } else {
+                    
+                }
+                
+            }
+        });
     }
     
     public AddItem (newItem: any) {
-        
+        this.Items.push (newItem);
+        this.Rows[HtmlTable.RowCounter] = [Array<HTMLElement> (Object.getOwnPropertyNames (this.ColumnsDefinitions).length), newItem];
+        let x = 0;
+        for (let columnID in this.ColumnsDefinitions) {
+            let columnCell = document.createElement ("div");
+            columnCell.classList.add ("content-cell");
+            columnCell.setAttribute ("data-tableRow", (HtmlTable.RowCounter).toString ());
+            let cellField = new EditableField (newItem, columnID, columnCell);
+            
+            this.Rows[HtmlTable.RowCounter][0][x] = columnCell;
+            
+            this.Columns[columnID].appendChild (columnCell);
+            ++x;
+        }
+        ++HtmlTable.RowCounter;
     }
     
     public RemoveSelectedItems () {
         this.SelectedRows.sort ((a, b) => { return b - a; }).forEach (row => {
-            this.Rows[row].forEach (element => {
+            this.Rows[row][0].forEach (element => {
                 element.remove ();
             });
             
-            this.Rows.splice (row, 1);
+            this.Items.splice (this.Items.indexOf (this.Rows[row][1]), 1);
+            delete this.Rows[row];
         });
         
+        this.SelectedRows = [];
     }
     
     public static AutoGenerateColumns (exampleObject: any) {
@@ -53,23 +98,23 @@ class HtmlTable {
         if (appendToggle) {
             if (this.SelectedRows.some (x => x == row)) {
                 this.SelectedRows = this.SelectedRows.filter (x => x != row);
-                this.Rows[row].forEach (cell => {
+                this.Rows[row][0].forEach (cell => {
                     cell.classList.remove ("selected");
                 });
             } else {
                 this.SelectedRows.push (row);
-                this.Rows[row].forEach (cell => {
+                this.Rows[row][0].forEach (cell => {
                     cell.classList.add ("selected");
                 });
             }
         } else {
             this.SelectedRows.forEach (rowNumber => {
-                this.Rows[rowNumber].forEach (cell => {
+                this.Rows[rowNumber][0].forEach (cell => {
                     cell.classList.remove ("selected");
                 });
             });
             this.SelectedRows = [row];
-            this.Rows[row].forEach (cell => {
+            this.Rows[row][0].forEach (cell => {
                 cell.classList.add ("selected");
             });
         }
@@ -77,7 +122,7 @@ class HtmlTable {
     
     public RebuildTable () {
         
-        if (Object.getOwnPropertyNames (this.Columns).length == 0) {
+        if (Object.getOwnPropertyNames (this.ColumnsDefinitions).length == 0) {
             console.log (this);
             console.log ("No columns were set.");
             return
@@ -86,17 +131,20 @@ class HtmlTable {
         let tableElement: HTMLElement = document.createElement ("div");
         tableElement.classList.add ("content-table");
         
-        this.Rows = [];
-        let colCount = Object.getOwnPropertyNames (this.Columns).length;
+        this.Rows = {};
+        this.Columns = {};
+        let colCount = Object.getOwnPropertyNames (this.ColumnsDefinitions).length;
         
-        for (let i = 0; i < this.Items.length; ++i) {
-            this.Rows.push (new Array<HTMLElement> (colCount));
+        for (let i = HtmlTable.RowCounter; i < HtmlTable.RowCounter + this.Items.length; ++i) {
+            this.Rows[i] = [Array<HTMLElement> (colCount), this.Items[i - HtmlTable.RowCounter]];
         }
         
         let x = 0;
-        for (let columnID in this.Columns) {
+        for (let columnID in this.ColumnsDefinitions) {
+            
             let column = document.createElement ("div");
             column.classList.add ("content-column");
+            this.Columns[columnID] = column;
             
             let columnResizer = document.createElement ("div");
             columnResizer.classList.add ("content-column-resizer");
@@ -114,56 +162,33 @@ class HtmlTable {
             
             let columnHeader = document.createElement ("div");
             columnHeader.classList.add ("content-header");
-            columnHeader.innerHTML = this.Columns[columnID];
+            columnHeader.innerHTML = this.ColumnsDefinitions[columnID];
             column.appendChild (columnHeader);
             
-            for (let y = 0; y < this.Items.length; ++y) {
+            let y = 0;
+            this.Items.forEach (item => {
                 let columnCell = document.createElement ("div");
                 columnCell.classList.add ("content-cell");
-                columnCell.setAttribute ("data-tableRow", y.toString ());
-                columnCell.addEventListener ("pointerdown", (e) => {
-                    console.log (e.ctrlKey);
-                    console.log (y);
-                    this.SelectRow (e.ctrlKey, y);
-                });
-                let cellField = new EditableField (this.Items[y], columnID, columnCell);
+                columnCell.setAttribute ("data-tableRow", (HtmlTable.RowCounter + y).toString ());
+                // columnCell.addEventListener ("pointerdown", (e) => {
+                //     this.SelectRow (e.ctrlKey, HtmlTable.RowCounter + y);
+                // });
+                let cellField = new EditableField (item, columnID, columnCell);
                 
-                this.Rows[y][x] = columnCell;
+                this.Rows[HtmlTable.RowCounter + y][0][x] = columnCell;
                 
                 column.appendChild (columnCell);
-            }
+                ++y;
+            });
             
             tableElement.appendChild (column);
             ++x;
         }
+        
+        HtmlTable.RowCounter += this.Items.length;
         
         this.TableContainer.innerHTML = "";
         this.TableContainer.appendChild (tableElement);
     }
     
 }
-/*
-window.addEventListener ("pointerdown", (e) => {
-    if (e.srcElement) {
-        let currentElement: Element | null = e.srcElement;
-        let pressedOnRow: number | null = null;
-        
-        let i : number | string | null;
-        while (currentElement != null) {
-            
-            if (i = currentElement.getAttribute ("data-tableRow")) {
-                pressedOnRow = parseInt (i);
-                break;
-            }
-            
-            currentElement = currentElement.parentElement;
-        }
-        
-        if (pressedOnRow) {
-            HtmlTable
-        } else {
-            
-        }
-        
-    }
-});*/

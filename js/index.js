@@ -325,8 +325,9 @@ var HtmlTable = (function () {
     function HtmlTable(container) {
         var _this = this;
         this.Items = [];
+        this.ColumnsDefinitions = {};
         this.Columns = {};
-        this.Rows = [];
+        this.Rows = {};
         this.SelectedRows = [];
         this.DragInterval = null;
         this.TableContainer = container;
@@ -336,17 +337,51 @@ var HtmlTable = (function () {
             }
             _this.DragInterval = null;
         });
+        window.addEventListener("pointerdown", function (e) {
+            if (e.srcElement) {
+                var currentElement = e.srcElement;
+                var pressedOnRow = null;
+                var i = void 0;
+                while (currentElement != null) {
+                    if (i = currentElement.getAttribute("data-tableRow")) {
+                        pressedOnRow = parseInt(i);
+                        break;
+                    }
+                    currentElement = currentElement.parentElement;
+                }
+                if (pressedOnRow) {
+                    _this.SelectRow(e.ctrlKey, pressedOnRow);
+                }
+                else {
+                }
+            }
+        });
     }
     HtmlTable.prototype.AddItem = function (newItem) {
+        this.Items.push(newItem);
+        this.Rows[HtmlTable.RowCounter] = [Array(Object.getOwnPropertyNames(this.ColumnsDefinitions).length), newItem];
+        var x = 0;
+        for (var columnID in this.ColumnsDefinitions) {
+            var columnCell = document.createElement("div");
+            columnCell.classList.add("content-cell");
+            columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter).toString());
+            var cellField = new EditableField(newItem, columnID, columnCell);
+            this.Rows[HtmlTable.RowCounter][0][x] = columnCell;
+            this.Columns[columnID].appendChild(columnCell);
+            ++x;
+        }
+        ++HtmlTable.RowCounter;
     };
     HtmlTable.prototype.RemoveSelectedItems = function () {
         var _this = this;
         this.SelectedRows.sort(function (a, b) { return b - a; }).forEach(function (row) {
-            _this.Rows[row].forEach(function (element) {
+            _this.Rows[row][0].forEach(function (element) {
                 element.remove();
             });
-            _this.Rows.splice(row, 1);
+            _this.Items.splice(_this.Items.indexOf(_this.Rows[row][1]), 1);
+            delete _this.Rows[row];
         });
+        this.SelectedRows = [];
     };
     HtmlTable.AutoGenerateColumns = function (exampleObject) {
         var output = {};
@@ -363,47 +398,49 @@ var HtmlTable = (function () {
         if (appendToggle) {
             if (this.SelectedRows.some(function (x) { return x == row; })) {
                 this.SelectedRows = this.SelectedRows.filter(function (x) { return x != row; });
-                this.Rows[row].forEach(function (cell) {
+                this.Rows[row][0].forEach(function (cell) {
                     cell.classList.remove("selected");
                 });
             }
             else {
                 this.SelectedRows.push(row);
-                this.Rows[row].forEach(function (cell) {
+                this.Rows[row][0].forEach(function (cell) {
                     cell.classList.add("selected");
                 });
             }
         }
         else {
             this.SelectedRows.forEach(function (rowNumber) {
-                _this.Rows[rowNumber].forEach(function (cell) {
+                _this.Rows[rowNumber][0].forEach(function (cell) {
                     cell.classList.remove("selected");
                 });
             });
             this.SelectedRows = [row];
-            this.Rows[row].forEach(function (cell) {
+            this.Rows[row][0].forEach(function (cell) {
                 cell.classList.add("selected");
             });
         }
     };
     HtmlTable.prototype.RebuildTable = function () {
         var _this = this;
-        if (Object.getOwnPropertyNames(this.Columns).length == 0) {
+        if (Object.getOwnPropertyNames(this.ColumnsDefinitions).length == 0) {
             console.log(this);
             console.log("No columns were set.");
             return;
         }
         var tableElement = document.createElement("div");
         tableElement.classList.add("content-table");
-        this.Rows = [];
-        var colCount = Object.getOwnPropertyNames(this.Columns).length;
-        for (var i = 0; i < this.Items.length; ++i) {
-            this.Rows.push(new Array(colCount));
+        this.Rows = {};
+        this.Columns = {};
+        var colCount = Object.getOwnPropertyNames(this.ColumnsDefinitions).length;
+        for (var i = HtmlTable.RowCounter; i < HtmlTable.RowCounter + this.Items.length; ++i) {
+            this.Rows[i] = [Array(colCount), this.Items[i - HtmlTable.RowCounter]];
         }
         var x = 0;
         var _loop_1 = function (columnID) {
             var column = document.createElement("div");
             column.classList.add("content-column");
+            this_1.Columns[columnID] = column;
             var columnResizer = document.createElement("div");
             columnResizer.classList.add("content-column-resizer");
             columnResizer.setAttribute("data-FieldID", "-1");
@@ -419,34 +456,30 @@ var HtmlTable = (function () {
             column.appendChild(columnResizer);
             var columnHeader = document.createElement("div");
             columnHeader.classList.add("content-header");
-            columnHeader.innerHTML = this_1.Columns[columnID];
+            columnHeader.innerHTML = this_1.ColumnsDefinitions[columnID];
             column.appendChild(columnHeader);
-            var _loop_2 = function (y) {
+            var y = 0;
+            this_1.Items.forEach(function (item) {
                 var columnCell = document.createElement("div");
                 columnCell.classList.add("content-cell");
-                columnCell.setAttribute("data-tableRow", y.toString());
-                columnCell.addEventListener("pointerdown", function (e) {
-                    console.log(e.ctrlKey);
-                    console.log(y);
-                    _this.SelectRow(e.ctrlKey, y);
-                });
-                var cellField = new EditableField(this_1.Items[y], columnID, columnCell);
-                this_1.Rows[y][x] = columnCell;
+                columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter + y).toString());
+                var cellField = new EditableField(item, columnID, columnCell);
+                _this.Rows[HtmlTable.RowCounter + y][0][x] = columnCell;
                 column.appendChild(columnCell);
-            };
-            for (var y = 0; y < this_1.Items.length; ++y) {
-                _loop_2(y);
-            }
+                ++y;
+            });
             tableElement.appendChild(column);
             ++x;
         };
         var this_1 = this;
-        for (var columnID in this.Columns) {
+        for (var columnID in this.ColumnsDefinitions) {
             _loop_1(columnID);
         }
+        HtmlTable.RowCounter += this.Items.length;
         this.TableContainer.innerHTML = "";
         this.TableContainer.appendChild(tableElement);
     };
+    HtmlTable.RowCounter = 1;
     return HtmlTable;
 }());
 var Input = (function () {
@@ -489,7 +522,7 @@ addEventListener("DOMContentLoaded", function () {
         new Engine(),
         new Engine(),
     ];
-    test.Columns = HtmlTable.AutoGenerateColumns(new Engine());
+    test.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine());
     test.Items = test1;
     test.RebuildTable();
 });
@@ -508,6 +541,7 @@ function ExportButton_Click() {
 function DuplicateButton_Click() {
 }
 function AddButton_Click() {
+    test.AddItem(new Engine());
 }
 function RemoveButton_Click() {
     test.RemoveSelectedItems();

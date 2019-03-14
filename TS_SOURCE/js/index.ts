@@ -36,7 +36,7 @@ addEventListener ("DOMContentLoaded", () => {
         new Engine (),
     ];
     
-    test.Columns = HtmlTable.AutoGenerateColumns (new Engine ());
+    test.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine ());
     test.Items = test1;
     test.RebuildTable ();
     
@@ -71,7 +71,7 @@ function DuplicateButton_Click () {
 }
 
 function AddButton_Click () {
-    
+    test.AddItem (new Engine ());
 }
 
 function RemoveButton_Click () {

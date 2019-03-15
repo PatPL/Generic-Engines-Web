@@ -331,6 +331,10 @@ var HtmlTable = (function () {
         this.SelectedRows = [];
         this.DragInterval = null;
         this.TableContainer = container;
+        this.TableElement = document.createElement("div");
+        this.TableElement.classList.add("content-table");
+        this.TableContainer.innerHTML = "";
+        this.TableContainer.appendChild(this.TableElement);
         window.addEventListener("pointerup", function () {
             if (_this.DragInterval) {
                 clearInterval(_this.DragInterval);
@@ -357,6 +361,16 @@ var HtmlTable = (function () {
             }
         });
     }
+    HtmlTable.AutoGenerateColumns = function (exampleObject) {
+        var output = {};
+        for (var i in exampleObject) {
+            if (typeof exampleObject[i] == "function") {
+                continue;
+            }
+            output[i] = i.toUpperCase();
+        }
+        return output;
+    };
     HtmlTable.prototype.AddItem = function (newItem) {
         this.Items.push(newItem);
         this.Rows[HtmlTable.RowCounter] = [Array(Object.getOwnPropertyNames(this.ColumnsDefinitions).length), newItem];
@@ -374,7 +388,7 @@ var HtmlTable = (function () {
     };
     HtmlTable.prototype.RemoveSelectedItems = function () {
         var _this = this;
-        this.SelectedRows.sort(function (a, b) { return b - a; }).forEach(function (row) {
+        this.SelectedRows.forEach(function (row) {
             _this.Rows[row][0].forEach(function (element) {
                 element.remove();
             });
@@ -382,16 +396,6 @@ var HtmlTable = (function () {
             delete _this.Rows[row];
         });
         this.SelectedRows = [];
-    };
-    HtmlTable.AutoGenerateColumns = function (exampleObject) {
-        var output = {};
-        for (var i in exampleObject) {
-            if (typeof exampleObject[i] == "function") {
-                continue;
-            }
-            output[i] = i.toUpperCase();
-        }
-        return output;
     };
     HtmlTable.prototype.SelectRow = function (appendToggle, row) {
         var _this = this;
@@ -428,15 +432,15 @@ var HtmlTable = (function () {
             console.log("No columns were set.");
             return;
         }
-        var tableElement = document.createElement("div");
-        tableElement.classList.add("content-table");
-        this.Rows = {};
-        this.Columns = {};
-        var colCount = Object.getOwnPropertyNames(this.ColumnsDefinitions).length;
-        for (var i = HtmlTable.RowCounter; i < HtmlTable.RowCounter + this.Items.length; ++i) {
-            this.Rows[i] = [Array(colCount), this.Items[i - HtmlTable.RowCounter]];
+        var ItemsBackup = new Array().concat(this.Items);
+        this.Items = [];
+        this.SelectedRows = [];
+        for (var i in this.Rows) {
+            this.SelectedRows.push(parseInt(i));
         }
-        var x = 0;
+        this.RemoveSelectedItems();
+        this.TableElement.innerHTML = "";
+        this.Columns = {};
         var _loop_1 = function (columnID) {
             var column = document.createElement("div");
             column.classList.add("content-column");
@@ -458,26 +462,16 @@ var HtmlTable = (function () {
             columnHeader.classList.add("content-header");
             columnHeader.innerHTML = this_1.ColumnsDefinitions[columnID];
             column.appendChild(columnHeader);
-            var y = 0;
-            this_1.Items.forEach(function (item) {
-                var columnCell = document.createElement("div");
-                columnCell.classList.add("content-cell");
-                columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter + y).toString());
-                var cellField = new EditableField(item, columnID, columnCell);
-                _this.Rows[HtmlTable.RowCounter + y][0][x] = columnCell;
-                column.appendChild(columnCell);
-                ++y;
-            });
-            tableElement.appendChild(column);
-            ++x;
+            this_1.TableElement.appendChild(column);
         };
         var this_1 = this;
         for (var columnID in this.ColumnsDefinitions) {
             _loop_1(columnID);
         }
-        HtmlTable.RowCounter += this.Items.length;
-        this.TableContainer.innerHTML = "";
-        this.TableContainer.appendChild(tableElement);
+        for (var _i = 0, ItemsBackup_1 = ItemsBackup; _i < ItemsBackup_1.length; _i++) {
+            var i = ItemsBackup_1[_i];
+            this.AddItem(i);
+        }
     };
     HtmlTable.RowCounter = 1;
     return HtmlTable;

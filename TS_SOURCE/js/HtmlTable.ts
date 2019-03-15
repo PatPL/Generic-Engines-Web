@@ -9,11 +9,18 @@ class HtmlTable {
     static RowCounter: number = 1;
     SelectedRows: number[] = [];
     
-    TableContainer: HTMLElement;
+    readonly TableContainer: HTMLElement;
+    readonly TableElement: HTMLElement;
     DragInterval: number | null = null;
     
     constructor (container: HTMLElement) {
         this.TableContainer = container;
+        
+        this.TableElement = document.createElement ("div");
+        this.TableElement.classList.add ("content-table");
+        
+        this.TableContainer.innerHTML = "";
+        this.TableContainer.appendChild (this.TableElement);
         
         window.addEventListener ("pointerup", () => {
             if (this.DragInterval) {
@@ -49,6 +56,20 @@ class HtmlTable {
         });
     }
     
+    public static AutoGenerateColumns (exampleObject: any) {
+        let output: { [propertyName: string]: string } = {};
+        
+        for (let i in exampleObject) {
+            if (typeof exampleObject[i] == "function") {
+                continue;
+            }
+            
+            output[i] = i.toUpperCase ();
+        }
+        
+        return output;
+    }
+    
     public AddItem (newItem: any) {
         this.Items.push (newItem);
         this.Rows[HtmlTable.RowCounter] = [Array<HTMLElement> (Object.getOwnPropertyNames (this.ColumnsDefinitions).length), newItem];
@@ -68,7 +89,7 @@ class HtmlTable {
     }
     
     public RemoveSelectedItems () {
-        this.SelectedRows.sort ((a, b) => { return b - a; }).forEach (row => {
+        this.SelectedRows.forEach (row => {
             this.Rows[row][0].forEach (element => {
                 element.remove ();
             });
@@ -78,20 +99,6 @@ class HtmlTable {
         });
         
         this.SelectedRows = [];
-    }
-    
-    public static AutoGenerateColumns (exampleObject: any) {
-        let output: { [propertyName: string]: string } = {};
-        
-        for (let i in exampleObject) {
-            if (typeof exampleObject[i] == "function") {
-                continue;
-            }
-            
-            output[i] = i.toUpperCase ();
-        }
-        
-        return output;
     }
     
     public SelectRow (appendToggle: boolean, row: number) {
@@ -128,20 +135,21 @@ class HtmlTable {
             return
         }
         
-        let tableElement: HTMLElement = document.createElement ("div");
-        tableElement.classList.add ("content-table");
+        let ItemsBackup: any[] = new Array<any> ().concat (this.Items);
+        this.Items = [];
         
-        this.Rows = {};
-        this.Columns = {};
-        let colCount = Object.getOwnPropertyNames (this.ColumnsDefinitions).length;
-        
-        for (let i = HtmlTable.RowCounter; i < HtmlTable.RowCounter + this.Items.length; ++i) {
-            this.Rows[i] = [Array<HTMLElement> (colCount), this.Items[i - HtmlTable.RowCounter]];
+        this.SelectedRows = [];
+        for (let i in this.Rows) {
+            this.SelectedRows.push (parseInt (i));
         }
         
-        let x = 0;
+        this.RemoveSelectedItems ();
+        
+        this.TableElement.innerHTML = "";
+        
+        this.Columns = {};
+        
         for (let columnID in this.ColumnsDefinitions) {
-            
             let column = document.createElement ("div");
             column.classList.add ("content-column");
             this.Columns[columnID] = column;
@@ -165,30 +173,12 @@ class HtmlTable {
             columnHeader.innerHTML = this.ColumnsDefinitions[columnID];
             column.appendChild (columnHeader);
             
-            let y = 0;
-            this.Items.forEach (item => {
-                let columnCell = document.createElement ("div");
-                columnCell.classList.add ("content-cell");
-                columnCell.setAttribute ("data-tableRow", (HtmlTable.RowCounter + y).toString ());
-                // columnCell.addEventListener ("pointerdown", (e) => {
-                //     this.SelectRow (e.ctrlKey, HtmlTable.RowCounter + y);
-                // });
-                let cellField = new EditableField (item, columnID, columnCell);
-                
-                this.Rows[HtmlTable.RowCounter + y][0][x] = columnCell;
-                
-                column.appendChild (columnCell);
-                ++y;
-            });
-            
-            tableElement.appendChild (column);
-            ++x;
+            this.TableElement.appendChild (column);
         }
         
-        HtmlTable.RowCounter += this.Items.length;
-        
-        this.TableContainer.innerHTML = "";
-        this.TableContainer.appendChild (tableElement);
+        for (let i of ItemsBackup) {
+            this.AddItem (i);
+        }
     }
     
 }

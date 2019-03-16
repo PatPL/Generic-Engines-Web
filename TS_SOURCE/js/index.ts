@@ -2,6 +2,9 @@ let ListName = "Unnamed";
 let test: HtmlTable;
 
 addEventListener ("DOMContentLoaded", () => {
+    //Disable default RMB context menu
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    
     //Disable option image dragging (user-select: none; doesn't do it)
     let images = document.querySelectorAll<HTMLElement> (".option-button");
     images.forEach (image => {
@@ -35,6 +38,10 @@ addEventListener ("DOMContentLoaded", () => {
         new Engine (),
         new Engine (),
     ];
+    
+    for (let i = 0; i < 64 - 7; ++i) {
+        test1.push (new Engine ());
+    }
     
     test.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine ());
     test.Items = test1;

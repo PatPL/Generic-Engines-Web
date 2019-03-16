@@ -115,6 +115,7 @@ body {
 }
 
 .content-header {
+    position: static;
     box-sizing: border-box;
     border-color: #444;
     border-style: solid;

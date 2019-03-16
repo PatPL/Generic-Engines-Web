@@ -49,7 +49,15 @@ var EditableField = (function () {
             throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
         }
         var output;
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "GetDisplayElement" in this.ValueOwner[this.ValueName]) {
+            output = this.ValueOwner[this.ValueName].GetDisplayElement();
+        }
+        else if (this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "GetDisplayElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]) {
+            output = this.ValueOwner.EditableFieldMetadata[this.ValueName].GetDisplayElement();
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "string") {
             var tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             output = tmp;
@@ -59,15 +67,24 @@ var EditableField = (function () {
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
-        else if ("GetDisplayElement" in this.ValueOwner[this.ValueName]) {
-            output = this.ValueOwner[this.ValueName].GetDisplayElement();
+        else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            var tmp = document.createElement("input");
+            tmp.classList.add("content-cell-content");
+            tmp.type = "checkbox";
+            output = tmp;
         }
         else {
-            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
+            console.warn(this.ValueOwner[this.ValueName]);
+            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
+            var tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            output = tmp;
         }
-        output.addEventListener("dblclick", function () {
-            _this.StartEdit();
-        });
+        if (typeof this.ValueOwner[this.ValueName] != "boolean") {
+            output.addEventListener("dblclick", function () {
+                _this.StartEdit();
+            });
+        }
         return output;
     };
     EditableField.prototype.GetEditElement = function () {
@@ -75,7 +92,15 @@ var EditableField = (function () {
             throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
         }
         var output;
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "GetEditElement" in this.ValueOwner[this.ValueName]) {
+            output = this.ValueOwner[this.ValueName].GetEditElement();
+        }
+        else if (this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "GetEditElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]) {
+            output = this.ValueOwner.EditableFieldMetadata[this.ValueName].GetEditElement();
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "string") {
             var tmp = document.createElement("input");
             tmp.classList.add("content-cell-content");
             output = tmp;
@@ -85,11 +110,17 @@ var EditableField = (function () {
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
-        else if ("GetEditElement" in this.ValueOwner[this.ValueName]) {
-            output = this.ValueOwner[this.ValueName].GetEditElement();
+        else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            var tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            output = tmp;
         }
         else {
-            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
+            console.warn(this.ValueOwner[this.ValueName]);
+            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
+            var tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            output = tmp;
         }
         return output;
     };
@@ -97,57 +128,78 @@ var EditableField = (function () {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
             throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
         }
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
+            this.ValueOwner[this.ValueName].ApplyValueToDisplayElement(this.DisplayElement);
+        }
+        else if (this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "ApplyValueToDisplayElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]) {
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToDisplayElement(this.DisplayElement);
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.DisplayElement.innerHTML = this.ValueOwner[this.ValueName];
         }
         else if (typeof this.ValueOwner[this.ValueName] == "number") {
             this.DisplayElement.innerHTML = this.ValueOwner[this.ValueName].toString();
         }
-        else if ("ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToDisplayElement();
+        else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            this.DisplayElement.checked = this.ValueOwner[this.ValueName];
         }
         else {
             console.warn(this.ValueOwner[this.ValueName]);
             console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
-            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
         }
     };
     EditableField.prototype.ApplyValueToEditElement = function () {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
             throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
         }
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToEditElement" in this.ValueOwner[this.ValueName]) {
+            this.ValueOwner[this.ValueName].ApplyValueToEditElement();
+        }
+        else if (this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "ApplyValueToEditElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]) {
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToEditElement(this.EditElement);
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.EditElement.value = this.ValueOwner[this.ValueName];
         }
         else if (typeof this.ValueOwner[this.ValueName] == "number") {
             this.EditElement.value = this.ValueOwner[this.ValueName].toString();
         }
-        else if ("ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToEditElement();
+        else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            this.EditElement.innerHTML = "This shouldn't be visible";
         }
         else {
             console.warn(this.ValueOwner[this.ValueName]);
             console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
-            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
         }
     };
     EditableField.prototype.ApplyChangesToValue = function () {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
             throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
         }
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
+            this.ValueOwner[this.ValueName].ApplyValueToEditElement();
+        }
+        else if (this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "ApplyChangesToValue" in this.ValueOwner.EditableFieldMetadata[this.ValueName]) {
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyChangesToValue(this.EditElement);
+        }
+        else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.ValueOwner[this.ValueName] = this.EditElement.value;
         }
         else if (typeof this.ValueOwner[this.ValueName] == "number") {
             this.ValueOwner[this.ValueName] = parseFloat(this.EditElement.value.replace(",", "."));
         }
-        else if ("ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToEditElement();
+        else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            console.warn("Boolean doesn't use edit mode, this shouldn't be called");
         }
         else {
             console.warn(this.ValueOwner[this.ValueName]);
             console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
-            throw this.ValueOwner[this.ValueName] + " doesn't implement IEditable";
         }
     };
     EditableField.EditedField = null;
@@ -191,16 +243,52 @@ window.addEventListener("keyup", function (e) {
 });
 var Engine = (function () {
     function Engine() {
-        this.Name = "DEFAULT";
-        this.TT = Math.random();
-        this.TestNumber = 1234.5678;
-        this.debug1 = "placeholder";
-        this.debug2 = "text";
-        this.debug3 = "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq";
+        this.EditableFieldMetadata = {};
+        this.Active = false;
+        this.ID = "New-Engine";
+        this.Mass = 1;
+        this.Thrust = 1000;
+        this.AtmIsp = 250;
+        this.VacIsp = 300;
+        this.PropellantRatio = {};
+        this.FuelVolumeRatios = false;
+        this.UseBaseWidth = true;
+        this.Width = 1;
+        this.Height = 2;
+        this.Cost = 1000;
+        this.MinThrust = 90;
+        this.Ignitions = 1;
+        this.PressureFed = false;
+        this.NeedsUllage = true;
+        this.EnableTestFlight = false;
+        this.RatedBurnTime = 180;
+        this.StartReliability0 = 92;
+        this.StartReliability10k = 96;
+        this.CycleReliability0 = 90;
+        this.CycleReliability10k = 98;
+        this.AlternatorPower = 0;
+        this.Gimbal = 6;
+        this.AdvancedGimbal = false;
+        this.GimbalNX = 30;
+        this.GimbalPX = 30;
+        this.GimbalNY = 0;
+        this.GimbalPY = 0;
+        this.ModelID = 0;
+        this.PlumeID = 0;
+        this.TechUnlockNode = 0;
+        this.EngineName = "";
+        this.EngineManufacturer = "Generic Engines";
+        this.EngineDescription = "This engine was generated by Generic Engines";
+        this.EngineVariant = 0;
+        this.UseTanks = false;
+        this.LimitTanks = true;
+        this.TanksVolume = 0;
+        this.TanksContents = {};
+        this.PolyType = 0;
+        this.MasterEngineName = "";
+        this.MasterEngineCost = 0;
+        this.MasterEngineMass = 0;
     }
-    Engine.prototype.GetStuff = function () {
-        return this.Name + "-" + this.TT;
-    };
     return Engine;
 }());
 var FileIO = (function () {
@@ -364,7 +452,8 @@ var HtmlTable = (function () {
     HtmlTable.AutoGenerateColumns = function (exampleObject) {
         var output = {};
         for (var i in exampleObject) {
-            if (typeof exampleObject[i] == "function") {
+            if (typeof exampleObject[i] == "function" ||
+                i == "EditableFieldMetadata") {
                 continue;
             }
             output[i] = i.toUpperCase();
@@ -490,6 +579,7 @@ window.onpointermove = function (event) {
 var ListName = "Unnamed";
 var test;
 addEventListener("DOMContentLoaded", function () {
+    document.addEventListener('contextmenu', function (event) { return event.preventDefault(); });
     var images = document.querySelectorAll(".option-button");
     images.forEach(function (image) {
         image.ondragstart = function () { return false; };
@@ -516,6 +606,9 @@ addEventListener("DOMContentLoaded", function () {
         new Engine(),
         new Engine(),
     ];
+    for (var i = 0; i < 64 - 7; ++i) {
+        test1.push(new Engine());
+    }
     test.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine());
     test.Items = test1;
     test.RebuildTable();

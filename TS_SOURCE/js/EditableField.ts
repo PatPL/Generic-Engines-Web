@@ -74,7 +74,15 @@ class EditableField {
         }
         
         let output: HTMLElement;
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "GetDisplayElement" in this.ValueOwner[this.ValueName]) {
+            output = this.ValueOwner[this.ValueName].GetDisplayElement ();
+        } else if (
+            this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "GetDisplayElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]
+        ) {
+            output = this.ValueOwner.EditableFieldMetadata[this.ValueName].GetDisplayElement ();
+        } else if (typeof this.ValueOwner[this.ValueName] == "string") {
             let tmp = document.createElement ("div");
             tmp.classList.add ("content-cell-content");
             output = tmp;
@@ -82,15 +90,24 @@ class EditableField {
             let tmp = document.createElement ("div");
             tmp.classList.add ("content-cell-content");
             output = tmp;
-        } else if ("GetDisplayElement" in this.ValueOwner[this.ValueName]) {
-            output = this.ValueOwner[this.ValueName].GetDisplayElement ();
+        } else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            let tmp = document.createElement ("input");
+            tmp.classList.add ("content-cell-content");
+            tmp.type = "checkbox";
+            output = tmp;
         } else {
-            throw `${this.ValueOwner[this.ValueName]} doesn't implement IEditable`;
+            console.warn (this.ValueOwner[this.ValueName]);
+            console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            let tmp = document.createElement ("div");
+            tmp.classList.add ("content-cell-content");
+            output = tmp;
         }
         
-        output.addEventListener ("dblclick", () => {
-            this.StartEdit ();
-        });
+        if (typeof this.ValueOwner[this.ValueName] != "boolean") {
+            output.addEventListener ("dblclick", () => {
+                this.StartEdit ();
+            });
+        }
         
         return output;
     }
@@ -101,7 +118,15 @@ class EditableField {
         }
         
         let output: HTMLElement;
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "GetEditElement" in this.ValueOwner[this.ValueName]) {
+            output = this.ValueOwner[this.ValueName].GetEditElement ();
+        } else if (
+            this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "GetEditElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]
+        ) {
+            output = this.ValueOwner.EditableFieldMetadata[this.ValueName].GetEditElement ();
+        } else if (typeof this.ValueOwner[this.ValueName] == "string") {
             let tmp = document.createElement ("input");
             tmp.classList.add ("content-cell-content");
             output = tmp;
@@ -109,10 +134,16 @@ class EditableField {
             let tmp = document.createElement ("input");
             tmp.classList.add ("content-cell-content");
             output = tmp;
-        } else if ("GetEditElement" in this.ValueOwner[this.ValueName]) {
-            output = this.ValueOwner[this.ValueName].GetEditElement ();
+        } else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            let tmp = document.createElement ("div");
+            tmp.classList.add ("content-cell-content");
+            output = tmp;
         } else {
-            throw `${this.ValueOwner[this.ValueName]} doesn't implement IEditable`;
+            console.warn (this.ValueOwner[this.ValueName]);
+            console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            let tmp = document.createElement ("div");
+            tmp.classList.add ("content-cell-content");
+            output = tmp;
         }
         
         return output;
@@ -123,16 +154,23 @@ class EditableField {
             throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
         }
         
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
+            this.ValueOwner[this.ValueName].ApplyValueToDisplayElement (this.DisplayElement);
+        } else if (
+            this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "ApplyValueToDisplayElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]
+        ) {
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToDisplayElement (this.DisplayElement);
+        } else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.DisplayElement.innerHTML = this.ValueOwner[this.ValueName];
         } else if (typeof this.ValueOwner[this.ValueName] == "number") {
             this.DisplayElement.innerHTML = this.ValueOwner[this.ValueName].toString ();
-        } else if ("ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToDisplayElement ();
+        } else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            (<HTMLInputElement> this.DisplayElement).checked = this.ValueOwner[this.ValueName];
         } else {
             console.warn (this.ValueOwner[this.ValueName]);
             console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
-            throw `${this.ValueOwner[this.ValueName]} doesn't implement IEditable`;
         }
     }
     
@@ -141,16 +179,23 @@ class EditableField {
             throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
         }
         
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToEditElement" in this.ValueOwner[this.ValueName]) {
+            this.ValueOwner[this.ValueName].ApplyValueToEditElement ();
+        } else if (
+            this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "ApplyValueToEditElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]
+        ) {
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToEditElement (this.EditElement);
+        } else if (typeof this.ValueOwner[this.ValueName] == "string") {
             (<HTMLInputElement> this.EditElement).value = this.ValueOwner[this.ValueName];
         } else if (typeof this.ValueOwner[this.ValueName] == "number") {
             (<HTMLInputElement> this.EditElement).value = this.ValueOwner[this.ValueName].toString ();
-        } else if ("ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToEditElement ();
+        } else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            this.EditElement.innerHTML = "This shouldn't be visible";
         } else {
             console.warn (this.ValueOwner[this.ValueName]);
             console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
-            throw `${this.ValueOwner[this.ValueName]} doesn't implement IEditable`;
         }
     }
     
@@ -159,16 +204,23 @@ class EditableField {
             throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
         }
         
-        if (typeof this.ValueOwner[this.ValueName] == "string") {
+        if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
+            this.ValueOwner[this.ValueName].ApplyValueToEditElement ();
+        } else if (
+            this.ValueOwner.EditableFieldMetadata &&
+            this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
+            "ApplyChangesToValue" in this.ValueOwner.EditableFieldMetadata[this.ValueName]
+        ) {
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyChangesToValue (this.EditElement);
+        } else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.ValueOwner[this.ValueName] = (<HTMLInputElement> this.EditElement).value;
         } else if (typeof this.ValueOwner[this.ValueName] == "number") {
             this.ValueOwner[this.ValueName] = parseFloat ((<HTMLInputElement> this.EditElement).value.replace (",", "."));
-        } else if ("ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToEditElement ();
+        } else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
+            console.warn ("Boolean doesn't use edit mode, this shouldn't be called");
         } else {
             console.warn (this.ValueOwner[this.ValueName]);
             console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
-            throw `${this.ValueOwner[this.ValueName]} doesn't implement IEditable`;
         }
     }
     

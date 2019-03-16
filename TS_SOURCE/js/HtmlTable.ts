@@ -60,7 +60,10 @@ class HtmlTable {
         let output: { [propertyName: string]: string } = {};
         
         for (let i in exampleObject) {
-            if (typeof exampleObject[i] == "function") {
+            if (
+                typeof exampleObject[i] == "function" ||
+                i == "EditableFieldMetadata"
+            ) {
                 continue;
             }
             

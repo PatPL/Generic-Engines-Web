@@ -41,7 +41,8 @@ addEventListener ("DOMContentLoaded", () => {
 });
 
 function NewButton_Click () {
-    
+    MainEngineTable.Items = [];
+    MainEngineTable.RebuildTable ();
 }
 
 function OpenButton_Click () {

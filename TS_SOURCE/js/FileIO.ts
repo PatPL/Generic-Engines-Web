@@ -126,8 +126,3 @@ class FileIO {
     }
 
 }
-
-enum FileType {
-    Text,
-    Binary
-}

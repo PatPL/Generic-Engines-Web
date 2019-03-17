@@ -1,0 +1,4 @@
+enum EngineType {
+    Liquid,
+    Solid
+}

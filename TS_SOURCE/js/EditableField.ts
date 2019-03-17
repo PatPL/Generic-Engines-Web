@@ -52,13 +52,13 @@ class EditableField {
         
         this.ShowEditMode (true);
         
-        console.log (this.EditElement);
-        
-        document.getElementById ("edit-cell-height-override")!.innerHTML = `
-            .selected {
-                height: ${this.EditElement.offsetHeight + 1}px;
-            }
-        `;
+        if (this.EditElement.parentElement!.getAttribute ("data-tablerow")) {
+            document.getElementById ("edit-cell-height-override")!.innerHTML = `
+                .selected {
+                    height: ${this.EditElement.offsetHeight + 1}px;
+                }
+            `;
+        }
     }
     
     public EndEdit (saveChanges: boolean = true) {

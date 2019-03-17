@@ -1,0 +1,4 @@
+enum FileType {
+    Text,
+    Binary
+}

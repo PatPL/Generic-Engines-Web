@@ -1,5 +1,5 @@
 let ListName = "Unnamed";
-let test: HtmlTable;
+let MainEngineTable: HtmlTable;
 
 addEventListener ("DOMContentLoaded", () => {
     //Disable default RMB context menu
@@ -24,28 +24,19 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-settings")!.addEventListener ("click", SettingsButton_Click);
     document.getElementById ("option-button-help")!.addEventListener ("click", HelpButton_Click);
     
-    //=
-    
     let ListNameDisplay = new EditableField (window, "ListName", document.getElementById ("list-name")!);
     
-    test = new HtmlTable (document.getElementById ("list-container")!);
-    let test1: Engine[] = [
-        new Engine (),
-        new Engine (),
-        new Engine (),
-        new Engine (),
-        new Engine (),
-        new Engine (),
-        new Engine (),
-    ];
+    //=
     
-    for (let i = 0; i < 64 - 7; ++i) {
-        test1.push (new Engine ());
+    MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
+    
+    for (let i = 0; i < 64; ++i) {
+        MainEngineTable.Items.push (new Engine ());
     }
     
-    test.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine ());
-    test.Items = test1;
-    test.RebuildTable ();
+    MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine ());
+    
+    MainEngineTable.RebuildTable ();
     
 });
 
@@ -78,11 +69,11 @@ function DuplicateButton_Click () {
 }
 
 function AddButton_Click () {
-    test.AddItem (new Engine ());
+    MainEngineTable.AddItem (new Engine ());
 }
 
 function RemoveButton_Click () {
-    test.RemoveSelectedItems ();
+    MainEngineTable.RemoveSelectedItems ();
 }
 
 function SettingsButton_Click () {

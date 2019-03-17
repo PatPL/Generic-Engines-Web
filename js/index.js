@@ -30,12 +30,15 @@ var EditableField = (function () {
         EditableField.EditedField = this;
         this.ApplyValueToEditElement();
         this.ShowEditMode(true);
+        console.log(this.EditElement);
+        document.getElementById("edit-cell-height-override").innerHTML = "\n            .selected {\n                height: " + (this.EditElement.offsetHeight + 1) + "px;\n            }\n        ";
     };
     EditableField.prototype.EndEdit = function (saveChanges) {
         if (saveChanges === void 0) { saveChanges = true; }
         if (EditableField.EditedField && EditableField.EditedField.FieldID != this.FieldID) {
             console.warn("Tried to end edit of not edited field. Maybe throw?");
         }
+        document.getElementById("edit-cell-height-override").innerHTML = "";
         if (saveChanges) {
             this.ApplyChangesToValue();
             this.ApplyValueToDisplayElement();
@@ -68,10 +71,13 @@ var EditableField = (function () {
             output = tmp;
         }
         else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
-            var tmp = document.createElement("input");
-            tmp.classList.add("content-cell-content");
-            tmp.type = "checkbox";
-            output = tmp;
+            var tmp_1 = document.createElement("input");
+            tmp_1.classList.add("content-cell-content");
+            tmp_1.type = "checkbox";
+            tmp_1.addEventListener("change", function (e) {
+                _this.ValueOwner[_this.ValueName] = tmp_1.checked;
+            });
+            output = tmp_1;
         }
         else {
             console.warn(this.ValueOwner[this.ValueName]);
@@ -430,6 +436,9 @@ var HtmlTable = (function () {
             _this.DragInterval = null;
         });
         window.addEventListener("pointerdown", function (e) {
+            if (e.button == 1) {
+                return;
+            }
             if (e.srcElement) {
                 var currentElement = e.srcElement;
                 var pressedOnRow = null;
@@ -456,7 +465,10 @@ var HtmlTable = (function () {
                 i == "EditableFieldMetadata") {
                 continue;
             }
-            output[i] = i.toUpperCase();
+            output[i] = {
+                Name: i.toUpperCase(),
+                Width: 200
+            };
         }
         return output;
     };
@@ -528,12 +540,28 @@ var HtmlTable = (function () {
             this.SelectedRows.push(parseInt(i));
         }
         this.RemoveSelectedItems();
-        this.TableElement.innerHTML = "";
+        this.TableElement.remove();
+        this.TableElement = document.createElement("div");
+        this.TableElement.classList.add("content-table");
+        this.TableContainer.appendChild(this.TableElement);
         this.Columns = {};
+        var headerContainer = document.createElement("div");
+        headerContainer.classList.add("content-header-container");
+        this.TableElement.appendChild(headerContainer);
+        this.TableElement.addEventListener("scroll", function (e) {
+            headerContainer.style.left = "-" + _this.TableElement.scrollLeft + "px";
+        });
         var _loop_1 = function (columnID) {
             var column = document.createElement("div");
             column.classList.add("content-column");
+            column.style.width = this_1.ColumnsDefinitions[columnID].Width + "px";
             this_1.Columns[columnID] = column;
+            var columnHeader = document.createElement("div");
+            columnHeader.classList.add("content-header");
+            columnHeader.style.width = this_1.ColumnsDefinitions[columnID].Width + "px";
+            columnHeader.innerHTML = this_1.ColumnsDefinitions[columnID].Name;
+            columnHeader.title = this_1.ColumnsDefinitions[columnID].Name;
+            headerContainer.appendChild(columnHeader);
             var columnResizer = document.createElement("div");
             columnResizer.classList.add("content-column-resizer");
             columnResizer.setAttribute("data-FieldID", "-1");
@@ -544,13 +572,10 @@ var HtmlTable = (function () {
                     var newWidth = originalWidth + Input.MouseX - originalX;
                     newWidth = Math.max(24, newWidth);
                     column.style.width = newWidth + "px";
+                    columnHeader.style.width = newWidth + "px";
                 }, 10);
             };
-            column.appendChild(columnResizer);
-            var columnHeader = document.createElement("div");
-            columnHeader.classList.add("content-header");
-            columnHeader.innerHTML = this_1.ColumnsDefinitions[columnID];
-            column.appendChild(columnHeader);
+            columnHeader.appendChild(columnResizer);
             this_1.TableElement.appendChild(column);
         };
         var this_1 = this;
@@ -577,7 +602,7 @@ window.onpointermove = function (event) {
     Input.MouseY = event.clientY;
 };
 var ListName = "Unnamed";
-var test;
+var MainEngineTable;
 addEventListener("DOMContentLoaded", function () {
     document.addEventListener('contextmenu', function (event) { return event.preventDefault(); });
     var images = document.querySelectorAll(".option-button");
@@ -596,22 +621,12 @@ addEventListener("DOMContentLoaded", function () {
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
     var ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
-    test = new HtmlTable(document.getElementById("list-container"));
-    var test1 = [
-        new Engine(),
-        new Engine(),
-        new Engine(),
-        new Engine(),
-        new Engine(),
-        new Engine(),
-        new Engine(),
-    ];
-    for (var i = 0; i < 64 - 7; ++i) {
-        test1.push(new Engine());
+    MainEngineTable = new HtmlTable(document.getElementById("list-container"));
+    for (var i = 0; i < 64; ++i) {
+        MainEngineTable.Items.push(new Engine());
     }
-    test.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine());
-    test.Items = test1;
-    test.RebuildTable();
+    MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine());
+    MainEngineTable.RebuildTable();
 });
 function NewButton_Click() {
 }
@@ -628,10 +643,10 @@ function ExportButton_Click() {
 function DuplicateButton_Click() {
 }
 function AddButton_Click() {
-    test.AddItem(new Engine());
+    MainEngineTable.AddItem(new Engine());
 }
 function RemoveButton_Click() {
-    test.RemoveSelectedItems();
+    MainEngineTable.RemoveSelectedItems();
 }
 function SettingsButton_Click() {
 }

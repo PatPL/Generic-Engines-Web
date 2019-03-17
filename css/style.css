@@ -15,6 +15,22 @@ body {
     color: #444;
 }
 
+input[type="checkbox"] {
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 2px auto 1px auto;
+    width: 19px;
+    height: 19px;
+    background: #444;
+    border: 1px #222 solid;
+    outline: none;
+}
+
+input[type="checkbox"]:checked {
+    background: #4B4;
+}
+
 /**/
 
 #option-row {
@@ -98,6 +114,7 @@ body {
     position: relative;
     display: inline-block;
     white-space: normal;
+    top: 24px;
     
     width: 400px;
     height: auto;
@@ -114,8 +131,19 @@ body {
     cursor: ew-resize;
 }
 
+.content-header-container {
+    z-index: 9999;
+    position: fixed;
+    white-space: nowrap;
+    
+    height: 24px;
+}
+
 .content-header {
-    position: static;
+    position: relative;
+    display: inline-block;
+    white-space: normal;
+    
     box-sizing: border-box;
     border-color: #444;
     border-style: solid;

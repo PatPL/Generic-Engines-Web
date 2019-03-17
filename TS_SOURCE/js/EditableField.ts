@@ -51,12 +51,22 @@ class EditableField {
         this.ApplyValueToEditElement ();
         
         this.ShowEditMode (true);
+        
+        console.log (this.EditElement);
+        
+        document.getElementById ("edit-cell-height-override")!.innerHTML = `
+            .selected {
+                height: ${this.EditElement.offsetHeight + 1}px;
+            }
+        `;
     }
     
     public EndEdit (saveChanges: boolean = true) {
         if (EditableField.EditedField && EditableField.EditedField.FieldID != this.FieldID) {
             console.warn ("Tried to end edit of not edited field. Maybe throw?");
         }
+        
+        document.getElementById ("edit-cell-height-override")!.innerHTML = "";
         
         if (saveChanges) {
             this.ApplyChangesToValue ();
@@ -94,6 +104,11 @@ class EditableField {
             let tmp = document.createElement ("input");
             tmp.classList.add ("content-cell-content");
             tmp.type = "checkbox";
+            
+            tmp.addEventListener ("change", (e) => {
+                this.ValueOwner[this.ValueName] = tmp.checked;
+            })
+            
             output = tmp;
         } else {
             console.warn (this.ValueOwner[this.ValueName]);

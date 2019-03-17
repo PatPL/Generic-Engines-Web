@@ -1,7 +1,7 @@
 class HtmlTable {
     
     Items: any[] = [];
-    ColumnsDefinitions: { [propertyName: string]: string } = {};
+    ColumnsDefinitions: { [propertyName: string]: IColumnInfo } = {};
     
     Columns: { [columnID: string]: HTMLElement } = {};
     Rows: { [rowID: number]: [HTMLElement[], any] } = {};
@@ -10,7 +10,7 @@ class HtmlTable {
     SelectedRows: number[] = [];
     
     readonly TableContainer: HTMLElement;
-    readonly TableElement: HTMLElement;
+    TableElement: HTMLElement;
     DragInterval: number | null = null;
     
     constructor (container: HTMLElement) {
@@ -31,6 +31,11 @@ class HtmlTable {
         });
         
         window.addEventListener ("pointerdown", (e) => {
+            //Ignore if MMB pressed
+            if (e.button == 1) {
+                return;
+            }
+            
             if (e.srcElement) {
                 let currentElement: Element | null = e.srcElement;
                 let pressedOnRow: number | null = null;
@@ -57,7 +62,7 @@ class HtmlTable {
     }
     
     public static AutoGenerateColumns (exampleObject: any) {
-        let output: { [propertyName: string]: string } = {};
+        let output: { [propertyName: string]: IColumnInfo } = {};
         
         for (let i in exampleObject) {
             if (
@@ -67,7 +72,10 @@ class HtmlTable {
                 continue;
             }
             
-            output[i] = i.toUpperCase ();
+            output[i] = {
+                Name: i.toUpperCase (),
+                Width: 200
+            }
         }
         
         return output;
@@ -148,14 +156,33 @@ class HtmlTable {
         
         this.RemoveSelectedItems ();
         
-        this.TableElement.innerHTML = "";
+        this.TableElement.remove ();
+        this.TableElement = document.createElement ("div");
+        this.TableElement.classList.add ("content-table");
+        this.TableContainer.appendChild (this.TableElement);
         
         this.Columns = {};
+        
+        let headerContainer = document.createElement ("div");
+        headerContainer.classList.add ("content-header-container");
+        this.TableElement.appendChild (headerContainer);
+        
+        this.TableElement.addEventListener ("scroll", (e) => {
+            headerContainer.style.left = `-${this.TableElement.scrollLeft}px`;
+        });
         
         for (let columnID in this.ColumnsDefinitions) {
             let column = document.createElement ("div");
             column.classList.add ("content-column");
+            column.style.width = `${this.ColumnsDefinitions[columnID].Width}px`;
             this.Columns[columnID] = column;
+            
+            let columnHeader = document.createElement ("div");
+            columnHeader.classList.add ("content-header");
+            columnHeader.style.width = `${this.ColumnsDefinitions[columnID].Width}px`;
+            columnHeader.innerHTML = this.ColumnsDefinitions[columnID].Name;
+            columnHeader.title = this.ColumnsDefinitions[columnID].Name;
+            headerContainer.appendChild (columnHeader);
             
             let columnResizer = document.createElement ("div");
             columnResizer.classList.add ("content-column-resizer");
@@ -167,14 +194,10 @@ class HtmlTable {
                     let newWidth = originalWidth + Input.MouseX - originalX;
                     newWidth = Math.max (24, newWidth);
                     column.style.width = `${newWidth}px`;
+                    columnHeader.style.width = `${newWidth}px`;
                 }, 10);
             }
-            column.appendChild (columnResizer);
-            
-            let columnHeader = document.createElement ("div");
-            columnHeader.classList.add ("content-header");
-            columnHeader.innerHTML = this.ColumnsDefinitions[columnID];
-            column.appendChild (columnHeader);
+            columnHeader.appendChild (columnResizer);
             
             this.TableElement.appendChild (column);
         }

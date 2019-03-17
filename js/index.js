@@ -1,6 +1,6 @@
 "use strict";
-var EditableField = (function () {
-    function EditableField(valueOwner, valueName, container) {
+class EditableField {
+    constructor(valueOwner, valueName, container) {
         this.FieldID = EditableField.IDCounter++;
         this.ValueOwner = valueOwner;
         this.ValueName = valueName;
@@ -13,7 +13,7 @@ var EditableField = (function () {
         this.Container.appendChild(this.DisplayElement);
         this.Container.appendChild(this.EditElement);
     }
-    EditableField.prototype.ShowEditMode = function (editMode) {
+    ShowEditMode(editMode) {
         if (editMode) {
             this.DisplayElement.style.display = "none";
             this.EditElement.style.display = "block";
@@ -22,8 +22,8 @@ var EditableField = (function () {
             this.DisplayElement.style.display = "block";
             this.EditElement.style.display = "none";
         }
-    };
-    EditableField.prototype.StartEdit = function () {
+    }
+    StartEdit() {
         if (EditableField.EditedField) {
             EditableField.EditedField.EndEdit();
         }
@@ -31,11 +31,14 @@ var EditableField = (function () {
         this.ApplyValueToEditElement();
         this.ShowEditMode(true);
         if (this.EditElement.parentElement.getAttribute("data-tablerow")) {
-            document.getElementById("edit-cell-height-override").innerHTML = "\n                .selected {\n                    height: " + (this.EditElement.offsetHeight + 1) + "px;\n                }\n            ";
+            document.getElementById("edit-cell-height-override").innerHTML = `
+                .selected {
+                    height: ${this.EditElement.offsetHeight + 1}px;
+                }
+            `;
         }
-    };
-    EditableField.prototype.EndEdit = function (saveChanges) {
-        if (saveChanges === void 0) { saveChanges = true; }
+    }
+    EndEdit(saveChanges = true) {
         if (EditableField.EditedField && EditableField.EditedField.FieldID != this.FieldID) {
             console.warn("Tried to end edit of not edited field. Maybe throw?");
         }
@@ -46,13 +49,12 @@ var EditableField = (function () {
         }
         EditableField.EditedField = null;
         this.ShowEditMode(false);
-    };
-    EditableField.prototype.GetDisplayElement = function () {
-        var _this = this;
+    }
+    GetDisplayElement() {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
-            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
         }
-        var output;
+        let output;
         if (typeof this.ValueOwner[this.ValueName] == "object" && "GetDisplayElement" in this.ValueOwner[this.ValueName]) {
             output = this.ValueOwner[this.ValueName].GetDisplayElement();
         }
@@ -62,43 +64,43 @@ var EditableField = (function () {
             output = this.ValueOwner.EditableFieldMetadata[this.ValueName].GetDisplayElement();
         }
         else if (typeof this.ValueOwner[this.ValueName] == "string") {
-            var tmp = document.createElement("div");
+            let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
         else if (typeof this.ValueOwner[this.ValueName] == "number") {
-            var tmp = document.createElement("div");
+            let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
         else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
-            var tmp_1 = document.createElement("input");
-            tmp_1.classList.add("content-cell-content");
-            tmp_1.type = "checkbox";
-            tmp_1.addEventListener("change", function (e) {
-                _this.ValueOwner[_this.ValueName] = tmp_1.checked;
+            let tmp = document.createElement("input");
+            tmp.classList.add("content-cell-content");
+            tmp.type = "checkbox";
+            tmp.addEventListener("change", (e) => {
+                this.ValueOwner[this.ValueName] = tmp.checked;
             });
-            output = tmp_1;
+            output = tmp;
         }
         else {
             console.warn(this.ValueOwner[this.ValueName]);
-            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
-            var tmp = document.createElement("div");
+            console.warn(`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
         if (typeof this.ValueOwner[this.ValueName] != "boolean") {
-            output.addEventListener("dblclick", function () {
-                _this.StartEdit();
+            output.addEventListener("dblclick", () => {
+                this.StartEdit();
             });
         }
         return output;
-    };
-    EditableField.prototype.GetEditElement = function () {
+    }
+    GetEditElement() {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
-            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
         }
-        var output;
+        let output;
         if (typeof this.ValueOwner[this.ValueName] == "object" && "GetEditElement" in this.ValueOwner[this.ValueName]) {
             output = this.ValueOwner[this.ValueName].GetEditElement();
         }
@@ -108,32 +110,32 @@ var EditableField = (function () {
             output = this.ValueOwner.EditableFieldMetadata[this.ValueName].GetEditElement();
         }
         else if (typeof this.ValueOwner[this.ValueName] == "string") {
-            var tmp = document.createElement("input");
+            let tmp = document.createElement("input");
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
         else if (typeof this.ValueOwner[this.ValueName] == "number") {
-            var tmp = document.createElement("input");
+            let tmp = document.createElement("input");
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
         else if (typeof this.ValueOwner[this.ValueName] == "boolean") {
-            var tmp = document.createElement("div");
+            let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
         else {
             console.warn(this.ValueOwner[this.ValueName]);
-            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
-            var tmp = document.createElement("div");
+            console.warn(`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
         return output;
-    };
-    EditableField.prototype.ApplyValueToDisplayElement = function () {
+    }
+    ApplyValueToDisplayElement() {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
-            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
         }
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
             this.ValueOwner[this.ValueName].ApplyValueToDisplayElement(this.DisplayElement);
@@ -154,12 +156,12 @@ var EditableField = (function () {
         }
         else {
             console.warn(this.ValueOwner[this.ValueName]);
-            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
+            console.warn(`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
         }
-    };
-    EditableField.prototype.ApplyValueToEditElement = function () {
+    }
+    ApplyValueToEditElement() {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
-            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
         }
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToEditElement" in this.ValueOwner[this.ValueName]) {
             this.ValueOwner[this.ValueName].ApplyValueToEditElement();
@@ -180,12 +182,12 @@ var EditableField = (function () {
         }
         else {
             console.warn(this.ValueOwner[this.ValueName]);
-            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
+            console.warn(`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
         }
-    };
-    EditableField.prototype.ApplyChangesToValue = function () {
+    }
+    ApplyChangesToValue() {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
-            throw this.ValueOwner + " or " + this.ValueOwner + "." + this.ValueName + " is null/undefined";
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
         }
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
             this.ValueOwner[this.ValueName].ApplyValueToEditElement();
@@ -206,18 +208,17 @@ var EditableField = (function () {
         }
         else {
             console.warn(this.ValueOwner[this.ValueName]);
-            console.warn(this.ValueOwner[this.ValueName] + " doesn't implement IEditable");
+            console.warn(`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
         }
-    };
-    EditableField.EditedField = null;
-    EditableField.IDCounter = 0;
-    return EditableField;
-}());
-window.addEventListener("pointerup", function (e) {
+    }
+}
+EditableField.EditedField = null;
+EditableField.IDCounter = 0;
+window.addEventListener("pointerup", (e) => {
     if (EditableField.EditedField) {
         if (e.srcElement) {
-            var currentElement = e.srcElement;
-            var foundEdited = false;
+            let currentElement = e.srcElement;
+            let foundEdited = false;
             while (currentElement != null) {
                 if (currentElement.getAttribute("data-FieldID") == EditableField.EditedField.FieldID.toString() ||
                     currentElement.getAttribute("data-FieldID") == "-1") {
@@ -236,7 +237,7 @@ window.addEventListener("pointerup", function (e) {
     else {
     }
 });
-window.addEventListener("keyup", function (e) {
+window.addEventListener("keyup", (e) => {
     if (EditableField.EditedField) {
         switch (e.key) {
             case "Escape":
@@ -248,8 +249,8 @@ window.addEventListener("keyup", function (e) {
         }
     }
 });
-var Engine = (function () {
-    function Engine() {
+class Engine {
+    constructor() {
         this.EditableFieldMetadata = {};
         this.Active = false;
         this.ID = "New-Engine";
@@ -297,16 +298,13 @@ var Engine = (function () {
         this.MasterEngineCost = 0;
         this.MasterEngineMass = 0;
     }
-    return Engine;
-}());
-var FileIO = (function () {
-    function FileIO() {
-    }
-    FileIO.ZipBlobs = function (rootDirName, blobs, callback) {
-        var zip = new JSZip();
-        var zipRoot = zip.folder(rootDirName);
-        for (var blobname in blobs) {
-            var blob = blobs[blobname];
+}
+class FileIO {
+    static ZipBlobs(rootDirName, blobs, callback) {
+        let zip = new JSZip();
+        let zipRoot = zip.folder(rootDirName);
+        for (let blobname in blobs) {
+            let blob = blobs[blobname];
             if (blob instanceof Uint8Array) {
                 zipRoot.file(blobname, blob, {
                     binary: true
@@ -321,9 +319,9 @@ var FileIO = (function () {
         zip.generateAsync({
             type: "uint8array"
         }).then(callback);
-    };
-    FileIO.OpenText = function (extensions, callback) {
-        this.Open(FileType.Text, extensions, function (result) {
+    }
+    static OpenText(extensions, callback) {
+        this.Open(FileType.Text, extensions, (result) => {
             if (callback) {
                 if (result) {
                     if (typeof result === "string") {
@@ -338,9 +336,9 @@ var FileIO = (function () {
                 }
             }
         });
-    };
-    FileIO.OpenBinary = function (extensions, callback) {
-        this.Open(FileType.Binary, extensions, function (result) {
+    }
+    static OpenBinary(extensions, callback) {
+        this.Open(FileType.Binary, extensions, (result) => {
             if (callback) {
                 if (result) {
                     if (result instanceof Uint8Array) {
@@ -355,15 +353,15 @@ var FileIO = (function () {
                 }
             }
         });
-    };
-    FileIO.Open = function (type, extensions, callback) {
-        var fileDialog = document.createElement("input");
+    }
+    static Open(type, extensions, callback) {
+        let fileDialog = document.createElement("input");
         fileDialog.type = "file";
         if (extensions && extensions != "") {
             fileDialog.accept = extensions;
         }
         fileDialog.click();
-        fileDialog.addEventListener("change", function () {
+        fileDialog.addEventListener("change", () => {
             if (!fileDialog.files || !fileDialog.files[0]) {
                 console.log("No file selected?");
                 if (callback) {
@@ -371,9 +369,9 @@ var FileIO = (function () {
                 }
                 return;
             }
-            var file = fileDialog.files[0];
-            var reader = new FileReader();
-            reader.onload = function () {
+            let file = fileDialog.files[0];
+            let reader = new FileReader();
+            reader.onload = () => {
                 if (callback) {
                     if (reader.result instanceof ArrayBuffer) {
                         callback(new Uint8Array(reader.result));
@@ -390,31 +388,29 @@ var FileIO = (function () {
                 reader.readAsArrayBuffer(file);
             }
         });
-    };
-    FileIO.SaveText = function (filename, contents) {
-        var saveDialog = document.createElement("a");
-        saveDialog.href = "data:application/x-none;charset=UTF-8;base64," + btoa(contents);
+    }
+    static SaveText(filename, contents) {
+        let saveDialog = document.createElement("a");
+        saveDialog.href = `data:application/x-none;charset=UTF-8;base64,${btoa(contents)}`;
         saveDialog.download = filename;
-        var evt = document.createEvent("MouseEvents");
+        let evt = document.createEvent("MouseEvents");
         evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         saveDialog.dispatchEvent(evt);
-    };
-    FileIO.SaveBinary = function (filename, contents) {
-        var saveDialog = document.createElement("a");
-        var blob = new Blob([contents], {
+    }
+    static SaveBinary(filename, contents) {
+        let saveDialog = document.createElement("a");
+        let blob = new Blob([contents], {
             type: "application/octet-stream"
         });
         saveDialog.href = URL.createObjectURL(blob);
         saveDialog.download = filename;
-        var evt = document.createEvent("MouseEvents");
+        let evt = document.createEvent("MouseEvents");
         evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         saveDialog.dispatchEvent(evt);
-    };
-    return FileIO;
-}());
-var HtmlTable = (function () {
-    function HtmlTable(container) {
-        var _this = this;
+    }
+}
+class HtmlTable {
+    constructor(container) {
         this.Items = [];
         this.ColumnsDefinitions = {};
         this.Columns = {};
@@ -426,20 +422,20 @@ var HtmlTable = (function () {
         this.TableElement.classList.add("content-table");
         this.TableContainer.innerHTML = "";
         this.TableContainer.appendChild(this.TableElement);
-        window.addEventListener("pointerup", function () {
-            if (_this.DragInterval) {
-                clearInterval(_this.DragInterval);
+        window.addEventListener("pointerup", () => {
+            if (this.DragInterval) {
+                clearInterval(this.DragInterval);
             }
-            _this.DragInterval = null;
+            this.DragInterval = null;
         });
-        window.addEventListener("pointerdown", function (e) {
+        window.addEventListener("pointerdown", (e) => {
             if (e.button == 1) {
                 return;
             }
             if (e.srcElement) {
-                var currentElement = e.srcElement;
-                var pressedOnRow = null;
-                var i = void 0;
+                let currentElement = e.srcElement;
+                let pressedOnRow = null;
+                let i;
                 while (currentElement != null) {
                     if (i = currentElement.getAttribute("data-tableRow")) {
                         pressedOnRow = parseInt(i);
@@ -448,16 +444,16 @@ var HtmlTable = (function () {
                     currentElement = currentElement.parentElement;
                 }
                 if (pressedOnRow) {
-                    _this.SelectRow(e.ctrlKey, pressedOnRow);
+                    this.SelectRow(e.ctrlKey, pressedOnRow);
                 }
                 else {
                 }
             }
         });
     }
-    HtmlTable.AutoGenerateColumns = function (exampleObject) {
-        var output = {};
-        for (var i in exampleObject) {
+    static AutoGenerateColumns(exampleObject) {
+        let output = {};
+        for (let i in exampleObject) {
             if (typeof exampleObject[i] == "function" ||
                 i == "EditableFieldMetadata") {
                 continue;
@@ -468,72 +464,69 @@ var HtmlTable = (function () {
             };
         }
         return output;
-    };
-    HtmlTable.prototype.AddItem = function (newItem) {
+    }
+    AddItem(newItem) {
         this.Items.push(newItem);
         this.Rows[HtmlTable.RowCounter] = [Array(Object.getOwnPropertyNames(this.ColumnsDefinitions).length), newItem];
-        var x = 0;
-        for (var columnID in this.ColumnsDefinitions) {
-            var columnCell = document.createElement("div");
+        let x = 0;
+        for (let columnID in this.ColumnsDefinitions) {
+            let columnCell = document.createElement("div");
             columnCell.classList.add("content-cell");
             columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter).toString());
-            var cellField = new EditableField(newItem, columnID, columnCell);
+            let cellField = new EditableField(newItem, columnID, columnCell);
             this.Rows[HtmlTable.RowCounter][0][x] = columnCell;
             this.Columns[columnID].appendChild(columnCell);
             ++x;
         }
         ++HtmlTable.RowCounter;
-    };
-    HtmlTable.prototype.RemoveSelectedItems = function () {
-        var _this = this;
-        this.SelectedRows.forEach(function (row) {
-            _this.Rows[row][0].forEach(function (element) {
+    }
+    RemoveSelectedItems() {
+        this.SelectedRows.forEach(row => {
+            this.Rows[row][0].forEach(element => {
                 element.remove();
             });
-            _this.Items.splice(_this.Items.indexOf(_this.Rows[row][1]), 1);
-            delete _this.Rows[row];
+            this.Items.splice(this.Items.indexOf(this.Rows[row][1]), 1);
+            delete this.Rows[row];
         });
         this.SelectedRows = [];
-    };
-    HtmlTable.prototype.SelectRow = function (appendToggle, row) {
-        var _this = this;
+    }
+    SelectRow(appendToggle, row) {
         if (appendToggle) {
-            if (this.SelectedRows.some(function (x) { return x == row; })) {
-                this.SelectedRows = this.SelectedRows.filter(function (x) { return x != row; });
-                this.Rows[row][0].forEach(function (cell) {
+            if (this.SelectedRows.some(x => x == row)) {
+                this.SelectedRows = this.SelectedRows.filter(x => x != row);
+                this.Rows[row][0].forEach(cell => {
                     cell.classList.remove("selected");
                 });
             }
             else {
                 this.SelectedRows.push(row);
-                this.Rows[row][0].forEach(function (cell) {
+                this.Rows[row][0].forEach(cell => {
                     cell.classList.add("selected");
                 });
             }
         }
         else {
-            this.SelectedRows.forEach(function (rowNumber) {
-                _this.Rows[rowNumber][0].forEach(function (cell) {
+            this.SelectedRows.forEach(rowNumber => {
+                this.Rows[rowNumber][0].forEach(cell => {
                     cell.classList.remove("selected");
                 });
             });
             this.SelectedRows = [row];
-            this.Rows[row][0].forEach(function (cell) {
+            this.Rows[row][0].forEach(cell => {
                 cell.classList.add("selected");
             });
         }
-    };
-    HtmlTable.prototype.RebuildTable = function () {
-        var _this = this;
+    }
+    RebuildTable() {
         if (Object.getOwnPropertyNames(this.ColumnsDefinitions).length == 0) {
             console.log(this);
             console.log("No columns were set.");
             return;
         }
-        var ItemsBackup = new Array().concat(this.Items);
+        let ItemsBackup = new Array().concat(this.Items);
         this.Items = [];
         this.SelectedRows = [];
-        for (var i in this.Rows) {
+        for (let i in this.Rows) {
             this.SelectedRows.push(parseInt(i));
         }
         this.RemoveSelectedItems();
@@ -542,69 +535,60 @@ var HtmlTable = (function () {
         this.TableElement.classList.add("content-table");
         this.TableContainer.appendChild(this.TableElement);
         this.Columns = {};
-        var headerContainer = document.createElement("div");
+        let headerContainer = document.createElement("div");
         headerContainer.classList.add("content-header-container");
         this.TableElement.appendChild(headerContainer);
-        this.TableElement.addEventListener("scroll", function (e) {
-            headerContainer.style.left = "-" + _this.TableElement.scrollLeft + "px";
+        this.TableElement.addEventListener("scroll", (e) => {
+            headerContainer.style.left = `-${this.TableElement.scrollLeft}px`;
         });
-        var _loop_1 = function (columnID) {
-            var column = document.createElement("div");
+        for (let columnID in this.ColumnsDefinitions) {
+            let column = document.createElement("div");
             column.classList.add("content-column");
-            column.style.width = this_1.ColumnsDefinitions[columnID].Width + "px";
-            this_1.Columns[columnID] = column;
-            var columnHeader = document.createElement("div");
+            column.style.width = `${this.ColumnsDefinitions[columnID].Width}px`;
+            this.Columns[columnID] = column;
+            let columnHeader = document.createElement("div");
             columnHeader.classList.add("content-header");
-            columnHeader.style.width = this_1.ColumnsDefinitions[columnID].Width + "px";
-            columnHeader.innerHTML = this_1.ColumnsDefinitions[columnID].Name;
-            columnHeader.title = this_1.ColumnsDefinitions[columnID].Name;
+            columnHeader.style.width = `${this.ColumnsDefinitions[columnID].Width}px`;
+            columnHeader.innerHTML = this.ColumnsDefinitions[columnID].Name;
+            columnHeader.title = this.ColumnsDefinitions[columnID].Name;
             headerContainer.appendChild(columnHeader);
-            var columnResizer = document.createElement("div");
+            let columnResizer = document.createElement("div");
             columnResizer.classList.add("content-column-resizer");
             columnResizer.setAttribute("data-FieldID", "-1");
-            columnResizer.onpointerdown = function () {
-                var originalX = Input.MouseX;
-                var originalWidth = column.style.width ? parseInt(column.style.width) : 400;
-                _this.DragInterval = setInterval(function () {
-                    var newWidth = originalWidth + Input.MouseX - originalX;
+            columnResizer.onpointerdown = () => {
+                let originalX = Input.MouseX;
+                let originalWidth = column.style.width ? parseInt(column.style.width) : 400;
+                this.DragInterval = setInterval(() => {
+                    let newWidth = originalWidth + Input.MouseX - originalX;
                     newWidth = Math.max(24, newWidth);
-                    column.style.width = newWidth + "px";
-                    columnHeader.style.width = newWidth + "px";
+                    column.style.width = `${newWidth}px`;
+                    columnHeader.style.width = `${newWidth}px`;
                 }, 10);
             };
             columnHeader.appendChild(columnResizer);
-            this_1.TableElement.appendChild(column);
-        };
-        var this_1 = this;
-        for (var columnID in this.ColumnsDefinitions) {
-            _loop_1(columnID);
+            this.TableElement.appendChild(column);
         }
-        for (var _i = 0, ItemsBackup_1 = ItemsBackup; _i < ItemsBackup_1.length; _i++) {
-            var i = ItemsBackup_1[_i];
+        for (let i of ItemsBackup) {
             this.AddItem(i);
         }
-    };
-    HtmlTable.RowCounter = 1;
-    return HtmlTable;
-}());
-var Input = (function () {
-    function Input() {
     }
-    Input.MouseX = 0;
-    Input.MouseY = 0;
-    return Input;
-}());
-window.onpointermove = function (event) {
+}
+HtmlTable.RowCounter = 1;
+class Input {
+}
+Input.MouseX = 0;
+Input.MouseY = 0;
+window.onpointermove = (event) => {
     Input.MouseX = event.clientX;
     Input.MouseY = event.clientY;
 };
 var ListName = "Unnamed";
-var MainEngineTable;
-addEventListener("DOMContentLoaded", function () {
-    document.addEventListener('contextmenu', function (event) { return event.preventDefault(); });
-    var images = document.querySelectorAll(".option-button");
-    images.forEach(function (image) {
-        image.ondragstart = function () { return false; };
+let MainEngineTable;
+addEventListener("DOMContentLoaded", () => {
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    let images = document.querySelectorAll(".option-button");
+    images.forEach(image => {
+        image.ondragstart = () => { return false; };
     });
     document.getElementById("option-button-new").addEventListener("click", NewButton_Click);
     document.getElementById("option-button-open").addEventListener("click", OpenButton_Click);
@@ -617,9 +601,9 @@ addEventListener("DOMContentLoaded", function () {
     document.getElementById("option-button-remove").addEventListener("click", RemoveButton_Click);
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
-    var ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
+    let ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
-    for (var i = 0; i < 64; ++i) {
+    for (let i = 0; i < 64; ++i) {
         MainEngineTable.Items.push(new Engine());
     }
     MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine());

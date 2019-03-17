@@ -1,4 +1,4 @@
-let ListName = "Unnamed";
+var ListName = "Unnamed";
 let MainEngineTable: HtmlTable;
 
 addEventListener ("DOMContentLoaded", () => {

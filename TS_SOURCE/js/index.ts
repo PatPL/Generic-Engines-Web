@@ -3,7 +3,7 @@ let MainEngineTable: HtmlTable;
 
 addEventListener ("DOMContentLoaded", () => {
     //Disable default RMB context menu
-    document.addEventListener('contextmenu', event => event.preventDefault());
+    //document.addEventListener('contextmenu', event => event.preventDefault());
     
     //Disable option image dragging (user-select: none; doesn't do it)
     let images = document.querySelectorAll<HTMLElement> (".option-button");

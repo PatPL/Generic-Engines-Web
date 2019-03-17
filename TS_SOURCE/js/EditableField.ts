@@ -195,7 +195,7 @@ class EditableField {
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToEditElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToEditElement ();
+            this.ValueOwner[this.ValueName].ApplyValueToEditElement (this.EditElement);
         } else if (
             this.ValueOwner.EditableFieldMetadata &&
             this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
@@ -220,7 +220,7 @@ class EditableField {
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToEditElement ();
+            this.ValueOwner[this.ValueName].ApplyChangesToValue (this.EditElement);
         } else if (
             this.ValueOwner.EditableFieldMetadata &&
             this.ValueOwner.EditableFieldMetadata[this.ValueName] &&

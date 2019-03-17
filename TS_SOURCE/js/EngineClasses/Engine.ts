@@ -1,20 +1,35 @@
 class Engine {
     
     EditableFieldMetadata: { [id: string]: IEditable } = {
-        /* EXAMPLES
-        Name: {
+        Mass: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = this.Name.toUpperCase ();
-                console.log (e);
-            }, ApplyChangesToValue: (e) => {
-                this.Name = (<HTMLInputElement> e).value.replace ("{0}", "{inserted}");
+                e.innerHTML = `${this.Mass}t`;
             }
-        }, TT: {
+        }, Thrust: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = `${this.TT}kN`;
+                e.innerHTML = `${this.Thrust}kN`;
+            }
+        }, AtmIsp: {
+            ApplyValueToDisplayElement: (e) => {
+                e.innerHTML = `${this.AtmIsp}s`;
+            }
+        }, VacIsp: {
+            ApplyValueToDisplayElement: (e) => {
+                e.innerHTML = `${this.VacIsp}s`;
+            }
+        }, Cost: {
+            ApplyValueToDisplayElement: (e) => {
+                e.innerHTML = `${this.Cost}VF`;
+            }
+        }, MinThrust: {
+            ApplyValueToDisplayElement: (e) => {
+                e.innerHTML = `${this.MinThrust}%`;
+            }
+        }, AlternatorPower: {
+            ApplyValueToDisplayElement: (e) => {
+                e.innerHTML = `${this.AlternatorPower}kW`;
             }
         }
-        */
     }
     
     Active: boolean = false;
@@ -27,9 +42,7 @@ class Engine {
     PropellantRatio: object = {}; //TODO: Ratios object (keep TankContents input in mind)
     FuelVolumeRatios: boolean = false; //Move to Ratios object?
     
-    UseBaseWidth: boolean = true;
-    Width: number = 1; //Create separate dimensions object?
-    Height: number = 2;
+    EngineSize: Dimensions = new Dimensions ();
     
     Cost: number = 1000;
     MinThrust: number = 90;
@@ -53,8 +66,9 @@ class Engine {
     GimbalNY: number = 0;
     GimbalPY: number = 0;
     
-    ModelID: Model = Model.LR91;
+    ModelID: Model = Model.LR91; //Create visuals object?
     PlumeID: Plume = Plume.Kerolox_Upper;
+    
     TechUnlockNode: TechNode = TechNode.start;
     
     EngineName: string = ""; //Create separate naming object?

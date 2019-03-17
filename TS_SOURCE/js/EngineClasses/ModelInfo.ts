@@ -1,0 +1,503 @@
+/// <reference path="../Enums/EngineGroupType.ts" />
+class ModelInfo {
+    
+    public static GetModelInfo (id: Model) {
+        return ModelInfo.models[id];
+    }
+    
+    private static readonly models: IModelInfo[] = [
+        { //Model.LR91
+            OriginalHeight: 1.885,
+            OriginalBellWidth: 0.9635,
+            OriginalBaseWidth: 0.892,
+            PlumeSizeMultiplier: 1.0,
+            PlumePositionOffset: 0.8,
+            NodeStackTop: 0.7215,
+            NodeStackBottom: -1.1635,
+            ModelPath: "RealismOverhaul/Models/LR-91eng",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "LR-91-AJ-5",
+            ModelType: EngineGroupType.IRL,
+            HiddenMuObjects: [],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.AJ10
+            OriginalHeight: 0.654,
+            OriginalBellWidth: 0.285,
+            OriginalBaseWidth: 0.395,
+            PlumeSizeMultiplier: 0.295,
+            PlumePositionOffset: -0.09,
+            NodeStackTop: 0.33,
+            NodeStackBottom: -0.324,
+            ModelPath: "SXT/Parts/Rocketry/Engine/Vanguard/model",
+            TextureDefinitions: `
+                texture: fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
+                texture: model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
+                texture: model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001
+            `,
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "AJ-10-142",
+            ModelType: EngineGroupType.IRL,
+            HiddenMuObjects: [
+                "Cylinder_002"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.RS25
+            OriginalHeight: 1.5,
+            OriginalBellWidth: 0.865,
+            OriginalBaseWidth: 0.989,
+            PlumeSizeMultiplier: 0.85,
+            PlumePositionOffset: -0.8,
+            NodeStackTop: -0.025,
+            NodeStackBottom: -1.525,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/KS-25",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Nozzle",
+            ModelName: "RS-25",
+            ModelType: EngineGroupType.IRL,
+            HiddenMuObjects: [
+                "Size2A"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.Thruster
+            OriginalHeight: 0.3055,
+            OriginalBellWidth: 0.12,
+            OriginalBaseWidth: 0.222,
+            PlumeSizeMultiplier: 0.11,
+            PlumePositionOffset: -0.04,
+            NodeStackTop: 0.0495,
+            NodeStackBottom: -0.256,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LV-1B",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Gimbal",
+            ModelName: "Generic thruster",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.Aestus
+            OriginalHeight: 0.393,
+            OriginalBellWidth: 0.234,
+            OriginalBaseWidth: 0.616,
+            PlumeSizeMultiplier: 0.225,
+            PlumePositionOffset: -0.06,
+            NodeStackTop: 0.0,
+            NodeStackBottom: -0.393,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/48-7S",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Obj_Gimbal",
+            ModelName: "Spark (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "Size2A",
+                "node_fairing_collider"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.IonThruster
+            OriginalHeight: 0.3935,
+            OriginalBellWidth: 0.459,
+            OriginalBaseWidth: 0.627,
+            PlumeSizeMultiplier: 0.42,
+            PlumePositionOffset: 0,
+            NodeStackTop: 0.1965,
+            NodeStackBottom: -0.197,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/IonEngine",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "Ion thruster",
+            ModelType: EngineGroupType.Ion,
+            HiddenMuObjects: [
+                "Size1B",
+                "fairing"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.F1
+            OriginalHeight: 4.48,
+            OriginalBellWidth: 1.802,
+            OriginalBaseWidth: 3.78,
+            PlumeSizeMultiplier: 1.6,
+            PlumePositionOffset: -0.7,
+            NodeStackTop: 1.49,
+            NodeStackBottom: -2.99,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/KR-2L",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Nozzle",
+            ModelName: "Rhino (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "fairing"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.RD0105T
+            OriginalHeight: 0.727,
+            OriginalBellWidth: 0.445,
+            OriginalBaseWidth: 0.989,
+            PlumeSizeMultiplier: 0.4,
+            PlumePositionOffset: -0.12,
+            NodeStackTop: 0.195,
+            NodeStackBottom: -0.532,
+            OriginalTankVolume: 110,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LV900",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Obj_Gimbal",
+            ModelName: "Beagle (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "Size2B",
+                "fairing",
+                "Hoses"
+            ],
+            CanAttachOnModel: false,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.SRBLong
+            OriginalHeight: 8.018,
+            OriginalBellWidth: 1.05265,
+            OriginalBaseWidth: 1.276,
+            PlumeSizeMultiplier: 1.1,
+            PlumePositionOffset: -0.4,
+            NodeStackTop: 3.89,
+            NodeStackBottom: -4.128,
+            RadialAttachmentPoint: 0.639,
+            OriginalTankVolume: 6780,
+            RadialAttachment: true,
+            CanAttachOnModel: true,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/BACC",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "BACC (VSR)",
+            ModelType: EngineGroupType.SRB,
+            HiddenMuObjects: [
+                "fairing"
+            ]
+        }, { //Model.RT5
+            OriginalHeight: 1.444,
+            OriginalBellWidth: 0.773,
+            OriginalBaseWidth: 1.003,
+            PlumeSizeMultiplier: 0.7,
+            PlumePositionOffset: -0.18,
+            NodeStackTop: 0.552,
+            NodeStackBottom: -0.892,
+            RadialAttachmentPoint: 0.503,
+            OriginalTankVolume: 528,
+            RadialAttachment: true,
+            CanAttachOnModel: true,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/RT5",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "RT-5 (VSR)",
+            ModelType: EngineGroupType.SRB,
+            HiddenMuObjects: [
+                "fairing"
+            ]
+        }, { //Model.RT2
+            OriginalHeight: 3.5,
+            OriginalBellWidth: 0.5945,
+            OriginalBaseWidth: 0.613,
+            PlumeSizeMultiplier: 0.55,
+            PlumePositionOffset: -0.16,
+            NodeStackTop: 1.8,
+            NodeStackBottom: -1.7,
+            RadialAttachmentPoint: 0.307,
+            OriginalTankVolume: 640,
+            RadialAttachment: true,
+            CanAttachOnModel: true,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/RT2",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "RT-2 (VSR)",
+            ModelType: EngineGroupType.SRB,
+            HiddenMuObjects: []
+        }, { //Model.S1
+            OriginalHeight: 14.81,
+            OriginalBellWidth: 1.043,
+            OriginalBaseWidth: 1.183,
+            PlumeSizeMultiplier: 1.1,
+            PlumePositionOffset: 0.55,
+            NodeStackTop: 7.445,
+            NodeStackBottom: -7.365,
+            RadialAttachmentPoint: 0.595,
+            OriginalTankVolume: 11190,
+            RadialAttachment: true,
+            CanAttachOnModel: true,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/S1",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform", //This model has separate Nozzle object but its origin is in wrong place :(
+            ModelName: "S-1 (VSR)",
+            ModelType: EngineGroupType.SRB,
+            HiddenMuObjects: []
+        }, { //Model.RD0105
+            OriginalHeight: 0.633,
+            OriginalBellWidth: 0.445,
+            OriginalBaseWidth: 0.991,
+            PlumeSizeMultiplier: 0.4,
+            PlumePositionOffset: -0.14,
+            NodeStackTop: 0.193,
+            NodeStackBottom: -0.44,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LV909",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Obj_Gimbal",
+            ModelName: "LV-909 (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "fairing",
+                "Size2B"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.NERVA
+            OriginalHeight: 3.25,
+            OriginalBellWidth: 0.996,
+            OriginalBaseWidth: 1.245,
+            PlumeSizeMultiplier: 0.9,
+            PlumePositionOffset: 0.56,
+            NodeStackTop: 1.414,
+            NodeStackBottom: -1.836,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LVN",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "NERVA (VSR)",
+            ModelType: EngineGroupType.IRL,
+            HiddenMuObjects: [
+                "fairingL",
+                "fairingR",
+                "Size2A"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.LVT30
+            OriginalHeight: 1.574,
+            OriginalBellWidth: 0.653,
+            OriginalBaseWidth: 1.001,
+            PlumeSizeMultiplier: 0.57,
+            PlumePositionOffset: -0.1,
+            NodeStackTop: 0.774,
+            NodeStackBottom: -0.8,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LVT30",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "LV-T30 (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "fairing",
+                "Size2A"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.LVT45
+            OriginalHeight: 1.643,
+            OriginalBellWidth: 0.602,
+            OriginalBaseWidth: 0.998,
+            PlumeSizeMultiplier: 0.53,
+            PlumePositionOffset: -0.16,
+            NodeStackTop: 0.75,
+            NodeStackBottom: -0.893,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LVT45",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Obj_Gimbal",
+            ModelName: "LV-T45 (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "fairing",
+                "Size2A",
+                "Cube_006_031_001"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.P1057
+            OriginalHeight: 0.615,
+            OriginalBellWidth: 0.226,
+            OriginalBaseWidth: 0.584,
+            PlumeSizeMultiplier: 0.19,
+            PlumePositionOffset: -0.075,
+            NodeStackTop: 0.02,
+            NodeStackBottom: -0.595,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/105-7P",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "nozzle",
+            ModelName: "105-7P (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "Size2A",
+                "node_fairing_collider"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.OMSL
+            OriginalHeight: 1.228,
+            OriginalBellWidth: 0.773,
+            OriginalBaseWidth: 0.653,
+            PlumeSizeMultiplier: 0.72,
+            PlumePositionOffset: -0.3,
+            NodeStackTop: -0.012,
+            NodeStackBottom: -1.24,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/OMS-L",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Nozzle",
+            ModelName: "OMS-L (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.Poodle
+            OriginalHeight: 1.584,
+            OriginalBellWidth: 1.222,
+            OriginalBaseWidth: 1.196,
+            PlumeSizeMultiplier: 1.12,
+            PlumePositionOffset: 0.0,
+            NodeStackTop: 0.722,
+            NodeStackBottom: -0.862,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/Poodle",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Obj_Gimbal",
+            ModelName: "Poodle (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "Size2B",
+                "fairing"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.BallNuke
+            OriginalHeight: 1.868,
+            OriginalBellWidth: 0.886,
+            OriginalBaseWidth: 2.5,
+            PlumeSizeMultiplier: 0.82,
+            PlumePositionOffset: -0.4,
+            NodeStackTop: 0.0,
+            NodeStackBottom: -1.868,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/PoodleLargeNTR",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "Sphere NTR (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "fairing"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.BallNukeS
+            OriginalHeight: 0.767,
+            OriginalBellWidth: 0.407,
+            OriginalBaseWidth: 0.585,
+            PlumeSizeMultiplier: 0.36,
+            PlumePositionOffset: -0.03,
+            NodeStackTop: 0.065,
+            NodeStackBottom: -0.702,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/PoodleNTR",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "Small Sphere NTR (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "Size1B",
+                "fairing"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.Skipper
+            OriginalHeight: 3.514,
+            OriginalBellWidth: 1.6,
+            OriginalBaseWidth: 2.504,
+            PlumeSizeMultiplier: 1.45,
+            PlumePositionOffset: -0.65,
+            NodeStackTop: 1.19,
+            NodeStackBottom: -2.324,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/Size2MedEngineB",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Nozzle",
+            ModelName: "Gas Generator (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "fairing"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }, { //Model.SkipperR
+            OriginalHeight: 2.655,
+            OriginalBellWidth: 1.415,
+            OriginalBaseWidth: 1.225,
+            PlumeSizeMultiplier: 1.3,
+            PlumePositionOffset: 0.0,
+            NodeStackTop: 0.007,
+            NodeStackBottom: -2.648,
+            ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/Skipper",
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "Obj_Gimbal",
+            ModelName: "Skipper (VSR)",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "obj_fairing",
+                "Size2A"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0
+        }
+    ];
+    
+}

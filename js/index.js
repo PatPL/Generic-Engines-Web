@@ -214,7 +214,7 @@ class EditableField {
 }
 EditableField.EditedField = null;
 EditableField.IDCounter = 0;
-window.addEventListener("pointerup", (e) => {
+window.addEventListener("pointerdown", (e) => {
     if (EditableField.EditedField) {
         if (e.srcElement) {
             let currentElement = e.srcElement;
@@ -552,9 +552,13 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
     let ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
-    for (let i = 0; i < 64; ++i) {
+    for (let i = 0; i < 8; ++i) {
         MainEngineTable.Items.push(new Engine());
     }
+    MainEngineTable.Items[1].TestFlight.RatedBurnTime = 240;
+    MainEngineTable.Items[2].TestFlight.EnableTestFlight = true;
+    MainEngineTable.Items[3].TestFlight.EnableTestFlight = true;
+    MainEngineTable.Items[3].TestFlight.RatedBurnTime = 240;
     MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine());
     MainEngineTable.RebuildTable();
 });
@@ -645,8 +649,8 @@ class Dimensions {
     ApplyChangesToValue(e) {
         let inputs = e.querySelectorAll("input");
         this.UseBaseWidth = inputs[0].checked;
-        this.Width = parseFloat(inputs[1].value);
-        this.Height = parseFloat(inputs[2].value);
+        this.Width = parseFloat(inputs[1].value.replace(",", "."));
+        this.Height = parseFloat(inputs[2].value.replace(",", "."));
     }
 }
 class Engine {
@@ -696,12 +700,7 @@ class Engine {
         this.Ignitions = 1;
         this.PressureFed = false;
         this.NeedsUllage = true;
-        this.EnableTestFlight = false;
-        this.RatedBurnTime = 180;
-        this.StartReliability0 = 92;
-        this.StartReliability10k = 96;
-        this.CycleReliability0 = 90;
-        this.CycleReliability10k = 98;
+        this.TestFlight = new TestFlight();
         this.AlternatorPower = 0;
         this.Gimbal = 6;
         this.AdvancedGimbal = false;
@@ -1233,6 +1232,105 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0
     }
 ];
+class TestFlight {
+    constructor() {
+        this.EnableTestFlight = false;
+        this.RatedBurnTime = 180;
+        this.StartReliability0 = 92;
+        this.StartReliability10k = 96;
+        this.CycleReliability0 = 90;
+        this.CycleReliability10k = 98;
+    }
+    static IsDefault(config) {
+        let defaultConfig = new TestFlight();
+        return (config.EnableTestFlight == defaultConfig.EnableTestFlight &&
+            config.RatedBurnTime == defaultConfig.RatedBurnTime &&
+            config.StartReliability0 == defaultConfig.StartReliability0 &&
+            config.StartReliability10k == defaultConfig.StartReliability10k &&
+            config.CycleReliability0 == defaultConfig.CycleReliability0 &&
+            config.CycleReliability10k == defaultConfig.CycleReliability10k);
+    }
+    GetDisplayElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        return tmp;
+    }
+    ApplyValueToDisplayElement(e) {
+        if (this.EnableTestFlight) {
+            e.innerHTML = `Enabled | ${this.StartReliability0}% - ${this.StartReliability10k}% | ${Math.round((1 / (1 - (this.CycleReliability0 / 100))) * this.RatedBurnTime)}s - ${Math.round((1 / (1 - (this.CycleReliability10k / 100))) * this.RatedBurnTime)}s`;
+        }
+        else {
+            if (TestFlight.IsDefault(this)) {
+                e.innerHTML = `Disabled`;
+            }
+            else {
+                e.innerHTML = `Disabled, but configured`;
+            }
+        }
+    }
+    GetEditElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        tmp.style.height = "144px";
+        tmp.style.padding = "0";
+        let grid = document.createElement("div");
+        grid.style.display = "grid";
+        grid.style.gridTemplateColumns = "310px auto 26px";
+        grid.style.gridTemplateRows = "24px 24px 24px 24px 24px 24px";
+        grid.style.gridTemplateAreas = `
+            "a b b"
+            "c d e"
+            "f g h"
+            "i j k"
+            "l m n"
+            "o p q"
+        `;
+        grid.innerHTML = `
+            <div class="content-cell-content" style="grid-area: a;">Enable Test Flight</div>
+            <div class="content-cell-content" style="grid-area: b;"><input type="checkbox" style="position: relative; top: -1px;"></div>
+            
+            <div class="content-cell-content" style="grid-area: c;">Rated burn time</div>
+            <div style="grid-area: d;"><input style="width: calc(100%);"></div>
+            <div class="content-cell-content" style="grid-area: e;">s</div>
+            
+            <div class="content-cell-content" style="grid-area: f;">Ignition success chance (0% data)</div>
+            <div style="grid-area: g;"><input style="width: calc(100%);"></div>
+            <div class="content-cell-content" style="grid-area: h;">%</div>
+            
+            <div class="content-cell-content" style="grid-area: i;">Ignition success chance (100% data)</div>
+            <div style="grid-area: j;"><input style="width: calc(100%);"></div>
+            <div class="content-cell-content" style="grid-area: k;">%</div>
+            
+            <div class="content-cell-content" style="grid-area: l;">Burn cycle reliability (0% data)</div>
+            <div style="grid-area: m;"><input style="width: calc(100%);"></div>
+            <div class="content-cell-content" style="grid-area: n;">%</div>
+            
+            <div class="content-cell-content" style="grid-area: o;">Burn cycle reliability (100% data)</div>
+            <div style="grid-area: p;"><input style="width: calc(100%);"></div>
+            <div class="content-cell-content" style="grid-area: q;">%</div>
+        `;
+        tmp.appendChild(grid);
+        return tmp;
+    }
+    ApplyValueToEditElement(e) {
+        let inputs = e.querySelectorAll("input");
+        inputs[0].checked = this.EnableTestFlight;
+        inputs[1].value = this.RatedBurnTime.toString();
+        inputs[2].value = this.StartReliability0.toString();
+        inputs[3].value = this.StartReliability10k.toString();
+        inputs[4].value = this.CycleReliability0.toString();
+        inputs[5].value = this.CycleReliability10k.toString();
+    }
+    ApplyChangesToValue(e) {
+        let inputs = e.querySelectorAll("input");
+        this.EnableTestFlight = inputs[0].checked;
+        this.RatedBurnTime = parseInt(inputs[1].value);
+        this.StartReliability0 = parseFloat(inputs[2].value.replace(",", "."));
+        this.StartReliability10k = parseFloat(inputs[3].value.replace(",", "."));
+        this.CycleReliability0 = parseFloat(inputs[4].value.replace(",", "."));
+        this.CycleReliability10k = parseFloat(inputs[5].value.replace(",", "."));
+    }
+}
 var EngineType;
 (function (EngineType) {
     EngineType[EngineType["Liquid"] = 0] = "Liquid";

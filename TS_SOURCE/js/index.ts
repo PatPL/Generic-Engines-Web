@@ -30,9 +30,14 @@ addEventListener ("DOMContentLoaded", () => {
     
     MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
     
-    for (let i = 0; i < 64; ++i) {
+    for (let i = 0; i < 8; ++i) {
         MainEngineTable.Items.push (new Engine ());
     }
+    
+    (<Engine> MainEngineTable.Items[1]).TestFlight.RatedBurnTime = 240;
+    (<Engine> MainEngineTable.Items[2]).TestFlight.EnableTestFlight = true;
+    (<Engine> MainEngineTable.Items[3]).TestFlight.EnableTestFlight = true;
+    (<Engine> MainEngineTable.Items[3]).TestFlight.RatedBurnTime = 240;
     
     MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine ());
     

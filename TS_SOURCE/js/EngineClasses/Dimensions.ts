@@ -70,12 +70,12 @@ class Dimensions implements IEditable {
         inputs[2].value = this.Height.toString ();
     }
     
-    ApplyChangesToValue (e: HTMLElement): void {
+    public ApplyChangesToValue (e: HTMLElement): void {
         let inputs = e.querySelectorAll ("input");
         
         this.UseBaseWidth = inputs[0].checked;
-        this.Width = parseFloat (inputs[1].value);
-        this.Height = parseFloat (inputs[2].value);
+        this.Width = parseFloat (inputs[1].value.replace (",", "."));
+        this.Height = parseFloat (inputs[2].value.replace (",", "."));
     }
     
 }

@@ -50,12 +50,7 @@ class Engine {
     PressureFed: boolean = false;
     NeedsUllage: boolean = true;
     
-    EnableTestFlight: boolean = false; //Create separate TestFlight object?
-    RatedBurnTime: number = 180;
-    StartReliability0: number = 92;
-    StartReliability10k: number = 96;
-    CycleReliability0: number = 90;
-    CycleReliability10k: number = 98;
+    TestFlight: TestFlight = new TestFlight ();
     
     AlternatorPower: number = 0;
     

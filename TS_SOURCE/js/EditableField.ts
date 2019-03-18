@@ -241,7 +241,7 @@ class EditableField {
     
 }
 
-window.addEventListener ("pointerup", (e) => {
+window.addEventListener ("pointerdown", (e) => {
     if (EditableField.EditedField) {
         //Check whether pointer was over current field
         if (e.srcElement) {

@@ -54,12 +54,7 @@ class Engine {
     
     AlternatorPower: number = 0;
     
-    Gimbal: number = 6; //Create separate Gimbal object?
-    AdvancedGimbal: boolean = false;
-    GimbalNX: number = 30;
-    GimbalPX: number = 30;
-    GimbalNY: number = 0;
-    GimbalPY: number = 0;
+    Gimbal: Gimbal = new Gimbal ();
     
     ModelID: Model = Model.LR91; //Create visuals object?
     PlumeID: Plume = Plume.Kerolox_Upper;

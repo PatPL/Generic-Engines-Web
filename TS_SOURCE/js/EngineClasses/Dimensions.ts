@@ -48,7 +48,6 @@ class Dimensions implements IEditable {
         checkboxLabel.style.left = "4px";
         
         checkbox.type = "checkbox";
-        checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
         
         checkbox.addEventListener ("change", e => {
             checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
@@ -68,6 +67,8 @@ class Dimensions implements IEditable {
         inputs[0].checked = this.UseBaseWidth;
         inputs[1].value = this.Width.toString ();
         inputs[2].value = this.Height.toString ();
+        
+        e.querySelector ("span")!.innerHTML = inputs[0].checked ? "Base width" : "Bell width";
     }
     
     public ApplyChangesToValue (e: HTMLElement): void {

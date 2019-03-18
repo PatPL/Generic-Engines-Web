@@ -34,6 +34,12 @@ addEventListener ("DOMContentLoaded", () => {
         MainEngineTable.Items.push (new Engine ());
     }
     
+    (<Engine> MainEngineTable.Items[1]).Gimbal.AdvancedGimbal = true;
+    (<Engine> MainEngineTable.Items[1]).Gimbal.GimbalNX = 3;
+    (<Engine> MainEngineTable.Items[1]).Gimbal.GimbalPX = 6;
+    (<Engine> MainEngineTable.Items[1]).Gimbal.GimbalNY = 9;
+    (<Engine> MainEngineTable.Items[1]).Gimbal.GimbalPY = 12;
+    
     (<Engine> MainEngineTable.Items[1]).TestFlight.RatedBurnTime = 240;
     (<Engine> MainEngineTable.Items[2]).TestFlight.EnableTestFlight = true;
     (<Engine> MainEngineTable.Items[3]).TestFlight.EnableTestFlight = true;

@@ -200,7 +200,7 @@ input[type="checkbox"]:checked {
 }
 
 input.content-cell-content {
-    padding-left: 2px;
+    padding-left: 3px;
 }
 
 .selected {

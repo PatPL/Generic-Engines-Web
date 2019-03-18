@@ -555,6 +555,11 @@ addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < 8; ++i) {
         MainEngineTable.Items.push(new Engine());
     }
+    MainEngineTable.Items[1].Gimbal.AdvancedGimbal = true;
+    MainEngineTable.Items[1].Gimbal.GimbalNX = 3;
+    MainEngineTable.Items[1].Gimbal.GimbalPX = 6;
+    MainEngineTable.Items[1].Gimbal.GimbalNY = 9;
+    MainEngineTable.Items[1].Gimbal.GimbalPY = 12;
     MainEngineTable.Items[1].TestFlight.RatedBurnTime = 240;
     MainEngineTable.Items[2].TestFlight.EnableTestFlight = true;
     MainEngineTable.Items[3].TestFlight.EnableTestFlight = true;
@@ -631,7 +636,6 @@ class Dimensions {
         checkboxLabel.style.top = "-4px";
         checkboxLabel.style.left = "4px";
         checkbox.type = "checkbox";
-        checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
         checkbox.addEventListener("change", e => {
             checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
         });
@@ -645,6 +649,7 @@ class Dimensions {
         inputs[0].checked = this.UseBaseWidth;
         inputs[1].value = this.Width.toString();
         inputs[2].value = this.Height.toString();
+        e.querySelector("span").innerHTML = inputs[0].checked ? "Base width" : "Bell width";
     }
     ApplyChangesToValue(e) {
         let inputs = e.querySelectorAll("input");
@@ -702,12 +707,7 @@ class Engine {
         this.NeedsUllage = true;
         this.TestFlight = new TestFlight();
         this.AlternatorPower = 0;
-        this.Gimbal = 6;
-        this.AdvancedGimbal = false;
-        this.GimbalNX = 30;
-        this.GimbalPX = 30;
-        this.GimbalNY = 0;
-        this.GimbalPY = 0;
+        this.Gimbal = new Gimbal();
         this.ModelID = Model.LR91;
         this.PlumeID = Plume.Kerolox_Upper;
         this.TechUnlockNode = TechNode.start;
@@ -724,6 +724,115 @@ class Engine {
         this.MasterEngineName = "";
         this.MasterEngineCost = 0;
         this.MasterEngineMass = 0;
+    }
+}
+class Gimbal {
+    constructor() {
+        this.Gimbal = 6;
+        this.AdvancedGimbal = false;
+        this.GimbalNX = 30;
+        this.GimbalPX = 30;
+        this.GimbalNY = 0;
+        this.GimbalPY = 0;
+    }
+    GetDisplayElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        return tmp;
+    }
+    ApplyValueToDisplayElement(e) {
+        if (this.AdvancedGimbal) {
+            e.innerHTML = `X:<-${this.GimbalNX}°:${this.GimbalPX}°>, Y:<-${this.GimbalNY}°:${this.GimbalPY}°>`;
+        }
+        else {
+            e.innerHTML = `${this.Gimbal}°`;
+        }
+    }
+    GetEditElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        tmp.style.height = "72px";
+        tmp.style.padding = "0";
+        tmp.innerHTML = `
+            <div class="content-cell-content" style="height: 24px"></div>
+        `;
+        let baseDiv = document.createElement("div");
+        let advDiv = document.createElement("div");
+        let checkbox = document.createElement("input");
+        let checkboxLabel = document.createElement("span");
+        tmp.appendChild(baseDiv);
+        tmp.appendChild(advDiv);
+        checkbox.setAttribute("data-ref", "checkbox");
+        checkbox.type = "checkbox";
+        checkbox.addEventListener("change", (e) => {
+            if (checkbox.checked) {
+                baseDiv.style.display = "none";
+                advDiv.style.display = "grid";
+            }
+            else {
+                baseDiv.style.display = "grid";
+                advDiv.style.display = "none";
+            }
+        });
+        checkboxLabel.style.position = "relative";
+        checkboxLabel.style.top = "-3px";
+        checkboxLabel.style.left = "4px";
+        checkboxLabel.innerHTML = "Advanced gimbal";
+        tmp.children[0].appendChild(checkbox);
+        tmp.children[0].appendChild(checkboxLabel);
+        baseDiv.setAttribute("data-ref", "basediv");
+        baseDiv.style.display = "grid";
+        baseDiv.style.gridTemplateColumns = "94px auto 4px";
+        baseDiv.style.gridTemplateRows = "24px";
+        baseDiv.style.gridTemplateAreas = `
+            "a b c"
+        `;
+        baseDiv.innerHTML = `
+            <div class="content-cell-content" style="grid-area: a;">Gimbal (°)</div>
+            <div style="grid-area: b;"><input data-ref="gimbal" style="width: calc(100%);"></div>
+        `;
+        advDiv.setAttribute("data-ref", "advdiv");
+        advDiv.style.display = "grid";
+        advDiv.style.gridTemplateColumns = "114px auto auto 4px";
+        advDiv.style.gridTemplateRows = "24px 24px";
+        advDiv.style.gridTemplateAreas = `
+            "a b c d"
+            "e f g h"
+        `;
+        advDiv.innerHTML = `
+            <div class="content-cell-content" style="grid-area: a;">X axis (-|+)°</div>
+            <div style="grid-area: b;"><input data-ref="gimbalnx" style="width: calc(100%);"></div>
+            <div style="grid-area: c;"><input data-ref="gimbalpx" style="width: calc(100%);"></div>
+            
+            <div class="content-cell-content" style="grid-area: e;">Y axis (-|+)°</div>
+            <div style="grid-area: f;"><input data-ref="gimbalny" style="width: calc(100%);"></div>
+            <div style="grid-area: g;"><input data-ref="gimbalpy" style="width: calc(100%);"></div>
+        `;
+        return tmp;
+    }
+    ApplyValueToEditElement(e) {
+        e.querySelector(`input[data-ref="checkbox"]`).checked = this.AdvancedGimbal;
+        e.querySelector(`input[data-ref="gimbal"]`).value = this.Gimbal.toString();
+        e.querySelector(`input[data-ref="gimbalnx"]`).value = this.GimbalNX.toString();
+        e.querySelector(`input[data-ref="gimbalpx"]`).value = this.GimbalPX.toString();
+        e.querySelector(`input[data-ref="gimbalny"]`).value = this.GimbalNY.toString();
+        e.querySelector(`input[data-ref="gimbalpy"]`).value = this.GimbalPY.toString();
+        if (this.AdvancedGimbal) {
+            e.querySelector(`div[data-ref="basediv"]`).style.display = "none";
+            e.querySelector(`div[data-ref="advdiv"]`).style.display = "grid";
+        }
+        else {
+            e.querySelector(`div[data-ref="basediv"]`).style.display = "grid";
+            e.querySelector(`div[data-ref="advdiv"]`).style.display = "none";
+        }
+    }
+    ApplyChangesToValue(e) {
+        this.AdvancedGimbal = e.querySelector(`input[data-ref="checkbox"]`).checked;
+        this.Gimbal = parseFloat(e.querySelector(`input[data-ref="gimbal"]`).value.replace(",", "."));
+        this.GimbalPX = parseFloat(e.querySelector(`input[data-ref="gimbalpx"]`).value.replace(",", "."));
+        this.GimbalNY = parseFloat(e.querySelector(`input[data-ref="gimbalny"]`).value.replace(",", "."));
+        this.GimbalPY = parseFloat(e.querySelector(`input[data-ref="gimbalpy"]`).value.replace(",", "."));
+        this.GimbalNX = parseFloat(e.querySelector(`input[data-ref="gimbalnx"]`).value.replace(",", "."));
     }
 }
 var EngineGroupType;

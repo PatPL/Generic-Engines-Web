@@ -500,4 +500,27 @@ class ModelInfo {
         }
     ];
     
+    public static readonly Dropdown: HTMLSelectElement = ModelInfo.BuildDropdown ();
+    private static BuildDropdown (): HTMLSelectElement {
+        let output = document.createElement ("select");
+        
+        let groups: { [id: string]: HTMLOptGroupElement } = {};
+        for (let i in EngineGroupType) {
+            let group = document.createElement ("optgroup");
+            group.label = EngineGroupType[i];
+            output.appendChild (group);
+            groups[EngineGroupType[i]] = group;
+        }
+        
+        ModelInfo.models.forEach ((v, i) => {
+            let option = document.createElement ("option");
+            option.value = i.toString ();
+            option.text = v.ModelName;
+            
+            groups[v.ModelType].appendChild (option);
+        });
+        
+        return output;
+    }
+    
 }

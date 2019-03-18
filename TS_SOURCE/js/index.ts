@@ -40,6 +40,9 @@ addEventListener ("DOMContentLoaded", () => {
     (<Engine> MainEngineTable.Items[1]).Gimbal.GimbalNY = 9;
     (<Engine> MainEngineTable.Items[1]).Gimbal.GimbalPY = 12;
     
+    (<Engine> MainEngineTable.Items[3]).Visuals.ModelID = Model.Skipper;
+    (<Engine> MainEngineTable.Items[3]).Visuals.PlumeID = Plume.Hypergolic_Lower;
+    
     (<Engine> MainEngineTable.Items[1]).TestFlight.RatedBurnTime = 240;
     (<Engine> MainEngineTable.Items[2]).TestFlight.EnableTestFlight = true;
     (<Engine> MainEngineTable.Items[3]).TestFlight.EnableTestFlight = true;

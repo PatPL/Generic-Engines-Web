@@ -18,7 +18,7 @@ interface IModelInfo {
     readonly ThrustTransformName: string;
     readonly GimbalTransformName: string;
     readonly ModelName: string;
-    readonly ModelType: string;
+    readonly ModelType: EngineGroupType;
     readonly HiddenMuObjects: string[];
     
 }

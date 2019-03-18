@@ -560,6 +560,27 @@ addEventListener("DOMContentLoaded", () => {
     MainEngineTable.Items[1].Gimbal.GimbalPX = 6;
     MainEngineTable.Items[1].Gimbal.GimbalNY = 9;
     MainEngineTable.Items[1].Gimbal.GimbalPY = 12;
+    MainEngineTable.Items[2].Labels.EngineName = "Custom Name";
+    MainEngineTable.Items[2].Labels.EngineManufacturer = "R";
+    MainEngineTable.Items[2].Labels.EngineDescription = `Mój stary to fanatyk wędkarstwa. Pół mieszkania zajebane wędkami najgorsze. Średnio raz w miesiącu ktoś wdepnie w leżący na ziemi haczyk czy kotwicę i trzeba wyciągać w szpitalu bo mają zadziory na końcu. W swoim 22 letnim życiu już z 10 razy byłem na takim zabiegu. Tydzień temu poszedłem na jakieś losowe badania to baba z recepcji jak mnie tylko zobaczyła to kazała buta ściągać xD bo myślała, że znowu hak w nodze.
+
+    Druga połowa mieszkania zajebana Wędkarzem Polskim, Światem Wędkarza, Super Karpiem xD itp. Co tydzień ojciec robi objazd po wszystkich kioskach w mieście, żeby skompletować wszystkie wędkarskie tygodniki. Byłem na tyle głupi, że nauczyłem go into internety bo myślałem, że trochę pieniędzy zaoszczędzimy na tych gazetkach ale teraz nie dosyć, że je kupuje to jeszcze siedzi na jakichś forach dla wędkarzy i kręci gównoburze z innymi wędkarzami o najlepsze zanęty itp. Potrafi drzeć mordę do monitora albo wypierdolić klawiaturę za okno. Kiedyś ojciec mnie wkurwił to założyłem tam konto i go trolowałem pisząc w jego tematach jakieś losowe głupoty typu karasie jedzo guwno. Matka nie nadążała z gotowaniem bigosu na uspokojenie. Aha, ma już na forum rangę SUM, za najebanie 10k postów."
+    
+    "Jak jest ciepło to co weekend zapierdala na ryby. Od jakichś 5 lat w każdą niedzielę jem rybę na obiad a ojciec pierdoli o zaletach jedzenia tego wodnego gówna. Jak się dostałem na studia to stary przez tydzień pie**olił że to dzięki temu, że jem dużo ryb bo zawierają fosfor i mózg mi lepiej pracuje.
+    
+    Co sobotę budzi ze swoim znajomym mirkiem całą rodzinę o 4 w nocy bo hałasują pakując wędki, robiąc kanapki itd.
+    
+    Przy jedzeniu zawsze pierdoli o rybach i za każdym razem temat schodzi w końcu na Polski Związek Wędkarski, ojciec sam się nakręca i dostaje strasznego bólu dupy durr niedostatecznie zarybiajo tylko kradno hurr, robi się przy tym cały czerwony i odchodzi od stołu klnąc i idzie czytać Wielką Encyklopedię Ryb Rzecznych żeby się uspokoić.
+    
+    W tym roku sam sobie kupił na święta ponton. Oczywiście do wigilii nie wytrzymał tylko już wczoraj go rozpakował i nadmuchał w dużym pokoju. Ubrał się w ten swój cały strój wędkarski i siedział cały dzień w tym pontonie na środku mieszkania. Obiad (karp) też w nim zjadł [cool][cześć]
+    
+    Gdybym mnie na długość ręki dopuścili do wszystkich ryb w polsce to bym wziął i zapierdolił.
+    
+    Jak któregoś razu, jeszcze w podbazie czy gimbazie, miałem urodziny to stary jako prezent wziął mnie ze sobą na ryby w drodze wyjątku. Super prezent kurwo.
+    
+    Pojechaliśmy gdzieś wpizdu za miasto, dochodzimy nad jezioro a ojcu już się oczy świecą i oblizuje wargi podniecony. Rozłożył cały sprzęt i siedzimy nad woda i patrzymy na spławiki. Po pięciu minutach mi się znudziło więc włączyłem discmana to mnie ojciec pierdolnął wędką po głowie, że ryby słyszą muzykę z moich słuchawek i się płoszą. Jak się chciałem podrapać po dupie to zaraz 'krzyczał szeptem', żebym się nie wiercił bo szeleszczę i ryby z wody widzą jak się ruszam i uciekają. 6 godzin musiałem siedzieć w bezruchu i patrzeć na wodę jak w jakimś jebanym Guantanamo. Urodziny mam w listopadzie więc jeszcze do tego było zimno jak sam skurwysyn. W pewnym momencie ojciec odszedł kilkanaście metrów w las i się spierdział. Wytłumaczył mi, że trzeba w lesie pierdzieć bo inaczej ryby słyszą i czują.
+    
+    Wspomniałem, że ojciec ma kolegę mirka, z którym jeździ na ryby. Kiedyś towarzyszem wypraw rybnych był hehe Zbyszek. Człowiek o kształcie piłki z wąsem i 365 dni w roku w kamizelce BOMBER. Byli z moim ojcem prawie jak bracia, przychodził z żoną Bożeną na wigilie do nas itd. Raz ojciec miał imieniny zbysio przyszedł na hehe kielicha. Najebali się i oczywiście cały czas gadali o wędkowaniu i rybach. Ja siedziałem u siebie w pokoju. W pewnym momencie zaczeli drzeć na siebie mordę, czy generalnie lepsze są szczupaki czy sumy.`;
     MainEngineTable.Items[3].Visuals.ModelID = Model.Skipper;
     MainEngineTable.Items[3].Visuals.PlumeID = Plume.Hypergolic_Lower;
     MainEngineTable.Items[1].TestFlight.RatedBurnTime = 240;
@@ -1448,13 +1469,11 @@ class Engine {
         this.EngineVariant = EngineType.Liquid;
         this.PropellantRatio = {};
         this.FuelVolumeRatios = false;
-        this.EngineSize = new Dimensions();
+        this.Dimensions = new Dimensions();
         this.Gimbal = new Gimbal();
         this.TestFlight = new TestFlight();
         this.Visuals = new Visuals();
-        this.EngineName = "";
-        this.EngineManufacturer = "Generic Engines";
-        this.EngineDescription = "This engine was generated by Generic Engines";
+        this.Labels = new Labels();
         this.UseTanks = false;
         this.LimitTanks = true;
         this.TanksVolume = 0;
@@ -1573,6 +1592,66 @@ class Gimbal {
         this.GimbalNY = parseFloat(e.querySelector(`input[data-ref="gimbalny"]`).value.replace(",", "."));
         this.GimbalPY = parseFloat(e.querySelector(`input[data-ref="gimbalpy"]`).value.replace(",", "."));
         this.GimbalNX = parseFloat(e.querySelector(`input[data-ref="gimbalnx"]`).value.replace(",", "."));
+    }
+}
+class Labels {
+    constructor() {
+        this.EngineName = "";
+        this.EngineManufacturer = "Generic Engines";
+        this.EngineDescription = "This engine was generated by Generic Engines";
+    }
+    GetDisplayElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        return tmp;
+    }
+    ApplyValueToDisplayElement(e) {
+        if (this.EngineName == "") {
+            e.innerHTML = `<<< Same as ID`;
+        }
+        else {
+            e.innerHTML = `${this.EngineName}`;
+        }
+    }
+    GetEditElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        tmp.style.height = "192px";
+        tmp.style.padding = "0";
+        let grid = document.createElement("div");
+        grid.style.display = "grid";
+        grid.style.gridTemplateColumns = "116px auto";
+        grid.style.gridTemplateRows = "24px 24px 24px 120px";
+        grid.style.gridTemplateAreas = `
+            "a b"
+            "c d"
+            "e e"
+            "f f"
+        `;
+        grid.innerHTML = `
+            <div class="content-cell-content" style="grid-area: a;">Name</div>
+            <div style="grid-area: b;"><input style="width: calc(100%);"></div>
+            
+            <div class="content-cell-content" style="grid-area: c;">Manufacturer</div>
+            <div style="grid-area: d;"><input style="width: calc(100%);"></div>
+            
+            <div class="content-cell-content" style="grid-area: e;">Description</div>
+            <div style="grid-area: f;"><textarea style="resize: none; width: calc(100%); height: 100%;"></textarea></div>
+        `;
+        tmp.appendChild(grid);
+        return tmp;
+    }
+    ApplyValueToEditElement(e) {
+        let inputs = e.querySelectorAll("input");
+        inputs[0].value = this.EngineName;
+        inputs[1].value = this.EngineManufacturer;
+        e.querySelector("textarea").value = this.EngineDescription;
+    }
+    ApplyChangesToValue(e) {
+        let inputs = e.querySelectorAll("input");
+        this.EngineName = inputs[0].value;
+        this.EngineManufacturer = inputs[1].value;
+        this.EngineDescription = e.querySelector("textarea").value;
     }
 }
 class TestFlight {

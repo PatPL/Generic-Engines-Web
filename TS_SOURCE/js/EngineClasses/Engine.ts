@@ -50,6 +50,7 @@ class Engine {
     PropellantRatio: object = {}; //TODO: Ratios object (keep TankContents input in mind)
     FuelVolumeRatios: boolean = false; //Move to Ratios object?
     
+    FuelRatios: FuelRatios = new FuelRatios ();
     Dimensions: Dimensions = new Dimensions ();
     Gimbal: Gimbal = new Gimbal ();
     TestFlight: TestFlight = new TestFlight ();

@@ -587,6 +587,10 @@ addEventListener("DOMContentLoaded", () => {
     MainEngineTable.Items[2].TestFlight.EnableTestFlight = true;
     MainEngineTable.Items[3].TestFlight.EnableTestFlight = true;
     MainEngineTable.Items[3].TestFlight.RatedBurnTime = 240;
+    MainEngineTable.Items[1].FuelRatios.Items.push([Fuel.NTO, 4]);
+    MainEngineTable.Items[2].FuelRatios.Items.push([Fuel.ElectricCharge, 60]);
+    MainEngineTable.Items[3].FuelRatios.Items.push([Fuel.LqdOxygen, 2]);
+    MainEngineTable.Items[3].FuelRatios.Items.push([Fuel.ElectricCharge, 800]);
     MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine());
     MainEngineTable.RebuildTable();
 });
@@ -616,6 +620,289 @@ function SettingsButton_Click() {
 }
 function HelpButton_Click() {
 }
+class FuelInfo {
+    static GetFuelInfo(id) {
+        return FuelInfo.fuels[id];
+    }
+}
+FuelInfo.fuels = [
+    {
+        FuelName: "Electric Charge",
+        FuelID: "ElectricCharge",
+        TankUtilisation: 1000,
+        Density: 0.0
+    }, {
+        FuelName: "Liquid Oxygen",
+        FuelID: "LqdOxygen",
+        TankUtilisation: 1,
+        Density: 0.001141
+    }, {
+        FuelName: "Kerosene",
+        FuelID: "Kerosene",
+        TankUtilisation: 1,
+        Density: 0.00082
+    }, {
+        FuelName: "Liquid Hydrogen",
+        FuelID: "LqdHydrogen",
+        TankUtilisation: 1,
+        Density: 0.00007085
+    }, {
+        FuelName: "NTO",
+        FuelID: "NTO",
+        TankUtilisation: 1,
+        Density: 0.00145
+    }, {
+        FuelName: "UDMH",
+        FuelID: "UDMH",
+        TankUtilisation: 1,
+        Density: 0.000791
+    }, {
+        FuelName: "Aerozine50",
+        FuelID: "Aerozine50",
+        TankUtilisation: 1,
+        Density: 0.0009
+    }, {
+        FuelName: "MMH",
+        FuelID: "MMH",
+        TankUtilisation: 1,
+        Density: 0.00088
+    }, {
+        FuelName: "HTP",
+        FuelID: "HTP",
+        TankUtilisation: 1,
+        Density: 0.001431
+    }, {
+        FuelName: "Aviation Gasoline (Avgas)",
+        FuelID: "AvGas",
+        TankUtilisation: 1,
+        Density: 0.000719
+    }, {
+        FuelName: "IRFNA III",
+        FuelID: "IRFNA_III",
+        TankUtilisation: 1,
+        Density: 0.001658
+    }, {
+        FuelName: "Nitrous Oxide",
+        FuelID: "NitrousOxide",
+        TankUtilisation: 1,
+        Density: 0.00000196
+    }, {
+        FuelName: "Aniline",
+        FuelID: "Aniline",
+        TankUtilisation: 100,
+        Density: 0.00102
+    }, {
+        FuelName: "Ethanol 75%",
+        FuelID: "Ethanol75",
+        TankUtilisation: 1,
+        Density: 0.00084175
+    }, {
+        FuelName: "Ethanol 90%",
+        FuelID: "Ethanol90",
+        TankUtilisation: 1,
+        Density: 0.0008101
+    }, {
+        FuelName: "Ethanol",
+        FuelID: "Ethanol",
+        TankUtilisation: 1,
+        Density: 0.000789
+    }, {
+        FuelName: "Liquid Ammonia",
+        FuelID: "LqdAmmonia",
+        TankUtilisation: 1,
+        Density: 0.0007021
+    }, {
+        FuelName: "Liquid Methane",
+        FuelID: "LqdMethane",
+        TankUtilisation: 1,
+        Density: 0.00042561
+    }, {
+        FuelName: "ClF3",
+        FuelID: "ClF3",
+        TankUtilisation: 1,
+        Density: 0.00177
+    }, {
+        FuelName: "ClF5",
+        FuelID: "ClF5",
+        TankUtilisation: 1,
+        Density: 0.0019
+    }, {
+        FuelName: "Diborane",
+        FuelID: "Diborane",
+        TankUtilisation: 1,
+        Density: 0.000421
+    }, {
+        FuelName: "Pentaborane",
+        FuelID: "Pentaborane",
+        TankUtilisation: 1,
+        Density: 0.000618
+    }, {
+        FuelName: "Ethane",
+        FuelID: "Ethane",
+        TankUtilisation: 1,
+        Density: 0.000544
+    }, {
+        FuelName: "Ethylene",
+        FuelID: "Ethylene",
+        TankUtilisation: 1,
+        Density: 0.000568
+    }, {
+        FuelName: "OF2",
+        FuelID: "",
+        TankUtilisation: 1,
+        Density: 0.0019
+    }, {
+        FuelName: "Liquid Fluorine",
+        FuelID: "LqdFluorine",
+        TankUtilisation: 1,
+        Density: 0.001505
+    }, {
+        FuelName: "N2F4",
+        FuelID: "N2F4",
+        TankUtilisation: 1,
+        Density: 0.001604
+    }, {
+        FuelName: "Methanol",
+        FuelID: "Methanol",
+        TankUtilisation: 1,
+        Density: 0.0007918
+    }, {
+        FuelName: "Furfuryl",
+        FuelID: "Furfuryl",
+        TankUtilisation: 1,
+        Density: 0.00113
+    }, {
+        FuelName: "UH25",
+        FuelID: "UH25",
+        TankUtilisation: 1,
+        Density: 0.000829
+    }, {
+        FuelName: "Tonka250",
+        FuelID: "Tonka250",
+        TankUtilisation: 1,
+        Density: 0.000873
+    }, {
+        FuelName: "Tonka500",
+        FuelID: "Tonka500",
+        TankUtilisation: 1,
+        Density: 0.000811
+    }, {
+        FuelName: "IWFNA",
+        FuelID: "IWFNA",
+        TankUtilisation: 1,
+        Density: 0.001513
+    }, {
+        FuelName: "IRFNA IV",
+        FuelID: "IRFNA_IV",
+        TankUtilisation: 1,
+        Density: 0.001995
+    }, {
+        FuelName: "AK20",
+        FuelID: "AK20",
+        TankUtilisation: 1,
+        Density: 0.001499
+    }, {
+        FuelName: "AK27",
+        FuelID: "AK27",
+        TankUtilisation: 1,
+        Density: 0.001494
+    }, {
+        FuelName: "MON3",
+        FuelID: "MON3",
+        TankUtilisation: 1,
+        Density: 0.001423
+    }, {
+        FuelName: "MON10",
+        FuelID: "MON10",
+        TankUtilisation: 1,
+        Density: 0.001407
+    }, {
+        FuelName: "Hydyne",
+        FuelID: "Hydyne",
+        TankUtilisation: 1,
+        Density: 0.00086
+    }, {
+        FuelName: "Syntin",
+        FuelID: "Syntin",
+        TankUtilisation: 1,
+        Density: 0.000851
+    }, {
+        FuelName: "Hydrazine",
+        FuelID: "Hydrazine",
+        TankUtilisation: 1,
+        Density: 0.001004
+    }, {
+        FuelName: "Nitrogen",
+        FuelID: "Nitrogen",
+        TankUtilisation: 1,
+        Density: 0.000001251
+    }, {
+        FuelName: "Helium",
+        FuelID: "Helium",
+        TankUtilisation: 200,
+        Density: 0.0000001786
+    }, {
+        FuelName: "CaveaB",
+        FuelID: "CaveaB",
+        TankUtilisation: 200,
+        Density: 0.001501
+    }, {
+        FuelName: "Liquid Fuel",
+        FuelID: "LiquidFuel",
+        TankUtilisation: 1,
+        Density: 0.001
+    }, {
+        FuelName: "Oxidizer",
+        FuelID: "Oxidizer",
+        TankUtilisation: 1,
+        Density: 0.001
+    }, {
+        FuelName: "Monopropellant",
+        FuelID: "MonoPropellant",
+        TankUtilisation: 1,
+        Density: 0.0008
+    }, {
+        FuelName: "Xenon Gas",
+        FuelID: "XenonGas",
+        TankUtilisation: 1,
+        Density: 0.000005894
+    }, {
+        FuelName: "Intake Air",
+        FuelID: "IntakeAir",
+        TankUtilisation: 100,
+        Density: 0.001225
+    }, {
+        FuelName: "Solid Fuel",
+        FuelID: "SolidFuel",
+        TankUtilisation: 1,
+        Density: 0.0075
+    }, {
+        FuelName: "HNIW",
+        FuelID: "HNIW",
+        TankUtilisation: 1,
+        Density: 0.002044
+    }, {
+        FuelName: "HTPB",
+        FuelID: "HTPB",
+        TankUtilisation: 1,
+        Density: 0.00177
+    }, {
+        FuelName: "NGNC",
+        FuelID: "NGNC",
+        TankUtilisation: 1,
+        Density: 0.0016
+    }, {
+        FuelName: "PBAN",
+        FuelID: "PBAN",
+        TankUtilisation: 1,
+        Density: 0.001772
+    }, {
+        FuelName: "PSPC",
+        FuelID: "PSPC",
+        TankUtilisation: 1,
+        Density: 0.00174
+    }
+];
 var EngineGroupType;
 (function (EngineGroupType) {
     EngineGroupType["IRL"] = "Real Engine";
@@ -1469,6 +1756,7 @@ class Engine {
         this.EngineVariant = EngineType.Liquid;
         this.PropellantRatio = {};
         this.FuelVolumeRatios = false;
+        this.FuelRatios = new FuelRatios();
         this.Dimensions = new Dimensions();
         this.Gimbal = new Gimbal();
         this.TestFlight = new TestFlight();
@@ -1483,6 +1771,87 @@ class Engine {
         this.MasterEngineName = "";
         this.MasterEngineCost = 0;
         this.MasterEngineMass = 0;
+    }
+}
+class FuelRatios {
+    constructor() {
+        this.Items = [[Fuel.Hydrazine, 1]];
+    }
+    GetDisplayElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        return tmp;
+    }
+    ApplyValueToDisplayElement(e) {
+        let fuels = [];
+        let electric = 0;
+        let output = "";
+        this.Items.forEach(v => {
+            if (v[0] == Fuel.ElectricCharge) {
+                electric = v[1];
+            }
+            else {
+                fuels.push(v);
+            }
+        });
+        if (fuels.length == 0) {
+            output += "Not set";
+        }
+        else if (fuels.length == 1) {
+            output += FuelInfo.GetFuelInfo(fuels[0][0]).FuelName;
+        }
+        else {
+            let ratios = "";
+            let names = "";
+            fuels.forEach(v => {
+                ratios += `${v[1]}:`;
+                names += `${FuelInfo.GetFuelInfo(v[0]).FuelName}:`;
+            });
+            ratios = ratios.substring(0, ratios.length - 1);
+            names = names.substring(0, names.length - 1);
+            output += `${ratios} ${names}`;
+        }
+        if (electric > 0) {
+            output += ` | Electric: ${electric}kW`;
+        }
+        e.innerHTML = output;
+    }
+    GetEditElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        tmp.style.height = "72px";
+        tmp.style.padding = "0";
+        let grid = document.createElement("div");
+        grid.style.display = "grid";
+        grid.style.gridTemplateColumns = "60px auto 24px";
+        grid.style.gridTemplateRows = "24px 24px 24px";
+        grid.style.gridTemplateAreas = `
+            "a a a"
+            "b c d"
+            "e f g"
+        `;
+        grid.innerHTML = `
+            <div class="content-cell-content" style="grid-area: a;"></div>
+            <div class="content-cell-content" style="grid-area: b;">Width</div>
+            <div style="grid-area: c;"><input style="width: calc(100%);"></div>
+            <div class="content-cell-content" style="grid-area: d;">m</div>
+            <div class="content-cell-content" style="grid-area: e;">Height</div>
+            <div style="grid-area: f;"><input style="width: calc(100%);"></div>
+            <div class="content-cell-content" style="grid-area: g;">m</div>
+        `;
+        let checkboxLabel = document.createElement("span");
+        let checkbox = document.createElement("input");
+        checkboxLabel.style.position = "relative";
+        checkboxLabel.style.top = "-4px";
+        checkboxLabel.style.left = "4px";
+        checkbox.type = "checkbox";
+        checkbox.addEventListener("change", e => {
+            checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
+        });
+        grid.children[0].appendChild(checkbox);
+        grid.children[0].appendChild(checkboxLabel);
+        tmp.appendChild(grid);
+        return tmp;
     }
 }
 class Gimbal {
@@ -1809,6 +2178,64 @@ var FileType;
     FileType[FileType["Text"] = 0] = "Text";
     FileType[FileType["Binary"] = 1] = "Binary";
 })(FileType || (FileType = {}));
+var Fuel;
+(function (Fuel) {
+    Fuel[Fuel["ElectricCharge"] = 0] = "ElectricCharge";
+    Fuel[Fuel["LqdOxygen"] = 1] = "LqdOxygen";
+    Fuel[Fuel["Kerosene"] = 2] = "Kerosene";
+    Fuel[Fuel["LqdHydrogen"] = 3] = "LqdHydrogen";
+    Fuel[Fuel["NTO"] = 4] = "NTO";
+    Fuel[Fuel["UDMH"] = 5] = "UDMH";
+    Fuel[Fuel["Aerozine50"] = 6] = "Aerozine50";
+    Fuel[Fuel["MMH"] = 7] = "MMH";
+    Fuel[Fuel["HTP"] = 8] = "HTP";
+    Fuel[Fuel["AvGas"] = 9] = "AvGas";
+    Fuel[Fuel["IRFNA_III"] = 10] = "IRFNA_III";
+    Fuel[Fuel["NitrousOxide"] = 11] = "NitrousOxide";
+    Fuel[Fuel["Aniline"] = 12] = "Aniline";
+    Fuel[Fuel["Ethanol75"] = 13] = "Ethanol75";
+    Fuel[Fuel["Ethanol90"] = 14] = "Ethanol90";
+    Fuel[Fuel["Ethanol"] = 15] = "Ethanol";
+    Fuel[Fuel["LqdAmmonia"] = 16] = "LqdAmmonia";
+    Fuel[Fuel["LqdMethane"] = 17] = "LqdMethane";
+    Fuel[Fuel["ClF3"] = 18] = "ClF3";
+    Fuel[Fuel["ClF5"] = 19] = "ClF5";
+    Fuel[Fuel["Diborane"] = 20] = "Diborane";
+    Fuel[Fuel["Pentaborane"] = 21] = "Pentaborane";
+    Fuel[Fuel["Ethane"] = 22] = "Ethane";
+    Fuel[Fuel["Ethylene"] = 23] = "Ethylene";
+    Fuel[Fuel["OF2"] = 24] = "OF2";
+    Fuel[Fuel["LqdFluorine"] = 25] = "LqdFluorine";
+    Fuel[Fuel["N2F4"] = 26] = "N2F4";
+    Fuel[Fuel["Methanol"] = 27] = "Methanol";
+    Fuel[Fuel["Furfuryl"] = 28] = "Furfuryl";
+    Fuel[Fuel["UH25"] = 29] = "UH25";
+    Fuel[Fuel["Tonka250"] = 30] = "Tonka250";
+    Fuel[Fuel["Tonka500"] = 31] = "Tonka500";
+    Fuel[Fuel["IWFNA"] = 32] = "IWFNA";
+    Fuel[Fuel["IRFNA_IV"] = 33] = "IRFNA_IV";
+    Fuel[Fuel["AK20"] = 34] = "AK20";
+    Fuel[Fuel["AK27"] = 35] = "AK27";
+    Fuel[Fuel["MON3"] = 36] = "MON3";
+    Fuel[Fuel["MON10"] = 37] = "MON10";
+    Fuel[Fuel["Hydyne"] = 38] = "Hydyne";
+    Fuel[Fuel["Syntin"] = 39] = "Syntin";
+    Fuel[Fuel["Hydrazine"] = 40] = "Hydrazine";
+    Fuel[Fuel["Nitrogen"] = 41] = "Nitrogen";
+    Fuel[Fuel["Helium"] = 42] = "Helium";
+    Fuel[Fuel["CaveaB"] = 43] = "CaveaB";
+    Fuel[Fuel["LiquidFuel"] = 44] = "LiquidFuel";
+    Fuel[Fuel["Oxidizer"] = 45] = "Oxidizer";
+    Fuel[Fuel["MonoPropellant"] = 46] = "MonoPropellant";
+    Fuel[Fuel["XenonGas"] = 47] = "XenonGas";
+    Fuel[Fuel["IntakeAir"] = 48] = "IntakeAir";
+    Fuel[Fuel["SolidFuel"] = 49] = "SolidFuel";
+    Fuel[Fuel["HNIW"] = 50] = "HNIW";
+    Fuel[Fuel["HTPB"] = 51] = "HTPB";
+    Fuel[Fuel["NGNC"] = 52] = "NGNC";
+    Fuel[Fuel["PBAN"] = 53] = "PBAN";
+    Fuel[Fuel["PSPC"] = 54] = "PSPC";
+})(Fuel || (Fuel = {}));
 var Model;
 (function (Model) {
     Model[Model["LR91"] = 0] = "LR91";

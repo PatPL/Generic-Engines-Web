@@ -70,6 +70,11 @@ addEventListener ("DOMContentLoaded", () => {
     (<Engine> MainEngineTable.Items[3]).TestFlight.EnableTestFlight = true;
     (<Engine> MainEngineTable.Items[3]).TestFlight.RatedBurnTime = 240;
     
+    (<Engine> MainEngineTable.Items[1]).FuelRatios.Items.push ([Fuel.NTO, 4]);
+    (<Engine> MainEngineTable.Items[2]).FuelRatios.Items.push ([Fuel.ElectricCharge, 60]);
+    (<Engine> MainEngineTable.Items[3]).FuelRatios.Items.push ([Fuel.LqdOxygen, 2]);
+    (<Engine> MainEngineTable.Items[3]).FuelRatios.Items.push ([Fuel.ElectricCharge, 800]);
+    
     MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine ());
     
     MainEngineTable.RebuildTable ();

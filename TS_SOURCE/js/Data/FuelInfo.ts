@@ -282,5 +282,20 @@ class FuelInfo {
             Density: 0.00174
         } //^^^PSPC
     ];
-
+    
+    public static readonly Dropdown: HTMLSelectElement = FuelInfo.BuildDropdown ();
+    private static BuildDropdown (): HTMLSelectElement {
+        let output = document.createElement ("select");
+        
+        FuelInfo.fuels.forEach ((v, i) => {
+            let option = document.createElement ("option");
+            option.value = i.toString ();
+            option.text = v.FuelName;
+            
+            output.appendChild (option);
+        });
+        
+        return output;
+    }
+    
 }

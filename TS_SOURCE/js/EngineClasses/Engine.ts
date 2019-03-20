@@ -47,9 +47,6 @@ class Engine {
     TechUnlockNode: TechNode = TechNode.start;
     EngineVariant: EngineType = EngineType.Liquid;
     
-    PropellantRatio: object = {}; //TODO: Ratios object (keep TankContents input in mind)
-    FuelVolumeRatios: boolean = false; //Move to Ratios object?
-    
     FuelRatios: FuelRatios = new FuelRatios ();
     Dimensions: Dimensions = new Dimensions ();
     Gimbal: Gimbal = new Gimbal ();

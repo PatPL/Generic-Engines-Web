@@ -27,6 +27,26 @@ select {
     height: 100%;
 }
 
+table {
+    border-spacing: 0px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+tr {
+    height: 24px;
+}
+
+td {
+    padding: 0;
+}
+
+img.mini-button {
+    width: 19px;
+    height: 19px;
+    margin: 4px 0px 0px 4px;
+}
+
 input {
     font-size: inherit;
     font-family: inherit;

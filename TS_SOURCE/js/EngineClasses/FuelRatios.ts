@@ -1,6 +1,7 @@
 class FuelRatios implements IEditable {
     
     Items: [Fuel, number][] = [[Fuel.Hydrazine, 1]];
+    FuelVolumeRatios: boolean = false;
     
     public GetDisplayElement (): HTMLElement {
         let tmp = document.createElement ("div");
@@ -50,28 +51,46 @@ class FuelRatios implements IEditable {
     public GetEditElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");
-        tmp.style.height = "72px";
+        tmp.style.height = "129px";
         tmp.style.padding = "0";
         
         let grid = document.createElement ("div");
         grid.style.display = "grid";
-        grid.style.gridTemplateColumns = "60px auto 24px";
-        grid.style.gridTemplateRows = "24px 24px 24px";
+        grid.style.gridTemplateColumns = "24px 24px auto";
+        grid.style.gridTemplateRows = "24px 105px";
         grid.style.gridTemplateAreas = `
-            "a a a"
-            "b c d"
-            "e f g"
+            "a b c"
+            "d d d"
         `;
         
         grid.innerHTML = `
-            <div class="content-cell-content" style="grid-area: a;"></div>
-            <div class="content-cell-content" style="grid-area: b;">Width</div>
-            <div style="grid-area: c;"><input style="width: calc(100%);"></div>
-            <div class="content-cell-content" style="grid-area: d;">m</div>
-            <div class="content-cell-content" style="grid-area: e;">Height</div>
-            <div style="grid-area: f;"><input style="width: calc(100%);"></div>
-            <div class="content-cell-content" style="grid-area: g;">m</div>
+            <div style="grid-area: a;"><img class="mini-button option-button" src="img/button/add-mini.png"></div>
+            <div style="grid-area: b;"><img class="mini-button option-button" src="img/button/remove-mini.png"></div>
+            <div class="content-cell-content" style="grid-area: c;"></div>
+            <div class="content-cell-content" style="grid-area: d; overflow: auto;"><table><tr><th style="width: 65%;">Fuel</th><th style="width: 35%;">Ratio</th></tr></table></div>
         `;
+        
+        let table = grid.querySelector ("tbody")!;
+        let imgs = grid.querySelectorAll ("img");
+        
+        imgs[0].addEventListener ("click", () => {
+            let tr = document.createElement ("tr");
+            let select = FuelInfo.Dropdown.cloneNode (true) as HTMLSelectElement;
+            select.querySelector<HTMLOptionElement> (`option[value="${Fuel.Hydrazine}"]`)!.selected = true;
+            
+            tr.innerHTML = `
+                <td></td>
+                <td><input style="width: calc(100%);" value="1"></td>
+            `;
+            
+            tr.children[0].appendChild (select);
+            table.appendChild (tr);
+        });
+        
+        imgs[1].addEventListener ("click", () => {
+            let tmp = grid.querySelectorAll ("tr");
+            tmp[tmp.length - 1].remove ();
+        });
         
         let checkboxLabel = document.createElement ("span");
         let checkbox = document.createElement ("input");
@@ -83,15 +102,58 @@ class FuelRatios implements IEditable {
         checkbox.type = "checkbox";
         
         checkbox.addEventListener ("change", e => {
-            checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
+            checkboxLabel.innerHTML = checkbox.checked ? "Volume ratio" : "Mass ratio";
         });
         
-        grid.children[0].appendChild (checkbox);
-        grid.children[0].appendChild (checkboxLabel);
+        grid.children[2].appendChild (checkbox);
+        grid.children[2].appendChild (checkboxLabel);
         
         tmp.appendChild (grid);
         
         return tmp;
+    }
+    
+    public ApplyValueToEditElement (e: HTMLElement): void {
+        let table = e.querySelector ("tbody")!;
+        let rows = e.querySelectorAll ("tr");
+        
+        rows.forEach ((v, i) => {
+            if (i != 0) {
+                v.remove ();
+            }
+        });
+        
+        this.Items.forEach(v => {
+            let tr = document.createElement ("tr");
+            let select = FuelInfo.Dropdown.cloneNode (true) as HTMLSelectElement;
+            select.querySelector<HTMLOptionElement> (`option[value="${v[0]}"]`)!.selected = true;
+            
+            tr.innerHTML = `
+                <td></td>
+                <td><input style="width: calc(100%);" value="${v[1]}"></td>
+            `;
+            
+            tr.children[0].appendChild (select);
+            table.appendChild (tr);
+        });
+        
+        e.querySelector ("span")!.innerHTML = e.querySelector<HTMLInputElement> (`input[type="checkbox"]`)!.checked ? "Volume ratio" : "Mass ratio";
+    }
+    
+    public ApplyChangesToValue (e: HTMLElement): void {
+        let selects = e.querySelectorAll ("select");
+        let inputs = e.querySelectorAll<HTMLInputElement> (`input`);
+        
+        if (selects.length + 1 != inputs.length) {
+            console.warn ("table misaligned?");
+        }
+        
+        this.Items = [];
+        
+        for (let i = 0; i < selects.length; ++i) {
+            this.Items.push ([parseInt (selects[i].value), parseFloat (inputs[i + 1].value)]);
+        }
+        
     }
     
 }

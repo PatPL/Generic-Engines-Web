@@ -40,7 +40,7 @@ class TestFlight implements IEditable {
     public GetEditElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");
-        tmp.style.height = "144px";
+        tmp.style.height = "147px";
         tmp.style.padding = "0";
         
         let grid = document.createElement ("div");

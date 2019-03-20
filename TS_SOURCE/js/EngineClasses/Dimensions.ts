@@ -17,12 +17,12 @@ class Dimensions implements IEditable {
     public GetEditElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");
-        tmp.style.height = "72px";
+        tmp.style.height = "75px";
         tmp.style.padding = "0";
         
         let grid = document.createElement ("div");
         grid.style.display = "grid";
-        grid.style.gridTemplateColumns = "60px auto 24px";
+        grid.style.gridTemplateColumns = "62px auto 24px";
         grid.style.gridTemplateRows = "24px 24px 24px";
         grid.style.gridTemplateAreas = `
             "a a a"

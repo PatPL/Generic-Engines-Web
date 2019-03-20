@@ -64,8 +64,8 @@ class FuelRatios implements IEditable {
         `;
         
         grid.innerHTML = `
-            <div style="grid-area: a;"><img class="mini-button option-button" src="img/button/add-mini.png"></div>
-            <div style="grid-area: b;"><img class="mini-button option-button" src="img/button/remove-mini.png"></div>
+            <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
+            <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
             <div class="content-cell-content" style="grid-area: c;"></div>
             <div class="content-cell-content" style="grid-area: d; overflow: auto;"><table><tr><th style="width: 65%;">Fuel</th><th style="width: 35%;">Ratio</th></tr></table></div>
         `;
@@ -89,7 +89,9 @@ class FuelRatios implements IEditable {
         
         imgs[1].addEventListener ("click", () => {
             let tmp = grid.querySelectorAll ("tr");
-            tmp[tmp.length - 1].remove ();
+            if (tmp.length > 1) {
+                tmp[tmp.length - 1].remove ();
+            }
         });
         
         let checkboxLabel = document.createElement ("span");
@@ -114,6 +116,8 @@ class FuelRatios implements IEditable {
     }
     
     public ApplyValueToEditElement (e: HTMLElement): void {
+        e.querySelector<HTMLInputElement> (`input[type="checkbox"]`)!.checked = this.FuelVolumeRatios;
+        
         let table = e.querySelector ("tbody")!;
         let rows = e.querySelectorAll ("tr");
         
@@ -137,12 +141,14 @@ class FuelRatios implements IEditable {
             table.appendChild (tr);
         });
         
-        e.querySelector ("span")!.innerHTML = e.querySelector<HTMLInputElement> (`input[type="checkbox"]`)!.checked ? "Volume ratio" : "Mass ratio";
+        e.querySelector ("span")!.innerHTML = this.FuelVolumeRatios ? "Volume ratio" : "Mass ratio";
     }
     
     public ApplyChangesToValue (e: HTMLElement): void {
         let selects = e.querySelectorAll ("select");
         let inputs = e.querySelectorAll<HTMLInputElement> (`input`);
+        
+        this.FuelVolumeRatios = inputs[0].checked;
         
         if (selects.length + 1 != inputs.length) {
             console.warn ("table misaligned?");

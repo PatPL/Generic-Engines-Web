@@ -620,17 +620,34 @@ function SettingsButton_Click() {
 }
 function HelpButton_Click() {
 }
+var FuelType;
+(function (FuelType) {
+    FuelType["Fuel"] = "Fuel";
+    FuelType["Oxidiser"] = "Oxidiser";
+    FuelType["MonoPropellant"] = "Monopropellant";
+    FuelType["Gas"] = "Gas";
+    FuelType["Solid"] = "Solid fuel";
+    FuelType["Stock"] = "Stock";
+    FuelType["Other"] = "Other";
+})(FuelType || (FuelType = {}));
 class FuelInfo {
     static GetFuelInfo(id) {
         return FuelInfo.fuels[id];
     }
     static BuildDropdown() {
         let output = document.createElement("select");
+        let groups = {};
+        for (let i in FuelType) {
+            let group = document.createElement("optgroup");
+            group.label = FuelType[i];
+            output.appendChild(group);
+            groups[FuelType[i]] = group;
+        }
         FuelInfo.fuels.forEach((v, i) => {
             let option = document.createElement("option");
             option.value = i.toString();
             option.text = v.FuelName;
-            output.appendChild(option);
+            groups[v.FuelType].appendChild(option);
         });
         return output;
     }
@@ -639,276 +656,331 @@ FuelInfo.fuels = [
     {
         FuelName: "Electric Charge",
         FuelID: "ElectricCharge",
+        FuelType: FuelType.Other,
         TankUtilisation: 1000,
         Density: 0.0
     }, {
         FuelName: "Liquid Oxygen",
         FuelID: "LqdOxygen",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001141
     }, {
         FuelName: "Kerosene",
         FuelID: "Kerosene",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.00082
     }, {
         FuelName: "Liquid Hydrogen",
         FuelID: "LqdHydrogen",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.00007085
     }, {
         FuelName: "NTO",
         FuelID: "NTO",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.00145
     }, {
         FuelName: "UDMH",
         FuelID: "UDMH",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000791
     }, {
         FuelName: "Aerozine50",
         FuelID: "Aerozine50",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.0009
     }, {
         FuelName: "MMH",
         FuelID: "MMH",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.00088
     }, {
         FuelName: "HTP",
         FuelID: "HTP",
+        FuelType: FuelType.MonoPropellant,
         TankUtilisation: 1,
         Density: 0.001431
     }, {
         FuelName: "Aviation Gasoline (Avgas)",
         FuelID: "AvGas",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000719
     }, {
         FuelName: "IRFNA III",
         FuelID: "IRFNA_III",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001658
     }, {
         FuelName: "Nitrous Oxide",
         FuelID: "NitrousOxide",
+        FuelType: FuelType.Gas,
         TankUtilisation: 1,
         Density: 0.00000196
     }, {
         FuelName: "Aniline",
         FuelID: "Aniline",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 100,
         Density: 0.00102
     }, {
         FuelName: "Ethanol 75%",
         FuelID: "Ethanol75",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.00084175
     }, {
         FuelName: "Ethanol 90%",
         FuelID: "Ethanol90",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.0008101
     }, {
         FuelName: "Ethanol",
         FuelID: "Ethanol",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000789
     }, {
         FuelName: "Liquid Ammonia",
         FuelID: "LqdAmmonia",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.0007021
     }, {
         FuelName: "Liquid Methane",
         FuelID: "LqdMethane",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.00042561
     }, {
         FuelName: "ClF3",
         FuelID: "ClF3",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.00177
     }, {
         FuelName: "ClF5",
         FuelID: "ClF5",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.0019
     }, {
         FuelName: "Diborane",
         FuelID: "Diborane",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000421
     }, {
         FuelName: "Pentaborane",
         FuelID: "Pentaborane",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000618
     }, {
         FuelName: "Ethane",
         FuelID: "Ethane",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000544
     }, {
         FuelName: "Ethylene",
         FuelID: "Ethylene",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000568
     }, {
         FuelName: "OF2",
-        FuelID: "",
+        FuelID: "OF2",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.0019
     }, {
         FuelName: "Liquid Fluorine",
         FuelID: "LqdFluorine",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001505
     }, {
         FuelName: "N2F4",
         FuelID: "N2F4",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001604
     }, {
         FuelName: "Methanol",
         FuelID: "Methanol",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.0007918
     }, {
         FuelName: "Furfuryl",
         FuelID: "Furfuryl",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.00113
     }, {
         FuelName: "UH25",
         FuelID: "UH25",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000829
     }, {
         FuelName: "Tonka250",
         FuelID: "Tonka250",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000873
     }, {
         FuelName: "Tonka500",
         FuelID: "Tonka500",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000811
     }, {
         FuelName: "IWFNA",
         FuelID: "IWFNA",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001513
     }, {
         FuelName: "IRFNA IV",
         FuelID: "IRFNA_IV",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001995
     }, {
         FuelName: "AK20",
         FuelID: "AK20",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001499
     }, {
         FuelName: "AK27",
         FuelID: "AK27",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001494
     }, {
         FuelName: "MON3",
         FuelID: "MON3",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001423
     }, {
         FuelName: "MON10",
         FuelID: "MON10",
+        FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001407
     }, {
         FuelName: "Hydyne",
         FuelID: "Hydyne",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.00086
     }, {
         FuelName: "Syntin",
         FuelID: "Syntin",
+        FuelType: FuelType.Fuel,
         TankUtilisation: 1,
         Density: 0.000851
     }, {
         FuelName: "Hydrazine",
         FuelID: "Hydrazine",
+        FuelType: FuelType.MonoPropellant,
         TankUtilisation: 1,
         Density: 0.001004
     }, {
         FuelName: "Nitrogen",
         FuelID: "Nitrogen",
+        FuelType: FuelType.Gas,
         TankUtilisation: 1,
         Density: 0.000001251
     }, {
         FuelName: "Helium",
         FuelID: "Helium",
+        FuelType: FuelType.Gas,
         TankUtilisation: 200,
         Density: 0.0000001786
     }, {
         FuelName: "CaveaB",
         FuelID: "CaveaB",
+        FuelType: FuelType.MonoPropellant,
         TankUtilisation: 200,
         Density: 0.001501
     }, {
         FuelName: "Liquid Fuel",
         FuelID: "LiquidFuel",
+        FuelType: FuelType.Stock,
         TankUtilisation: 1,
         Density: 0.001
     }, {
         FuelName: "Oxidizer",
         FuelID: "Oxidizer",
+        FuelType: FuelType.Stock,
         TankUtilisation: 1,
         Density: 0.001
     }, {
         FuelName: "Monopropellant",
         FuelID: "MonoPropellant",
+        FuelType: FuelType.Stock,
         TankUtilisation: 1,
         Density: 0.0008
     }, {
         FuelName: "Xenon Gas",
         FuelID: "XenonGas",
+        FuelType: FuelType.Stock,
         TankUtilisation: 1,
         Density: 0.000005894
     }, {
         FuelName: "Intake Air",
         FuelID: "IntakeAir",
+        FuelType: FuelType.Stock,
         TankUtilisation: 100,
         Density: 0.001225
     }, {
         FuelName: "Solid Fuel",
         FuelID: "SolidFuel",
+        FuelType: FuelType.Stock,
         TankUtilisation: 1,
         Density: 0.0075
     }, {
         FuelName: "HNIW",
         FuelID: "HNIW",
+        FuelType: FuelType.Solid,
         TankUtilisation: 1,
         Density: 0.002044
     }, {
         FuelName: "HTPB",
         FuelID: "HTPB",
+        FuelType: FuelType.Solid,
         TankUtilisation: 1,
         Density: 0.00177
     }, {
         FuelName: "NGNC",
         FuelID: "NGNC",
+        FuelType: FuelType.Solid,
         TankUtilisation: 1,
         Density: 0.0016
     }, {
         FuelName: "PBAN",
         FuelID: "PBAN",
+        FuelType: FuelType.Solid,
         TankUtilisation: 1,
         Density: 0.001772
     }, {
         FuelName: "PSPC",
         FuelID: "PSPC",
+        FuelType: FuelType.Solid,
         TankUtilisation: 1,
         Density: 0.00174
     }
@@ -1670,11 +1742,11 @@ class Dimensions {
     GetEditElement() {
         let tmp = document.createElement("div");
         tmp.classList.add("content-cell-content");
-        tmp.style.height = "72px";
+        tmp.style.height = "75px";
         tmp.style.padding = "0";
         let grid = document.createElement("div");
         grid.style.display = "grid";
-        grid.style.gridTemplateColumns = "60px auto 24px";
+        grid.style.gridTemplateColumns = "62px auto 24px";
         grid.style.gridTemplateRows = "24px 24px 24px";
         grid.style.gridTemplateAreas = `
             "a a a"
@@ -1840,8 +1912,8 @@ class FuelRatios {
             "d d d"
         `;
         grid.innerHTML = `
-            <div style="grid-area: a;"><img class="mini-button option-button" src="img/button/add-mini.png"></div>
-            <div style="grid-area: b;"><img class="mini-button option-button" src="img/button/remove-mini.png"></div>
+            <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
+            <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
             <div class="content-cell-content" style="grid-area: c;"></div>
             <div class="content-cell-content" style="grid-area: d; overflow: auto;"><table><tr><th style="width: 65%;">Fuel</th><th style="width: 35%;">Ratio</th></tr></table></div>
         `;
@@ -1860,7 +1932,9 @@ class FuelRatios {
         });
         imgs[1].addEventListener("click", () => {
             let tmp = grid.querySelectorAll("tr");
-            tmp[tmp.length - 1].remove();
+            if (tmp.length > 1) {
+                tmp[tmp.length - 1].remove();
+            }
         });
         let checkboxLabel = document.createElement("span");
         let checkbox = document.createElement("input");
@@ -1877,6 +1951,7 @@ class FuelRatios {
         return tmp;
     }
     ApplyValueToEditElement(e) {
+        e.querySelector(`input[type="checkbox"]`).checked = this.FuelVolumeRatios;
         let table = e.querySelector("tbody");
         let rows = e.querySelectorAll("tr");
         rows.forEach((v, i) => {
@@ -1895,11 +1970,12 @@ class FuelRatios {
             tr.children[0].appendChild(select);
             table.appendChild(tr);
         });
-        e.querySelector("span").innerHTML = e.querySelector(`input[type="checkbox"]`).checked ? "Volume ratio" : "Mass ratio";
+        e.querySelector("span").innerHTML = this.FuelVolumeRatios ? "Volume ratio" : "Mass ratio";
     }
     ApplyChangesToValue(e) {
         let selects = e.querySelectorAll("select");
         let inputs = e.querySelectorAll(`input`);
+        this.FuelVolumeRatios = inputs[0].checked;
         if (selects.length + 1 != inputs.length) {
             console.warn("table misaligned?");
         }
@@ -1934,7 +2010,7 @@ class Gimbal {
     GetEditElement() {
         let tmp = document.createElement("div");
         tmp.classList.add("content-cell-content");
-        tmp.style.height = "72px";
+        tmp.style.height = "75px";
         tmp.style.padding = "0";
         tmp.innerHTML = `
             <div class="content-cell-content" style="height: 24px"></div>
@@ -1965,7 +2041,7 @@ class Gimbal {
         tmp.children[0].appendChild(checkboxLabel);
         baseDiv.setAttribute("data-ref", "basediv");
         baseDiv.style.display = "grid";
-        baseDiv.style.gridTemplateColumns = "94px auto 4px";
+        baseDiv.style.gridTemplateColumns = "94px auto 3px";
         baseDiv.style.gridTemplateRows = "24px";
         baseDiv.style.gridTemplateAreas = `
             "a b c"
@@ -1976,7 +2052,7 @@ class Gimbal {
         `;
         advDiv.setAttribute("data-ref", "advdiv");
         advDiv.style.display = "grid";
-        advDiv.style.gridTemplateColumns = "114px auto auto 4px";
+        advDiv.style.gridTemplateColumns = "114px auto auto 3px";
         advDiv.style.gridTemplateRows = "24px 24px";
         advDiv.style.gridTemplateAreas = `
             "a b c d"
@@ -2117,7 +2193,7 @@ class TestFlight {
     GetEditElement() {
         let tmp = document.createElement("div");
         tmp.classList.add("content-cell-content");
-        tmp.style.height = "144px";
+        tmp.style.height = "147px";
         tmp.style.padding = "0";
         let grid = document.createElement("div");
         grid.style.display = "grid";

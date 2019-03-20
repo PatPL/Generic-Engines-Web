@@ -24,7 +24,7 @@ class Gimbal implements IEditable {
     public GetEditElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");
-        tmp.style.height = "72px";
+        tmp.style.height = "75px";
         tmp.style.padding = "0";
         
         tmp.innerHTML = `
@@ -61,7 +61,7 @@ class Gimbal implements IEditable {
         
         baseDiv.setAttribute ("data-ref", "basediv");
         baseDiv.style.display = "grid";
-        baseDiv.style.gridTemplateColumns = "94px auto 4px";
+        baseDiv.style.gridTemplateColumns = "94px auto 3px";
         baseDiv.style.gridTemplateRows = "24px";
         baseDiv.style.gridTemplateAreas = `
             "a b c"
@@ -74,7 +74,7 @@ class Gimbal implements IEditable {
         
         advDiv.setAttribute ("data-ref", "advdiv");
         advDiv.style.display = "grid";
-        advDiv.style.gridTemplateColumns = "114px auto auto 4px";
+        advDiv.style.gridTemplateColumns = "114px auto auto 3px";
         advDiv.style.gridTemplateRows = "24px 24px";
         advDiv.style.gridTemplateAreas = `
             "a b c d"

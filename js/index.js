@@ -591,6 +591,34 @@ addEventListener("DOMContentLoaded", () => {
     MainEngineTable.Items[2].FuelRatios.Items.push([Fuel.ElectricCharge, 60]);
     MainEngineTable.Items[3].FuelRatios.Items.push([Fuel.LqdOxygen, 2]);
     MainEngineTable.Items[3].FuelRatios.Items.push([Fuel.ElectricCharge, 800]);
+    MainEngineTable.Items[1].Tank.UseTanks = true;
+    MainEngineTable.Items[2].Tank.UseTanks = true;
+    MainEngineTable.Items[2].Tank.LimitTanks = true;
+    MainEngineTable.Items[2].Tank.TanksVolume = 0;
+    MainEngineTable.Items[2].Tank.TanksContents.push([Fuel.Kerosene, 5000]);
+    MainEngineTable.Items[3].Tank.UseTanks = true;
+    MainEngineTable.Items[3].Tank.LimitTanks = true;
+    MainEngineTable.Items[3].Tank.TanksVolume = 3000;
+    MainEngineTable.Items[3].Tank.TanksContents.push([Fuel.Kerosene, 5000]);
+    MainEngineTable.Items[4].Tank.UseTanks = true;
+    MainEngineTable.Items[4].Tank.LimitTanks = true;
+    MainEngineTable.Items[4].Tank.TanksVolume = 9000;
+    MainEngineTable.Items[4].Tank.TanksContents.push([Fuel.Kerosene, 5000]);
+    MainEngineTable.Items[5].Tank.UseTanks = true;
+    MainEngineTable.Items[5].Tank.LimitTanks = true;
+    MainEngineTable.Items[5].Tank.TanksVolume = 3000;
+    MainEngineTable.Items[5].Tank.TanksContents.push([Fuel.Kerosene, 2000]);
+    MainEngineTable.Items[5].Tank.TanksContents.push([Fuel.NitrousOxide, 200000]);
+    MainEngineTable.Items[6].Tank.UseTanks = true;
+    MainEngineTable.Items[6].Tank.LimitTanks = true;
+    MainEngineTable.Items[6].Tank.TanksVolume = 9000;
+    MainEngineTable.Items[6].Tank.TanksContents.push([Fuel.Kerosene, 5000]);
+    MainEngineTable.Items[6].Tank.TanksContents.push([Fuel.NitrousOxide, 200000]);
+    MainEngineTable.Items[7].Tank.UseTanks = true;
+    MainEngineTable.Items[7].Tank.LimitTanks = false;
+    MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.Kerosene, 5324]);
+    MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.NitrousOxide, 242400]);
+    MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.Helium, 1242400]);
     MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine());
     MainEngineTable.RebuildTable();
 });
@@ -723,13 +751,13 @@ FuelInfo.fuels = [
         FuelName: "Nitrous Oxide",
         FuelID: "NitrousOxide",
         FuelType: FuelType.Gas,
-        TankUtilisation: 1,
+        TankUtilisation: 100,
         Density: 0.00000196
     }, {
         FuelName: "Aniline",
         FuelID: "Aniline",
         FuelType: FuelType.Fuel,
-        TankUtilisation: 100,
+        TankUtilisation: 1,
         Density: 0.00102
     }, {
         FuelName: "Ethanol 75%",
@@ -903,7 +931,7 @@ FuelInfo.fuels = [
         FuelName: "Nitrogen",
         FuelID: "Nitrogen",
         FuelType: FuelType.Gas,
-        TankUtilisation: 1,
+        TankUtilisation: 200,
         Density: 0.000001251
     }, {
         FuelName: "Helium",
@@ -915,7 +943,7 @@ FuelInfo.fuels = [
         FuelName: "CaveaB",
         FuelID: "CaveaB",
         FuelType: FuelType.MonoPropellant,
-        TankUtilisation: 200,
+        TankUtilisation: 1,
         Density: 0.001501
     }, {
         FuelName: "Liquid Fuel",
@@ -939,13 +967,13 @@ FuelInfo.fuels = [
         FuelName: "Xenon Gas",
         FuelID: "XenonGas",
         FuelType: FuelType.Stock,
-        TankUtilisation: 1,
+        TankUtilisation: 100,
         Density: 0.000005894
     }, {
         FuelName: "Intake Air",
         FuelID: "IntakeAir",
         FuelType: FuelType.Stock,
-        TankUtilisation: 100,
+        TankUtilisation: 1,
         Density: 0.001225
     }, {
         FuelName: "Solid Fuel",
@@ -1726,10 +1754,20 @@ PlumeInfo.plumes = [
 ];
 PlumeInfo.Dropdown = PlumeInfo.BuildDropdown();
 class Dimensions {
-    constructor() {
+    constructor(objectParent) {
         this.UseBaseWidth = true;
         this.Width = 1;
         this.Height = 2;
+        this.Parent = objectParent;
+    }
+    GetBaseWidth() {
+        if (this.UseBaseWidth) {
+            return this.Width;
+        }
+        else {
+            let modelInfo = ModelInfo.GetModelInfo(this.Parent.Visuals.ModelID);
+            return this.Width * modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
+        }
     }
     GetDisplayElement() {
         let tmp = document.createElement("div");
@@ -1837,16 +1875,13 @@ class Engine {
         this.AlternatorPower = 0;
         this.TechUnlockNode = TechNode.start;
         this.EngineVariant = EngineType.Liquid;
+        this.Tank = new Tank(this);
         this.FuelRatios = new FuelRatios();
-        this.Dimensions = new Dimensions();
+        this.Dimensions = new Dimensions(this);
         this.Gimbal = new Gimbal();
         this.TestFlight = new TestFlight();
         this.Visuals = new Visuals();
         this.Labels = new Labels();
-        this.UseTanks = false;
-        this.LimitTanks = true;
-        this.TanksVolume = 0;
-        this.TanksContents = {};
         this.ThrustCurve = [];
         this.PolyType = Polymorphism.Single;
         this.MasterEngineName = "";
@@ -2034,7 +2069,7 @@ class Gimbal {
             }
         });
         checkboxLabel.style.position = "relative";
-        checkboxLabel.style.top = "-3px";
+        checkboxLabel.style.top = "-4px";
         checkboxLabel.style.left = "4px";
         checkboxLabel.innerHTML = "Advanced gimbal";
         tmp.children[0].appendChild(checkbox);
@@ -2152,6 +2187,205 @@ class Labels {
         this.EngineName = inputs[0].value;
         this.EngineManufacturer = inputs[1].value;
         this.EngineDescription = e.querySelector("textarea").value;
+    }
+}
+class Tank {
+    constructor(parentObject) {
+        this.UseTanks = false;
+        this.LimitTanks = true;
+        this.TanksVolume = 0;
+        this.TanksContents = [];
+        this.Parent = parentObject;
+    }
+    GetTankSizeEstimate() {
+        let modelInfo = ModelInfo.GetModelInfo(this.Parent.Visuals.ModelID);
+        let output = modelInfo.OriginalTankVolume;
+        output *= (Math.pow((this.Parent.Dimensions.GetBaseWidth() / modelInfo.OriginalBaseWidth), 2));
+        output *= this.Parent.Dimensions.Height / modelInfo.OriginalHeight;
+        return output;
+    }
+    GetConstrainedTankContents() {
+        if (!this.LimitTanks) {
+            return new Array().concat(this.TanksContents);
+        }
+        let output = [];
+        let usedVolume = 0;
+        output.forEach(v => {
+            let thisVol = Math.min(v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation, this.TanksVolume - usedVolume);
+            output.push([v[0], thisVol * v[1] * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
+        });
+        return output;
+    }
+    GetDisplayElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        return tmp;
+    }
+    ApplyValueToDisplayElement(e) {
+        let output = "";
+        if (this.UseTanks) {
+            if (this.LimitTanks) {
+                if (this.TanksVolume == 0) {
+                    output = "Enabled, but empty";
+                }
+                else {
+                    let usedVolume = 0;
+                    this.TanksContents.forEach(v => {
+                        usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
+                    });
+                    usedVolume = Math.min(usedVolume, this.TanksVolume);
+                    output = `Enabled, ${usedVolume}L/${this.TanksVolume}L`;
+                }
+            }
+            else {
+                if (this.TanksContents.length == 0) {
+                    output = "Enabled, but empty";
+                }
+                else {
+                    let usedVolume = 0;
+                    this.TanksContents.forEach(v => {
+                        usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
+                    });
+                    output = `Enabled, ${usedVolume}L`;
+                }
+            }
+        }
+        else {
+            output = "Disabled";
+        }
+        e.innerHTML = output;
+    }
+    GetEditElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        tmp.style.height = "225px";
+        tmp.style.padding = "0";
+        tmp.innerHTML = `
+            <div class="content-cell-content" style="height: 24px;"><input type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Add tank</span></div>
+        `;
+        let grid = document.createElement("div");
+        grid.style.display = "grid";
+        grid.style.gridTemplateColumns = "24px 24px auto 3px";
+        grid.style.gridTemplateRows = "24px 24px 24px 24px 105px";
+        grid.style.gridTemplateAreas = `
+            "c c c z"
+            "d e e z"
+            "f f f z"
+            "g h i z"
+            "j j j j"
+        `;
+        tmp.querySelector("input").addEventListener("change", () => {
+            grid.style.display = tmp.querySelector("input").checked ? "grid" : "none";
+        });
+        grid.innerHTML = `
+            <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
+            
+            <div class="content-cell-content" style="grid-area: d"><input type="checkbox"></div>
+            <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
+            
+            <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
+            
+            <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
+            <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
+            <div class="content-cell-content" style="grid-area: j; overflow: auto;"><table><tr><th style="width: 35%;">Fuel</th><th style="width: 35%;">Volume (L)</th><th style="width: 30%;">Mass (t)</th></tr></table></div>
+        `;
+        let inputs = grid.querySelectorAll("input");
+        inputs[0].addEventListener("change", () => {
+            inputs[1].disabled = !inputs[0].checked;
+        });
+        let table = grid.querySelector("tbody");
+        let imgs = grid.querySelectorAll("img");
+        imgs[0].addEventListener("click", () => {
+            let tr = document.createElement("tr");
+            let select = FuelInfo.Dropdown.cloneNode(true);
+            select.querySelector(`option[value="${Fuel.Hydrazine}"]`).selected = true;
+            tr.innerHTML = `
+                <td></td>
+                <td><input style="width: calc(100%);" value="1"></td>
+                <td><input style="width: calc(100%);" value="${1 * FuelInfo.GetFuelInfo(Fuel.Hydrazine).Density}"></td>
+            `;
+            let inputs = tr.querySelectorAll("input");
+            select.addEventListener("change", () => {
+                inputs[1].value = (parseFloat(inputs[0].value.replace(",", ".")) * FuelInfo.GetFuelInfo(parseInt(select.value)).Density).toString();
+            });
+            inputs[0].addEventListener("keydown", (e) => {
+                setTimeout(() => {
+                    inputs[1].value = (parseFloat(inputs[0].value.replace(",", ".")) * FuelInfo.GetFuelInfo(parseInt(select.value)).Density).toString();
+                }, 10);
+            });
+            inputs[1].addEventListener("keydown", (e) => {
+                setTimeout(() => {
+                    inputs[0].value = (parseFloat(inputs[1].value.replace(",", ".")) / FuelInfo.GetFuelInfo(parseInt(select.value)).Density).toString();
+                }, 10);
+            });
+            tr.children[0].appendChild(select);
+            table.appendChild(tr);
+        });
+        imgs[1].addEventListener("click", () => {
+            let tmp = grid.querySelectorAll("tr");
+            if (tmp.length > 1) {
+                tmp[tmp.length - 1].remove();
+            }
+        });
+        tmp.appendChild(grid);
+        return tmp;
+    }
+    ApplyValueToEditElement(e) {
+        let allInputs = e.querySelectorAll(`input`);
+        allInputs[0].checked = this.UseTanks;
+        allInputs[1].checked = this.LimitTanks;
+        allInputs[2].value = this.TanksVolume.toString();
+        e.querySelectorAll("span")[1].innerHTML = `${this.GetTankSizeEstimate()}L`;
+        e.children[1].style.display = this.UseTanks ? "grid" : "none";
+        allInputs[2].disabled = !this.LimitTanks;
+        let table = e.querySelector("tbody");
+        let rows = e.querySelectorAll("tr");
+        rows.forEach((v, i) => {
+            if (i != 0) {
+                v.remove();
+            }
+        });
+        this.TanksContents.forEach(v => {
+            let tr = document.createElement("tr");
+            let select = FuelInfo.Dropdown.cloneNode(true);
+            select.querySelector(`option[value="${v[0]}"]`).selected = true;
+            tr.innerHTML = `
+                <td></td>
+                <td><input style="width: calc(100%);" value="${v[1]}"></td>
+                <td><input style="width: calc(100%);" value="${v[1] * FuelInfo.GetFuelInfo(v[0]).Density}"></td>
+            `;
+            let inputs = tr.querySelectorAll("input");
+            select.addEventListener("change", () => {
+                inputs[1].value = (parseFloat(inputs[0].value.replace(",", ".")) * FuelInfo.GetFuelInfo(parseInt(select.value)).Density).toString();
+            });
+            inputs[0].addEventListener("keydown", (e) => {
+                setTimeout(() => {
+                    inputs[1].value = (parseFloat(inputs[0].value.replace(",", ".")) * FuelInfo.GetFuelInfo(parseInt(select.value)).Density).toString();
+                }, 10);
+            });
+            inputs[1].addEventListener("keydown", (e) => {
+                setTimeout(() => {
+                    inputs[0].value = (parseFloat(inputs[1].value.replace(",", ".")) / FuelInfo.GetFuelInfo(parseInt(select.value)).Density).toString();
+                }, 10);
+            });
+            tr.children[0].appendChild(select);
+            table.appendChild(tr);
+        });
+    }
+    ApplyChangesToValue(e) {
+        let selects = e.querySelectorAll("select");
+        let inputs = e.querySelector("table").querySelectorAll(`input`);
+        let allInputs = e.querySelectorAll(`input`);
+        this.UseTanks = allInputs[0].checked;
+        this.LimitTanks = allInputs[1].checked;
+        this.TanksVolume = parseFloat(allInputs[2].value.replace(",", "."));
+        if (selects.length != inputs.length) {
+            console.warn("table misaligned?");
+        }
+        this.TanksContents = [];
+        for (let i = 0; i < selects.length; ++i) {
+            this.TanksContents.push([parseInt(selects[i].value), parseFloat(inputs[2 * i].value.replace(",", "."))]);
+        }
     }
 }
 class TestFlight {

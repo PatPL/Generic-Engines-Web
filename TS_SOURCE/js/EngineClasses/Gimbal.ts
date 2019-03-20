@@ -52,7 +52,7 @@ class Gimbal implements IEditable {
         });
         
         checkboxLabel.style.position = "relative";
-        checkboxLabel.style.top = "-3px";
+        checkboxLabel.style.top = "-4px";
         checkboxLabel.style.left = "4px";
         checkboxLabel.innerHTML = "Advanced gimbal";
         

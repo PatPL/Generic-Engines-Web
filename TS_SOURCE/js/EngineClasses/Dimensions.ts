@@ -4,6 +4,21 @@ class Dimensions implements IEditable {
     Width: number = 1;
     Height: number = 2;
     
+    Parent: Engine;
+    
+    public GetBaseWidth (): number {
+        if (this.UseBaseWidth) {
+            return this.Width;
+        } else {
+            let modelInfo = ModelInfo.GetModelInfo (this.Parent.Visuals.ModelID);
+            return this.Width * modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
+        }
+    }
+    
+    constructor (objectParent: Engine) {
+        this.Parent = objectParent;
+    }
+    
     public GetDisplayElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");

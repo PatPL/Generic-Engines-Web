@@ -47,17 +47,13 @@ class Engine {
     TechUnlockNode: TechNode = TechNode.start;
     EngineVariant: EngineType = EngineType.Liquid;
     
+    Tank: Tank = new Tank (this);
     FuelRatios: FuelRatios = new FuelRatios ();
-    Dimensions: Dimensions = new Dimensions ();
+    Dimensions: Dimensions = new Dimensions (this);
     Gimbal: Gimbal = new Gimbal ();
     TestFlight: TestFlight = new TestFlight ();
     Visuals: Visuals = new Visuals ();
     Labels: Labels = new Labels ();
-    
-    UseTanks: boolean = false; //Create separate tank object?
-    LimitTanks: boolean = true;
-    TanksVolume: number = 0;
-    TanksContents: object = {};
     
     ThrustCurve: [number, number][] = [];
     

@@ -76,13 +76,13 @@ class FuelInfo {
             FuelName: "Nitrous Oxide",
             FuelID: "NitrousOxide",
             FuelType: FuelType.Gas,
-            TankUtilisation: 1,
+            TankUtilisation: 100,
             Density: 0.00000196
         }, {//^^^NitrousOxide
             FuelName: "Aniline",
             FuelID: "Aniline",
             FuelType: FuelType.Fuel,
-            TankUtilisation: 100,
+            TankUtilisation: 1,
             Density: 0.00102
         }, {//^^^Aniline
             FuelName: "Ethanol 75%",
@@ -256,7 +256,7 @@ class FuelInfo {
             FuelName: "Nitrogen",
             FuelID: "Nitrogen",
             FuelType: FuelType.Gas,
-            TankUtilisation: 1,
+            TankUtilisation: 200,
             Density: 0.000001251
         }, {//^^^Nitrogen
             FuelName: "Helium",
@@ -268,7 +268,7 @@ class FuelInfo {
             FuelName: "CaveaB",
             FuelID: "CaveaB",
             FuelType: FuelType.MonoPropellant,
-            TankUtilisation: 200,
+            TankUtilisation: 1,
             Density: 0.001501
         }, {//^^^CaveaB
             FuelName: "Liquid Fuel",
@@ -292,13 +292,13 @@ class FuelInfo {
             FuelName: "Xenon Gas",
             FuelID: "XenonGas",
             FuelType: FuelType.Stock,
-            TankUtilisation: 1,
+            TankUtilisation: 100,
             Density: 0.000005894
         }, {//^^^XenonGas
             FuelName: "Intake Air",
             FuelID: "IntakeAir",
             FuelType: FuelType.Stock,
-            TankUtilisation: 100,
+            TankUtilisation: 1,
             Density: 0.001225
         }, {//^^^IntakeAir
             FuelName: "Solid Fuel",

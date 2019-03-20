@@ -75,6 +75,41 @@ addEventListener ("DOMContentLoaded", () => {
     (<Engine> MainEngineTable.Items[3]).FuelRatios.Items.push ([Fuel.LqdOxygen, 2]);
     (<Engine> MainEngineTable.Items[3]).FuelRatios.Items.push ([Fuel.ElectricCharge, 800]);
     
+    (<Engine> MainEngineTable.Items[1]).Tank.UseTanks = true;
+    
+    (<Engine> MainEngineTable.Items[2]).Tank.UseTanks = true;
+    (<Engine> MainEngineTable.Items[2]).Tank.LimitTanks = true;
+    (<Engine> MainEngineTable.Items[2]).Tank.TanksVolume = 0;
+    (<Engine> MainEngineTable.Items[2]).Tank.TanksContents.push ([Fuel.Kerosene, 5000]);
+    
+    (<Engine> MainEngineTable.Items[3]).Tank.UseTanks = true;
+    (<Engine> MainEngineTable.Items[3]).Tank.LimitTanks = true;
+    (<Engine> MainEngineTable.Items[3]).Tank.TanksVolume = 3000;
+    (<Engine> MainEngineTable.Items[3]).Tank.TanksContents.push ([Fuel.Kerosene, 5000]);
+    
+    (<Engine> MainEngineTable.Items[4]).Tank.UseTanks = true;
+    (<Engine> MainEngineTable.Items[4]).Tank.LimitTanks = true;
+    (<Engine> MainEngineTable.Items[4]).Tank.TanksVolume = 9000;
+    (<Engine> MainEngineTable.Items[4]).Tank.TanksContents.push ([Fuel.Kerosene, 5000]);
+    
+    (<Engine> MainEngineTable.Items[5]).Tank.UseTanks = true;
+    (<Engine> MainEngineTable.Items[5]).Tank.LimitTanks = true;
+    (<Engine> MainEngineTable.Items[5]).Tank.TanksVolume = 3000;
+    (<Engine> MainEngineTable.Items[5]).Tank.TanksContents.push ([Fuel.Kerosene, 2000]);
+    (<Engine> MainEngineTable.Items[5]).Tank.TanksContents.push ([Fuel.NitrousOxide, 200000]);
+    
+    (<Engine> MainEngineTable.Items[6]).Tank.UseTanks = true;
+    (<Engine> MainEngineTable.Items[6]).Tank.LimitTanks = true;
+    (<Engine> MainEngineTable.Items[6]).Tank.TanksVolume = 9000;
+    (<Engine> MainEngineTable.Items[6]).Tank.TanksContents.push ([Fuel.Kerosene, 5000]);
+    (<Engine> MainEngineTable.Items[6]).Tank.TanksContents.push ([Fuel.NitrousOxide, 200000]);
+    
+    (<Engine> MainEngineTable.Items[7]).Tank.UseTanks = true;
+    (<Engine> MainEngineTable.Items[7]).Tank.LimitTanks = false;
+    (<Engine> MainEngineTable.Items[7]).Tank.TanksContents.push ([Fuel.Kerosene, 5324]);
+    (<Engine> MainEngineTable.Items[7]).Tank.TanksContents.push ([Fuel.NitrousOxide, 242400]);
+    (<Engine> MainEngineTable.Items[7]).Tank.TanksContents.push ([Fuel.Helium, 1242400]);
+    
     MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine ());
     
     MainEngineTable.RebuildTable ();

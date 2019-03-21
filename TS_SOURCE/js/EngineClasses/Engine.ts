@@ -39,6 +39,7 @@ class Engine {
     AtmIsp: number = 250;
     VacIsp: number = 300;
     Cost: number = 1000;
+    EntryCost: number = 10000;
     MinThrust: number = 90;
     Ignitions: number = 1;
     PressureFed: boolean = false;

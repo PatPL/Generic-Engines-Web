@@ -13,6 +13,17 @@ class Gimbal implements IEditable {
         return tmp;
     }
     
+    public static IsDefault (config: Gimbal): boolean {
+        let defaultConfig = new Gimbal ();
+        return (
+            config.AdvancedGimbal == defaultConfig.AdvancedGimbal &&
+            config.GimbalNX == defaultConfig.GimbalNX &&
+            config.GimbalPX == defaultConfig.GimbalPX &&
+            config.GimbalNY == defaultConfig.GimbalNY &&
+            config.GimbalPY == defaultConfig.GimbalPY
+        );
+    }
+    
     public ApplyValueToDisplayElement (e: HTMLElement): void {
         if (this.AdvancedGimbal) {
             e.innerHTML = `X:<-${this.GimbalNX}°:${this.GimbalPX}°>, Y:<-${this.GimbalNY}°:${this.GimbalPY}°>`;

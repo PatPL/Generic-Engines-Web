@@ -1,4 +1,18 @@
 "use strict";
+class BitConverter {
+    static DoubleToByteArray(number) {
+        this.doubleBuffer[0] = number;
+        return new Uint8Array(this.buffer8);
+    }
+    static IntToByteArray(number) {
+        this.intBuffer[0] = number;
+        return new Uint8Array(this.buffer4);
+    }
+}
+BitConverter.buffer8 = new ArrayBuffer(8);
+BitConverter.buffer4 = new ArrayBuffer(4);
+BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
+BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 class EditableField {
     constructor(valueOwner, valueName, container) {
         this.FieldID = EditableField.IDCounter++;
@@ -83,8 +97,6 @@ class EditableField {
             output = tmp;
         }
         else {
-            console.warn(this.ValueOwner[this.ValueName]);
-            console.warn(`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             output = tmp;
@@ -125,8 +137,6 @@ class EditableField {
             output = tmp;
         }
         else {
-            console.warn(this.ValueOwner[this.ValueName]);
-            console.warn(`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             output = tmp;
@@ -532,6 +542,168 @@ window.onpointermove = (event) => {
     Input.MouseX = event.clientX;
     Input.MouseY = event.clientY;
 };
+class Serializer {
+    static Serialize(e) {
+        let i = 0;
+        let output = new Uint8Array(2 +
+            1 +
+            (e.ID.length + 2) +
+            8 +
+            8 +
+            8 +
+            8 +
+            e.FuelRatios.Items.length * 10 + 2 +
+            8 +
+            8 +
+            8 +
+            4 +
+            8 +
+            4 +
+            1 +
+            1 +
+            1 +
+            1 +
+            (!TestFlight.IsDefault(e.TestFlight) ? 1 : 0) * (1 +
+                4 +
+                8 +
+                8 +
+                8 +
+                8) +
+            8 +
+            1 +
+            (!Gimbal.IsDefault(e.Gimbal) ? 1 : 0) * (1 +
+                8 +
+                8 +
+                8 +
+                8) +
+            2 +
+            2 +
+            2 +
+            4 +
+            (e.Labels.EngineName.length + 2) +
+            1 +
+            (!Labels.IsManufacturerDefault(e.Labels) ? 1 : 0) * (e.Labels.EngineManufacturer.length + 2) +
+            1 +
+            (!Labels.IsDescriptionDefault(e.Labels) ? 1 : 0) * (e.Labels.EngineDescription.length + 2) +
+            1 +
+            1 +
+            8 +
+            e.Tank.TanksContents.length * 10 + 2 +
+            e.ThrustCurve.length * 16 + 2 +
+            1 +
+            1 +
+            1 +
+            e.Polymorphism.MasterEngineName.length + 2 +
+            4 +
+            8);
+        output[i++] = Serializer.Version / 256;
+        output[i++] = Serializer.Version % 256;
+        output[i++] = e.Active ? 1 : 0;
+        output[i++] = e.ID.length % 256;
+        output[i++] = e.ID.length / 256;
+        for (let i = 0; i < e.ID.length; ++i) {
+            output[i++] = e.ID.charCodeAt(i);
+        }
+        output.set(BitConverter.DoubleToByteArray(e.Mass), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.Thrust), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.AtmIsp), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.VacIsp), i);
+        i += 8;
+        output[i++] = e.FuelRatios.Items.length % 256;
+        output[i++] = e.FuelRatios.Items.length / 256;
+        e.FuelRatios.Items.forEach(f => {
+            output[i++] = f[0] % 256;
+            output[i++] = f[0] / 256;
+            output.set(BitConverter.DoubleToByteArray(f[1]), i);
+            i += 8;
+        });
+        output.set(BitConverter.DoubleToByteArray(e.Dimensions.Width), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.Dimensions.Height), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.Gimbal.Gimbal), i);
+        i += 8;
+        output.set(BitConverter.IntToByteArray(e.Cost), i);
+        i += 4;
+        output.set(BitConverter.DoubleToByteArray(e.MinThrust), i);
+        i += 8;
+        output.set(BitConverter.IntToByteArray(e.Ignitions), i);
+        i += 4;
+        output[i++] = e.PressureFed ? 1 : 0;
+        output[i++] = e.NeedsUllage ? 1 : 0;
+        output[i++] = e.FuelRatios.FuelVolumeRatios ? 1 : 0;
+        output[i++] = !TestFlight.IsDefault(e.TestFlight) ? 1 : 0;
+        if (!TestFlight.IsDefault(e.TestFlight)) {
+            output[i++] = e.TestFlight.EnableTestFlight ? 1 : 0;
+            output.set(BitConverter.IntToByteArray(e.TestFlight.RatedBurnTime), i);
+            i += 4;
+            output.set(BitConverter.DoubleToByteArray(e.TestFlight.StartReliability0), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.TestFlight.StartReliability10k), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.TestFlight.CycleReliability0), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.TestFlight.CycleReliability10k), i);
+            i += 8;
+        }
+        output[i++] = e.Visuals.ModelID % 256;
+        output[i++] = e.Visuals.ModelID / 256;
+        output[i++] = e.Visuals.PlumeID % 256;
+        output[i++] = e.Visuals.PlumeID / 256;
+        output[i++] = e.TechUnlockNode % 256;
+        output[i++] = e.TechUnlockNode / 256;
+        output.set(BitConverter.IntToByteArray(e.EntryCost), i);
+        i += 4;
+        output[i++] = e.Labels.EngineName.length % 256;
+        output[i++] = e.Labels.EngineName.length / 256;
+        for (let i = 0; i < e.ID.length; ++i) {
+            output[i++] = e.Labels.EngineName.charCodeAt(i);
+        }
+        output[i++] = !Labels.IsManufacturerDefault(e.Labels) ? 1 : 0;
+        if (!Labels.IsManufacturerDefault(e.Labels)) {
+            output[i++] = e.Labels.EngineManufacturer.length % 256;
+            output[i++] = e.Labels.EngineManufacturer.length / 256;
+            for (let i = 0; i < e.ID.length; ++i) {
+                output[i++] = e.Labels.EngineManufacturer.charCodeAt(i);
+            }
+        }
+        output[i++] = !Labels.IsDescriptionDefault(e.Labels) ? 1 : 0;
+        if (!Labels.IsDescriptionDefault(e.Labels)) {
+            output[i++] = e.Labels.EngineDescription.length % 256;
+            output[i++] = e.Labels.EngineDescription.length / 256;
+            for (let i = 0; i < e.ID.length; ++i) {
+                output[i++] = e.Labels.EngineDescription.charCodeAt(i);
+            }
+        }
+        output[i++] = e.Dimensions.UseBaseWidth ? 1 : 0;
+        output[i++] = e.EngineVariant;
+        output.set(BitConverter.DoubleToByteArray(e.Tank.TanksVolume), i);
+        i += 8;
+        output[i++] = e.Tank.TanksContents.length % 256;
+        output[i++] = e.Tank.TanksContents.length / 256;
+        e.Tank.TanksContents.forEach(f => {
+            output[i++] = f[0] % 256;
+            output[i++] = f[0] / 256;
+            output.set(BitConverter.DoubleToByteArray(f[1]), i);
+            i += 8;
+        });
+        output[i++] = e.ThrustCurve.length % 256;
+        output[i++] = e.ThrustCurve.length / 256;
+        e.ThrustCurve.forEach(f => {
+            output.set(BitConverter.DoubleToByteArray(f[0]), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(f[1]), i);
+            i += 8;
+        });
+        output[i++] = e.Tank.UseTanks ? 1 : 0;
+        output[i++] = e.Tank.LimitTanks ? 1 : 0;
+        return output;
+    }
+}
+Serializer.Version = 12;
 var ListName = "Unnamed";
 let MainEngineTable;
 addEventListener("DOMContentLoaded", () => {
@@ -539,6 +711,16 @@ addEventListener("DOMContentLoaded", () => {
     images.forEach(image => {
         image.ondragstart = () => { return false; };
     });
+    let TechNodeAutocomplete = document.createElement("datalist");
+    TechNodeAutocomplete.id = "techNodeItems";
+    for (let i in TechNode) {
+        let x = parseInt(i);
+        if (isNaN(x)) {
+            break;
+        }
+        TechNodeAutocomplete.innerHTML += `<option>${TechNode[x]}</option>`;
+    }
+    document.body.appendChild(TechNodeAutocomplete);
     document.getElementById("option-button-new").addEventListener("click", NewButton_Click);
     document.getElementById("option-button-open").addEventListener("click", OpenButton_Click);
     document.getElementById("option-button-append").addEventListener("click", AppendButton_Click);
@@ -553,8 +735,14 @@ addEventListener("DOMContentLoaded", () => {
     let ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
     for (let i = 0; i < 8; ++i) {
-        MainEngineTable.Items.push(new Engine());
+        MainEngineTable.Items.push(new Engine(MainEngineTable.Items));
+        MainEngineTable.Items[i].Active = true;
+        MainEngineTable.Items[i].ID += `-${i}`;
     }
+    MainEngineTable.Items[1].Polymorphism.PolyType = PolymorphismType.MultiModeMaster;
+    MainEngineTable.Items[2].Polymorphism.PolyType = PolymorphismType.MultiModeMaster;
+    MainEngineTable.Items[3].Polymorphism.PolyType = PolymorphismType.MultiConfigMaster;
+    MainEngineTable.Items[4].Polymorphism.PolyType = PolymorphismType.MultiConfigMaster;
     MainEngineTable.Items[1].Gimbal.AdvancedGimbal = true;
     MainEngineTable.Items[1].Gimbal.GimbalNX = 3;
     MainEngineTable.Items[1].Gimbal.GimbalPX = 6;
@@ -619,7 +807,7 @@ addEventListener("DOMContentLoaded", () => {
     MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.Kerosene, 5324]);
     MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.NitrousOxide, 242400]);
     MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.Helium, 1242400]);
-    MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine());
+    MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine(MainEngineTable.Items));
     MainEngineTable.RebuildTable();
 });
 function NewButton_Click() {
@@ -639,7 +827,7 @@ function ExportButton_Click() {
 function DuplicateButton_Click() {
 }
 function AddButton_Click() {
-    MainEngineTable.AddItem(new Engine());
+    MainEngineTable.AddItem(new Engine(MainEngineTable.Items));
 }
 function RemoveButton_Click() {
     MainEngineTable.RemoveSelectedItems();
@@ -1829,9 +2017,24 @@ class Dimensions {
     }
 }
 class Engine {
-    constructor() {
+    constructor(originList) {
         this.EditableFieldMetadata = {
-            Mass: {
+            ID: {
+                ApplyChangesToValue: (e) => {
+                    let output = "";
+                    let rawInput = e.value;
+                    rawInput.replace(" ", "-");
+                    for (let i = 0; i < rawInput.length; ++i) {
+                        if (/[a-zA-Z0-9-]{1}/.test(rawInput[i])) {
+                            output += rawInput[i];
+                        }
+                    }
+                    if (output == "") {
+                        output = "EnterCorrectID";
+                    }
+                    this.ID = output;
+                }
+            }, Mass: {
                 ApplyValueToDisplayElement: (e) => {
                     e.innerHTML = `${this.Mass}t`;
                 }
@@ -1851,6 +2054,10 @@ class Engine {
                 ApplyValueToDisplayElement: (e) => {
                     e.innerHTML = `${this.Cost}VF`;
                 }
+            }, EntryCost: {
+                ApplyValueToDisplayElement: (e) => {
+                    e.innerHTML = `${this.EntryCost}VF`;
+                }
             }, MinThrust: {
                 ApplyValueToDisplayElement: (e) => {
                     e.innerHTML = `${this.MinThrust}%`;
@@ -1858,6 +2065,132 @@ class Engine {
             }, AlternatorPower: {
                 ApplyValueToDisplayElement: (e) => {
                     e.innerHTML = `${this.AlternatorPower}kW`;
+                }
+            }, Ignitions: {
+                ApplyValueToDisplayElement: (e) => {
+                    e.innerHTML = this.Ignitions <= 0 ? "Infinite" : this.Ignitions.toString();
+                }
+            }, TechUnlockNode: {
+                ApplyValueToDisplayElement: (e) => {
+                    e.innerHTML = TechNode[this.TechUnlockNode];
+                }, GetEditElement: () => {
+                    let tmp = document.createElement("input");
+                    tmp.classList.add("content-cell-content");
+                    tmp.setAttribute("list", "techNodeItems");
+                    return tmp;
+                }, ApplyValueToEditElement: (e) => {
+                    e.value = TechNode[this.TechUnlockNode];
+                }, ApplyChangesToValue: (e) => {
+                    let value = parseInt(TechNode[e.value]);
+                    value = isNaN(value) ? 0 : value;
+                    this.TechUnlockNode = value;
+                }
+            }, EngineVariant: {
+                ApplyValueToDisplayElement: (e) => {
+                    e.innerHTML = EngineType[this.EngineVariant];
+                }, GetEditElement: () => {
+                    let tmp = document.createElement("select");
+                    tmp.classList.add("content-cell-content");
+                    for (let i in EngineType) {
+                        let x = parseInt(i);
+                        if (isNaN(x)) {
+                            break;
+                        }
+                        let option = document.createElement("option");
+                        option.value = x.toString();
+                        option.text = EngineType[x];
+                        tmp.options.add(option);
+                    }
+                    return tmp;
+                }
+            }, ThrustCurve: {
+                ApplyValueToDisplayElement: (e) => {
+                    e.innerHTML = this.ThrustCurve.length > 0 ? "Custom" : "Default";
+                }, GetEditElement: () => {
+                    let tmp = document.createElement("div");
+                    tmp.classList.add("content-cell-content");
+                    tmp.style.height = "153px";
+                    tmp.style.padding = "0";
+                    let grid = document.createElement("div");
+                    grid.style.display = "grid";
+                    grid.style.gridTemplateColumns = "24px 24px 24px auto";
+                    grid.style.gridTemplateRows = "24px 129px";
+                    grid.style.gridTemplateAreas = `
+                    "a b c d"
+                    "e e e e"
+                `;
+                    grid.innerHTML = `
+                    <div style="grid-area: a;"><img class="mini-button option-button" title="Add new entry" src="img/button/add-mini.png"></div>
+                    <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last entry" src="img/button/remove-mini.png"></div>
+                    <div style="grid-area: c;"><img class="mini-button option-button" title="Sort entries by Fuel% (Descending)" src="img/button/sort-mini.png"></div>
+                    <div class="content-cell-content" style="grid-area: d;"></div>
+                    <div class="content-cell-content" style="grid-area: e; overflow: auto;"><table><tr><th style="width: 50%;">Fuel%</th><th style="width: 50%;">Thrust%</th></tr></table></div>
+                `;
+                    let table = grid.querySelector("tbody");
+                    let imgs = grid.querySelectorAll("img");
+                    imgs[0].addEventListener("click", () => {
+                        let tr = document.createElement("tr");
+                        tr.innerHTML = `
+                        <td><input style="width: calc(100%);" value="0"></td>
+                        <td><input style="width: calc(100%);" value="0"></td>
+                    `;
+                        table.appendChild(tr);
+                    });
+                    imgs[1].addEventListener("click", () => {
+                        let tmp = grid.querySelectorAll("tr");
+                        if (tmp.length > 1) {
+                            tmp[tmp.length - 1].remove();
+                        }
+                    });
+                    imgs[2].addEventListener("click", () => {
+                        let tmpCurve = [];
+                        let inputs = tmp.querySelectorAll(`input`);
+                        for (let i = 0; i < inputs.length; i += 2) {
+                            tmpCurve.push([parseFloat(inputs[i].value), parseFloat(inputs[i + 1].value)]);
+                        }
+                        tmpCurve = tmpCurve.sort((a, b) => {
+                            return b[0] - a[0];
+                        });
+                        let table = tmp.querySelector("tbody");
+                        let rows = tmp.querySelectorAll("tr");
+                        rows.forEach((v, i) => {
+                            if (i != 0) {
+                                v.remove();
+                            }
+                        });
+                        tmpCurve.forEach(v => {
+                            let tr = document.createElement("tr");
+                            tr.innerHTML = `
+                            <td><input style="width: calc(100%);" value="${v[0]}"></td>
+                            <td><input style="width: calc(100%);" value="${v[1]}"></td>
+                        `;
+                            table.appendChild(tr);
+                        });
+                    });
+                    tmp.appendChild(grid);
+                    return tmp;
+                }, ApplyValueToEditElement: (e) => {
+                    let table = e.querySelector("tbody");
+                    let rows = e.querySelectorAll("tr");
+                    rows.forEach((v, i) => {
+                        if (i != 0) {
+                            v.remove();
+                        }
+                    });
+                    this.ThrustCurve.forEach(v => {
+                        let tr = document.createElement("tr");
+                        tr.innerHTML = `
+                        <td><input style="width: calc(100%);" value="${v[0]}"></td>
+                        <td><input style="width: calc(100%);" value="${v[1]}"></td>
+                    `;
+                        table.appendChild(tr);
+                    });
+                }, ApplyChangesToValue: (e) => {
+                    let inputs = e.querySelectorAll(`input`);
+                    this.ThrustCurve = [];
+                    for (let i = 0; i < inputs.length; i += 2) {
+                        this.ThrustCurve.push([parseFloat(inputs[i].value), parseFloat(inputs[i + 1].value)]);
+                    }
                 }
             }
         };
@@ -1868,6 +2201,7 @@ class Engine {
         this.AtmIsp = 250;
         this.VacIsp = 300;
         this.Cost = 1000;
+        this.EntryCost = 10000;
         this.MinThrust = 90;
         this.Ignitions = 1;
         this.PressureFed = false;
@@ -1875,6 +2209,7 @@ class Engine {
         this.AlternatorPower = 0;
         this.TechUnlockNode = TechNode.start;
         this.EngineVariant = EngineType.Liquid;
+        this.ThrustCurve = [];
         this.Tank = new Tank(this);
         this.FuelRatios = new FuelRatios();
         this.Dimensions = new Dimensions(this);
@@ -1882,11 +2217,8 @@ class Engine {
         this.TestFlight = new TestFlight();
         this.Visuals = new Visuals();
         this.Labels = new Labels();
-        this.ThrustCurve = [];
-        this.PolyType = Polymorphism.Single;
-        this.MasterEngineName = "";
-        this.MasterEngineCost = 0;
-        this.MasterEngineMass = 0;
+        this.Polymorphism = new Polymorphism(originList);
+        this.EngineList = originList;
     }
 }
 class FuelRatios {
@@ -2034,6 +2366,14 @@ class Gimbal {
         tmp.classList.add("content-cell-content");
         return tmp;
     }
+    static IsDefault(config) {
+        let defaultConfig = new Gimbal();
+        return (config.AdvancedGimbal == defaultConfig.AdvancedGimbal &&
+            config.GimbalNX == defaultConfig.GimbalNX &&
+            config.GimbalPX == defaultConfig.GimbalPX &&
+            config.GimbalNY == defaultConfig.GimbalNY &&
+            config.GimbalPY == defaultConfig.GimbalPY);
+    }
     ApplyValueToDisplayElement(e) {
         if (this.AdvancedGimbal) {
             e.innerHTML = `X:<-${this.GimbalNX}°:${this.GimbalPX}°>, Y:<-${this.GimbalNY}°:${this.GimbalPY}°>`;
@@ -2135,6 +2475,14 @@ class Labels {
         this.EngineManufacturer = "Generic Engines";
         this.EngineDescription = "This engine was generated by Generic Engines";
     }
+    static IsManufacturerDefault(config) {
+        let originalConfig = new Labels();
+        return config.EngineManufacturer == originalConfig.EngineManufacturer;
+    }
+    static IsDescriptionDefault(config) {
+        let originalConfig = new Labels();
+        return config.EngineDescription == originalConfig.EngineDescription;
+    }
     GetDisplayElement() {
         let tmp = document.createElement("div");
         tmp.classList.add("content-cell-content");
@@ -2189,6 +2537,129 @@ class Labels {
         this.EngineDescription = e.querySelector("textarea").value;
     }
 }
+var PolymorphismType;
+(function (PolymorphismType) {
+    PolymorphismType[PolymorphismType["Single"] = 0] = "Single";
+    PolymorphismType[PolymorphismType["MultiModeMaster"] = 1] = "MultiModeMaster";
+    PolymorphismType[PolymorphismType["MultiModeSlave"] = 2] = "MultiModeSlave";
+    PolymorphismType[PolymorphismType["MultiConfigMaster"] = 3] = "MultiConfigMaster";
+    PolymorphismType[PolymorphismType["MultiConfigSlave"] = 4] = "MultiConfigSlave";
+})(PolymorphismType || (PolymorphismType = {}));
+class Polymorphism {
+    constructor(originList) {
+        this.PolyType = PolymorphismType.Single;
+        this.MasterEngineName = "";
+        this.EngineList = originList;
+    }
+    RebuildMasterSelect(e) {
+        let selects = e.querySelectorAll("select");
+        selects[1].innerHTML = "";
+        let option1 = document.createElement("option");
+        option1.value = "";
+        option1.text = "";
+        option1.selected = "" == this.MasterEngineName;
+        selects[1].options.add(option1.cloneNode(true));
+        if (parseInt(selects[0].value) == PolymorphismType.MultiModeSlave) {
+            this.EngineList.filter(x => x.Active && x.Polymorphism.PolyType == PolymorphismType.MultiModeMaster).forEach(e => {
+                let option = document.createElement("option");
+                option.value = `${e.ID}`;
+                option.text = e.ID;
+                option.selected = e.ID == this.MasterEngineName;
+                selects[1].options.add(option);
+            });
+        }
+        else if (parseInt(selects[0].value) == PolymorphismType.MultiConfigSlave) {
+            this.EngineList.filter(x => x.Active && x.Polymorphism.PolyType == PolymorphismType.MultiConfigMaster).forEach(e => {
+                let option = document.createElement("option");
+                option.value = `${e.ID}`;
+                option.text = e.ID;
+                option.selected = e.ID == this.MasterEngineName;
+                selects[1].options.add(option);
+            });
+        }
+        else {
+        }
+    }
+    GetDisplayElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        return tmp;
+    }
+    ApplyValueToDisplayElement(e) {
+        switch (this.PolyType) {
+            case PolymorphismType.Single:
+                e.innerHTML = `Single`;
+                break;
+            case PolymorphismType.MultiModeMaster:
+                e.innerHTML = `Multimode master`;
+                break;
+            case PolymorphismType.MultiModeSlave:
+                e.innerHTML = `Multimode slave to ${this.MasterEngineName}`;
+                break;
+            case PolymorphismType.MultiConfigMaster:
+                e.innerHTML = `Multiconfig master`;
+                break;
+            case PolymorphismType.MultiConfigSlave:
+                e.innerHTML = `Multiconfig slave to ${this.MasterEngineName}`;
+                break;
+        }
+    }
+    GetEditElement() {
+        let tmp = document.createElement("div");
+        tmp.classList.add("content-cell-content");
+        tmp.style.height = "48px";
+        tmp.style.padding = "0";
+        let grid = document.createElement("div");
+        grid.style.display = "grid";
+        grid.style.gridTemplateColumns = "auto";
+        grid.style.gridTemplateRows = "24px 24px";
+        grid.style.gridTemplateAreas = `
+            "a"
+            "b"
+        `;
+        grid.innerHTML = `
+            <div style="grid-area: a;">${Polymorphism.Dropdown.outerHTML}</div>
+            <div style="grid-area: b;"><select></select></div>
+        `;
+        let selects = grid.querySelectorAll("select");
+        selects[0].addEventListener("change", () => {
+            this.RebuildMasterSelect(tmp);
+        });
+        tmp.appendChild(grid);
+        return tmp;
+    }
+    ApplyValueToEditElement(e) {
+        let selects = e.querySelectorAll("select");
+        selects[0].value = this.PolyType.toString();
+        this.RebuildMasterSelect(e);
+    }
+    ApplyChangesToValue(e) {
+        let selects = e.querySelectorAll("select");
+        this.PolyType = parseInt(selects[0].value);
+        this.MasterEngineName = selects[1].value;
+    }
+    static BuildPolymorphismTypeDropdown() {
+        let output = document.createElement("select");
+        let option = document.createElement("option");
+        option.value = PolymorphismType.Single.toString();
+        option.text = "Single";
+        output.options.add(option.cloneNode(true));
+        option.value = PolymorphismType.MultiModeMaster.toString();
+        option.text = "Multimode master";
+        output.options.add(option.cloneNode(true));
+        option.value = PolymorphismType.MultiModeSlave.toString();
+        option.text = "Multimode slave";
+        output.options.add(option.cloneNode(true));
+        option.value = PolymorphismType.MultiConfigMaster.toString();
+        option.text = "Multiconfig master";
+        output.options.add(option.cloneNode(true));
+        option.value = PolymorphismType.MultiConfigSlave.toString();
+        option.text = "Multiconfig slave";
+        output.options.add(option.cloneNode(true));
+        return output;
+    }
+}
+Polymorphism.Dropdown = Polymorphism.BuildPolymorphismTypeDropdown();
 class Tank {
     constructor(parentObject) {
         this.UseTanks = false;
@@ -2658,14 +3129,6 @@ var Plume;
     Plume[Plume["Turbofan"] = 26] = "Turbofan";
     Plume[Plume["Turbojet"] = 27] = "Turbojet";
 })(Plume || (Plume = {}));
-var Polymorphism;
-(function (Polymorphism) {
-    Polymorphism[Polymorphism["Single"] = 0] = "Single";
-    Polymorphism[Polymorphism["MultiModeMaster"] = 1] = "MultiModeMaster";
-    Polymorphism[Polymorphism["MultiModeSlave"] = 2] = "MultiModeSlave";
-    Polymorphism[Polymorphism["MultiConfigMaster"] = 3] = "MultiConfigMaster";
-    Polymorphism[Polymorphism["MultiConfigSlave"] = 4] = "MultiConfigSlave";
-})(Polymorphism || (Polymorphism = {}));
 var TechNode;
 (function (TechNode) {
     TechNode[TechNode["start"] = 0] = "start";

@@ -111,8 +111,8 @@ class EditableField {
             
             output = tmp;
         } else {
-            console.warn (this.ValueOwner[this.ValueName]);
-            console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            //console.warn (this.ValueOwner[this.ValueName]);
+            //console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
             let tmp = document.createElement ("div");
             tmp.classList.add ("content-cell-content");
             output = tmp;
@@ -154,8 +154,8 @@ class EditableField {
             tmp.classList.add ("content-cell-content");
             output = tmp;
         } else {
-            console.warn (this.ValueOwner[this.ValueName]);
-            console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            //console.warn (this.ValueOwner[this.ValueName]);
+            //console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
             let tmp = document.createElement ("div");
             tmp.classList.add ("content-cell-content");
             output = tmp;

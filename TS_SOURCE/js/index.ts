@@ -11,6 +11,18 @@ addEventListener ("DOMContentLoaded", () => {
         image.ondragstart = () => { return false; }
     });
     
+    //Build datalist for Technode input
+    let TechNodeAutocomplete = document.createElement ("datalist");
+    TechNodeAutocomplete.id = "techNodeItems";
+    for (let i in TechNode) {
+        let x = parseInt (i);
+        if (isNaN (x)) {
+            break;
+        }
+        TechNodeAutocomplete.innerHTML += `<option>${TechNode[x]}</option>`;
+    }
+    document.body.appendChild (TechNodeAutocomplete);
+    
     document.getElementById ("option-button-new")!.addEventListener ("click", NewButton_Click);
     document.getElementById ("option-button-open")!.addEventListener ("click", OpenButton_Click);
     document.getElementById ("option-button-append")!.addEventListener ("click", AppendButton_Click);
@@ -31,8 +43,15 @@ addEventListener ("DOMContentLoaded", () => {
     MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
     
     for (let i = 0; i < 8; ++i) {
-        MainEngineTable.Items.push (new Engine ());
+        MainEngineTable.Items.push (new Engine (MainEngineTable.Items));
+        (MainEngineTable.Items[i] as Engine).Active = true;
+        (MainEngineTable.Items[i] as Engine).ID += `-${i}`;
     }
+    
+    (MainEngineTable.Items[1] as Engine).Polymorphism.PolyType = PolymorphismType.MultiModeMaster;
+    (MainEngineTable.Items[2] as Engine).Polymorphism.PolyType = PolymorphismType.MultiModeMaster;
+    (MainEngineTable.Items[3] as Engine).Polymorphism.PolyType = PolymorphismType.MultiConfigMaster;
+    (MainEngineTable.Items[4] as Engine).Polymorphism.PolyType = PolymorphismType.MultiConfigMaster;
     
     (<Engine> MainEngineTable.Items[1]).Gimbal.AdvancedGimbal = true;
     (<Engine> MainEngineTable.Items[1]).Gimbal.GimbalNX = 3;
@@ -110,7 +129,7 @@ addEventListener ("DOMContentLoaded", () => {
     (<Engine> MainEngineTable.Items[7]).Tank.TanksContents.push ([Fuel.NitrousOxide, 242400]);
     (<Engine> MainEngineTable.Items[7]).Tank.TanksContents.push ([Fuel.Helium, 1242400]);
     
-    MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine ());
+    MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine (MainEngineTable.Items));
     
     MainEngineTable.RebuildTable ();
     
@@ -146,7 +165,7 @@ function DuplicateButton_Click () {
 }
 
 function AddButton_Click () {
-    MainEngineTable.AddItem (new Engine ());
+    MainEngineTable.AddItem (new Engine (MainEngineTable.Items));
 }
 
 function RemoveButton_Click () {

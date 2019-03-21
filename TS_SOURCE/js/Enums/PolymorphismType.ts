@@ -1,4 +1,4 @@
-enum Polymorphism {
+enum PolymorphismType {
     Single,
     MultiModeMaster,
     MultiModeSlave,

@@ -55,7 +55,7 @@ class Serializer {
             1 + //bool - UseTanks
             1 + //bool - LimitTanks
             1 + //Polymorphism - PolyType
-            e.MasterEngineName.length + 2 + //1B * length + 2B length header - MasterEngineName
+            e.Polymorphism.MasterEngineName.length + 2 + //1B * length + 2B length header - MasterEngineName
             4 + //int - MasterEngineCost
             8 //double - MasterEngineMass
         );

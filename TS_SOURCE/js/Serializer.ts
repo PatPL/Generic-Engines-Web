@@ -2,6 +2,11 @@ class Serializer {
     
     public static readonly Version = 13;
     
+    public static Copy (engine: Engine): Engine {
+        let [copiedEngine, _] = Serializer.Deserialize (Serializer.Serialize (engine), 0, engine.EngineList);
+        return copiedEngine;
+    }
+    
     public static SerializeMany (engines: Engine[]): Uint8Array {
         let data: Uint8Array[] = [];
         let length = 0;

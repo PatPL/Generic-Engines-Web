@@ -299,35 +299,35 @@ class FileIO {
         }).then(callback);
     }
     static OpenText(extensions, callback) {
-        this.Open(FileType.Text, extensions, (result) => {
+        this.Open(FileType.Text, extensions, (result, filename) => {
             if (callback) {
                 if (result) {
                     if (typeof result === "string") {
-                        callback(result);
+                        callback(result, filename);
                     }
                     else {
-                        callback(null);
+                        callback(null, filename);
                     }
                 }
                 else {
-                    callback(null);
+                    callback(null, filename);
                 }
             }
         });
     }
     static OpenBinary(extensions, callback) {
-        this.Open(FileType.Binary, extensions, (result) => {
+        this.Open(FileType.Binary, extensions, (result, filename) => {
             if (callback) {
                 if (result) {
                     if (result instanceof Uint8Array) {
-                        callback(result);
+                        callback(result, filename);
                     }
                     else {
-                        callback(null);
+                        callback(null, filename);
                     }
                 }
                 else {
-                    callback(null);
+                    callback(null, filename);
                 }
             }
         });
@@ -343,7 +343,7 @@ class FileIO {
             if (!fileDialog.files || !fileDialog.files[0]) {
                 console.log("No file selected?");
                 if (callback) {
-                    callback(null);
+                    callback(null, "");
                 }
                 return;
             }
@@ -352,10 +352,10 @@ class FileIO {
             reader.onload = () => {
                 if (callback) {
                     if (reader.result instanceof ArrayBuffer) {
-                        callback(new Uint8Array(reader.result));
+                        callback(new Uint8Array(reader.result), file.name);
                     }
                     else {
-                        callback(reader.result);
+                        callback(reader.result, file.name);
                     }
                 }
             };
@@ -561,6 +561,10 @@ window.onpointermove = (event) => {
     Input.MouseY = event.clientY;
 };
 class Serializer {
+    static Copy(engine) {
+        let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0, engine.EngineList);
+        return copiedEngine;
+    }
     static SerializeMany(engines) {
         let data = [];
         let length = 0;
@@ -968,6 +972,15 @@ Serializer.Version = 13;
 var ListName = "Unnamed";
 let ListNameDisplay;
 let MainEngineTable;
+window.onbeforeunload = (e) => {
+    if (MainEngineTable.Items.length != 0) {
+        e.returnValue = "Are you sure that you want to leave this page? You will lose all unsaved data";
+        return "Are you sure that you want to leave this page? You will lose all unsaved data";
+    }
+    else {
+        return;
+    }
+};
 addEventListener("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     let images = document.querySelectorAll(".option-button");
@@ -1008,9 +1021,12 @@ function NewButton_Click() {
 }
 function OpenButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from file?")) {
-        FileIO.OpenBinary(".enl", (data) => {
+        FileIO.OpenBinary(".enl", (data, filename) => {
             if (data) {
-                alert(`got file ${data.length}`);
+                filename = filename.replace(".enl", "");
+                ListNameDisplay.SetValue(filename);
+                MainEngineTable.Items = Serializer.DeserializeMany(data);
+                MainEngineTable.RebuildTable();
             }
             else {
             }
@@ -1018,14 +1034,29 @@ function OpenButton_Click() {
     }
 }
 function AppendButton_Click() {
+    FileIO.OpenBinary(".enl", (data) => {
+        if (data) {
+            MainEngineTable.Items = Serializer.DeserializeMany(data, MainEngineTable.Items);
+            MainEngineTable.RebuildTable();
+        }
+        else {
+        }
+    });
 }
 function SaveButton_Click() {
+    let data = Serializer.SerializeMany(MainEngineTable.Items);
+    FileIO.SaveBinary(`${ListName}.enl`, data);
 }
 function ValidateButton_Click() {
 }
 function ExportButton_Click() {
 }
 function DuplicateButton_Click() {
+    let indices = MainEngineTable.SelectedRows.sort((a, b) => { return a - b; });
+    indices.forEach(index => {
+        MainEngineTable.Items.push(Serializer.Copy(MainEngineTable.Rows[index][1]));
+    });
+    MainEngineTable.RebuildTable();
 }
 function AddButton_Click() {
     MainEngineTable.AddItem(new Engine(MainEngineTable.Items));

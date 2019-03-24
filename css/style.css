@@ -240,10 +240,10 @@ input.content-cell-content {
     background: #88F !important;
 }
 
-.content-cell:nth-child(odd) {
+.content-cell:nth-child(even) {
     background: #AAA;
 }
 
-.content-cell:nth-child(even) {
+.content-cell:nth-child(odd) {
     background: #CCC;
 }

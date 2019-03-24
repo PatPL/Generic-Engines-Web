@@ -2,6 +2,16 @@ var ListName = "Unnamed";
 let ListNameDisplay: EditableField;
 let MainEngineTable: HtmlTable;
 
+//Website exit confirmation
+window.onbeforeunload = (e) => {
+    if (MainEngineTable.Items.length != 0) {
+        e.returnValue = "Are you sure that you want to leave this page? You will lose all unsaved data";
+        return "Are you sure that you want to leave this page? You will lose all unsaved data";
+    } else {
+        return;
+    }
+}
+
 addEventListener ("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField (window, "ListName", document.getElementById ("list-name")!);
     
@@ -56,9 +66,13 @@ function NewButton_Click () {
 
 function OpenButton_Click () {
     if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from file?")) {
-        FileIO.OpenBinary (".enl", (data) => {
+        FileIO.OpenBinary (".enl", (data, filename) => {
             if (data) {
-                alert (`got file ${data.length}`);
+                filename = filename.replace (".enl", "");
+                ListNameDisplay.SetValue (filename);
+                
+                MainEngineTable.Items = Serializer.DeserializeMany (data);
+                MainEngineTable.RebuildTable ();
             } else {
                 //No file chosen?
             }
@@ -67,11 +81,20 @@ function OpenButton_Click () {
 }
 
 function AppendButton_Click () {
-    
+    FileIO.OpenBinary (".enl", (data) => { //TODO: Multiple file input
+        if (data) {
+            MainEngineTable.Items = Serializer.DeserializeMany (data, MainEngineTable.Items);
+            MainEngineTable.RebuildTable ();
+        } else {
+            //No file chosen?
+        }
+    });
 }
 
 function SaveButton_Click () {
+    let data = Serializer.SerializeMany (MainEngineTable.Items);
     
+    FileIO.SaveBinary (`${ListName}.enl`, data);
 }
 
 function ValidateButton_Click () {
@@ -83,7 +106,12 @@ function ExportButton_Click () {
 }
 
 function DuplicateButton_Click () {
+    let indices = MainEngineTable.SelectedRows.sort ((a, b) => { return a - b; });
+    indices.forEach (index => {
+        MainEngineTable.Items.push (Serializer.Copy (MainEngineTable.Rows[index][1]));
+    });
     
+    MainEngineTable.RebuildTable ();
 }
 
 function AddButton_Click () {

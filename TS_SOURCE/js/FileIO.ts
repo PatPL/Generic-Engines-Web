@@ -26,39 +26,39 @@ class FileIO {
         
     }
     
-    public static OpenText(extensions?: string, callback?: (data: string | null) => void) {
-        this.Open(FileType.Text, extensions, (result) => {
+    public static OpenText(extensions?: string, callback?: (data: string | null, filename: string) => void) {
+        this.Open(FileType.Text, extensions, (result, filename) => {
             if (callback) {
                 if (result) {
                     if (typeof result === "string") {
-                        callback (result);
+                        callback (result, filename);
                     } else {
-                        callback (null);
+                        callback (null, filename);
                     }
                 } else {
-                    callback (null);
+                    callback (null, filename);
                 }
             }
         });
     }
     
-    public static OpenBinary(extensions?: string, callback?: (data: Uint8Array | null) => void) {
-        this.Open(FileType.Binary, extensions, (result) => {
+    public static OpenBinary(extensions?: string, callback?: (data: Uint8Array | null, filename: string) => void) {
+        this.Open(FileType.Binary, extensions, (result, filename) => {
             if (callback) {
                 if (result) {
                     if (result instanceof Uint8Array) {
-                        callback (result);
+                        callback (result, filename);
                     } else {
-                        callback (null);
+                        callback (null, filename);
                     }
                 } else {
-                    callback (null);
+                    callback (null, filename);
                 }
             }
         });
     }
 
-    private static Open(type: FileType, extensions?: string, callback?: (data: string | Uint8Array | null) => void) {
+    private static Open(type: FileType, extensions?: string, callback?: (data: string | Uint8Array | null, filename: string) => void) {
         let fileDialog: HTMLInputElement = document.createElement("input");
         fileDialog.type = "file";
         if (extensions && extensions != "") {
@@ -71,7 +71,7 @@ class FileIO {
                 console.log("No file selected?");
 
                 if (callback) {
-                    callback(null);
+                    callback(null, "");
                 }
 
                 return;
@@ -83,9 +83,9 @@ class FileIO {
             reader.onload = () => {
                 if (callback) {
                     if (reader.result instanceof ArrayBuffer) {
-                        callback(new Uint8Array(reader.result));
+                        callback(new Uint8Array(reader.result), file.name);
                     } else {
-                        callback(reader.result);
+                        callback(reader.result, file.name);
                     }
 
                 }

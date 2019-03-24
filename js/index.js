@@ -420,7 +420,7 @@ class HtmlTable {
             }
             output[i] = {
                 Name: i.toUpperCase(),
-                Width: 200
+                DefaultWidth: 200
             };
         }
         return output;
@@ -504,11 +504,11 @@ class HtmlTable {
         for (let columnID in this.ColumnsDefinitions) {
             let column = document.createElement("div");
             column.classList.add("content-column");
-            column.style.width = `${this.ColumnsDefinitions[columnID].Width}px`;
+            column.style.width = `${this.ColumnsDefinitions[columnID].DefaultWidth}px`;
             this.Columns[columnID] = column;
             let columnHeader = document.createElement("div");
             columnHeader.classList.add("content-header");
-            columnHeader.style.width = `${this.ColumnsDefinitions[columnID].Width}px`;
+            columnHeader.style.width = `${this.ColumnsDefinitions[columnID].DefaultWidth}px`;
             columnHeader.innerHTML = this.ColumnsDefinitions[columnID].Name;
             columnHeader.title = this.ColumnsDefinitions[columnID].Name;
             headerContainer.appendChild(columnHeader);
@@ -807,7 +807,7 @@ addEventListener("DOMContentLoaded", () => {
     MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.Kerosene, 5324]);
     MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.NitrousOxide, 242400]);
     MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.Helium, 1242400]);
-    MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns(new Engine(MainEngineTable.Items));
+    MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
     MainEngineTable.RebuildTable();
 });
 function NewButton_Click() {
@@ -2018,8 +2018,15 @@ class Dimensions {
 }
 class Engine {
     constructor(originList) {
+        this.Spacer = false;
         this.EditableFieldMetadata = {
-            ID: {
+            Spacer: {
+                GetDisplayElement: () => {
+                    let tmp = document.createElement("div");
+                    tmp.classList.add("content-cell-content");
+                    return tmp;
+                }
+            }, ID: {
                 ApplyChangesToValue: (e) => {
                     let output = "";
                     let rawInput = e.value;
@@ -2221,6 +2228,84 @@ class Engine {
         this.EngineList = originList;
     }
 }
+Engine.ColumnDefinitions = {
+    Active: {
+        Name: "Active",
+        DefaultWidth: 24
+    }, ID: {
+        Name: "ID",
+        DefaultWidth: 200
+    }, Labels: {
+        Name: "Name",
+        DefaultWidth: 300
+    }, Polymorphism: {
+        Name: "Polymorphism",
+        DefaultWidth: 200
+    }, EngineVariant: {
+        Name: "Type",
+        DefaultWidth: 80
+    }, Mass: {
+        Name: "Mass",
+        DefaultWidth: 80
+    }, Thrust: {
+        Name: "Vacuum thrust",
+        DefaultWidth: 120
+    }, MinThrust: {
+        Name: "Minimum thrust",
+        DefaultWidth: 60
+    }, AtmIsp: {
+        Name: "Sea level Isp",
+        DefaultWidth: 80
+    }, VacIsp: {
+        Name: "Vacuum Isp",
+        DefaultWidth: 80
+    }, PressureFed: {
+        Name: "Pressure fed",
+        DefaultWidth: 24
+    }, NeedsUllage: {
+        Name: "Ullage",
+        DefaultWidth: 24
+    }, FuelRatios: {
+        Name: "Propellants",
+        DefaultWidth: 240
+    }, Ignitions: {
+        Name: "Ignitions",
+        DefaultWidth: 60
+    }, Visuals: {
+        Name: "Visuals",
+        DefaultWidth: 240
+    }, Dimensions: {
+        Name: "Size",
+        DefaultWidth: 160
+    }, Gimbal: {
+        Name: "Gimbal",
+        DefaultWidth: 240
+    }, TestFlight: {
+        Name: "Test flight",
+        DefaultWidth: 400
+    }, TechUnlockNode: {
+        Name: "R&D unlock node",
+        DefaultWidth: 200
+    }, EntryCost: {
+        Name: "Entry cost",
+        DefaultWidth: 120
+    }, Cost: {
+        Name: "Cost",
+        DefaultWidth: 100
+    }, AlternatorPower: {
+        Name: "Alternator",
+        DefaultWidth: 80
+    }, Tank: {
+        Name: "Tank",
+        DefaultWidth: 320
+    }, ThrustCurve: {
+        Name: "Thrust curve",
+        DefaultWidth: 200
+    }, Spacer: {
+        Name: "",
+        DefaultWidth: 200
+    }
+};
 class FuelRatios {
     constructor() {
         this.Items = [[Fuel.Hydrazine, 1]];
@@ -2900,22 +2985,25 @@ class TestFlight {
         tmp.classList.add("content-cell-content");
         tmp.style.height = "147px";
         tmp.style.padding = "0";
+        tmp.innerHTML = `
+            <div class="content-cell-content" style="height: 24px;"><input type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Enable Test Flight</span></div>
+        `;
         let grid = document.createElement("div");
         grid.style.display = "grid";
         grid.style.gridTemplateColumns = "310px auto 26px";
-        grid.style.gridTemplateRows = "24px 24px 24px 24px 24px 24px";
+        grid.style.gridTemplateRows = "24px 24px 24px 24px 24px";
         grid.style.gridTemplateAreas = `
-            "a b b"
             "c d e"
             "f g h"
             "i j k"
             "l m n"
             "o p q"
         `;
+        let checkbox = tmp.querySelector("input");
+        checkbox.addEventListener("change", () => {
+            grid.style.display = checkbox.checked ? "grid" : "none";
+        });
         grid.innerHTML = `
-            <div class="content-cell-content" style="grid-area: a;">Enable Test Flight</div>
-            <div class="content-cell-content" style="grid-area: b;"><input type="checkbox" style="position: relative; top: -1px;"></div>
-            
             <div class="content-cell-content" style="grid-area: c;">Rated burn time</div>
             <div style="grid-area: d;"><input style="width: calc(100%);"></div>
             <div class="content-cell-content" style="grid-area: e;">s</div>
@@ -2941,6 +3029,7 @@ class TestFlight {
     }
     ApplyValueToEditElement(e) {
         let inputs = e.querySelectorAll("input");
+        e.children[1].style.display = this.EnableTestFlight ? "grid" : "none";
         inputs[0].checked = this.EnableTestFlight;
         inputs[1].value = this.RatedBurnTime.toString();
         inputs[2].value = this.StartReliability0.toString();

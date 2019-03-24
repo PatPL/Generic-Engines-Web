@@ -129,7 +129,7 @@ addEventListener ("DOMContentLoaded", () => {
     (<Engine> MainEngineTable.Items[7]).Tank.TanksContents.push ([Fuel.NitrousOxide, 242400]);
     (<Engine> MainEngineTable.Items[7]).Tank.TanksContents.push ([Fuel.Helium, 1242400]);
     
-    MainEngineTable.ColumnsDefinitions = HtmlTable.AutoGenerateColumns (new Engine (MainEngineTable.Items));
+    MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
     
     MainEngineTable.RebuildTable ();
     

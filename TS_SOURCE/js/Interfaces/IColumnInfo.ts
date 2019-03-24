@@ -1,6 +1,7 @@
 interface IColumnInfo {
     
     Name: string;
-    Width: number;
+    //Width: number;
+    DefaultWidth: number;
     
 }

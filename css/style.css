@@ -180,6 +180,7 @@ input[type="checkbox"]:checked {
     position: relative;
     display: inline-block;
     white-space: normal;
+    word-break: break-all;
     
     box-sizing: border-box;
     border-color: #444;

@@ -74,7 +74,7 @@ class HtmlTable {
             
             output[i] = {
                 Name: i.toUpperCase (),
-                Width: 200
+                DefaultWidth: 200
             }
         }
         
@@ -174,12 +174,12 @@ class HtmlTable {
         for (let columnID in this.ColumnsDefinitions) {
             let column = document.createElement ("div");
             column.classList.add ("content-column");
-            column.style.width = `${this.ColumnsDefinitions[columnID].Width}px`;
+            column.style.width = `${this.ColumnsDefinitions[columnID].DefaultWidth}px`;
             this.Columns[columnID] = column;
             
             let columnHeader = document.createElement ("div");
             columnHeader.classList.add ("content-header");
-            columnHeader.style.width = `${this.ColumnsDefinitions[columnID].Width}px`;
+            columnHeader.style.width = `${this.ColumnsDefinitions[columnID].DefaultWidth}px`;
             columnHeader.innerHTML = this.ColumnsDefinitions[columnID].Name;
             columnHeader.title = this.ColumnsDefinitions[columnID].Name;
             headerContainer.appendChild (columnHeader);

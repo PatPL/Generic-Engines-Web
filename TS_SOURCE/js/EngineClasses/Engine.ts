@@ -1,7 +1,92 @@
 class Engine {
     
-    EditableFieldMetadata: { [id: string]: IEditable } = {
-        ID: {
+    public static readonly ColumnDefinitions: { [id: string]: IColumnInfo } = {
+        Active: {
+            Name: "Active",
+            DefaultWidth: 24
+        }, ID: {
+            Name: "ID",
+            DefaultWidth: 200
+        }, Labels: {
+            Name: "Name",
+            DefaultWidth: 300
+        }, Polymorphism: {
+            Name: "Polymorphism",
+            DefaultWidth: 200
+        }, EngineVariant: {
+            Name: "Type",
+            DefaultWidth: 80
+        }, Mass: {
+            Name: "Mass",
+            DefaultWidth: 80
+        }, Thrust: {
+            Name: "Vacuum thrust",
+            DefaultWidth: 120
+        }, MinThrust: {
+            Name: "Minimum thrust",
+            DefaultWidth: 60
+        }, AtmIsp: {
+            Name: "Sea level Isp",
+            DefaultWidth: 80
+        }, VacIsp: {
+            Name: "Vacuum Isp",
+            DefaultWidth: 80
+        }, PressureFed: {
+            Name: "Pressure fed",
+            DefaultWidth: 24
+        }, NeedsUllage: {
+            Name: "Ullage",
+            DefaultWidth: 24
+        }, FuelRatios: {
+            Name: "Propellants",
+            DefaultWidth: 240
+        }, Ignitions: {
+            Name: "Ignitions",
+            DefaultWidth: 60
+        }, Visuals: {
+            Name: "Visuals",
+            DefaultWidth: 240
+        }, Dimensions: {
+            Name: "Size",
+            DefaultWidth: 160
+        }, Gimbal: {
+            Name: "Gimbal",
+            DefaultWidth: 240
+        }, TestFlight: {
+            Name: "Test flight",
+            DefaultWidth: 400
+        }, TechUnlockNode: {
+            Name: "R&D unlock node",
+            DefaultWidth: 200
+        }, EntryCost: {
+            Name: "Entry cost",
+            DefaultWidth: 120
+        }, Cost: {
+            Name: "Cost",
+            DefaultWidth: 100
+        }, AlternatorPower: {
+            Name: "Alternator",
+            DefaultWidth: 80
+        }, Tank: {
+            Name: "Tank",
+            DefaultWidth: 320
+        }, ThrustCurve: {
+            Name: "Thrust curve",
+            DefaultWidth: 200
+        }, Spacer: {
+            Name: "",
+            DefaultWidth: 200
+        }
+    }
+    Spacer: boolean = false; // For an empty space at the end of the table
+    public readonly EditableFieldMetadata: { [id: string]: IEditable } = {
+        Spacer: {
+            GetDisplayElement: () => {
+                let tmp = document.createElement ("div");
+                tmp.classList.add ("content-cell-content");
+                return tmp;
+            }
+        }, ID: {
             ApplyChangesToValue: (e) => {
                 let output = "";
                 let rawInput = (e as HTMLInputElement).value;

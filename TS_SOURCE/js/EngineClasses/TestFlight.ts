@@ -43,12 +43,15 @@ class TestFlight implements IEditable {
         tmp.style.height = "147px";
         tmp.style.padding = "0";
         
+        tmp.innerHTML = `
+            <div class="content-cell-content" style="height: 24px;"><input type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Enable Test Flight</span></div>
+        `;
+        
         let grid = document.createElement ("div");
         grid.style.display = "grid";
         grid.style.gridTemplateColumns = "310px auto 26px";
-        grid.style.gridTemplateRows = "24px 24px 24px 24px 24px 24px";
+        grid.style.gridTemplateRows = "24px 24px 24px 24px 24px";
         grid.style.gridTemplateAreas = `
-            "a b b"
             "c d e"
             "f g h"
             "i j k"
@@ -56,10 +59,12 @@ class TestFlight implements IEditable {
             "o p q"
         `;
         
+        let checkbox = tmp.querySelector ("input")!;
+        checkbox.addEventListener ("change", () => {
+            grid.style.display = checkbox.checked ? "grid" : "none";
+        });
+        
         grid.innerHTML = `
-            <div class="content-cell-content" style="grid-area: a;">Enable Test Flight</div>
-            <div class="content-cell-content" style="grid-area: b;"><input type="checkbox" style="position: relative; top: -1px;"></div>
-            
             <div class="content-cell-content" style="grid-area: c;">Rated burn time</div>
             <div style="grid-area: d;"><input style="width: calc(100%);"></div>
             <div class="content-cell-content" style="grid-area: e;">s</div>
@@ -88,6 +93,8 @@ class TestFlight implements IEditable {
     
     public ApplyValueToEditElement (e: HTMLElement): void {
         let inputs = e.querySelectorAll ("input");
+        
+        (e.children[1] as HTMLElement).style.display = this.EnableTestFlight ? "grid" : "none";
         
         inputs[0].checked = this.EnableTestFlight;
         inputs[1].value = this.RatedBurnTime.toString ();

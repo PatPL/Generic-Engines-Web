@@ -1,6 +1,6 @@
 class Serializer {
 
-    public static readonly Version = 12;
+    public static readonly Version = 13;
 
     public static Serialize(e: Engine): Uint8Array {
         let i = 0;
@@ -55,9 +55,7 @@ class Serializer {
             1 + //bool - UseTanks
             1 + //bool - LimitTanks
             1 + //Polymorphism - PolyType
-            e.Polymorphism.MasterEngineName.length + 2 + //1B * length + 2B length header - MasterEngineName
-            4 + //int - MasterEngineCost
-            8 //double - MasterEngineMass
+            e.Polymorphism.MasterEngineName.length + 2 //1B * length + 2B length header - MasterEngineName
         );
         
         //short - Version (BIG ENDIAN - BACKWARDS COMPATIBILITY)
@@ -72,8 +70,8 @@ class Serializer {
         output[i++] = e.ID.length % 256;
         output[i++] = e.ID.length / 256;
         //String data
-        for (let i = 0; i < e.ID.length; ++i) {
-            output[i++] = e.ID.charCodeAt (i);
+        for (let c = 0; c < e.ID.length; ++c) {
+            output[i++] = e.ID.charCodeAt (c);
         }
         
         //double - Mass
@@ -166,6 +164,35 @@ class Serializer {
             i += 8;
         }
         
+        //double - AlternatorPower
+        output.set (BitConverter.DoubleToByteArray (e.AlternatorPower), i);
+        i += 8;
+        
+        //bool - GimbalConfigNotDefault
+        output[i++] = !Gimbal.IsDefault (e.Gimbal) ? 1 : 0;
+        
+        //Include all properties inside brackets only if any Gimbal properties were changed
+        if (!Gimbal.IsDefault (e.Gimbal)) {
+            //bool - AdvancedGimbal
+            output[i++] = e.Gimbal.AdvancedGimbal ? 1 : 0;
+
+            //double - GimbalNX
+            output.set (BitConverter.DoubleToByteArray (e.Gimbal.GimbalNX), i);
+            i += 8;
+
+            //double - GimbalPX
+            output.set (BitConverter.DoubleToByteArray (e.Gimbal.GimbalPX), i);
+            i += 8;
+
+            //double - GimbalNY
+            output.set (BitConverter.DoubleToByteArray (e.Gimbal.GimbalNY), i);
+            i += 8;
+
+            //double - GimbalPY
+            output.set (BitConverter.DoubleToByteArray (e.Gimbal.GimbalPY), i);
+            i += 8;
+        }
+        
         //short - ModelID
         output[i++] = e.Visuals.ModelID % 256;
         output[i++] = e.Visuals.ModelID / 256;
@@ -187,8 +214,8 @@ class Serializer {
         output[i++] = e.Labels.EngineName.length % 256;
         output[i++] = e.Labels.EngineName.length / 256;
         //String data
-        for (let i = 0; i < e.ID.length; ++i) {
-            output[i++] = e.Labels.EngineName.charCodeAt (i);
+        for (let c = 0; c < e.Labels.EngineName.length; ++c) {
+            output[i++] = e.Labels.EngineName.charCodeAt (c);
         }
         
         //bool - ManufacturerNotDefault
@@ -200,8 +227,8 @@ class Serializer {
             output[i++] = e.Labels.EngineManufacturer.length % 256;
             output[i++] = e.Labels.EngineManufacturer.length / 256;
             //String data
-            for (let i = 0; i < e.ID.length; ++i) {
-                output[i++] = e.Labels.EngineManufacturer.charCodeAt (i);
+            for (let c = 0; c < e.ID.length; ++c) {
+                output[i++] = e.Labels.EngineManufacturer.charCodeAt (c);
             }
         }
         
@@ -214,8 +241,8 @@ class Serializer {
             output[i++] = e.Labels.EngineDescription.length % 256;
             output[i++] = e.Labels.EngineDescription.length / 256;
             //String data
-            for (let i = 0; i < e.ID.length; ++i) {
-                output[i++] = e.Labels.EngineDescription.charCodeAt (i);
+            for (let c = 0; c < e.Labels.EngineDescription.length; ++c) {
+                output[i++] = e.Labels.EngineDescription.charCodeAt (c);
             }
         }
         
@@ -260,8 +287,16 @@ class Serializer {
         output[i++] = e.Tank.LimitTanks ? 1 : 0;
         
         //byte - PolyType
-        //output[i++] = 
-        //TODO: Create Polymorphism object and finish Serializer method
+        output[i++] = e.Polymorphism.PolyType;
+        
+        //1B * length + 2B length header - MasterEngineName
+        //String header
+        output[i++] = e.Polymorphism.MasterEngineName.length % 256;
+        output[i++] = e.Polymorphism.MasterEngineName.length / 256;
+        //String data
+        for (let c = 0; c < e.Polymorphism.MasterEngineName.length; ++c) {
+            output[i++] = e.Polymorphism.MasterEngineName.charCodeAt (c);
+        }
         
         return output;
     }

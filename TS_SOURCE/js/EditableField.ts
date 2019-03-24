@@ -78,6 +78,11 @@ class EditableField {
         this.ShowEditMode (false);
     }
     
+    public SetValue (newValue: any) {
+        this.ValueOwner[this.ValueName] = newValue;
+        this.ApplyValueToDisplayElement ();
+    }
+    
     private GetDisplayElement (): HTMLElement {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
             throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;

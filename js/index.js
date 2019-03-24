@@ -64,6 +64,10 @@ class EditableField {
         EditableField.EditedField = null;
         this.ShowEditMode(false);
     }
+    SetValue(newValue) {
+        this.ValueOwner[this.ValueName] = newValue;
+        this.ApplyValueToDisplayElement();
+    }
     GetDisplayElement() {
         if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty(this.ValueName)) {
             throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
@@ -593,16 +597,14 @@ class Serializer {
             1 +
             1 +
             1 +
-            e.Polymorphism.MasterEngineName.length + 2 +
-            4 +
-            8);
+            e.Polymorphism.MasterEngineName.length + 2);
         output[i++] = Serializer.Version / 256;
         output[i++] = Serializer.Version % 256;
         output[i++] = e.Active ? 1 : 0;
         output[i++] = e.ID.length % 256;
         output[i++] = e.ID.length / 256;
-        for (let i = 0; i < e.ID.length; ++i) {
-            output[i++] = e.ID.charCodeAt(i);
+        for (let c = 0; c < e.ID.length; ++c) {
+            output[i++] = e.ID.charCodeAt(c);
         }
         output.set(BitConverter.DoubleToByteArray(e.Mass), i);
         i += 8;
@@ -649,6 +651,20 @@ class Serializer {
             output.set(BitConverter.DoubleToByteArray(e.TestFlight.CycleReliability10k), i);
             i += 8;
         }
+        output.set(BitConverter.DoubleToByteArray(e.AlternatorPower), i);
+        i += 8;
+        output[i++] = !Gimbal.IsDefault(e.Gimbal) ? 1 : 0;
+        if (!Gimbal.IsDefault(e.Gimbal)) {
+            output[i++] = e.Gimbal.AdvancedGimbal ? 1 : 0;
+            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalNX), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalPX), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalNY), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalPY), i);
+            i += 8;
+        }
         output[i++] = e.Visuals.ModelID % 256;
         output[i++] = e.Visuals.ModelID / 256;
         output[i++] = e.Visuals.PlumeID % 256;
@@ -659,23 +675,23 @@ class Serializer {
         i += 4;
         output[i++] = e.Labels.EngineName.length % 256;
         output[i++] = e.Labels.EngineName.length / 256;
-        for (let i = 0; i < e.ID.length; ++i) {
-            output[i++] = e.Labels.EngineName.charCodeAt(i);
+        for (let c = 0; c < e.Labels.EngineName.length; ++c) {
+            output[i++] = e.Labels.EngineName.charCodeAt(c);
         }
         output[i++] = !Labels.IsManufacturerDefault(e.Labels) ? 1 : 0;
         if (!Labels.IsManufacturerDefault(e.Labels)) {
             output[i++] = e.Labels.EngineManufacturer.length % 256;
             output[i++] = e.Labels.EngineManufacturer.length / 256;
-            for (let i = 0; i < e.ID.length; ++i) {
-                output[i++] = e.Labels.EngineManufacturer.charCodeAt(i);
+            for (let c = 0; c < e.ID.length; ++c) {
+                output[i++] = e.Labels.EngineManufacturer.charCodeAt(c);
             }
         }
         output[i++] = !Labels.IsDescriptionDefault(e.Labels) ? 1 : 0;
         if (!Labels.IsDescriptionDefault(e.Labels)) {
             output[i++] = e.Labels.EngineDescription.length % 256;
             output[i++] = e.Labels.EngineDescription.length / 256;
-            for (let i = 0; i < e.ID.length; ++i) {
-                output[i++] = e.Labels.EngineDescription.charCodeAt(i);
+            for (let c = 0; c < e.Labels.EngineDescription.length; ++c) {
+                output[i++] = e.Labels.EngineDescription.charCodeAt(c);
             }
         }
         output[i++] = e.Dimensions.UseBaseWidth ? 1 : 0;
@@ -700,13 +716,21 @@ class Serializer {
         });
         output[i++] = e.Tank.UseTanks ? 1 : 0;
         output[i++] = e.Tank.LimitTanks ? 1 : 0;
+        output[i++] = e.Polymorphism.PolyType;
+        output[i++] = e.Polymorphism.MasterEngineName.length % 256;
+        output[i++] = e.Polymorphism.MasterEngineName.length / 256;
+        for (let c = 0; c < e.Polymorphism.MasterEngineName.length; ++c) {
+            output[i++] = e.Polymorphism.MasterEngineName.charCodeAt(c);
+        }
         return output;
     }
 }
-Serializer.Version = 12;
+Serializer.Version = 13;
 var ListName = "Unnamed";
+let ListNameDisplay;
 let MainEngineTable;
 addEventListener("DOMContentLoaded", () => {
+    ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     let images = document.querySelectorAll(".option-button");
     images.forEach(image => {
         image.ondragstart = () => { return false; };
@@ -732,89 +756,27 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-remove").addEventListener("click", RemoveButton_Click);
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
-    let ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
-    for (let i = 0; i < 8; ++i) {
-        MainEngineTable.Items.push(new Engine(MainEngineTable.Items));
-        MainEngineTable.Items[i].Active = true;
-        MainEngineTable.Items[i].ID += `-${i}`;
-    }
-    MainEngineTable.Items[1].Polymorphism.PolyType = PolymorphismType.MultiModeMaster;
-    MainEngineTable.Items[2].Polymorphism.PolyType = PolymorphismType.MultiModeMaster;
-    MainEngineTable.Items[3].Polymorphism.PolyType = PolymorphismType.MultiConfigMaster;
-    MainEngineTable.Items[4].Polymorphism.PolyType = PolymorphismType.MultiConfigMaster;
-    MainEngineTable.Items[1].Gimbal.AdvancedGimbal = true;
-    MainEngineTable.Items[1].Gimbal.GimbalNX = 3;
-    MainEngineTable.Items[1].Gimbal.GimbalPX = 6;
-    MainEngineTable.Items[1].Gimbal.GimbalNY = 9;
-    MainEngineTable.Items[1].Gimbal.GimbalPY = 12;
-    MainEngineTable.Items[2].Labels.EngineName = "Custom Name";
-    MainEngineTable.Items[2].Labels.EngineManufacturer = "R";
-    MainEngineTable.Items[2].Labels.EngineDescription = `Mój stary to fanatyk wędkarstwa. Pół mieszkania zajebane wędkami najgorsze. Średnio raz w miesiącu ktoś wdepnie w leżący na ziemi haczyk czy kotwicę i trzeba wyciągać w szpitalu bo mają zadziory na końcu. W swoim 22 letnim życiu już z 10 razy byłem na takim zabiegu. Tydzień temu poszedłem na jakieś losowe badania to baba z recepcji jak mnie tylko zobaczyła to kazała buta ściągać xD bo myślała, że znowu hak w nodze.
-
-    Druga połowa mieszkania zajebana Wędkarzem Polskim, Światem Wędkarza, Super Karpiem xD itp. Co tydzień ojciec robi objazd po wszystkich kioskach w mieście, żeby skompletować wszystkie wędkarskie tygodniki. Byłem na tyle głupi, że nauczyłem go into internety bo myślałem, że trochę pieniędzy zaoszczędzimy na tych gazetkach ale teraz nie dosyć, że je kupuje to jeszcze siedzi na jakichś forach dla wędkarzy i kręci gównoburze z innymi wędkarzami o najlepsze zanęty itp. Potrafi drzeć mordę do monitora albo wypierdolić klawiaturę za okno. Kiedyś ojciec mnie wkurwił to założyłem tam konto i go trolowałem pisząc w jego tematach jakieś losowe głupoty typu karasie jedzo guwno. Matka nie nadążała z gotowaniem bigosu na uspokojenie. Aha, ma już na forum rangę SUM, za najebanie 10k postów."
-    
-    "Jak jest ciepło to co weekend zapierdala na ryby. Od jakichś 5 lat w każdą niedzielę jem rybę na obiad a ojciec pierdoli o zaletach jedzenia tego wodnego gówna. Jak się dostałem na studia to stary przez tydzień pie**olił że to dzięki temu, że jem dużo ryb bo zawierają fosfor i mózg mi lepiej pracuje.
-    
-    Co sobotę budzi ze swoim znajomym mirkiem całą rodzinę o 4 w nocy bo hałasują pakując wędki, robiąc kanapki itd.
-    
-    Przy jedzeniu zawsze pierdoli o rybach i za każdym razem temat schodzi w końcu na Polski Związek Wędkarski, ojciec sam się nakręca i dostaje strasznego bólu dupy durr niedostatecznie zarybiajo tylko kradno hurr, robi się przy tym cały czerwony i odchodzi od stołu klnąc i idzie czytać Wielką Encyklopedię Ryb Rzecznych żeby się uspokoić.
-    
-    W tym roku sam sobie kupił na święta ponton. Oczywiście do wigilii nie wytrzymał tylko już wczoraj go rozpakował i nadmuchał w dużym pokoju. Ubrał się w ten swój cały strój wędkarski i siedział cały dzień w tym pontonie na środku mieszkania. Obiad (karp) też w nim zjadł [cool][cześć]
-    
-    Gdybym mnie na długość ręki dopuścili do wszystkich ryb w polsce to bym wziął i zapierdolił.
-    
-    Jak któregoś razu, jeszcze w podbazie czy gimbazie, miałem urodziny to stary jako prezent wziął mnie ze sobą na ryby w drodze wyjątku. Super prezent kurwo.
-    
-    Pojechaliśmy gdzieś wpizdu za miasto, dochodzimy nad jezioro a ojcu już się oczy świecą i oblizuje wargi podniecony. Rozłożył cały sprzęt i siedzimy nad woda i patrzymy na spławiki. Po pięciu minutach mi się znudziło więc włączyłem discmana to mnie ojciec pierdolnął wędką po głowie, że ryby słyszą muzykę z moich słuchawek i się płoszą. Jak się chciałem podrapać po dupie to zaraz 'krzyczał szeptem', żebym się nie wiercił bo szeleszczę i ryby z wody widzą jak się ruszam i uciekają. 6 godzin musiałem siedzieć w bezruchu i patrzeć na wodę jak w jakimś jebanym Guantanamo. Urodziny mam w listopadzie więc jeszcze do tego było zimno jak sam skurwysyn. W pewnym momencie ojciec odszedł kilkanaście metrów w las i się spierdział. Wytłumaczył mi, że trzeba w lesie pierdzieć bo inaczej ryby słyszą i czują.
-    
-    Wspomniałem, że ojciec ma kolegę mirka, z którym jeździ na ryby. Kiedyś towarzyszem wypraw rybnych był hehe Zbyszek. Człowiek o kształcie piłki z wąsem i 365 dni w roku w kamizelce BOMBER. Byli z moim ojcem prawie jak bracia, przychodził z żoną Bożeną na wigilie do nas itd. Raz ojciec miał imieniny zbysio przyszedł na hehe kielicha. Najebali się i oczywiście cały czas gadali o wędkowaniu i rybach. Ja siedziałem u siebie w pokoju. W pewnym momencie zaczeli drzeć na siebie mordę, czy generalnie lepsze są szczupaki czy sumy.`;
-    MainEngineTable.Items[3].Visuals.ModelID = Model.Skipper;
-    MainEngineTable.Items[3].Visuals.PlumeID = Plume.Hypergolic_Lower;
-    MainEngineTable.Items[1].TestFlight.RatedBurnTime = 240;
-    MainEngineTable.Items[2].TestFlight.EnableTestFlight = true;
-    MainEngineTable.Items[3].TestFlight.EnableTestFlight = true;
-    MainEngineTable.Items[3].TestFlight.RatedBurnTime = 240;
-    MainEngineTable.Items[1].FuelRatios.Items.push([Fuel.NTO, 4]);
-    MainEngineTable.Items[2].FuelRatios.Items.push([Fuel.ElectricCharge, 60]);
-    MainEngineTable.Items[3].FuelRatios.Items.push([Fuel.LqdOxygen, 2]);
-    MainEngineTable.Items[3].FuelRatios.Items.push([Fuel.ElectricCharge, 800]);
-    MainEngineTable.Items[1].Tank.UseTanks = true;
-    MainEngineTable.Items[2].Tank.UseTanks = true;
-    MainEngineTable.Items[2].Tank.LimitTanks = true;
-    MainEngineTable.Items[2].Tank.TanksVolume = 0;
-    MainEngineTable.Items[2].Tank.TanksContents.push([Fuel.Kerosene, 5000]);
-    MainEngineTable.Items[3].Tank.UseTanks = true;
-    MainEngineTable.Items[3].Tank.LimitTanks = true;
-    MainEngineTable.Items[3].Tank.TanksVolume = 3000;
-    MainEngineTable.Items[3].Tank.TanksContents.push([Fuel.Kerosene, 5000]);
-    MainEngineTable.Items[4].Tank.UseTanks = true;
-    MainEngineTable.Items[4].Tank.LimitTanks = true;
-    MainEngineTable.Items[4].Tank.TanksVolume = 9000;
-    MainEngineTable.Items[4].Tank.TanksContents.push([Fuel.Kerosene, 5000]);
-    MainEngineTable.Items[5].Tank.UseTanks = true;
-    MainEngineTable.Items[5].Tank.LimitTanks = true;
-    MainEngineTable.Items[5].Tank.TanksVolume = 3000;
-    MainEngineTable.Items[5].Tank.TanksContents.push([Fuel.Kerosene, 2000]);
-    MainEngineTable.Items[5].Tank.TanksContents.push([Fuel.NitrousOxide, 200000]);
-    MainEngineTable.Items[6].Tank.UseTanks = true;
-    MainEngineTable.Items[6].Tank.LimitTanks = true;
-    MainEngineTable.Items[6].Tank.TanksVolume = 9000;
-    MainEngineTable.Items[6].Tank.TanksContents.push([Fuel.Kerosene, 5000]);
-    MainEngineTable.Items[6].Tank.TanksContents.push([Fuel.NitrousOxide, 200000]);
-    MainEngineTable.Items[7].Tank.UseTanks = true;
-    MainEngineTable.Items[7].Tank.LimitTanks = false;
-    MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.Kerosene, 5324]);
-    MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.NitrousOxide, 242400]);
-    MainEngineTable.Items[7].Tank.TanksContents.push([Fuel.Helium, 1242400]);
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
     MainEngineTable.RebuildTable();
 });
 function NewButton_Click() {
-    MainEngineTable.Items = [];
-    MainEngineTable.RebuildTable();
+    if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open an empty list?")) {
+        MainEngineTable.Items = [];
+        MainEngineTable.RebuildTable();
+        ListNameDisplay.SetValue("Unnamed");
+    }
 }
 function OpenButton_Click() {
+    if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from file?")) {
+        FileIO.OpenBinary(".enl", (data) => {
+            if (data) {
+                alert(`got file ${data.length}`);
+            }
+            else {
+            }
+        });
+    }
 }
 function AppendButton_Click() {
 }

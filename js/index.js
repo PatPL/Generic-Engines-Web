@@ -1,5 +1,17 @@
 "use strict";
 class BitConverter {
+    static ByteArrayToDouble(array, offset) {
+        for (let i = 0; i < 8; ++i) {
+            this.view8.setUint8(i, array[offset + i]);
+        }
+        return this.view8.getFloat64(0, true);
+    }
+    static ByteArrayToInt(array, offset) {
+        for (let i = 0; i < 4; ++i) {
+            this.view8.setUint8(i, array[offset + i]);
+        }
+        return this.view8.getInt32(0, true);
+    }
     static DoubleToByteArray(number) {
         this.doubleBuffer[0] = number;
         return new Uint8Array(this.buffer8);
@@ -11,6 +23,8 @@ class BitConverter {
 }
 BitConverter.buffer8 = new ArrayBuffer(8);
 BitConverter.buffer4 = new ArrayBuffer(4);
+BitConverter.view8 = new DataView(BitConverter.buffer8);
+BitConverter.view4 = new DataView(BitConverter.buffer4);
 BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 class EditableField {
@@ -547,6 +561,40 @@ window.onpointermove = (event) => {
     Input.MouseY = event.clientY;
 };
 class Serializer {
+    static SerializeMany(engines) {
+        let data = [];
+        let length = 0;
+        engines.forEach(engine => {
+            data.push(Serializer.Serialize(engine));
+            length += data[data.length - 1].length;
+        });
+        let output = new Uint8Array(length);
+        let i = 0;
+        data.forEach(array => {
+            output.set(array, i);
+            i += array.length;
+        });
+        return output;
+    }
+    static DeserializeMany(data, appendToExisting) {
+        let output;
+        if (appendToExisting) {
+            output = appendToExisting;
+        }
+        else {
+            output = [];
+        }
+        let offset = 0;
+        while (offset < data.length) {
+            let [engine, addedOffset] = Serializer.Deserialize(data, offset, output);
+            output.push(engine);
+            offset += addedOffset;
+        }
+        if (offset != data.length) {
+            console.warn("Possible data corruption?");
+        }
+        return output;
+    }
     static Serialize(e) {
         let i = 0;
         let output = new Uint8Array(2 +
@@ -723,6 +771,197 @@ class Serializer {
             output[i++] = e.Polymorphism.MasterEngineName.charCodeAt(c);
         }
         return output;
+    }
+    static Deserialize(input, startOffset, originList) {
+        let output = new Engine(originList);
+        let i = startOffset;
+        let version = 0;
+        version += input[i++];
+        version *= 256;
+        version += input[i++];
+        if (version >= 0) {
+            output.Active = input[i++] == 1;
+            let stringLength = 0;
+            if (version >= 3) {
+                stringLength += input[i++];
+                stringLength += input[i++] * 256;
+            }
+            else {
+                stringLength += input[i++] * 256;
+                stringLength += input[i++];
+            }
+            output.ID = "";
+            for (let c = 0; c < stringLength; ++c) {
+                output.ID += String.fromCharCode(input[i++]);
+            }
+            output.Mass = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Thrust = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.AtmIsp = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.VacIsp = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            let dataLength = 0;
+            if (version >= 3) {
+                dataLength += input[i++];
+                dataLength += input[i++] * 256;
+            }
+            else {
+                dataLength += input[i++] * 256;
+                dataLength += input[i++];
+            }
+            output.FuelRatios.Items = [];
+            for (let c = 0; c < dataLength; ++c) {
+                let fuelType = 0;
+                if (version >= 3) {
+                    fuelType += input[i++];
+                    fuelType += input[i++] * 256;
+                }
+                else {
+                    fuelType += input[i++] * 256;
+                    fuelType += input[i++];
+                }
+                output.FuelRatios.Items.push([fuelType, BitConverter.ByteArrayToDouble(input, i)]);
+                i += 8;
+            }
+            output.Dimensions.Width = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Dimensions.Height = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Gimbal.Gimbal = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Cost = BitConverter.ByteArrayToInt(input, i);
+            i += 4;
+        }
+        if (version >= 1) {
+            output.MinThrust = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Ignitions = BitConverter.ByteArrayToInt(input, i);
+            i += 4;
+            output.PressureFed = input[i++] == 1;
+            output.NeedsUllage = input[i++] == 1;
+        }
+        if (version >= 2) {
+            output.FuelRatios.FuelVolumeRatios = input[i++] == 1;
+        }
+        if (version >= 3) {
+            if (input[i++] == 1) {
+                output.TestFlight.EnableTestFlight = input[i++] == 1;
+                output.TestFlight.RatedBurnTime = BitConverter.ByteArrayToInt(input, i);
+                i += 4;
+                output.TestFlight.StartReliability0 = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.TestFlight.StartReliability10k = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.TestFlight.CycleReliability0 = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.TestFlight.CycleReliability10k = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+            }
+        }
+        if (version >= 4) {
+            output.AlternatorPower = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+        }
+        if (version >= 5) {
+            if (input[i++] == 1) {
+                output.Gimbal.AdvancedGimbal = input[i++] == 1;
+                output.Gimbal.GimbalNX = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.Gimbal.GimbalPX = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.Gimbal.GimbalNY = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.Gimbal.GimbalPY = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+            }
+        }
+        if (version >= 6) {
+            output.Visuals.ModelID += input[i++];
+            output.Visuals.ModelID += input[i++] * 256;
+            output.Visuals.PlumeID += input[i++];
+            output.Visuals.PlumeID += input[i++] * 256;
+        }
+        if (version >= 7) {
+            output.TechUnlockNode += input[i++];
+            output.TechUnlockNode += input[i++] * 256;
+            output.EntryCost = BitConverter.ByteArrayToInt(input, i);
+            i += 4;
+            let stringLength = 0;
+            stringLength += input[i++];
+            stringLength += input[i++] * 256;
+            output.Labels.EngineName = "";
+            for (let c = 0; c < stringLength; ++c) {
+                output.Labels.EngineName += String.fromCharCode(input[i++]);
+            }
+            if (input[i++] == 1) {
+                let stringLength = 0;
+                stringLength += input[i++];
+                stringLength += input[i++] * 256;
+                output.Labels.EngineManufacturer = "";
+                for (let c = 0; c < stringLength; ++c) {
+                    output.Labels.EngineManufacturer += String.fromCharCode(input[i++]);
+                }
+            }
+            if (input[i++] == 1) {
+                let stringLength = 0;
+                stringLength += input[i++];
+                stringLength += input[i++] * 256;
+                output.Labels.EngineDescription = "";
+                for (let c = 0; c < stringLength; ++c) {
+                    output.Labels.EngineDescription += String.fromCharCode(input[i++]);
+                }
+            }
+        }
+        if (version >= 8) {
+            output.Dimensions.UseBaseWidth = input[i++] == 1;
+        }
+        else {
+            output.Dimensions.UseBaseWidth = false;
+        }
+        if (version >= 9) {
+            output.EngineVariant = input[i++];
+            output.Tank.TanksVolume = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            let dataLength = 0;
+            dataLength += input[i++];
+            dataLength += input[i++] * 256;
+            for (let c = 0; c < dataLength; ++c) {
+                let fuelType = 0;
+                fuelType += input[i++];
+                fuelType += input[i++] * 256;
+                output.Tank.TanksContents.push([fuelType, BitConverter.ByteArrayToDouble(input, i)]);
+                i += 8;
+            }
+            dataLength = 0;
+            dataLength += input[i++];
+            dataLength += input[i++] * 256;
+            for (let c = 0; c < dataLength; ++c) {
+                let tmp = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.ThrustCurve.push([tmp, BitConverter.ByteArrayToDouble(input, i)]);
+                i += 8;
+            }
+        }
+        if (version >= 10) {
+            output.Tank.UseTanks = input[i++] == 1;
+            output.Tank.LimitTanks = input[i++] == 1;
+        }
+        if (version >= 11) {
+            output.Polymorphism.PolyType = input[i++];
+            let stringLength = 0;
+            stringLength += input[i++];
+            stringLength += input[i++] * 256;
+            output.Polymorphism.MasterEngineName = "";
+            for (let c = 0; c < stringLength; ++c) {
+                output.Polymorphism.MasterEngineName += String.fromCharCode(input[i++]);
+            }
+        }
+        if (version == 12) {
+            i += 12;
+        }
+        return [output, i - startOffset];
     }
 }
 Serializer.Version = 13;

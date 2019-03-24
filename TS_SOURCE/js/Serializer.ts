@@ -1,7 +1,49 @@
 class Serializer {
-
+    
     public static readonly Version = 13;
-
+    
+    public static SerializeMany (engines: Engine[]): Uint8Array {
+        let data: Uint8Array[] = [];
+        let length = 0;
+        engines.forEach (engine => {
+            data.push (Serializer.Serialize (engine));
+            length += data[data.length - 1].length;
+        });
+        
+        let output = new Uint8Array (length);
+        let i = 0;
+        
+        data.forEach (array => {
+            output.set (array, i);
+            i += array.length;
+        });
+        
+        return output;
+    }
+    
+    public static DeserializeMany (data: Uint8Array, appendToExisting?: Engine[]): Engine[] {
+        let output: Engine[];
+        if (appendToExisting) {
+            output = appendToExisting;
+        } else {
+            output = [];
+        }
+        
+        let offset = 0;
+        
+        while (offset < data.length) {
+            let [engine, addedOffset] = Serializer.Deserialize (data, offset, output);
+            output.push (engine);
+            offset += addedOffset;
+        }
+        
+        if (offset != data.length) {
+            console.warn ("Possible data corruption?");
+        }
+        
+        return output;
+    }
+    
     public static Serialize(e: Engine): Uint8Array {
         let i = 0;
         let output = new Uint8Array(
@@ -299,6 +341,305 @@ class Serializer {
         }
         
         return output;
+    }
+    
+    public static Deserialize (input: Uint8Array, startOffset: number, originList: Engine[]): [Engine, number] {
+        let output = new Engine (originList);
+        let i = startOffset;
+        
+        //short - Version
+        let version = 0;
+        version += input[i++];
+        version *= 256;
+        version += input[i++];
+        
+        if (version >= 0) {
+            //bool - Active
+            output.Active = input[i++] == 1;
+            
+            //string - ID
+            let stringLength = 0;
+            if (version >= 3) {
+                stringLength += input[i++];
+                stringLength += input[i++] * 256;
+            } else {
+                stringLength += input[i++] * 256;
+                stringLength += input[i++];
+            }
+            
+            output.ID = "";
+            for (let c = 0; c < stringLength; ++c) {
+                output.ID += String.fromCharCode (input[i++]);
+            }
+            
+            //double - Mass
+            output.Mass = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+            
+            //double - Thrust
+            output.Thrust = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+            
+            //double - AtmIsp
+            output.AtmIsp = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+            
+            //double - VacIsp
+            output.VacIsp = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+            
+            //PropellantRatio
+            let dataLength = 0;
+            if (version >= 3) {
+                dataLength += input[i++];
+                dataLength += input[i++] * 256;
+            } else {
+                dataLength += input[i++] * 256;
+                dataLength += input[i++];
+            }
+            
+            output.FuelRatios.Items = []; //Constructor gives one element to this list
+            for (let c = 0; c < dataLength; ++c) {
+                let fuelType: Fuel = 0;
+                if (version >= 3) {
+                    fuelType += input[i++];
+                    fuelType += input[i++] * 256;
+                } else {
+                    fuelType += input[i++] * 256;
+                    fuelType += input[i++];
+                }
+                
+                output.FuelRatios.Items.push ([fuelType, BitConverter.ByteArrayToDouble (input, i)]);
+                i += 8;
+            }
+            
+            //double - Width
+            output.Dimensions.Width = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+            
+            //double - Height
+            output.Dimensions.Height = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+            
+            //double - Gimbal
+            output.Gimbal.Gimbal = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+            
+            //int - Cost
+            output.Cost = BitConverter.ByteArrayToInt (input, i);
+            i += 4;
+        }
+        
+        if (version >= 1) {
+            //double - MinThrust
+            output.MinThrust = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+            
+            //int - Ignitions
+            output.Ignitions = BitConverter.ByteArrayToInt (input, i);
+            i += 4;
+            
+            //bool - PressureFed
+            output.PressureFed = input[i++] == 1;
+            
+            //bool - NeedsUllage
+            output.NeedsUllage = input[i++] == 1;
+        }
+        
+        if (version >= 2) {
+            //bool - FuelVolumeRatios
+            output.FuelRatios.FuelVolumeRatios = input[i++] == 1;
+        }
+        
+        if (version >= 3) {
+            //bool - TestFlightConfigNotDefault
+            if (input[i++] == 1) {
+                //bool - EnableTestFlight
+                output.TestFlight.EnableTestFlight = input[i++] == 1;
+                
+                //int - RatedBurnTime
+                output.TestFlight.RatedBurnTime = BitConverter.ByteArrayToInt (input, i);
+                i += 4;
+                
+                //double - StartReliability0
+                output.TestFlight.StartReliability0 = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                //double - StartReliability10k
+                output.TestFlight.StartReliability10k = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                //double - CycleReliability0
+                output.TestFlight.CycleReliability0 = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                //double - CycleReliability10k
+                output.TestFlight.CycleReliability10k = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+            }
+        }
+        
+        if (version >= 4) {
+            //double - AlternatorPower
+            output.AlternatorPower = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+        }
+        
+        if (version >= 5) {
+            //bool - GimbalConfigNotDefault
+            if (input[i++] == 1) {
+                //bool - AdvancedGimbal
+                output.Gimbal.AdvancedGimbal = input[i++] == 1;
+                
+                //double - GimbalNX
+                output.Gimbal.GimbalNX = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                //double - GimbalPX
+                output.Gimbal.GimbalPX = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                //double - GimbalNY
+                output.Gimbal.GimbalNY = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                //double - GimbalPY
+                output.Gimbal.GimbalPY = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+            }
+        }
+        
+        if (version >= 6) {
+            //short - ModelID
+            output.Visuals.ModelID += input[i++]; //Might be a problem if I change default engine from value 0
+            output.Visuals.ModelID += input[i++] * 256; //Will keep as it is for now though.
+            
+            //short - PlumeID
+            output.Visuals.PlumeID += input[i++]; //Same here
+            output.Visuals.PlumeID += input[i++] * 256;
+        }
+        
+        if (version >= 7) {
+            //short - TechUnlockNode
+            output.TechUnlockNode += input[i++]; //Same as with ModelID & PlumeID
+            output.TechUnlockNode += input[i++] * 256;
+            
+            //int - EntryCost
+            output.EntryCost = BitConverter.ByteArrayToInt (input, i);
+            i += 4;
+            
+            //string - EngineName
+            let stringLength = 0;
+            stringLength += input[i++];
+            stringLength += input[i++] * 256;
+            
+            output.Labels.EngineName = "";
+            for (let c = 0; c < stringLength; ++c) {
+                output.Labels.EngineName += String.fromCharCode (input[i++]);
+            }
+            
+            //bool - ManufacturerNotDefault
+            if (input[i++] == 1) {
+                //string - EngineManufacturer
+                let stringLength = 0;
+                stringLength += input[i++];
+                stringLength += input[i++] * 256;
+                
+                output.Labels.EngineManufacturer = "";
+                for (let c = 0; c < stringLength; ++c) {
+                    output.Labels.EngineManufacturer += String.fromCharCode (input[i++]);
+                }
+            }
+            
+            //bool - DescriptionNotDefault
+            if (input[i++] == 1) {
+                //string - EngineDescription
+                let stringLength = 0;
+                stringLength += input[i++];
+                stringLength += input[i++] * 256;
+                
+                output.Labels.EngineDescription = "";
+                for (let c = 0; c < stringLength; ++c) {
+                    output.Labels.EngineDescription += String.fromCharCode (input[i++]);
+                }
+            }
+        }
+        
+        if (version >= 8) {
+            //bool - UseBaseWidth
+            output.Dimensions.UseBaseWidth = input[i++] == 1;
+        } else { //Versions lower than 8
+            //Default value before version 8 was false. Now the default value is true, so this has to be changed.
+            output.Dimensions.UseBaseWidth = false;
+        }
+        
+        if (version >= 9) {
+            //byte - EngineVariant
+            output.EngineVariant = input[i++];
+            
+            //double - TanksVolume
+            output.Tank.TanksVolume = BitConverter.ByteArrayToDouble (input, i);
+            i += 8;
+            
+            //TanksContents
+            let dataLength = 0;
+            dataLength += input[i++];
+            dataLength += input[i++] * 256;
+            
+            for (let c = 0; c < dataLength; ++c) {
+                let fuelType: Fuel = 0;
+                fuelType += input[i++];
+                fuelType += input[i++] * 256;
+                
+                output.Tank.TanksContents.push ([fuelType, BitConverter.ByteArrayToDouble (input, i)]);
+                i += 8;
+            }
+            
+            //ThrustCurve
+            dataLength = 0;
+            dataLength += input[i++];
+            dataLength += input[i++] * 256;
+            
+            for (let c = 0; c < dataLength; ++c) {
+                let tmp = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                output.ThrustCurve.push ([tmp, BitConverter.ByteArrayToDouble (input, i)]);
+                i += 8;
+            }
+        }
+        
+        if (version >= 10) {
+            //bool - UseTanks
+            output.Tank.UseTanks = input[i++] == 1;
+
+            //bool - LimitTanks
+            output.Tank.LimitTanks = input[i++] == 1;
+        }
+        
+        if (version >= 11) {
+            //byte - PolyType
+            output.Polymorphism.PolyType = input[i++];
+            
+            //string - MasterEngineName
+            let stringLength = 0;
+            stringLength += input[i++];
+            stringLength += input[i++] * 256;
+            
+            output.Polymorphism.MasterEngineName = "";
+            for (let c = 0; c < stringLength; ++c) {
+                output.Polymorphism.MasterEngineName += String.fromCharCode (input[i++]);
+            }
+        }
+        
+        if (version == 12) {
+            //Version 12 added two variables, that were removed in version 13
+            //Only version 12 has these in the file
+            //They are not read, but we need to add 12B to the byte counter to avoid errors.
+            i += 12;
+        }
+        
+        return [output, i - startOffset];
     }
 
 }

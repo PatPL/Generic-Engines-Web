@@ -98,7 +98,7 @@ function SaveButton_Click () {
 }
 
 function ValidateButton_Click () {
-    
+    console.table (Validator.Validate (MainEngineTable.Items));
 }
 
 function ExportButton_Click () {

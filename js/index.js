@@ -1001,6 +1001,75 @@ class Serializer {
     }
 }
 Serializer.Version = 13;
+class Validator {
+    static Validate(engines) {
+        let output = [];
+        output = output.concat(this.CheckDuplicateIDs(engines));
+        return output;
+    }
+    static CheckPolymorphismConsistency(engines) {
+        let output = [];
+        let Masters = {};
+        engines.forEach(e => {
+            switch (e.Polymorphism.PolyType) {
+                case PolymorphismType.MultiConfigMaster:
+                    Masters[e.ID] = [false, 0];
+                    break;
+                case PolymorphismType.MultiModeMaster:
+                    Masters[e.ID] = [true, 0];
+                    break;
+            }
+        });
+        engines.forEach(e => {
+            switch (e.Polymorphism.PolyType) {
+                case PolymorphismType.MultiConfigSlave:
+                    if (Masters[e.Polymorphism.MasterEngineName] &&
+                        !Masters[e.Polymorphism.MasterEngineName][0]) {
+                        Masters[e.Polymorphism.MasterEngineName][1] += 1;
+                    }
+                    else {
+                        output.push(`Polymorphism error in engine ${e.ID}. There is no MultiConfigMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                    }
+                    break;
+                case PolymorphismType.MultiModeSlave:
+                    if (Masters[e.Polymorphism.MasterEngineName] &&
+                        Masters[e.Polymorphism.MasterEngineName][0]) {
+                        if (Masters[e.Polymorphism.MasterEngineName][1] == 0) {
+                        }
+                        else {
+                            output.push(`Polymorphism error in engine ${e.ID}. ${e.Polymorphism.MasterEngineName} already has a slave MultiMode engine config`);
+                        }
+                        Masters[e.Polymorphism.MasterEngineName][1] += 1;
+                    }
+                    else {
+                        output.push(`Polymorphism error in engine ${e.ID}. There is no MultiModeMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                    }
+                    break;
+            }
+        });
+        return output;
+    }
+    static CheckDuplicateIDs(engines) {
+        let output = [];
+        let takenIDs = [];
+        engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
+            if (/[^A-Za-z0-9-]/.test(e.ID)) {
+                output.push(`ID contains invalid characters: ${e.ID}. Change the ID`);
+                return;
+            }
+            if (takenIDs.some(x => x == e.ID)) {
+                output.push(`ID duplicate found: ${e.ID}. Change the ID`);
+            }
+            else {
+                takenIDs.push(e.ID);
+            }
+        });
+        return output;
+    }
+}
 var ListName = "Unnamed";
 let ListNameDisplay;
 let MainEngineTable;
@@ -1080,6 +1149,7 @@ function SaveButton_Click() {
     FileIO.SaveBinary(`${ListName}.enl`, data);
 }
 function ValidateButton_Click() {
+    console.table(Validator.Validate(MainEngineTable.Items));
 }
 function ExportButton_Click() {
 }

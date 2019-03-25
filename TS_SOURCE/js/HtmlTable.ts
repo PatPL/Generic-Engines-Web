@@ -52,7 +52,7 @@ class HtmlTable {
                 }
                 
                 if (pressedOnRow) {
-                    this.SelectRow (e.ctrlKey, pressedOnRow);
+                    this.SelectRow (e.ctrlKey, pressedOnRow, e.shiftKey);
                 } else {
                     
                 }
@@ -112,8 +112,40 @@ class HtmlTable {
         this.SelectedRows = [];
     }
     
-    public SelectRow (appendToggle: boolean, row: number) {
-        if (appendToggle) {
+    public SelectRow (appendToggle: boolean, row: number, rangeSelect: boolean = false) {
+        
+        if (this.SelectedRows.length > 0) {
+            this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][0].forEach (cell => {
+                cell.classList.remove ("last");
+            });
+        }
+        
+        if (rangeSelect) {
+            if (this.SelectedRows.length == 0) {
+                return;
+            }
+            
+            let lastSelectedID = this.SelectedRows[this.SelectedRows.length - 1];
+            
+            for (let i = lastSelectedID; ; i += (row > lastSelectedID ? 1 : -1)) {
+                if (!this.Rows[i]) {
+                    continue;
+                }
+                
+                if (this.SelectedRows.some (x => x == i)) {
+                    
+                } else {
+                    this.SelectedRows.push (i);
+                    this.Rows[i][0].forEach (cell => {
+                        cell.classList.add ("selected");
+                    });
+                }
+                
+                if (i == row) { //Include the last one
+                    break;
+                }
+            }
+        } else if (appendToggle) {
             if (this.SelectedRows.some (x => x == row)) {
                 this.SelectedRows = this.SelectedRows.filter (x => x != row);
                 this.Rows[row][0].forEach (cell => {
@@ -136,6 +168,13 @@ class HtmlTable {
                 cell.classList.add ("selected");
             });
         }
+        
+        if (this.SelectedRows.length > 0) {
+            this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][0].forEach (cell => {
+                cell.classList.add ("last");
+            });
+        }
+        
     }
     
     public RebuildTable () {

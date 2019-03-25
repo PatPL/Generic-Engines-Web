@@ -119,7 +119,9 @@ function AddButton_Click () {
 }
 
 function RemoveButton_Click () {
-    MainEngineTable.RemoveSelectedItems ();
+    if (MainEngineTable.SelectedRows.length > 0 && confirm (`You are about to delete ${MainEngineTable.SelectedRows.length} items from the list.\n\nAre you sure?`)) {
+        MainEngineTable.RemoveSelectedItems ();
+    }
 }
 
 function SettingsButton_Click () {

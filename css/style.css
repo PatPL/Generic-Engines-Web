@@ -240,6 +240,10 @@ input.content-cell-content {
     background: #88F !important;
 }
 
+.selected.last {
+    background: #66F !important;
+}
+
 .content-cell:nth-child(even) {
     background: #AAA;
 }

@@ -274,7 +274,7 @@ class Serializer {
             output[i++] = e.Labels.EngineManufacturer.length % 256;
             output[i++] = e.Labels.EngineManufacturer.length / 256;
             //String data
-            for (let c = 0; c < e.ID.length; ++c) {
+            for (let c = 0; c < e.Labels.EngineManufacturer.length; ++c) {
                 output[i++] = e.Labels.EngineManufacturer.charCodeAt (c);
             }
         }

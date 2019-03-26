@@ -4,6 +4,7 @@ class Validator {
         let output: string[] = [];
         
         output = output.concat (this.CheckDuplicateIDs (engines));
+        output = output.concat (this.CheckPolymorphismConsistency (engines));
         
         return output;
     }
@@ -14,6 +15,11 @@ class Validator {
         let Masters: { [id: string]: [boolean, number] } = {};
         
         engines.forEach (e => {
+            if (!e.Active) {
+                //Ignore inactive engines
+                return; //continue?
+            }
+            
             //Find all masters for later
             switch (e.Polymorphism.PolyType) {
                 case PolymorphismType.MultiConfigMaster:
@@ -26,6 +32,11 @@ class Validator {
         });
         
         engines.forEach (e => {
+            if (!e.Active) {
+                //Ignore inactive engines
+                return; //continue?
+            }
+            
             //Check every slave
             switch (e.Polymorphism.PolyType) {
                 case PolymorphismType.MultiConfigSlave:
@@ -37,7 +48,7 @@ class Validator {
                     Masters[e.Polymorphism.MasterEngineName][1] += 1;
                 } else {
                     //Master doesn't exist
-                    output.push (`Polymorphism error in engine ${e.ID}. There is no MultiConfigMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                    output.push (`Polymorphism error in engine ${e.ID}. There is no active MultiConfigMaster with ID ${e.Polymorphism.MasterEngineName}`);
                 }
                 break;
                 case PolymorphismType.MultiModeSlave:
@@ -55,7 +66,7 @@ class Validator {
                     Masters[e.Polymorphism.MasterEngineName][1] += 1;
                 } else {
                     //Master doesn't exist
-                    output.push (`Polymorphism error in engine ${e.ID}. There is no MultiModeMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                    output.push (`Polymorphism error in engine ${e.ID}. There is no active MultiModeMaster with ID ${e.Polymorphism.MasterEngineName}`);
                 }
                 break;
             }

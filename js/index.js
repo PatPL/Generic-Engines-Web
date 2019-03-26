@@ -766,7 +766,7 @@ class Serializer {
         if (!Labels.IsManufacturerDefault(e.Labels)) {
             output[i++] = e.Labels.EngineManufacturer.length % 256;
             output[i++] = e.Labels.EngineManufacturer.length / 256;
-            for (let c = 0; c < e.ID.length; ++c) {
+            for (let c = 0; c < e.Labels.EngineManufacturer.length; ++c) {
                 output[i++] = e.Labels.EngineManufacturer.charCodeAt(c);
             }
         }
@@ -1005,12 +1005,16 @@ class Validator {
     static Validate(engines) {
         let output = [];
         output = output.concat(this.CheckDuplicateIDs(engines));
+        output = output.concat(this.CheckPolymorphismConsistency(engines));
         return output;
     }
     static CheckPolymorphismConsistency(engines) {
         let output = [];
         let Masters = {};
         engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
             switch (e.Polymorphism.PolyType) {
                 case PolymorphismType.MultiConfigMaster:
                     Masters[e.ID] = [false, 0];
@@ -1021,6 +1025,9 @@ class Validator {
             }
         });
         engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
             switch (e.Polymorphism.PolyType) {
                 case PolymorphismType.MultiConfigSlave:
                     if (Masters[e.Polymorphism.MasterEngineName] &&
@@ -1028,7 +1035,7 @@ class Validator {
                         Masters[e.Polymorphism.MasterEngineName][1] += 1;
                     }
                     else {
-                        output.push(`Polymorphism error in engine ${e.ID}. There is no MultiConfigMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                        output.push(`Polymorphism error in engine ${e.ID}. There is no active MultiConfigMaster with ID ${e.Polymorphism.MasterEngineName}`);
                     }
                     break;
                 case PolymorphismType.MultiModeSlave:
@@ -1042,7 +1049,7 @@ class Validator {
                         Masters[e.Polymorphism.MasterEngineName][1] += 1;
                     }
                     else {
-                        output.push(`Polymorphism error in engine ${e.ID}. There is no MultiModeMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                        output.push(`Polymorphism error in engine ${e.ID}. There is no active MultiModeMaster with ID ${e.Polymorphism.MasterEngineName}`);
                     }
                     break;
             }
@@ -1149,7 +1156,13 @@ function SaveButton_Click() {
     FileIO.SaveBinary(`${ListName}.enl`, data);
 }
 function ValidateButton_Click() {
-    console.table(Validator.Validate(MainEngineTable.Items));
+    let errors = Validator.Validate(MainEngineTable.Items);
+    if (errors.length == 0) {
+        alert("No errors found in this list");
+    }
+    else {
+        alert(`Following errors were found:\n\n-> ${errors.join("\n-> ")}`);
+    }
 }
 function ExportButton_Click() {
 }

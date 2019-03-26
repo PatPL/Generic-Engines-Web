@@ -98,7 +98,13 @@ function SaveButton_Click () {
 }
 
 function ValidateButton_Click () {
-    console.table (Validator.Validate (MainEngineTable.Items));
+    let errors = Validator.Validate (MainEngineTable.Items);
+    
+    if (errors.length == 0) {
+        alert ("No errors found in this list");
+    } else {
+        alert (`Following errors were found:\n\n-> ${errors.join ("\n-> ")}`);
+    }
 }
 
 function ExportButton_Click () {

@@ -3,79 +3,104 @@ class Engine {
     public static readonly ColumnDefinitions: { [id: string]: IColumnInfo } = {
         Active: {
             Name: "Active",
-            DefaultWidth: 24
+            DefaultWidth: 24,
+            DisplayFlags: 0b00000
         }, ID: {
             Name: "ID",
-            DefaultWidth: 200
+            DefaultWidth: 200,
+            DisplayFlags: 0b00000
         }, Labels: {
             Name: "Name",
-            DefaultWidth: 300
+            DefaultWidth: 300,
+            DisplayFlags: 0b00100
         }, Polymorphism: {
             Name: "Polymorphism",
-            DefaultWidth: 200
+            DefaultWidth: 200,
+            DisplayFlags: 0b00000
         }, EngineVariant: {
             Name: "Type",
-            DefaultWidth: 80
+            DefaultWidth: 80,
+            DisplayFlags: 0b10100
         }, Mass: {
             Name: "Mass",
-            DefaultWidth: 80
+            DefaultWidth: 80,
+            DisplayFlags: 0b00100
         }, Thrust: {
             Name: "Vacuum thrust",
-            DefaultWidth: 120
+            DefaultWidth: 120,
+            DisplayFlags: 0b00000
         }, MinThrust: {
             Name: "Minimum thrust",
-            DefaultWidth: 60
+            DefaultWidth: 60,
+            DisplayFlags: 0b00000
         }, AtmIsp: {
             Name: "Sea level Isp",
-            DefaultWidth: 80
+            DefaultWidth: 80,
+            DisplayFlags: 0b00000
         }, VacIsp: {
             Name: "Vacuum Isp",
-            DefaultWidth: 80
+            DefaultWidth: 80,
+            DisplayFlags: 0b00000
         }, PressureFed: {
             Name: "Pressure fed",
-            DefaultWidth: 24
+            DefaultWidth: 24,
+            DisplayFlags: 0b00000
         }, NeedsUllage: {
             Name: "Ullage",
-            DefaultWidth: 24
+            DefaultWidth: 24,
+            DisplayFlags: 0b00000
         }, FuelRatios: {
             Name: "Propellants",
-            DefaultWidth: 240
+            DefaultWidth: 240,
+            DisplayFlags: 0b00000
         }, Ignitions: {
             Name: "Ignitions",
-            DefaultWidth: 60
+            DefaultWidth: 60,
+            DisplayFlags: 0b00110
         }, Visuals: {
             Name: "Visuals",
-            DefaultWidth: 240
+            DefaultWidth: 240,
+            DisplayFlags: 0b00000
         }, Dimensions: {
             Name: "Size",
-            DefaultWidth: 160
+            DefaultWidth: 160,
+            DisplayFlags: 0b10100
         }, Gimbal: {
             Name: "Gimbal",
-            DefaultWidth: 240
+            DefaultWidth: 240,
+            DisplayFlags: 0b10100
         }, TestFlight: {
             Name: "Test flight",
-            DefaultWidth: 400
+            DefaultWidth: 400,
+            DisplayFlags: 0b00110
         }, TechUnlockNode: {
             Name: "R&D unlock node",
-            DefaultWidth: 200
+            DefaultWidth: 200,
+            DisplayFlags: 0b00100
         }, EntryCost: {
             Name: "Entry cost",
-            DefaultWidth: 120
+            DefaultWidth: 120,
+            DisplayFlags: 0b00100
         }, Cost: {
             Name: "Cost",
-            DefaultWidth: 100
+            DefaultWidth: 100,
+            DisplayFlags: 0b00100
         }, AlternatorPower: {
             Name: "Alternator",
-            DefaultWidth: 80
+            DefaultWidth: 80,
+            DisplayFlags: 0b10100
         }, Tank: {
             Name: "Tank",
-            DefaultWidth: 320
+            DefaultWidth: 320,
+            DisplayFlags: 0b10100
         }, ThrustCurve: {
             Name: "Thrust curve",
-            DefaultWidth: 200
+            DefaultWidth: 200,
+            DisplayFlags: 0b00000
         }, Spacer: {
             Name: "",
-            DefaultWidth: 200
+            DefaultWidth: 200,
+            DisplayFlags: 0b00000
         }
     }
     Spacer: boolean = false; // For an empty space at the end of the table
@@ -293,7 +318,33 @@ class Engine {
         }
     }
     
-    EngineList: Engine[];
+    public RehidePolyFields (cols: HTMLElement[]) {
+        if (cols.length == 0) {
+            console.warn ("Tried to rehide not displayed engine");
+            return;
+        }
+        
+        let x = 0;
+        for (let i in Engine.ColumnDefinitions) {
+            if (Engine.ColumnDefinitions[i].DisplayFlags != undefined) {
+                if ((Engine.ColumnDefinitions[i].DisplayFlags! & 1 << this.Polymorphism.PolyType) != 0) {
+                    cols[x].classList.add ("hideCell");
+                } else {
+                    cols[x].classList.remove ("hideCell");
+                }
+            }
+            
+            ++x;
+        }
+    }
+    
+    public OnTableDraw (e: HTMLElement[]) {
+        this.ListCols = e;
+        this.RehidePolyFields (e);
+    }
+    
+    ListCols: HTMLElement[] = [];
+    EngineList: HtmlTable;
     
     Active: boolean = false;
     ID: string = "New-Engine";
@@ -317,12 +368,12 @@ class Engine {
     Dimensions: Dimensions = new Dimensions (this);
     Gimbal: Gimbal = new Gimbal ();
     TestFlight: TestFlight = new TestFlight ();
-    Visuals: Visuals = new Visuals ();
-    Labels: Labels = new Labels ();
+    Visuals: Visuals = new Visuals (this);
+    Labels: Labels = new Labels (this);
     Polymorphism: Polymorphism;
     
-    constructor (originList: Engine[]) {
-        this.Polymorphism = new Polymorphism (originList);
+    constructor (originList: HtmlTable) {
+        this.Polymorphism = new Polymorphism (originList.Items, this);
         this.EngineList = originList;
     }
 }

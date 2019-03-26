@@ -71,7 +71,8 @@ function OpenButton_Click () {
                 filename = filename.replace (".enl", "");
                 ListNameDisplay.SetValue (filename);
                 
-                MainEngineTable.Items = Serializer.DeserializeMany (data);
+                MainEngineTable.Items = [];
+                Serializer.DeserializeMany (data, MainEngineTable);
                 MainEngineTable.RebuildTable ();
             } else {
                 //No file chosen?
@@ -83,7 +84,7 @@ function OpenButton_Click () {
 function AppendButton_Click () {
     FileIO.OpenBinary (".enl", (data) => { //TODO: Multiple file input
         if (data) {
-            MainEngineTable.Items = Serializer.DeserializeMany (data, MainEngineTable.Items);
+            Serializer.DeserializeMany (data, MainEngineTable);
             MainEngineTable.RebuildTable ();
         } else {
             //No file chosen?
@@ -121,7 +122,7 @@ function DuplicateButton_Click () {
 }
 
 function AddButton_Click () {
-    MainEngineTable.AddItem (new Engine (MainEngineTable.Items));
+    MainEngineTable.AddItem (new Engine (MainEngineTable));
 }
 
 function RemoveButton_Click () {

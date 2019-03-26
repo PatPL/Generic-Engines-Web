@@ -96,6 +96,11 @@ class HtmlTable {
             this.Columns[columnID].appendChild (columnCell);
             ++x;
         }
+        
+        if (newItem.OnTableDraw && typeof newItem.OnTableDraw == "function") {
+            newItem.OnTableDraw (this.Rows[HtmlTable.RowCounter][0]);
+        }
+        
         ++HtmlTable.RowCounter;
     }
     

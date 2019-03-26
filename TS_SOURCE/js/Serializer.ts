@@ -26,27 +26,19 @@ class Serializer {
         return output;
     }
     
-    public static DeserializeMany (data: Uint8Array, appendToExisting?: Engine[]): Engine[] {
-        let output: Engine[];
-        if (appendToExisting) {
-            output = appendToExisting;
-        } else {
-            output = [];
-        }
-        
+    public static DeserializeMany (data: Uint8Array, appendToExisting: HtmlTable) {
         let offset = 0;
         
         while (offset < data.length) {
-            let [engine, addedOffset] = Serializer.Deserialize (data, offset, output);
-            output.push (engine);
+            
+            let [engine, addedOffset] = Serializer.Deserialize (data, offset, appendToExisting);
+            MainEngineTable.AddItem (engine);
             offset += addedOffset;
         }
         
         if (offset != data.length) {
             console.warn ("Possible data corruption?");
         }
-        
-        return output;
     }
     
     public static Serialize(e: Engine): Uint8Array {
@@ -348,7 +340,7 @@ class Serializer {
         return output;
     }
     
-    public static Deserialize (input: Uint8Array, startOffset: number, originList: Engine[]): [Engine, number] {
+    public static Deserialize (input: Uint8Array, startOffset: number, originList: HtmlTable): [Engine, number] {
         let output = new Engine (originList);
         let i = startOffset;
         

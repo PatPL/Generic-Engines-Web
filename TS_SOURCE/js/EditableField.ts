@@ -124,8 +124,10 @@ class EditableField {
         }
         
         if (typeof this.ValueOwner[this.ValueName] != "boolean") {
-            output.addEventListener ("dblclick", () => {
-                this.StartEdit ();
+            output.addEventListener ("dblclick", (e) => {
+                if (!e.srcElement!.parentElement!.classList.contains ("hideCell")) {
+                    this.StartEdit ();
+                }
             });
         }
         

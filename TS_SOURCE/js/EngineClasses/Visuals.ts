@@ -3,6 +3,12 @@ class Visuals implements IEditable {
     ModelID: Model = Model.LR91;
     PlumeID: Plume = Plume.Kerolox_Upper;
     
+    ParentEngine: Engine;
+    
+    constructor (parent: Engine) {
+        this.ParentEngine = parent;
+    }
+    
     public GetDisplayElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");
@@ -45,6 +51,11 @@ class Visuals implements IEditable {
         
         selects[0].value = this.ModelID.toString ();
         selects[1].value = this.PlumeID.toString ();
+        
+        selects[0].disabled = (
+            this.ParentEngine.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ||
+            this.ParentEngine.Polymorphism.PolyType == PolymorphismType.MultiModeSlave
+        );
     }
     
     public ApplyChangesToValue (e: HTMLElement): void {

@@ -244,6 +244,21 @@ input.content-cell-content {
     background: #66F !important;
 }
 
+.selected.hideCell {
+    color: #444 !important;
+    background: #444 !important;
+}
+
+.selected.last.hideCell {
+    color: #444 !important;
+    background: #444 !important;
+}
+
+.hideCell {
+    color: #444 !important;
+    background: #444 !important;
+}
+
 .content-cell:nth-child(even) {
     background: #AAA;
 }

@@ -120,8 +120,10 @@ class EditableField {
             output = tmp;
         }
         if (typeof this.ValueOwner[this.ValueName] != "boolean") {
-            output.addEventListener("dblclick", () => {
-                this.StartEdit();
+            output.addEventListener("dblclick", (e) => {
+                if (!e.srcElement.parentElement.classList.contains("hideCell")) {
+                    this.StartEdit();
+                }
             });
         }
         return output;
@@ -456,6 +458,9 @@ class HtmlTable {
             this.Columns[columnID].appendChild(columnCell);
             ++x;
         }
+        if (newItem.OnTableDraw && typeof newItem.OnTableDraw == "function") {
+            newItem.OnTableDraw(this.Rows[HtmlTable.RowCounter][0]);
+        }
         ++HtmlTable.RowCounter;
     }
     RemoveSelectedItems() {
@@ -613,23 +618,15 @@ class Serializer {
         return output;
     }
     static DeserializeMany(data, appendToExisting) {
-        let output;
-        if (appendToExisting) {
-            output = appendToExisting;
-        }
-        else {
-            output = [];
-        }
         let offset = 0;
         while (offset < data.length) {
-            let [engine, addedOffset] = Serializer.Deserialize(data, offset, output);
-            output.push(engine);
+            let [engine, addedOffset] = Serializer.Deserialize(data, offset, appendToExisting);
+            MainEngineTable.AddItem(engine);
             offset += addedOffset;
         }
         if (offset != data.length) {
             console.warn("Possible data corruption?");
         }
-        return output;
     }
     static Serialize(e) {
         let i = 0;
@@ -1133,7 +1130,8 @@ function OpenButton_Click() {
             if (data) {
                 filename = filename.replace(".enl", "");
                 ListNameDisplay.SetValue(filename);
-                MainEngineTable.Items = Serializer.DeserializeMany(data);
+                MainEngineTable.Items = [];
+                Serializer.DeserializeMany(data, MainEngineTable);
                 MainEngineTable.RebuildTable();
             }
             else {
@@ -1144,7 +1142,7 @@ function OpenButton_Click() {
 function AppendButton_Click() {
     FileIO.OpenBinary(".enl", (data) => {
         if (data) {
-            MainEngineTable.Items = Serializer.DeserializeMany(data, MainEngineTable.Items);
+            Serializer.DeserializeMany(data, MainEngineTable);
             MainEngineTable.RebuildTable();
         }
         else {
@@ -1174,7 +1172,7 @@ function DuplicateButton_Click() {
     MainEngineTable.RebuildTable();
 }
 function AddButton_Click() {
-    MainEngineTable.AddItem(new Engine(MainEngineTable.Items));
+    MainEngineTable.AddItem(new Engine(MainEngineTable));
 }
 function RemoveButton_Click() {
     if (MainEngineTable.SelectedRows.length > 0 && confirm(`You are about to delete ${MainEngineTable.SelectedRows.length} items from the list.\n\nAre you sure?`)) {
@@ -2550,6 +2548,7 @@ class Engine {
                 }
             }
         };
+        this.ListCols = [];
         this.Active = false;
         this.ID = "New-Engine";
         this.Mass = 1;
@@ -2571,88 +2570,135 @@ class Engine {
         this.Dimensions = new Dimensions(this);
         this.Gimbal = new Gimbal();
         this.TestFlight = new TestFlight();
-        this.Visuals = new Visuals();
-        this.Labels = new Labels();
-        this.Polymorphism = new Polymorphism(originList);
+        this.Visuals = new Visuals(this);
+        this.Labels = new Labels(this);
+        this.Polymorphism = new Polymorphism(originList.Items, this);
         this.EngineList = originList;
+    }
+    RehidePolyFields(cols) {
+        if (cols.length == 0) {
+            console.warn("Tried to rehide not displayed engine");
+            return;
+        }
+        let x = 0;
+        for (let i in Engine.ColumnDefinitions) {
+            if (Engine.ColumnDefinitions[i].DisplayFlags != undefined) {
+                if ((Engine.ColumnDefinitions[i].DisplayFlags & 1 << this.Polymorphism.PolyType) != 0) {
+                    cols[x].classList.add("hideCell");
+                }
+                else {
+                    cols[x].classList.remove("hideCell");
+                }
+            }
+            ++x;
+        }
+    }
+    OnTableDraw(e) {
+        this.ListCols = e;
+        this.RehidePolyFields(e);
     }
 }
 Engine.ColumnDefinitions = {
     Active: {
         Name: "Active",
-        DefaultWidth: 24
+        DefaultWidth: 24,
+        DisplayFlags: 0b00000
     }, ID: {
         Name: "ID",
-        DefaultWidth: 200
+        DefaultWidth: 200,
+        DisplayFlags: 0b00000
     }, Labels: {
         Name: "Name",
-        DefaultWidth: 300
+        DefaultWidth: 300,
+        DisplayFlags: 0b00100
     }, Polymorphism: {
         Name: "Polymorphism",
-        DefaultWidth: 200
+        DefaultWidth: 200,
+        DisplayFlags: 0b00000
     }, EngineVariant: {
         Name: "Type",
-        DefaultWidth: 80
+        DefaultWidth: 80,
+        DisplayFlags: 0b10100
     }, Mass: {
         Name: "Mass",
-        DefaultWidth: 80
+        DefaultWidth: 80,
+        DisplayFlags: 0b00100
     }, Thrust: {
         Name: "Vacuum thrust",
-        DefaultWidth: 120
+        DefaultWidth: 120,
+        DisplayFlags: 0b00000
     }, MinThrust: {
         Name: "Minimum thrust",
-        DefaultWidth: 60
+        DefaultWidth: 60,
+        DisplayFlags: 0b00000
     }, AtmIsp: {
         Name: "Sea level Isp",
-        DefaultWidth: 80
+        DefaultWidth: 80,
+        DisplayFlags: 0b00000
     }, VacIsp: {
         Name: "Vacuum Isp",
-        DefaultWidth: 80
+        DefaultWidth: 80,
+        DisplayFlags: 0b00000
     }, PressureFed: {
         Name: "Pressure fed",
-        DefaultWidth: 24
+        DefaultWidth: 24,
+        DisplayFlags: 0b00000
     }, NeedsUllage: {
         Name: "Ullage",
-        DefaultWidth: 24
+        DefaultWidth: 24,
+        DisplayFlags: 0b00000
     }, FuelRatios: {
         Name: "Propellants",
-        DefaultWidth: 240
+        DefaultWidth: 240,
+        DisplayFlags: 0b00000
     }, Ignitions: {
         Name: "Ignitions",
-        DefaultWidth: 60
+        DefaultWidth: 60,
+        DisplayFlags: 0b00110
     }, Visuals: {
         Name: "Visuals",
-        DefaultWidth: 240
+        DefaultWidth: 240,
+        DisplayFlags: 0b00000
     }, Dimensions: {
         Name: "Size",
-        DefaultWidth: 160
+        DefaultWidth: 160,
+        DisplayFlags: 0b10100
     }, Gimbal: {
         Name: "Gimbal",
-        DefaultWidth: 240
+        DefaultWidth: 240,
+        DisplayFlags: 0b10100
     }, TestFlight: {
         Name: "Test flight",
-        DefaultWidth: 400
+        DefaultWidth: 400,
+        DisplayFlags: 0b00110
     }, TechUnlockNode: {
         Name: "R&D unlock node",
-        DefaultWidth: 200
+        DefaultWidth: 200,
+        DisplayFlags: 0b00100
     }, EntryCost: {
         Name: "Entry cost",
-        DefaultWidth: 120
+        DefaultWidth: 120,
+        DisplayFlags: 0b00100
     }, Cost: {
         Name: "Cost",
-        DefaultWidth: 100
+        DefaultWidth: 100,
+        DisplayFlags: 0b00100
     }, AlternatorPower: {
         Name: "Alternator",
-        DefaultWidth: 80
+        DefaultWidth: 80,
+        DisplayFlags: 0b10100
     }, Tank: {
         Name: "Tank",
-        DefaultWidth: 320
+        DefaultWidth: 320,
+        DisplayFlags: 0b10100
     }, ThrustCurve: {
         Name: "Thrust curve",
-        DefaultWidth: 200
+        DefaultWidth: 200,
+        DisplayFlags: 0b00000
     }, Spacer: {
         Name: "",
-        DefaultWidth: 200
+        DefaultWidth: 200,
+        DisplayFlags: 0b00000
     }
 };
 class FuelRatios {
@@ -2904,17 +2950,18 @@ class Gimbal {
     }
 }
 class Labels {
-    constructor() {
+    constructor(parent) {
         this.EngineName = "";
         this.EngineManufacturer = "Generic Engines";
         this.EngineDescription = "This engine was generated by Generic Engines";
+        this.ParentEngine = parent;
     }
     static IsManufacturerDefault(config) {
-        let originalConfig = new Labels();
+        let originalConfig = new Labels(null);
         return config.EngineManufacturer == originalConfig.EngineManufacturer;
     }
     static IsDescriptionDefault(config) {
-        let originalConfig = new Labels();
+        let originalConfig = new Labels(null);
         return config.EngineDescription == originalConfig.EngineDescription;
     }
     GetDisplayElement() {
@@ -2962,6 +3009,8 @@ class Labels {
         let inputs = e.querySelectorAll("input");
         inputs[0].value = this.EngineName;
         inputs[1].value = this.EngineManufacturer;
+        inputs[0].disabled = this.ParentEngine.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave;
+        inputs[1].disabled = this.ParentEngine.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave;
         e.querySelector("textarea").value = this.EngineDescription;
     }
     ApplyChangesToValue(e) {
@@ -2980,10 +3029,11 @@ var PolymorphismType;
     PolymorphismType[PolymorphismType["MultiConfigSlave"] = 4] = "MultiConfigSlave";
 })(PolymorphismType || (PolymorphismType = {}));
 class Polymorphism {
-    constructor(originList) {
+    constructor(originList, engine) {
         this.PolyType = PolymorphismType.Single;
         this.MasterEngineName = "";
         this.EngineList = originList;
+        this.ParentEngine = engine;
     }
     RebuildMasterSelect(e) {
         let selects = e.querySelectorAll("select");
@@ -3071,6 +3121,7 @@ class Polymorphism {
         let selects = e.querySelectorAll("select");
         this.PolyType = parseInt(selects[0].value);
         this.MasterEngineName = selects[1].value;
+        this.ParentEngine.RehidePolyFields(this.ParentEngine.ListCols);
     }
     static BuildPolymorphismTypeDropdown() {
         let output = document.createElement("select");
@@ -3397,9 +3448,10 @@ class TestFlight {
     }
 }
 class Visuals {
-    constructor() {
+    constructor(parent) {
         this.ModelID = Model.LR91;
         this.PlumeID = Plume.Kerolox_Upper;
+        this.ParentEngine = parent;
     }
     GetDisplayElement() {
         let tmp = document.createElement("div");
@@ -3435,6 +3487,8 @@ class Visuals {
         let selects = e.querySelectorAll("select");
         selects[0].value = this.ModelID.toString();
         selects[1].value = this.PlumeID.toString();
+        selects[0].disabled = (this.ParentEngine.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ||
+            this.ParentEngine.Polymorphism.PolyType == PolymorphismType.MultiModeSlave);
     }
     ApplyChangesToValue(e) {
         let selects = e.querySelectorAll("select");

@@ -7,9 +7,11 @@ class Polymorphism implements IEditable {
     //MasterEngineMass: number = 0;
     
     EngineList: Engine[];
+    ParentEngine: Engine;
     
-    constructor (originList: Engine[]) {
+    constructor (originList: Engine[], engine: Engine) {
         this.EngineList = originList;
+        this.ParentEngine = engine;
     }
     
     private RebuildMasterSelect (e: HTMLElement) {
@@ -108,6 +110,8 @@ class Polymorphism implements IEditable {
         
         this.PolyType = parseInt (selects[0].value);
         this.MasterEngineName = selects[1].value;
+        
+        this.ParentEngine.RehidePolyFields (this.ParentEngine.ListCols);
     }
     
     public static readonly Dropdown: HTMLSelectElement = Polymorphism.BuildPolymorphismTypeDropdown ();

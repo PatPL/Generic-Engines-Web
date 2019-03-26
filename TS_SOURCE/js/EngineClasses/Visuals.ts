@@ -9,6 +9,54 @@ class Visuals implements IEditable {
         this.ParentEngine = parent;
     }
     
+    public GetHiddenObjectsConfig (): string {
+        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (this.ModelID);
+        let output = "";
+        
+        modelInfo.HiddenMuObjects.forEach (m => {
+            output += `
+                MODULE
+                {
+                    name = ModuleJettison
+                    jettisonName = ${m}
+                    bottomNodeName = hide
+                    isFairing = True
+                }
+            `;
+        });
+        
+        return output;
+    }
+    
+    public GetModelConfig (size: Dimensions): string {
+        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (this.ModelID);
+        let heightScale = size.Height / modelInfo.OriginalHeight;
+        let widthScale = size.Width / heightScale / (size.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
+        
+        let attachmentNode = (
+            modelInfo.RadialAttachment ?
+            `node_attach = ${modelInfo.RadialAttachmentPoint * widthScale}, 0.0, 0.0, 1.0, 0.0, 0.0` :
+            `node_attach = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0`
+        );
+        
+        return `
+            MODEL
+            {
+                model = ${modelInfo.ModelPath}
+                ${modelInfo.TextureDefinitions}
+                scale = ${widthScale}, 1, ${widthScale}
+            }
+            scale = 1
+            rescaleFactor = ${heightScale}
+
+            node_stack_top = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0, 1
+            node_stack_bottom = 0.0, ${modelInfo.NodeStackBottom}, 0.0, 0.0, -1.0, 0.0, 1
+            node_stack_hide = 0.0, ${modelInfo.NodeStackBottom + 0.001}, 0.0, 0.0, 0.0, 1.0, 0
+
+            ${attachmentNode}
+        `;
+    }
+    
     public GetDisplayElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");

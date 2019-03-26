@@ -279,6 +279,8 @@ window.addEventListener("keyup", (e) => {
         }
     }
 });
+class Exporter {
+}
 class FileIO {
     static ZipBlobs(rootDirName, blobs, callback) {
         let zip = new JSZip();

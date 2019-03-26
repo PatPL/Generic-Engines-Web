@@ -376,4 +376,17 @@ class Engine {
         this.Polymorphism = new Polymorphism (originList.Items, this);
         this.EngineList = originList;
     }
+    
+    public EngineTypeConfig (): string {
+        switch (this.EngineVariant) {
+            case EngineType.Liquid:
+            return "LiquidFuel";
+            
+            case EngineType.Solid:
+            return "SolidBooster";
+            
+            default:
+            return "unknown";
+        }
+    }
 }

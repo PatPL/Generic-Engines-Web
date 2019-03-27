@@ -35,7 +35,16 @@ class Tank implements IEditable {
         });
         
         return `
-            
+            MODULE
+            {
+                name = ModuleFuelTanks
+                basemass = -1
+                type = All
+                volume = ${this.LimitTanks ? this.TanksVolume : volume}
+                
+                ${contents}
+                
+            }
         `;
     }
     
@@ -58,13 +67,13 @@ class Tank implements IEditable {
         let output: [Fuel, number][] = [];
         
         let usedVolume = 0;
-        output.forEach (v => {
+        this.TanksContents.forEach (v => {
             let thisVol = Math.min (
                 v[1] / FuelInfo.GetFuelInfo (v[0]).TankUtilisation, //This entry's volume
                 this.TanksVolume - usedVolume //Remaining volume
             );
             
-            output.push ([v[0], thisVol * v[1] * FuelInfo.GetFuelInfo (v[0]).TankUtilisation]);
+            output.push ([v[0], thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation]);
         });
         
         return output;

@@ -456,19 +456,19 @@ class Exporter {
     }
     static MultiModeSlaveEngineConfig(engine) {
         return `
-            @PART[${engine.Polymorphism.MasterEngineName}]
+            @PART[GE-${engine.Polymorphism.MasterEngineName}]
             {
                 MODULE
                 {
                     name = MultiModeEngine
                     primaryEngineID = PrimaryMode
-                    primaryEngineModeDisplayName = Primary mode (${engine.Polymorphism.MasterEngineName})
+                    primaryEngineModeDisplayName = Primary mode (GE-${engine.Polymorphism.MasterEngineName})
                     secondaryEngineID = SecondaryMode
                     secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
                 }
             }
             
-            @PART[${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
             {
                 +MODULE[ModuleEngines*]
                 {
@@ -501,7 +501,7 @@ class Exporter {
     }
     static MultiConfigSlaveEngineConfig(engine, allEngines) {
         return `
-            @PART[${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
             {
                 @MODULE[ModuleEngineConfigs]
                 {
@@ -2878,7 +2878,9 @@ class Engine {
         this.ThrustCurve.push([Number.MIN_VALUE, this.ThrustCurve[this.ThrustCurve.length - 1][1]]);
         for (let i = 0; i < this.ThrustCurve.length - 1; ++i) {
             newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0]);
-            keys += `key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}`;
+            keys += `
+                key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
+            `;
             lastTangent = newTangent;
         }
         this.ThrustCurve.pop();
@@ -2952,7 +2954,7 @@ class Engine {
 
                 ${this.GetThrustCurveConfig()}
 
-                ullage = ${this.NeedsUllage}
+                ullage = ${this.NeedsUllage && this.EngineVariant != EngineType.Solid}
                 pressureFed = ${this.PressureFed}
                 ignitions = ${Math.max(this.Ignitions, 0)}
                 IGNITOR_RESOURCE
@@ -3613,7 +3615,16 @@ class Tank {
             `;
         });
         return `
-            
+            MODULE
+            {
+                name = ModuleFuelTanks
+                basemass = -1
+                type = All
+                volume = ${this.LimitTanks ? this.TanksVolume : volume}
+                
+                ${contents}
+                
+            }
         `;
     }
     GetTankSizeEstimate() {
@@ -3629,9 +3640,9 @@ class Tank {
         }
         let output = [];
         let usedVolume = 0;
-        output.forEach(v => {
+        this.TanksContents.forEach(v => {
             let thisVol = Math.min(v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation, this.TanksVolume - usedVolume);
-            output.push([v[0], thisVol * v[1] * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
+            output.push([v[0], thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
         });
         return output;
     }

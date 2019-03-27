@@ -427,7 +427,9 @@ class Engine {
         
         for (let i = 0; i < this.ThrustCurve.length - 1; ++i) {
             newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0])
-            keys += `key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}`;
+            keys += `
+                key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
+            `;
             lastTangent = newTangent;
         }
         
@@ -506,7 +508,7 @@ class Engine {
 
                 ${this.GetThrustCurveConfig ()}
 
-                ullage = ${this.NeedsUllage}
+                ullage = ${this.NeedsUllage && this.EngineVariant != EngineType.Solid}
                 pressureFed = ${this.PressureFed}
                 ignitions = ${Math.max (this.Ignitions, 0)}
                 IGNITOR_RESOURCE

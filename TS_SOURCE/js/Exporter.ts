@@ -190,19 +190,19 @@ class Exporter {
     
     private static MultiModeSlaveEngineConfig (engine: Engine): string {
         return `
-            @PART[${engine.Polymorphism.MasterEngineName}]
+            @PART[GE-${engine.Polymorphism.MasterEngineName}]
             {
                 MODULE
                 {
                     name = MultiModeEngine
                     primaryEngineID = PrimaryMode
-                    primaryEngineModeDisplayName = Primary mode (${engine.Polymorphism.MasterEngineName})
+                    primaryEngineModeDisplayName = Primary mode (GE-${engine.Polymorphism.MasterEngineName})
                     secondaryEngineID = SecondaryMode
                     secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
                 }
             }
             
-            @PART[${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
             {
                 +MODULE[ModuleEngines*]
                 {
@@ -236,7 +236,7 @@ class Exporter {
     
     private static MultiConfigSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
         return `
-            @PART[${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
             {
                 @MODULE[ModuleEngineConfigs]
                 {

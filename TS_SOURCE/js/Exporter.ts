@@ -42,7 +42,7 @@ class Exporter {
         return Exporter.CompactConfig (output);
     }
     
-    private static CompactConfig (input: string): string {
+    public static CompactConfig (input: string): string {
         let output = "";
         let lines = input.split ("\n");
         

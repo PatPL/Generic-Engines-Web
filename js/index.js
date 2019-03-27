@@ -1,4 +1,36 @@
 "use strict";
+class AllTankDefinition {
+    static Get() {
+        let definitions = "";
+        for (let i in Fuel) {
+            if (isNaN(parseInt(i))) {
+                break;
+            }
+            let fuelInfo = FuelInfo.GetFuelInfo(parseInt(i));
+            definitions += `
+                TANK
+                {
+                    name = ${fuelInfo.FuelID}
+                    mass = 0.00007
+                    utilization = ${fuelInfo.TankUtilisation}
+                    fillable = True
+                    amount = 0.0
+                    maxAmount = 0.0
+                }
+            `;
+        }
+        return Exporter.CompactConfig(`
+            TANK_DEFINITION {
+                name = All
+                highltPressurized = true
+                basemass = 0.00007 * volume
+
+                ${definitions}
+
+            }
+        `);
+    }
+}
 class BitConverter {
     static ByteArrayToDouble(array, offset) {
         for (let i = 0; i < 8; ++i) {
@@ -1404,7 +1436,21 @@ function ValidateButton_Click() {
     }
 }
 function ExportButton_Click() {
-    console.log(Exporter.ConvertEngineListToConfig(MainEngineTable.Items));
+    if (MainEngineTable.Items.length > 0) {
+        let blobs = {};
+        blobs[`${ListName}.cfg`] = Exporter.ConvertEngineListToConfig(MainEngineTable.Items);
+        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
+        let dll = new XMLHttpRequest();
+        dll.open("GET", "./files/PlumeScaleFixer.dll", true);
+        dll.responseType = "arraybuffer";
+        dll.addEventListener("loadend", () => {
+            blobs["PlumeScaleFixer.dll"] = new Uint8Array(dll.response);
+            FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
+                FileIO.SaveBinary(`${ListName}.zip`, zipData);
+            });
+        });
+        dll.send(null);
+    }
 }
 function DuplicateButton_Click() {
     let indices = MainEngineTable.SelectedRows.sort((a, b) => { return a - b; });

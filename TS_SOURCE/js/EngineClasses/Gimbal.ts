@@ -7,6 +7,33 @@ class Gimbal implements IEditable {
     GimbalNY: number = 0;
     GimbalPY: number = 0;
     
+    public GetConfig (modelInfo: IModelInfo): string {
+        if (this.AdvancedGimbal) {
+            return `
+                MODULE
+                {
+                    name = ModuleGimbal
+                    gimbalTransformName = ${modelInfo.GimbalTransformName}
+                    gimbalRangeYP = ${this.GimbalPY}
+                    gimbalRangeYN = ${this.GimbalNY}
+                    gimbalRangeXP = ${this.GimbalPX}
+                    gimbalRangeXN = ${this.GimbalNX}
+                    useGimbalResponseSpeed = false
+                }
+            `;
+        } else {
+            return `
+                MODULE
+                {
+                    name = ModuleGimbal
+                    gimbalTransformName = ${modelInfo.GimbalTransformName}
+                    useGimbalResponseSpeed = false
+                    gimbalRange = ${this.Gimbal}
+                }
+            `;
+        }
+    }
+    
     public GetDisplayElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");

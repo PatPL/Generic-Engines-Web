@@ -3,6 +3,63 @@ class FuelRatios implements IEditable {
     Items: [Fuel, number][] = [[Fuel.Hydrazine, 1]];
     FuelVolumeRatios: boolean = false;
     
+    public GetPropellantConfig (engine: Engine): string {
+        let electricPower = 0;
+        let ratios: [Fuel, number][] = [];
+        
+        this.Items.forEach (i => {
+            if (i[0] == Fuel.ElectricCharge) {
+                electricPower = i[1];
+            } else {
+                if (this.FuelVolumeRatios) {
+                    ratios.push (i);
+                } else {
+                    ratios.push ([i[0], i[1] / FuelInfo.GetFuelInfo (i[0]).Density / 1000]);
+                }
+            }
+        });
+        
+        if (electricPower > 0) {
+            let normalFuelRatios = 0;
+            let averageDensity = 0;
+            
+            ratios.forEach (r => {
+                normalFuelRatios += r[1];
+                averageDensity += r[1] * FuelInfo.GetFuelInfo (r[0]).Density;
+            });
+            
+            averageDensity /= normalFuelRatios;
+            
+            let x = engine.VacIsp;
+            x *= 9.8066;
+            x = 1 / x;
+            x /= averageDensity;
+            x *= engine.Thrust;
+            
+            electricPower = electricPower * normalFuelRatios / x;
+            
+            ratios.push ([Fuel.ElectricCharge, electricPower]);
+        }
+        
+        let output = "";
+        let firstPropellant = true;
+        
+        ratios.forEach (r => {
+            output += `
+                PROPELLANT
+                {
+                    name = ${FuelInfo.GetFuelInfo (r[0]).FuelID}
+                    ratio = ${r[1]}
+                    DrawGauge = ${firstPropellant}
+                }
+            `;
+            
+            firstPropellant = false;
+        });
+        
+        return output;
+    }
+    
     public GetDisplayElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");

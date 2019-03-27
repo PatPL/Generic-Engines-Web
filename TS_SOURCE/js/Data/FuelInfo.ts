@@ -68,7 +68,7 @@ class FuelInfo {
             Density: 0.000719
         }, {//^^^AvGas
             FuelName: "IRFNA III",
-            FuelID: "IRFNA_III",
+            FuelID: "IRFNA-III",
             FuelType: FuelType.Oxidiser,
             TankUtilisation: 1,
             Density: 0.001658
@@ -206,7 +206,7 @@ class FuelInfo {
             Density: 0.001513
         }, {//^^^IWFNA
             FuelName: "IRFNA IV",
-            FuelID: "IRFNA_IV",
+            FuelID: "IRFNA-IV",
             FuelType: FuelType.Oxidiser,
             TankUtilisation: 1,
             Density: 0.001995

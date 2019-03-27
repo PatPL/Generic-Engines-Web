@@ -12,6 +12,33 @@ class Tank implements IEditable {
         this.Parent = parentObject;
     }
     
+    public GetTankConfig (): string {
+        if (!this.UseTanks) {
+            return "";
+        }
+        
+        let volume = 0;
+        let contents = "";
+        let items = this.GetConstrainedTankContents ();
+        
+        items.forEach (i => {
+            volume += i[1];
+            let fuelInfo: IFuelInfo = FuelInfo.GetFuelInfo (i[0]);
+            contents += `
+                TANK
+                {
+                    name = ${fuelInfo.FuelID}
+                    amount = ${i[1] * fuelInfo.TankUtilisation}
+                    maxAmount = ${i[1] * fuelInfo.TankUtilisation}
+                }
+            `;
+        });
+        
+        return `
+            
+        `;
+    }
+    
     public GetTankSizeEstimate (): number {
         let modelInfo = ModelInfo.GetModelInfo (this.Parent.Visuals.ModelID);
         let output = modelInfo.OriginalTankVolume;

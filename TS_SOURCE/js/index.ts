@@ -109,7 +109,7 @@ function ValidateButton_Click () {
 }
 
 function ExportButton_Click () {
-    
+    console.log (Exporter.ConvertEngineListToConfig (MainEngineTable.Items));
 }
 
 function DuplicateButton_Click () {

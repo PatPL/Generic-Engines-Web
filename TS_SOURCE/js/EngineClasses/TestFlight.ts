@@ -19,6 +19,31 @@ class TestFlight implements IEditable {
         );
     }
     
+    public GetTestFlightConfig (engine: Engine): string {
+        if (
+            !this.EnableTestFlight ||
+            engine.Polymorphism.PolyType == PolymorphismType.MultiModeMaster ||
+            engine.Polymorphism.PolyType == PolymorphismType.MultiModeSlave
+        ) {
+            return "";
+        } else {
+            return `
+                @PART[*]:HAS[@MODULE[ModuleEngineConfigs]:HAS[@CONFIG[GE-${engine.ID}]],!MODULE[TestFlightInterop]]:BEFORE[zTestFlight]
+                {
+                    TESTFLIGHT
+                    {
+                        name = GE-${engine.ID}
+                        ratedBurnTime = ${this.RatedBurnTime}
+                        ignitionReliabilityStart = ${this.StartReliability0 / 100}
+                        ignitionReliabilityEnd = ${this.StartReliability10k / 100}
+                        cycleReliabilityStart = ${this.CycleReliability0 / 100}
+                        cycleReliabilityEnd = ${this.CycleReliability10k / 100}
+                    }
+                }
+            `;
+        }
+    }
+    
     public GetDisplayElement (): HTMLElement {
         let tmp = document.createElement ("div");
         tmp.classList.add ("content-cell-content");

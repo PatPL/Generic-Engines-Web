@@ -10,31 +10,54 @@ class Exporter {
         let engineDict: { [id: string]: Engine } = {};
         
         engines.forEach (e => {
+            if (!e.Active) {
+                return;
+            }
+            
             engineDict[e.ID] = e;
         });
         
         engines.forEach (e => {
+            if (!e.Active) {
+                return;
+            }
+            
             switch (e.Polymorphism.PolyType) {
                 case PolymorphismType.Single:
                 case PolymorphismType.MultiModeMaster:
                 case PolymorphismType.MultiConfigMaster:
-                output += this.RegularEngineConfig (e);
+                output += this.RegularEngineConfig (e, engineDict);
                 break;
                 
                 case PolymorphismType.MultiModeSlave:
-                output += this.MultiModeSlaveEngineConfig (e, engineDict[e.Polymorphism.MasterEngineName]);
+                output += this.MultiModeSlaveEngineConfig (e);
                 break;
                 
                 case PolymorphismType.MultiConfigSlave:
-                output += this.MultiConfigSlaveEngineConfig (e, engineDict[e.Polymorphism.MasterEngineName]);
+                output += this.MultiConfigSlaveEngineConfig (e, engineDict);
                 break;
+            }
+        });
+        
+        return Exporter.CompactConfig (output);
+    }
+    
+    private static CompactConfig (input: string): string {
+        let output = "";
+        let lines = input.split ("\n");
+        
+        lines.forEach (l => {
+            let tmp = l.trim ();
+            
+            if (tmp != "") {
+                output += `${tmp}\n`;
             }
         });
         
         return output;
     }
     
-    private static RegularEngineConfig (engine: Engine): string {
+    private static RegularEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
         let modelInfo = ModelInfo.GetModelInfo (engine.Visuals.ModelID);
         return `
             PART
@@ -97,13 +120,13 @@ class Exporter {
                         key = 6 0.001
                     }
                     
-                    ${engine.ThrustCurveConfig}
+                    ${engine.GetThrustCurveConfig ()}
                     
                 }
 
-                ${engine.GimbalConfig}
+                ${engine.Gimbal.GetConfig (modelInfo)}
 
-                ${engine.AlternatorConfig}
+                ${engine.GetAlternatorConfig ()}
 
                 MODULE
                 {
@@ -116,7 +139,7 @@ class Exporter {
                 }
             }
 
-            @PART[${engine.EngineID}]:FOR[RealismOverhaul]
+            @PART[GE-${engine.ID}]:FOR[RealismOverhaul]
             {
                 %RSSROConfig = True
                 %RP0conf = True
@@ -127,50 +150,109 @@ class Exporter {
                 %skinMaxTemp = 673.15
                 %stageOffset = 1
                 %childStageOffset = 1
-                %stagingIcon = ${engine.StagingIcon}
+                %stagingIcon = ${engine.StagingIconConfig ()}
                 @bulkheadProfiles = srf, size3
                 @tags = Generic Engine
 
-                ${engine.TankConfig}
+                ${engine.Tank.GetTankConfig ()}
 
                 @MODULE[ModuleEngines*]
                 {
                     %engineID = PrimaryMode
-                    @minThrust = ${(engine.Thrust * engine.MinThrustPercent).Str ()}
-                    @maxThrust = ${engine.Thrust.Str ()}
+                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${engine.Thrust}
                     @heatProduction = 180
-                    @useThrustCurve = ${engine.UsesThrustCurve}
-                    %powerEffectName = ${engine.GetPlumeInfo.PlumeID}
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.Visuals.PlumeID).PlumeID}
 
-                    ${engine.PropellantConfig}
+                    ${engine.FuelRatios.GetPropellantConfig (engine)}
 
                     @atmosphereCurve
                     {
-                        @key,0 = 0 ${engine.VacIsp.Str ()}
-                        @key,1 = 1 ${engine.AtmIsp.Str ()}
+                        @key,0 = 0 ${engine.VacIsp}
+                        @key,1 = 1 ${engine.AtmIsp}
                     }
 
-                    ${engine.ThrustCurveConfig}
+                    ${engine.GetThrustCurveConfig ()}
 
                 }
 
-                ${engine.GetModuleEngineConfigs}
+                ${engine.GetEngineModuleConfig (allEngines)}
 
                 !RESOURCE,*{}
             }
 
-            ${engine.PlumeConfig}
+            ${engine.Visuals.GetPlumeConfig (engine)}
 
-            ${engine.TestFlightConfig}
+            ${engine.TestFlight.GetTestFlightConfig (engine)}
         `;
     }
     
-    private static MultiModeSlaveEngineConfig (engine: Engine, master: Engine): string {
-        return "";
+    private static MultiModeSlaveEngineConfig (engine: Engine): string {
+        return `
+            @PART[${engine.Polymorphism.MasterEngineName}]
+            {
+                MODULE
+                {
+                    name = MultiModeEngine
+                    primaryEngineID = PrimaryMode
+                    primaryEngineModeDisplayName = Primary mode (${engine.Polymorphism.MasterEngineName})
+                    secondaryEngineID = SecondaryMode
+                    secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
+                }
+            }
+            
+            @PART[${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                +MODULE[ModuleEngines*]
+                {
+                    @engineID = SecondaryMode
+                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${engine.Thrust}
+                    @heatProduction = 180
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.Visuals.PlumeID).PlumeID}
+
+                    !PROPELLANT,*
+                    {
+                    }
+
+                    ${engine.FuelRatios.GetPropellantConfig (engine)}
+
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${engine.VacIsp}
+                        @key,1 = 1 ${engine.AtmIsp}
+                    }
+
+                    ${engine.GetThrustCurveConfig ()}
+
+                }
+            }
+
+            ${engine.Visuals.GetPlumeConfig (engine)}
+        `;
     }
     
-    private static MultiConfigSlaveEngineConfig (engine: Engine, master: Engine): string {
-        return "";
+    private static MultiConfigSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
+        return `
+            @PART[${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                @MODULE[ModuleEngineConfigs]
+                {
+                    ${engine.GetEngineConfig (allEngines)}
+                }
+            }
+            
+            ${engine.Visuals.GetPlumeConfig (engine)}
+            
+            ${engine.TestFlight.GetTestFlightConfig (engine)}
+            
+            @ENTRYCOSTMODS:FOR[xxxRP-0]
+            {
+                GE-${engine.ID} = ${engine.EntryCost}
+            }
+        `;
     }
     
 }

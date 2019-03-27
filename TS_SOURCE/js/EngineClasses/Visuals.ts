@@ -9,6 +9,35 @@ class Visuals implements IEditable {
         this.ParentEngine = parent;
     }
     
+    public GetPlumeConfig (engine: Engine): string {
+        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (this.ModelID);
+        let plumeInfo: IPlumeInfo = PlumeInfo.GetPlumeInfo (this.PlumeID);
+        
+        let targetID = (
+            engine.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ||
+            engine.Polymorphism.PolyType == PolymorphismType.MultiModeSlave ?
+            engine.Polymorphism.MasterEngineName :
+            engine.ID
+        );
+        
+        return `
+            @PART[GE-${targetID}]:FOR[RealPlume]:HAS[!PLUME[${plumeInfo.PlumeID}]]:NEEDS[SmokeScreen]
+            {
+                PLUME
+                {
+                    name = ${plumeInfo.PlumeID}
+                    transformName = ${modelInfo.ThrustTransformName}
+                    localRotation = 0,0,0
+                    localPosition = 0,0,${(modelInfo.PlumePositionOffset + plumeInfo.PositionOffset + plumeInfo.FinalOffset)}
+                    fixedScale = ${(modelInfo.PlumeSizeMultiplier * plumeInfo.Scale * engine.Dimensions.Width / (engine.Dimensions.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth))}
+                    flareScale = 0
+                    energy = ${(Math.log (engine.Thrust + 5) / Math.log (10) / 3 * plumeInfo.EnergyMultiplier)}
+                    speed = ${Math.max ((Math.log (engine.VacIsp) / Math.log (2) / 1.5) - 4.5, 0.2)}
+                }
+            }
+        `;
+    }
+    
     public GetHiddenObjectsConfig (): string {
         let modelInfo: IModelInfo = ModelInfo.GetModelInfo (this.ModelID);
         let output = "";

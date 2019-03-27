@@ -290,6 +290,10 @@ class Engine {
                 let table = e.querySelector ("tbody")!;
                 let rows = e.querySelectorAll ("tr");
                 
+                this.ThrustCurve = this.ThrustCurve.sort ((a, b) => {
+                    return b[0] - a[0];
+                });
+                
                 rows.forEach ((v, i) => {
                     if (i != 0) {
                         v.remove ();
@@ -314,6 +318,10 @@ class Engine {
                 for (let i = 0; i < inputs.length; i += 2) {
                     this.ThrustCurve.push ([parseFloat (inputs[i].value), parseFloat (inputs[i + 1].value)]);
                 }
+                
+                this.ThrustCurve = this.ThrustCurve.sort ((a, b) => {
+                    return b[0] - a[0];
+                });
             }
         }
     }
@@ -389,4 +397,125 @@ class Engine {
             return "unknown";
         }
     }
+    
+    public StagingIconConfig (): string {
+        switch (this.EngineVariant) {
+            case EngineType.Liquid:
+            return "LIQUID_ENGINE";
+            
+            case EngineType.Solid:
+            return "SOLID_BOOSTER";
+            
+            default:
+            return "unknown";
+        }
+    }
+    
+    public GetThrustCurveConfig (): string {
+        this.ThrustCurve = this.ThrustCurve.sort ((a, b) => {
+            return b[0] - a[0];
+        });
+        
+        if (this.ThrustCurve.length == 0) {
+            return "";
+        }
+        
+        let keys = "";
+        let lastTangent: number = 0;
+        let newTangent: number = 0;
+        this.ThrustCurve.push ([Number.MIN_VALUE, this.ThrustCurve[this.ThrustCurve.length - 1][1]]);
+        
+        for (let i = 0; i < this.ThrustCurve.length - 1; ++i) {
+            newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0])
+            keys += `key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}`;
+            lastTangent = newTangent;
+        }
+        
+        this.ThrustCurve.pop ();
+        
+        return `
+            curveResource = ${FuelInfo.GetFuelInfo (this.FuelRatios.Items[0][0]).FuelID}
+            thrustCurve
+            {
+                ${keys}
+            }
+        `;
+    }
+    
+    public GetAlternatorConfig (): string {
+        if (this.AlternatorPower > 0) {
+            return `
+                MODULE
+                {
+                    name = ModuleAlternator
+                    RESOURCE
+                    {
+                        name = ElectricCharge
+                        rate = ${this.AlternatorPower}
+                    }
+                }
+            `;
+        } else {
+            return "";
+        }
+    }
+    
+    public GetEngineModuleConfig (allEngines: { [id: string]: Engine }): string {
+        if (
+            this.Polymorphism.PolyType == PolymorphismType.MultiModeMaster ||
+            this.Polymorphism.PolyType == PolymorphismType.MultiModeSlave
+        ) {
+            return "";
+        } else {
+            return `
+                MODULE
+                {
+                    name = ModuleEngineConfigs
+                    configuration = GE-${this.ID}
+                    modded = false
+                    origMass = ${this.Mass}
+                    
+                    ${this.GetEngineConfig (allEngines)}
+                    
+                }
+            `;
+        }
+    }
+    
+    public GetEngineConfig (allEngines: { [id: string]: Engine }): string {
+        return `
+            CONFIG
+            {
+                name = GE-${this.ID}
+                description = ${this.Labels.EngineDescription}
+                maxThrust = ${this.Thrust}
+                minThrust = ${this.Thrust * this.MinThrust / 100}
+                %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.Visuals.PlumeID).PlumeID}
+                heatProduction = 100
+                massMult = ${(this.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.Polymorphism.MasterEngineName].Mass) : "1")}
+                %techRequired = ${TechNode[this.TechUnlockNode]}
+                cost = ${(this.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.Polymorphism.MasterEngineName].Cost : 0)}
+
+                ${this.FuelRatios.GetPropellantConfig (this)}
+
+                atmosphereCurve
+                {
+                    key = 0 ${this.VacIsp}
+                    key = 1 ${this.AtmIsp}
+                }
+
+                ${this.GetThrustCurveConfig ()}
+
+                ullage = ${this.NeedsUllage}
+                pressureFed = ${this.PressureFed}
+                ignitions = ${Math.max (this.Ignitions, 0)}
+                IGNITOR_RESOURCE
+                {
+                    name = ElectricCharge
+                    amount = 1
+                }
+            }
+        `;
+    }
+    
 }

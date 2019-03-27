@@ -280,6 +280,245 @@ window.addEventListener("keyup", (e) => {
     }
 });
 class Exporter {
+    static ConvertEngineListToConfig(engines) {
+        if (Validator.Validate(engines).length > 0) {
+            console.error("Tried to export a list with errors. Aborting");
+            return "";
+        }
+        let output = "";
+        let engineDict = {};
+        engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
+            engineDict[e.ID] = e;
+        });
+        engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
+            switch (e.Polymorphism.PolyType) {
+                case PolymorphismType.Single:
+                case PolymorphismType.MultiModeMaster:
+                case PolymorphismType.MultiConfigMaster:
+                    output += this.RegularEngineConfig(e, engineDict);
+                    break;
+                case PolymorphismType.MultiModeSlave:
+                    output += this.MultiModeSlaveEngineConfig(e);
+                    break;
+                case PolymorphismType.MultiConfigSlave:
+                    output += this.MultiConfigSlaveEngineConfig(e, engineDict);
+                    break;
+            }
+        });
+        return Exporter.CompactConfig(output);
+    }
+    static CompactConfig(input) {
+        let output = "";
+        let lines = input.split("\n");
+        lines.forEach(l => {
+            let tmp = l.trim();
+            if (tmp != "") {
+                output += `${tmp}\n`;
+            }
+        });
+        return output;
+    }
+    static RegularEngineConfig(engine, allEngines) {
+        let modelInfo = ModelInfo.GetModelInfo(engine.Visuals.ModelID);
+        return `
+            PART
+            {
+                name = GE-${engine.ID}
+                module = Part
+                author = Generic Engines
+                
+                ${engine.Visuals.GetModelConfig(engine.Dimensions)}
+
+                TechRequired = ${TechNode[engine.TechUnlockNode]}
+                entryCost = ${engine.EntryCost}
+                cost = ${engine.Cost}
+                category = Engine
+                subcategory = 0
+                title = ${engine.Labels.EngineName == "" ? engine.ID : engine.Labels.EngineName}
+                manufacturer = ${engine.Labels.EngineManufacturer}
+                description = ${engine.Labels.EngineDescription}
+                attachRules = 1,1,1,${modelInfo.CanAttachOnModel ? 1 : 0},0
+                mass = ${engine.Mass}
+                heatConductivity = 0.06
+                skinInternalConductionMult = 4.0
+                emissiveConstant = 0.8
+                dragModelType = default
+                maximum_drag = 0.2
+                minimum_drag = 0.2
+                angularDrag = 2
+                crashTolerance = 12
+                maxTemp = 2200 // = 3600
+                bulkheadProfiles = size1
+                tags = REP
+
+                MODULE
+                {
+                    name = GenericEnginesPlumeScaleFixer
+                }
+
+                ${engine.Visuals.GetHiddenObjectsConfig()}
+
+                MODULE
+                {
+                    name = ModuleEngines
+                    thrustVectorTransformName = thrustTransform
+                    exhaustDamage = True
+                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
+                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
+                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
+                    ignitionThreshold = 0.1
+                    minThrust = 0
+                    maxThrust = 610
+                    heatProduction = 200
+                    EngineType = ${engine.EngineTypeConfig()}
+                    useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    exhaustDamageDistanceOffset = 0.79
+
+                    atmosphereCurve
+                    {
+                        key = 0 345
+                        key = 1 204
+                        key = 6 0.001
+                    }
+                    
+                    ${engine.GetThrustCurveConfig()}
+                    
+                }
+
+                ${engine.Gimbal.GetConfig(modelInfo)}
+
+                ${engine.GetAlternatorConfig()}
+
+                MODULE
+                {
+                    name = ModuleSurfaceFX
+                    thrustProviderModuleIndex = 0
+                    fxMax = 0.5
+                    maxDistance = 30
+                    falloff = 1.7
+                    thrustTransformName = thrustTransform
+                }
+            }
+
+            @PART[GE-${engine.ID}]:FOR[RealismOverhaul]
+            {
+                %RSSROConfig = True
+                %RP0conf = True
+                
+                %breakingForce = 250
+                %breakingTorque = 250
+                @maxTemp = 573.15
+                %skinMaxTemp = 673.15
+                %stageOffset = 1
+                %childStageOffset = 1
+                %stagingIcon = ${engine.StagingIconConfig()}
+                @bulkheadProfiles = srf, size3
+                @tags = Generic Engine
+
+                ${engine.Tank.GetTankConfig()}
+
+                @MODULE[ModuleEngines*]
+                {
+                    %engineID = PrimaryMode
+                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${engine.Thrust}
+                    @heatProduction = 180
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.Visuals.PlumeID).PlumeID}
+
+                    ${engine.FuelRatios.GetPropellantConfig(engine)}
+
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${engine.VacIsp}
+                        @key,1 = 1 ${engine.AtmIsp}
+                    }
+
+                    ${engine.GetThrustCurveConfig()}
+
+                }
+
+                ${engine.GetEngineModuleConfig(allEngines)}
+
+                !RESOURCE,*{}
+            }
+
+            ${engine.Visuals.GetPlumeConfig(engine)}
+
+            ${engine.TestFlight.GetTestFlightConfig(engine)}
+        `;
+    }
+    static MultiModeSlaveEngineConfig(engine) {
+        return `
+            @PART[${engine.Polymorphism.MasterEngineName}]
+            {
+                MODULE
+                {
+                    name = MultiModeEngine
+                    primaryEngineID = PrimaryMode
+                    primaryEngineModeDisplayName = Primary mode (${engine.Polymorphism.MasterEngineName})
+                    secondaryEngineID = SecondaryMode
+                    secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
+                }
+            }
+            
+            @PART[${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                +MODULE[ModuleEngines*]
+                {
+                    @engineID = SecondaryMode
+                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${engine.Thrust}
+                    @heatProduction = 180
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.Visuals.PlumeID).PlumeID}
+
+                    !PROPELLANT,*
+                    {
+                    }
+
+                    ${engine.FuelRatios.GetPropellantConfig(engine)}
+
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${engine.VacIsp}
+                        @key,1 = 1 ${engine.AtmIsp}
+                    }
+
+                    ${engine.GetThrustCurveConfig()}
+
+                }
+            }
+
+            ${engine.Visuals.GetPlumeConfig(engine)}
+        `;
+    }
+    static MultiConfigSlaveEngineConfig(engine, allEngines) {
+        return `
+            @PART[${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                @MODULE[ModuleEngineConfigs]
+                {
+                    ${engine.GetEngineConfig(allEngines)}
+                }
+            }
+            
+            ${engine.Visuals.GetPlumeConfig(engine)}
+            
+            ${engine.TestFlight.GetTestFlightConfig(engine)}
+            
+            @ENTRYCOSTMODS:FOR[xxxRP-0]
+            {
+                GE-${engine.ID} = ${engine.EntryCost}
+            }
+        `;
+    }
 }
 class FileIO {
     static ZipBlobs(rootDirName, blobs, callback) {
@@ -1165,6 +1404,7 @@ function ValidateButton_Click() {
     }
 }
 function ExportButton_Click() {
+    console.log(Exporter.ConvertEngineListToConfig(MainEngineTable.Items));
 }
 function DuplicateButton_Click() {
     let indices = MainEngineTable.SelectedRows.sort((a, b) => { return a - b; });
@@ -1280,7 +1520,7 @@ FuelInfo.fuels = [
         Density: 0.000719
     }, {
         FuelName: "IRFNA III",
-        FuelID: "IRFNA_III",
+        FuelID: "IRFNA-III",
         FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001658
@@ -1418,7 +1658,7 @@ FuelInfo.fuels = [
         Density: 0.001513
     }, {
         FuelName: "IRFNA IV",
-        FuelID: "IRFNA_IV",
+        FuelID: "IRFNA-IV",
         FuelType: FuelType.Oxidiser,
         TankUtilisation: 1,
         Density: 0.001995
@@ -2528,6 +2768,9 @@ class Engine {
                 }, ApplyValueToEditElement: (e) => {
                     let table = e.querySelector("tbody");
                     let rows = e.querySelectorAll("tr");
+                    this.ThrustCurve = this.ThrustCurve.sort((a, b) => {
+                        return b[0] - a[0];
+                    });
                     rows.forEach((v, i) => {
                         if (i != 0) {
                             v.remove();
@@ -2547,6 +2790,9 @@ class Engine {
                     for (let i = 0; i < inputs.length; i += 2) {
                         this.ThrustCurve.push([parseFloat(inputs[i].value), parseFloat(inputs[i + 1].value)]);
                     }
+                    this.ThrustCurve = this.ThrustCurve.sort((a, b) => {
+                        return b[0] - a[0];
+                    });
                 }
             }
         };
@@ -2598,6 +2844,124 @@ class Engine {
     OnTableDraw(e) {
         this.ListCols = e;
         this.RehidePolyFields(e);
+    }
+    EngineTypeConfig() {
+        switch (this.EngineVariant) {
+            case EngineType.Liquid:
+                return "LiquidFuel";
+            case EngineType.Solid:
+                return "SolidBooster";
+            default:
+                return "unknown";
+        }
+    }
+    StagingIconConfig() {
+        switch (this.EngineVariant) {
+            case EngineType.Liquid:
+                return "LIQUID_ENGINE";
+            case EngineType.Solid:
+                return "SOLID_BOOSTER";
+            default:
+                return "unknown";
+        }
+    }
+    GetThrustCurveConfig() {
+        this.ThrustCurve = this.ThrustCurve.sort((a, b) => {
+            return b[0] - a[0];
+        });
+        if (this.ThrustCurve.length == 0) {
+            return "";
+        }
+        let keys = "";
+        let lastTangent = 0;
+        let newTangent = 0;
+        this.ThrustCurve.push([Number.MIN_VALUE, this.ThrustCurve[this.ThrustCurve.length - 1][1]]);
+        for (let i = 0; i < this.ThrustCurve.length - 1; ++i) {
+            newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0]);
+            keys += `key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}`;
+            lastTangent = newTangent;
+        }
+        this.ThrustCurve.pop();
+        return `
+            curveResource = ${FuelInfo.GetFuelInfo(this.FuelRatios.Items[0][0]).FuelID}
+            thrustCurve
+            {
+                ${keys}
+            }
+        `;
+    }
+    GetAlternatorConfig() {
+        if (this.AlternatorPower > 0) {
+            return `
+                MODULE
+                {
+                    name = ModuleAlternator
+                    RESOURCE
+                    {
+                        name = ElectricCharge
+                        rate = ${this.AlternatorPower}
+                    }
+                }
+            `;
+        }
+        else {
+            return "";
+        }
+    }
+    GetEngineModuleConfig(allEngines) {
+        if (this.Polymorphism.PolyType == PolymorphismType.MultiModeMaster ||
+            this.Polymorphism.PolyType == PolymorphismType.MultiModeSlave) {
+            return "";
+        }
+        else {
+            return `
+                MODULE
+                {
+                    name = ModuleEngineConfigs
+                    configuration = GE-${this.ID}
+                    modded = false
+                    origMass = ${this.Mass}
+                    
+                    ${this.GetEngineConfig(allEngines)}
+                    
+                }
+            `;
+        }
+    }
+    GetEngineConfig(allEngines) {
+        return `
+            CONFIG
+            {
+                name = GE-${this.ID}
+                description = ${this.Labels.EngineDescription}
+                maxThrust = ${this.Thrust}
+                minThrust = ${this.Thrust * this.MinThrust / 100}
+                %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.Visuals.PlumeID).PlumeID}
+                heatProduction = 100
+                massMult = ${(this.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.Polymorphism.MasterEngineName].Mass) : "1")}
+                %techRequired = ${TechNode[this.TechUnlockNode]}
+                cost = ${(this.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.Polymorphism.MasterEngineName].Cost : 0)}
+
+                ${this.FuelRatios.GetPropellantConfig(this)}
+
+                atmosphereCurve
+                {
+                    key = 0 ${this.VacIsp}
+                    key = 1 ${this.AtmIsp}
+                }
+
+                ${this.GetThrustCurveConfig()}
+
+                ullage = ${this.NeedsUllage}
+                pressureFed = ${this.PressureFed}
+                ignitions = ${Math.max(this.Ignitions, 0)}
+                IGNITOR_RESOURCE
+                {
+                    name = ElectricCharge
+                    amount = 1
+                }
+            }
+        `;
     }
 }
 Engine.ColumnDefinitions = {
@@ -2707,6 +3071,53 @@ class FuelRatios {
     constructor() {
         this.Items = [[Fuel.Hydrazine, 1]];
         this.FuelVolumeRatios = false;
+    }
+    GetPropellantConfig(engine) {
+        let electricPower = 0;
+        let ratios = [];
+        this.Items.forEach(i => {
+            if (i[0] == Fuel.ElectricCharge) {
+                electricPower = i[1];
+            }
+            else {
+                if (this.FuelVolumeRatios) {
+                    ratios.push(i);
+                }
+                else {
+                    ratios.push([i[0], i[1] / FuelInfo.GetFuelInfo(i[0]).Density / 1000]);
+                }
+            }
+        });
+        if (electricPower > 0) {
+            let normalFuelRatios = 0;
+            let averageDensity = 0;
+            ratios.forEach(r => {
+                normalFuelRatios += r[1];
+                averageDensity += r[1] * FuelInfo.GetFuelInfo(r[0]).Density;
+            });
+            averageDensity /= normalFuelRatios;
+            let x = engine.VacIsp;
+            x *= 9.8066;
+            x = 1 / x;
+            x /= averageDensity;
+            x *= engine.Thrust;
+            electricPower = electricPower * normalFuelRatios / x;
+            ratios.push([Fuel.ElectricCharge, electricPower]);
+        }
+        let output = "";
+        let firstPropellant = true;
+        ratios.forEach(r => {
+            output += `
+                PROPELLANT
+                {
+                    name = ${FuelInfo.GetFuelInfo(r[0]).FuelID}
+                    ratio = ${r[1]}
+                    DrawGauge = ${firstPropellant}
+                }
+            `;
+            firstPropellant = false;
+        });
+        return output;
     }
     GetDisplayElement() {
         let tmp = document.createElement("div");
@@ -2842,6 +3253,33 @@ class Gimbal {
         this.GimbalPX = 30;
         this.GimbalNY = 0;
         this.GimbalPY = 0;
+    }
+    GetConfig(modelInfo) {
+        if (this.AdvancedGimbal) {
+            return `
+                MODULE
+                {
+                    name = ModuleGimbal
+                    gimbalTransformName = ${modelInfo.GimbalTransformName}
+                    gimbalRangeYP = ${this.GimbalPY}
+                    gimbalRangeYN = ${this.GimbalNY}
+                    gimbalRangeXP = ${this.GimbalPX}
+                    gimbalRangeXN = ${this.GimbalNX}
+                    useGimbalResponseSpeed = false
+                }
+            `;
+        }
+        else {
+            return `
+                MODULE
+                {
+                    name = ModuleGimbal
+                    gimbalTransformName = ${modelInfo.GimbalTransformName}
+                    useGimbalResponseSpeed = false
+                    gimbalRange = ${this.Gimbal}
+                }
+            `;
+        }
     }
     GetDisplayElement() {
         let tmp = document.createElement("div");
@@ -3155,6 +3593,29 @@ class Tank {
         this.TanksContents = [];
         this.Parent = parentObject;
     }
+    GetTankConfig() {
+        if (!this.UseTanks) {
+            return "";
+        }
+        let volume = 0;
+        let contents = "";
+        let items = this.GetConstrainedTankContents();
+        items.forEach(i => {
+            volume += i[1];
+            let fuelInfo = FuelInfo.GetFuelInfo(i[0]);
+            contents += `
+                TANK
+                {
+                    name = ${fuelInfo.FuelID}
+                    amount = ${i[1] * fuelInfo.TankUtilisation}
+                    maxAmount = ${i[1] * fuelInfo.TankUtilisation}
+                }
+            `;
+        });
+        return `
+            
+        `;
+    }
     GetTankSizeEstimate() {
         let modelInfo = ModelInfo.GetModelInfo(this.Parent.Visuals.ModelID);
         let output = modelInfo.OriginalTankVolume;
@@ -3364,6 +3825,29 @@ class TestFlight {
             config.CycleReliability0 == defaultConfig.CycleReliability0 &&
             config.CycleReliability10k == defaultConfig.CycleReliability10k);
     }
+    GetTestFlightConfig(engine) {
+        if (!this.EnableTestFlight ||
+            engine.Polymorphism.PolyType == PolymorphismType.MultiModeMaster ||
+            engine.Polymorphism.PolyType == PolymorphismType.MultiModeSlave) {
+            return "";
+        }
+        else {
+            return `
+                @PART[*]:HAS[@MODULE[ModuleEngineConfigs]:HAS[@CONFIG[GE-${engine.ID}]],!MODULE[TestFlightInterop]]:BEFORE[zTestFlight]
+                {
+                    TESTFLIGHT
+                    {
+                        name = GE-${engine.ID}
+                        ratedBurnTime = ${this.RatedBurnTime}
+                        ignitionReliabilityStart = ${this.StartReliability0 / 100}
+                        ignitionReliabilityEnd = ${this.StartReliability10k / 100}
+                        cycleReliabilityStart = ${this.CycleReliability0 / 100}
+                        cycleReliabilityEnd = ${this.CycleReliability10k / 100}
+                    }
+                }
+            `;
+        }
+    }
     GetDisplayElement() {
         let tmp = document.createElement("div");
         tmp.classList.add("content-cell-content");
@@ -3454,6 +3938,70 @@ class Visuals {
         this.ModelID = Model.LR91;
         this.PlumeID = Plume.Kerolox_Upper;
         this.ParentEngine = parent;
+    }
+    GetPlumeConfig(engine) {
+        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let plumeInfo = PlumeInfo.GetPlumeInfo(this.PlumeID);
+        let targetID = (engine.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ||
+            engine.Polymorphism.PolyType == PolymorphismType.MultiModeSlave ?
+            engine.Polymorphism.MasterEngineName :
+            engine.ID);
+        return `
+            @PART[GE-${targetID}]:FOR[RealPlume]:HAS[!PLUME[${plumeInfo.PlumeID}]]:NEEDS[SmokeScreen]
+            {
+                PLUME
+                {
+                    name = ${plumeInfo.PlumeID}
+                    transformName = ${modelInfo.ThrustTransformName}
+                    localRotation = 0,0,0
+                    localPosition = 0,0,${(modelInfo.PlumePositionOffset + plumeInfo.PositionOffset + plumeInfo.FinalOffset)}
+                    fixedScale = ${(modelInfo.PlumeSizeMultiplier * plumeInfo.Scale * engine.Dimensions.Width / (engine.Dimensions.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth))}
+                    flareScale = 0
+                    energy = ${(Math.log(engine.Thrust + 5) / Math.log(10) / 3 * plumeInfo.EnergyMultiplier)}
+                    speed = ${Math.max((Math.log(engine.VacIsp) / Math.log(2) / 1.5) - 4.5, 0.2)}
+                }
+            }
+        `;
+    }
+    GetHiddenObjectsConfig() {
+        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let output = "";
+        modelInfo.HiddenMuObjects.forEach(m => {
+            output += `
+                MODULE
+                {
+                    name = ModuleJettison
+                    jettisonName = ${m}
+                    bottomNodeName = hide
+                    isFairing = True
+                }
+            `;
+        });
+        return output;
+    }
+    GetModelConfig(size) {
+        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let heightScale = size.Height / modelInfo.OriginalHeight;
+        let widthScale = size.Width / heightScale / (size.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
+        let attachmentNode = (modelInfo.RadialAttachment ?
+            `node_attach = ${modelInfo.RadialAttachmentPoint * widthScale}, 0.0, 0.0, 1.0, 0.0, 0.0` :
+            `node_attach = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0`);
+        return `
+            MODEL
+            {
+                model = ${modelInfo.ModelPath}
+                ${modelInfo.TextureDefinitions}
+                scale = ${widthScale}, 1, ${widthScale}
+            }
+            scale = 1
+            rescaleFactor = ${heightScale}
+
+            node_stack_top = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0, 1
+            node_stack_bottom = 0.0, ${modelInfo.NodeStackBottom}, 0.0, 0.0, -1.0, 0.0, 1
+            node_stack_hide = 0.0, ${modelInfo.NodeStackBottom + 0.001}, 0.0, 0.0, 0.0, 1.0, 0
+
+            ${attachmentNode}
+        `;
     }
     GetDisplayElement() {
         let tmp = document.createElement("div");

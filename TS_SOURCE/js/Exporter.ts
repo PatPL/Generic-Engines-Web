@@ -30,7 +30,7 @@ class Exporter {
                 break;
                 
                 case PolymorphismType.MultiModeSlave:
-                output += this.MultiModeSlaveEngineConfig (e);
+                output += this.MultiModeSlaveEngineConfig (e, engineDict);
                 break;
                 
                 case PolymorphismType.MultiConfigSlave:
@@ -188,7 +188,7 @@ class Exporter {
         `;
     }
     
-    private static MultiModeSlaveEngineConfig (engine: Engine): string {
+    private static MultiModeSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
         return `
             @PART[GE-${engine.Polymorphism.MasterEngineName}]
             {
@@ -230,7 +230,7 @@ class Exporter {
                 }
             }
 
-            ${engine.Visuals.GetPlumeConfig (engine)}
+            ${engine.Visuals.GetPlumeConfig (allEngines[engine.Polymorphism.MasterEngineName])}
         `;
     }
     
@@ -244,7 +244,7 @@ class Exporter {
                 }
             }
             
-            ${engine.Visuals.GetPlumeConfig (engine)}
+            ${engine.Visuals.GetPlumeConfig (allEngines[engine.Polymorphism.MasterEngineName])}
             
             ${engine.TestFlight.GetTestFlightConfig (engine)}
             

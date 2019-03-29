@@ -336,7 +336,7 @@ class Exporter {
                     output += this.RegularEngineConfig(e, engineDict);
                     break;
                 case PolymorphismType.MultiModeSlave:
-                    output += this.MultiModeSlaveEngineConfig(e);
+                    output += this.MultiModeSlaveEngineConfig(e, engineDict);
                     break;
                 case PolymorphismType.MultiConfigSlave:
                     output += this.MultiConfigSlaveEngineConfig(e, engineDict);
@@ -486,7 +486,7 @@ class Exporter {
             ${engine.TestFlight.GetTestFlightConfig(engine)}
         `;
     }
-    static MultiModeSlaveEngineConfig(engine) {
+    static MultiModeSlaveEngineConfig(engine, allEngines) {
         return `
             @PART[GE-${engine.Polymorphism.MasterEngineName}]
             {
@@ -528,7 +528,7 @@ class Exporter {
                 }
             }
 
-            ${engine.Visuals.GetPlumeConfig(engine)}
+            ${engine.Visuals.GetPlumeConfig(allEngines[engine.Polymorphism.MasterEngineName])}
         `;
     }
     static MultiConfigSlaveEngineConfig(engine, allEngines) {
@@ -541,7 +541,7 @@ class Exporter {
                 }
             }
             
-            ${engine.Visuals.GetPlumeConfig(engine)}
+            ${engine.Visuals.GetPlumeConfig(allEngines[engine.Polymorphism.MasterEngineName])}
             
             ${engine.TestFlight.GetTestFlightConfig(engine)}
             
@@ -1271,6 +1271,22 @@ class Serializer {
     }
 }
 Serializer.Version = 13;
+class Store {
+    static SetBinary(id, value) {
+        localStorage[id] = this.decoder.decode(value);
+    }
+    static GetBinary(id) {
+        return this.encoder.encode(localStorage[id]);
+    }
+    static SetText(id, value) {
+        localStorage[id] = value;
+    }
+    static GetText(id) {
+        return localStorage[id];
+    }
+}
+Store.encoder = new TextEncoder();
+Store.decoder = new TextDecoder();
 class Validator {
     static Validate(engines) {
         let output = [];

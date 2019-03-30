@@ -32,6 +32,12 @@ class AllTankDefinition {
     }
 }
 class BitConverter {
+    static ByteArrayToBase64(data) {
+        return btoa(String.fromCharCode.apply(null, data));
+    }
+    static Base64ToByteArray(b64) {
+        return new Uint8Array(atob(b64).split("").map(c => { return c.charCodeAt(0); }));
+    }
     static ByteArrayToDouble(array, offset) {
         for (let i = 0; i < 8; ++i) {
             this.view8.setUint8(i, array[offset + i]);
@@ -59,6 +65,8 @@ BitConverter.view8 = new DataView(BitConverter.buffer8);
 BitConverter.view4 = new DataView(BitConverter.buffer4);
 BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
+BitConverter.encoder = new TextEncoder();
+BitConverter.decoder = new TextDecoder();
 class EditableField {
     constructor(valueOwner, valueName, container) {
         this.FieldID = EditableField.IDCounter++;
@@ -553,6 +561,19 @@ class Exporter {
     }
 }
 class FileIO {
+    static ToClipboard(value) {
+        if (value.length == 0) {
+            return false;
+        }
+        let textArea = document.createElement("textarea");
+        document.body.appendChild(textArea);
+        textArea.value = value;
+        textArea.focus();
+        textArea.select();
+        let ok = document.execCommand("copy");
+        document.body.removeChild(textArea);
+        return ok;
+    }
     static ZipBlobs(rootDirName, blobs, callback) {
         let zip = new JSZip();
         let zipRoot = zip.folder(rootDirName);
@@ -870,6 +891,51 @@ window.onpointermove = (event) => {
     Input.MouseX = event.clientX;
     Input.MouseY = event.clientY;
 };
+addEventListener("DOMContentLoaded", () => {
+    Notifier.Container = document.querySelector(".notify-container");
+});
+class Notifier {
+    static Info(text) {
+        let box = document.createElement("div");
+        box.classList.add("notify-box");
+        box.classList.add("info");
+        box.innerHTML = text;
+        Notifier.Container.appendChild(box);
+        box.addEventListener("click", () => {
+            box.remove();
+        });
+        setTimeout(() => {
+            box.remove();
+        }, this.NotificationLifetime);
+    }
+    static Warn(text) {
+        let box = document.createElement("div");
+        box.classList.add("notify-box");
+        box.classList.add("warn");
+        box.innerHTML = text;
+        Notifier.Container.appendChild(box);
+        box.addEventListener("click", () => {
+            box.remove();
+        });
+        setTimeout(() => {
+            box.remove();
+        }, this.NotificationLifetime);
+    }
+    static Error(text) {
+        let box = document.createElement("div");
+        box.classList.add("notify-box");
+        box.classList.add("error");
+        box.innerHTML = text;
+        Notifier.Container.appendChild(box);
+        box.addEventListener("click", () => {
+            box.remove();
+        });
+        setTimeout(() => {
+            box.remove();
+        }, this.NotificationLifetime);
+    }
+}
+Notifier.NotificationLifetime = 7500;
 class Serializer {
     static Copy(engine) {
         let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0, engine.EngineList);
@@ -1272,11 +1338,14 @@ class Serializer {
 }
 Serializer.Version = 13;
 class Store {
+    static Exists(id) {
+        return localStorage[id] != undefined;
+    }
     static SetBinary(id, value) {
-        localStorage[id] = this.decoder.decode(value);
+        localStorage[id] = String.fromCharCode.apply(null, value);
     }
     static GetBinary(id) {
-        return this.encoder.encode(localStorage[id]);
+        return new Uint8Array(localStorage[id].split("").map(c => { return c.charCodeAt(0); }));
     }
     static SetText(id, value) {
         localStorage[id] = value;
@@ -1364,8 +1433,16 @@ class Validator {
     }
 }
 var ListName = "Unnamed";
+var EditableFieldMetadata = {
+    ListName: {
+        ApplyValueToDisplayElement: e => {
+            e.innerHTML = `${ListName}.enl`;
+        }
+    }
+};
 let ListNameDisplay;
 let MainEngineTable;
+let FullscreenWindows = {};
 window.onbeforeunload = (e) => {
     if (MainEngineTable.Items.length != 0) {
         e.returnValue = "Are you sure that you want to leave this page? You will lose all unsaved data";
@@ -1377,6 +1454,30 @@ window.onbeforeunload = (e) => {
 };
 addEventListener("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
+    let imgs = document.querySelectorAll("img.browser-relevant");
+    imgs.forEach(i => {
+        let isFirefox = typeof InstallTrigger !== 'undefined';
+        let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+        if (isFirefox) {
+            i.src += "firefox.png";
+        }
+        else if (isOpera) {
+            i.src += "opera.png";
+        }
+        else {
+            i.src += "chrome.png";
+        }
+    });
+    let windows = document.querySelectorAll(".fullscreen-box");
+    windows.forEach(w => {
+        let bg = w.querySelector(".fullscreen-grayout");
+        let content = w.querySelector(".fullscreen-content");
+        bg.addEventListener("click", () => {
+            w.style.display = "none";
+        });
+        w.style.display = "none";
+        FullscreenWindows[w.id] = w;
+    });
     let images = document.querySelectorAll(".option-button");
     images.forEach(image => {
         image.ondragstart = () => { return false; };
@@ -1402,6 +1503,9 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-remove").addEventListener("click", RemoveButton_Click);
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
+    document.getElementById("option-button-download-list").addEventListener("click", DownloadListButton_Click);
+    document.getElementById("option-button-cache-list").addEventListener("click", CacheListButton_Click);
+    document.getElementById("option-button-clipboard-list").addEventListener("click", ClipboardListButton_Click);
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
     MainEngineTable.RebuildTable();
@@ -1439,20 +1543,54 @@ function AppendButton_Click() {
     });
 }
 function SaveButton_Click() {
+    FullscreenWindows["save-box"].style.display = "flex";
+}
+function DownloadListButton_Click() {
     let data = Serializer.SerializeMany(MainEngineTable.Items);
     FileIO.SaveBinary(`${ListName}.enl`, data);
+    FullscreenWindows["save-box"].style.display = "none";
+}
+function CacheListButton_Click() {
+    let data = Serializer.SerializeMany(MainEngineTable.Items);
+    if (Store.Exists(`${ListName}.enl`)) {
+        Notifier.Error(`${ListName}.enl already exists in the cache. Rename the list or remove the list from cache`);
+    }
+    else {
+        Notifier.Info(`${ListName}.enl saved in cache`);
+        Store.SetBinary(`${ListName}.enl`, data);
+        FullscreenWindows["save-box"].style.display = "none";
+    }
+}
+function ClipboardListButton_Click() {
+    let data = Serializer.SerializeMany(MainEngineTable.Items);
+    let b64 = BitConverter.ByteArrayToBase64(data);
+    let success = FileIO.ToClipboard(b64);
+    if (success) {
+        Notifier.Info("Engine list has been copied to clipboard");
+        FullscreenWindows["save-box"].style.display = "none";
+    }
+    else {
+        Notifier.Warn("There was an error. Engine list was NOT copied to clipboard");
+    }
 }
 function ValidateButton_Click() {
     let errors = Validator.Validate(MainEngineTable.Items);
     if (errors.length == 0) {
-        alert("No errors found in this list");
+        Notifier.Info("No errors found in this list");
     }
     else {
+        Notifier.Warn("There are errors in this list");
         alert(`Following errors were found:\n\n-> ${errors.join("\n-> ")}`);
     }
 }
 function ExportButton_Click() {
     if (MainEngineTable.Items.length > 0) {
+        let errors = Validator.Validate(MainEngineTable.Items);
+        if (errors.length != 0) {
+            Notifier.Error("Fix validation errors before exporting");
+            alert(`Fix following errors before exporting the engine:\n\n-> ${errors.join("\n-> ")}`);
+            return;
+        }
         let blobs = {};
         blobs[`${ListName}.cfg`] = Exporter.ConvertEngineListToConfig(MainEngineTable.Items);
         blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();

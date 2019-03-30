@@ -3,12 +3,16 @@ class Store {
     private static readonly encoder = new TextEncoder ();
     private static readonly decoder = new TextDecoder ();
     
+    public static Exists (id: string) {
+        return localStorage[id] != undefined;
+    }
+    
     public static SetBinary (id: string, value: Uint8Array) {
-        localStorage[id] = this.decoder.decode (value);
+        localStorage[id] = String.fromCharCode.apply (null, value as unknown as number[]);
     }
     
     public static GetBinary (id: string): Uint8Array {
-        return this.encoder.encode (localStorage[id]);
+        return new Uint8Array ((localStorage[id] as string).split ("").map (c => { return c.charCodeAt(0); }));
     }
     
     public static SetText (id: string, value: string) {

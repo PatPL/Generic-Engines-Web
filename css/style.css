@@ -169,7 +169,7 @@ input[type="checkbox"]:checked {
 }
 
 .content-header-container {
-    z-index: 9999;
+    z-index: 99;
     position: fixed;
     white-space: nowrap;
     
@@ -265,4 +265,115 @@ input.content-cell-content {
 
 .content-cell:nth-child(odd) {
     background: #CCC;
+}
+
+/**/
+
+.fullscreen-box {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    width: 100%;
+    height: 100%;
+    
+    z-index: 998;
+}
+
+.fullscreen-grayout {
+    position: absolute;
+    
+    width: 100%;
+    height: 100%;
+    
+    background: #444;
+    opacity: 0.66;
+}
+
+.fullscreen-content {
+    z-index: 999;
+    
+    background: #DDD;
+    border: #444 2px solid;
+    padding: 8px;
+    
+    width: auto;
+    height: auto;
+}
+
+#save-box > div.fullscreen-content > div {
+    width: 600px;
+    height: 64px;
+    margin-bottom: 8px;
+}
+
+#save-box > div.fullscreen-content > div:last-child {
+    margin-bottom: 0;
+}
+
+#save-box > div.fullscreen-content > div img {
+    width: 64px;
+    height: 64px;
+    float: left;
+}
+
+#save-box > div.fullscreen-content > div div {
+    line-height: 64px;
+    float: left;
+    font-size: 24px;
+    padding-left: 8px;
+}
+
+/**/
+
+.notify-container {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: self-end;
+    
+    width: auto;
+    height: auto;
+    
+    pointer-events: none;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    z-index: 999999;
+}
+
+.notify-box {
+    padding: 4px;
+    margin-top: -2px;
+    
+    cursor: pointer;
+    font-size: 20px;
+    
+    pointer-events: all;
+    box-sizing: border-box;
+    line-height: 24px;
+    height: 36px;
+    width: auto;
+    
+    color: #222;
+    background: #888;
+    border: #444 2px solid;
+}
+
+.notify-box.info {
+    color: #222;
+    background: #88F;
+    border: #444 2px solid;
+}
+
+.notify-box.warn {
+    color: #222;
+    background: #FB8;
+    border: #444 2px solid;
+}
+
+.notify-box.error {
+    color: #222;
+    background: #F44;
+    border: #444 2px solid;
 }

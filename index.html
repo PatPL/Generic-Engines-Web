@@ -16,7 +16,41 @@
 	<div class="notify-container">
 		
 	</div>
-	<div class="fullscreen-box" id="save-box">
+	<div class="fullscreen-box" id="cache-box" style="display: none;">
+		<div class="fullscreen-grayout"></div>
+		<div class="fullscreen-content">
+			<span>Browser cache</span>
+			<div id="cache-box-content">
+				<div>12</div>
+				<div>32423</div>
+				<div>432546</div>
+			</div>
+		</div>
+	</div>
+	<div class="fullscreen-box" id="open-box" style="display: none;">
+		<div class="fullscreen-grayout"></div>
+		<div class="fullscreen-content">
+			<div>
+				<img id="option-button-open-upload-list" src="img/button/upload-large.png" class="option-button">
+				<img id="option-button-append-upload-list" src="img/button/upload-append-large.png" class="option-button">
+				<div>(Open/Append) list from a file</div>
+			</div>
+			<div>
+				<img id="option-button-open-cache-list" src="img/button/cache-open-" class="option-button browser-relevant">
+				<img id="option-button-append-cache-list" src="img/button/cache-append-" class="option-button browser-relevant">
+				<div>(Open/Append) list from browser cache</div>
+			</div>
+			<div>
+				<img id="option-button-open-clipboard-list" src="img/button/base64-open.png" class="option-button">
+				<img id="option-button-append-clipboard-list" src="img/button/base64-append.png" class="option-button">
+				<div>(Open/Append) list from base64 string</div>
+			</div>
+			<div>
+				<div>(Append) You can also try drag&dropping .enl files on this website</div>
+			</div>
+		</div>
+	</div>
+	<div class="fullscreen-box" id="save-box" style="display: none;">
 		<div class="fullscreen-grayout"></div>
 		<div class="fullscreen-content">
 			<div>
@@ -24,21 +58,20 @@
 				<div>Download the list as .enl file</div>
 			</div>
 			<div>
-				<img id="option-button-cache-list" src="img/button/cache-" class="option-button browser-relevant">
+				<img id="option-button-cache-list" src="img/button/cache-save-" class="option-button browser-relevant">
 				<div>Store the list in broser cache</div>
 			</div>
 			<div>
-				<img id="option-button-clipboard-list" src="img/button/base64.png" class="option-button">
+				<img id="option-button-clipboard-list" src="img/button/base64-save.png" class="option-button">
 				<div>Copy the list as a base64 string</div>
 			</div>
 		</div>
 	</div>
 	<div class="option-container" id="option-row">
 		<div class="option-container" id="option-container-left">
-			<img id="option-button-new" title="Create a new, empty list" class="option-button" src="img/button/new.png">
-			<img id="option-button-open" title="Open an existing list from file" class="option-button" src="img/button/open.png">
-			<img id="option-button-append" title="Append contents of an existing list to current list" class="option-button" src="img/button/append.png">
-			<img id="option-button-save" title="Save current list to file" class="option-button" src="img/button/save.png">
+			<img id="option-button-new" title="Clear the current list" class="option-button" src="img/button/clear.png">
+			<img id="option-button-open" title="Open/Append an existing list" class="option-button" src="img/button/open.png">
+			<img id="option-button-save" title="Save current list" class="option-button" src="img/button/save.png">
 			<img id="option-button-validate" title="Check current list for inconsistencies" class="option-button" src="img/button/validate.png">
 			<img id="option-button-export" title="Export current list as KSP mod" class="option-button" src="img/button/export.png">
 			<img id="option-button-duplicate" title="Duplicate selected engines" class="option-button" src="img/button/duplicate.png">

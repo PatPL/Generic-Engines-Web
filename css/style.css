@@ -303,9 +303,10 @@ input.content-cell-content {
 }
 
 #save-box > div.fullscreen-content > div {
-    width: 600px;
+    width: auto;
     height: 64px;
     margin-bottom: 8px;
+    padding-right: 8px;
 }
 
 #save-box > div.fullscreen-content > div:last-child {
@@ -325,12 +326,82 @@ input.content-cell-content {
     padding-left: 8px;
 }
 
+#open-box > div.fullscreen-content > div {
+    width: auto;
+    height: 64px;
+    margin-bottom: 8px;
+    padding-right: 8px;
+}
+
+#open-box > div.fullscreen-content > div:last-child {
+    margin-bottom: 0;
+}
+
+#open-box > div.fullscreen-content > div img {
+    width: 64px;
+    height: 64px;
+    margin-left: 8px;
+    float: left;
+}
+
+#open-box > div.fullscreen-content > div img:first-child {
+    margin-left: 0;
+}
+
+#open-box > div.fullscreen-content > div div {
+    line-height: 64px;
+    float: left;
+    font-size: 24px;
+    padding-left: 8px;
+}
+
+#cache-box {
+    z-index: 9999;
+}
+
+#cache-box > div.fullscreen-content {
+    width: 800px;
+    height: 600px;
+    padding: 0;
+    
+    font-size: 32px;
+    
+    text-align: center;
+}
+
+#cache-box > div.fullscreen-content > div {
+    width: 800px;
+    height: 560px;
+    
+    background: #999;
+    padding-top: 2px;
+    
+    display: flex;
+    flex-direction: column;
+    
+    overflow-y: auto;
+}
+
+#cache-box > div.fullscreen-content > div div {
+    width: calc(100% - 4px);
+    height: 32px;
+    
+    margin: 0px 2px 2px 2px;
+    
+    line-height: 28px;
+    font-size: 20px;
+    
+    box-sizing: border-box;
+    background: #bbb;
+    border: #444 2px solid;
+}
+
 /**/
 
 .notify-container {
     display: flex;
     flex-direction: column-reverse;
-    align-items: self-end;
+    align-items: flex-end;
     
     width: auto;
     height: auto;

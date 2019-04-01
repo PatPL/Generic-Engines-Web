@@ -633,7 +633,7 @@ addEventListener("DOMContentLoaded", () => {
     MainEngineTable.RebuildTable();
 });
 function NewButton_Click() {
-    if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open an empty list?")) {
+    if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to clear current list?")) {
         MainEngineTable.Items = [];
         MainEngineTable.RebuildTable();
         ListNameDisplay.SetValue("Unnamed");

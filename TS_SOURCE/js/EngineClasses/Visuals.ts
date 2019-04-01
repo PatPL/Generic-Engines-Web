@@ -10,7 +10,7 @@ class Visuals implements IEditable {
     }
     
     public GetPlumeConfig (engine: Engine): string {
-        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (this.ModelID);
+        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (engine.Visuals.ModelID);
         let plumeInfo: IPlumeInfo = PlumeInfo.GetPlumeInfo (this.PlumeID);
         
         let targetID = (

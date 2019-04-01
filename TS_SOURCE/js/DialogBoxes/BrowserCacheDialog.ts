@@ -46,6 +46,8 @@ class BrowserCacheDialog {
             }
         }
         
+        lists = lists.sort ();
+        
         lists.forEach (i => {
             let listItem = document.createElement ("div");
             listItem.classList.add ("option-button");
@@ -75,6 +77,8 @@ class BrowserCacheDialog {
             }
         }
         
+        lists = lists.sort ();
+        
         lists.forEach (i => {
             let listItem = document.createElement ("div");
             listItem.innerHTML = i;
@@ -99,7 +103,7 @@ class BrowserCacheDialog {
             renameButton.classList.add ("option-button");
             renameButton.classList.add ("cache-option-button");
             renameButton.addEventListener ("click", () => {
-                let newName = prompt ("Enter a new name:");
+                let newName = prompt ("Enter a new name:", i.replace (/\.enl$/, ""));
                 if (newName) {
                     newName = newName.replace (/\.enl$/, "");
                     newName += ".enl";
@@ -108,6 +112,20 @@ class BrowserCacheDialog {
                 }
             });
             listItem.appendChild (renameButton);
+            
+            let appendButton = document.createElement ("img");
+            appendButton.src = "img/button/append-cache.png";
+            appendButton.title = "Append this list";
+            appendButton.classList.add ("option-button");
+            appendButton.classList.add ("cache-option-button");
+            appendButton.addEventListener ("click", () => {
+                
+                Serializer.DeserializeMany (Store.GetBinary (i), MainEngineTable);
+                MainEngineTable.RebuildTable ();
+                
+                this.DialogBoxElement.style.display = "none";
+            });
+            listItem.appendChild (appendButton);
             
             let openButton = document.createElement ("img");
             openButton.src = "img/button/open-cache.png";
@@ -125,20 +143,6 @@ class BrowserCacheDialog {
                 }
             });
             listItem.appendChild (openButton);
-            
-            let appendButton = document.createElement ("img");
-            appendButton.src = "img/button/append-cache.png";
-            appendButton.title = "Append this list";
-            appendButton.classList.add ("option-button");
-            appendButton.classList.add ("cache-option-button");
-            appendButton.addEventListener ("click", () => {
-                
-                Serializer.DeserializeMany (Store.GetBinary (i), MainEngineTable);
-                MainEngineTable.RebuildTable ();
-                
-                this.DialogBoxElement.style.display = "none";
-            });
-            listItem.appendChild (appendButton);
             
             container.appendChild (listItem);
         });

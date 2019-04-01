@@ -391,5 +391,5 @@ function SettingsButton_Click () {
 }
 
 function HelpButton_Click () {
-    
+    FullscreenWindows["about-box"].style.display = "flex";
 }

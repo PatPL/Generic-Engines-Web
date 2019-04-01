@@ -451,6 +451,77 @@ class HtmlTable {
     }
 }
 HtmlTable.RowCounter = 1;
+addEventListener("DOMContentLoaded", () => {
+    Notifier.Container = document.querySelector(".notify-container");
+});
+class Notifier {
+    static Info(text, lifetime = this.NotificationLifetime) {
+        let box = document.createElement("div");
+        box.classList.add("notify-box");
+        box.classList.add("info");
+        box.innerHTML = text;
+        Notifier.Container.appendChild(box);
+        box.addEventListener("click", () => {
+            box.remove();
+        });
+        if (lifetime > 0) {
+            setTimeout(() => {
+                box.remove();
+            }, lifetime);
+        }
+    }
+    static Warn(text, lifetime = this.NotificationLifetime) {
+        let box = document.createElement("div");
+        box.classList.add("notify-box");
+        box.classList.add("warn");
+        box.innerHTML = text;
+        Notifier.Container.appendChild(box);
+        box.addEventListener("click", () => {
+            box.remove();
+        });
+        if (lifetime > 0) {
+            setTimeout(() => {
+                box.remove();
+            }, lifetime);
+        }
+    }
+    static Error(text, lifetime = this.NotificationLifetime) {
+        let box = document.createElement("div");
+        box.classList.add("notify-box");
+        box.classList.add("error");
+        box.innerHTML = text;
+        Notifier.Container.appendChild(box);
+        box.addEventListener("click", () => {
+            box.remove();
+        });
+        if (lifetime > 0) {
+            setTimeout(() => {
+                box.remove();
+            }, lifetime);
+        }
+    }
+}
+Notifier.NotificationLifetime = 7500;
+class Version {
+}
+Version.CurrentVersion = "Web.0.8.0 Prerelease";
+addEventListener("DOMContentLoaded", () => {
+    if (Store.Exists("lastVersion")) {
+        if (Store.GetText("lastVersion") != Version.CurrentVersion) {
+            Notifier.Info(`Generic Engines updated to version ${Version.CurrentVersion}; Click to dismiss`, 0);
+        }
+        else {
+        }
+    }
+    else {
+        Notifier.Info(`Thank you for using Generic Engines`, 10000);
+    }
+    Store.SetText("lastVersion", Version.CurrentVersion);
+    document.head.querySelector("title").innerHTML += Version.CurrentVersion;
+    document.body.querySelectorAll(".js-insert-version").forEach(e => {
+        e.innerHTML = Version.CurrentVersion;
+    });
+});
 var ListName = "Unnamed";
 var EditableFieldMetadata = {
     ListName: {
@@ -753,6 +824,7 @@ function RemoveButton_Click() {
 function SettingsButton_Click() {
 }
 function HelpButton_Click() {
+    FullscreenWindows["about-box"].style.display = "flex";
 }
 var FuelType;
 (function (FuelType) {
@@ -1891,6 +1963,7 @@ class BrowserCacheDialog {
                 lists.push(i);
             }
         }
+        lists = lists.sort();
         lists.forEach(i => {
             let listItem = document.createElement("div");
             listItem.classList.add("option-button");
@@ -1912,6 +1985,7 @@ class BrowserCacheDialog {
                 lists.push(i);
             }
         }
+        lists = lists.sort();
         lists.forEach(i => {
             let listItem = document.createElement("div");
             listItem.innerHTML = i;
@@ -1934,7 +2008,7 @@ class BrowserCacheDialog {
             renameButton.classList.add("option-button");
             renameButton.classList.add("cache-option-button");
             renameButton.addEventListener("click", () => {
-                let newName = prompt("Enter a new name:");
+                let newName = prompt("Enter a new name:", i.replace(/\.enl$/, ""));
                 if (newName) {
                     newName = newName.replace(/\.enl$/, "");
                     newName += ".enl";
@@ -1943,6 +2017,17 @@ class BrowserCacheDialog {
                 }
             });
             listItem.appendChild(renameButton);
+            let appendButton = document.createElement("img");
+            appendButton.src = "img/button/append-cache.png";
+            appendButton.title = "Append this list";
+            appendButton.classList.add("option-button");
+            appendButton.classList.add("cache-option-button");
+            appendButton.addEventListener("click", () => {
+                Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable);
+                MainEngineTable.RebuildTable();
+                this.DialogBoxElement.style.display = "none";
+            });
+            listItem.appendChild(appendButton);
             let openButton = document.createElement("img");
             openButton.src = "img/button/open-cache.png";
             openButton.title = "Open this list";
@@ -1958,17 +2043,6 @@ class BrowserCacheDialog {
                 }
             });
             listItem.appendChild(openButton);
-            let appendButton = document.createElement("img");
-            appendButton.src = "img/button/append-cache.png";
-            appendButton.title = "Append this list";
-            appendButton.classList.add("option-button");
-            appendButton.classList.add("cache-option-button");
-            appendButton.addEventListener("click", () => {
-                Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable);
-                MainEngineTable.RebuildTable();
-                this.DialogBoxElement.style.display = "none";
-            });
-            listItem.appendChild(appendButton);
             container.appendChild(listItem);
         });
     }
@@ -3394,7 +3468,7 @@ class Visuals {
         this.ParentEngine = parent;
     }
     GetPlumeConfig(engine) {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(engine.Visuals.ModelID);
         let plumeInfo = PlumeInfo.GetPlumeInfo(this.PlumeID);
         let targetID = (engine.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ||
             engine.Polymorphism.PolyType == PolymorphismType.MultiModeSlave ?
@@ -4354,51 +4428,6 @@ window.onpointermove = (event) => {
     Input.MouseX = event.clientX;
     Input.MouseY = event.clientY;
 };
-addEventListener("DOMContentLoaded", () => {
-    Notifier.Container = document.querySelector(".notify-container");
-});
-class Notifier {
-    static Info(text) {
-        let box = document.createElement("div");
-        box.classList.add("notify-box");
-        box.classList.add("info");
-        box.innerHTML = text;
-        Notifier.Container.appendChild(box);
-        box.addEventListener("click", () => {
-            box.remove();
-        });
-        setTimeout(() => {
-            box.remove();
-        }, this.NotificationLifetime);
-    }
-    static Warn(text) {
-        let box = document.createElement("div");
-        box.classList.add("notify-box");
-        box.classList.add("warn");
-        box.innerHTML = text;
-        Notifier.Container.appendChild(box);
-        box.addEventListener("click", () => {
-            box.remove();
-        });
-        setTimeout(() => {
-            box.remove();
-        }, this.NotificationLifetime);
-    }
-    static Error(text) {
-        let box = document.createElement("div");
-        box.classList.add("notify-box");
-        box.classList.add("error");
-        box.innerHTML = text;
-        Notifier.Container.appendChild(box);
-        box.addEventListener("click", () => {
-            box.remove();
-        });
-        setTimeout(() => {
-            box.remove();
-        }, this.NotificationLifetime);
-    }
-}
-Notifier.NotificationLifetime = 7500;
 class Serializer {
     static Copy(engine) {
         let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0, engine.EngineList);

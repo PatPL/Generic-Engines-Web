@@ -113,6 +113,11 @@ input[type="checkbox"]:checked {
 
 /**/
 
+.option-button-disabled {
+    filter: brightness(0.66) contrast(0.66);
+    cursor: not-allowed;
+}
+
 .option-button {
     cursor: pointer;
 }
@@ -401,6 +406,22 @@ input.content-cell-content {
     height: 24px;
     float: right;
     margin: 2px 2px 0px 0px;
+}
+
+#about-box h1 {
+    margin: 8px;
+}
+
+#about-box a {
+    display: block;
+    margin: auto;
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+#about-box hr {
+    border: #888 solid 1px;
+    margin: 8px -8px 8px -8px;
 }
 
 /**/

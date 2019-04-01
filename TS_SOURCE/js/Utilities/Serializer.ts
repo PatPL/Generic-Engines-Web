@@ -26,19 +26,22 @@ class Serializer {
         return output;
     }
     
-    public static DeserializeMany (data: Uint8Array, appendToExisting: HtmlTable) {
+    public static DeserializeMany (data: Uint8Array, appendToExisting: HtmlTable): number {
         let offset = 0;
+        let engineCount = 0;
         
         while (offset < data.length) {
-            
             let [engine, addedOffset] = Serializer.Deserialize (data, offset, appendToExisting);
             MainEngineTable.AddItem (engine);
             offset += addedOffset;
+            ++engineCount;
         }
         
         if (offset != data.length) {
             console.warn ("Possible data corruption?");
         }
+        
+        return engineCount;
     }
     
     public static Serialize(e: Engine): Uint8Array {

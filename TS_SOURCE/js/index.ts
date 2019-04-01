@@ -1,6 +1,15 @@
 var ListName = "Unnamed";
+var EditableFieldMetadata: { [id: string]: IEditable } = {
+    ListName: {
+        ApplyValueToDisplayElement: e => {
+            e.innerHTML = `${ListName}.enl`;
+        }
+    }
+}
 let ListNameDisplay: EditableField;
 let MainEngineTable: HtmlTable;
+
+let FullscreenWindows: { [id: string]: HTMLElement } = {};
 
 //Website exit confirmation
 window.onbeforeunload = (e) => {
@@ -15,8 +24,80 @@ window.onbeforeunload = (e) => {
 addEventListener ("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField (window, "ListName", document.getElementById ("list-name")!);
     
+    //File drag&drop (append list)
+    window.addEventListener ("dragover", e => {
+        e.stopPropagation ();
+        e.preventDefault ();
+        
+        if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = "copy";
+        }
+    });
+    window.addEventListener ("drop", e => {
+        e.stopPropagation ();
+        e.preventDefault ();
+        
+        if (!e.dataTransfer) {
+            return;
+        }
+        
+        let files = e.dataTransfer.files;
+        
+        if (files.length == 0) {
+            return;
+        }
+        
+        let reader = new FileReader();
+        reader.onload = () => {
+            let data = new Uint8Array (reader.result as ArrayBuffer);
+            
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            MainEngineTable.RebuildTable ();
+            
+            Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
+        }
+
+        reader.readAsArrayBuffer(files[0]);
+        
+    });
+    
     //Disable default RMB context menu
     //document.addEventListener('contextmenu', event => event.preventDefault());
+    
+    //Set correct browser icons
+    let imgs = document.querySelectorAll<HTMLImageElement> ("img.browser-relevant");
+    imgs.forEach (i => {
+        //@ts-ignore
+        let isFirefox = typeof InstallTrigger !== 'undefined';
+        //@ts-ignore
+        let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+        
+        
+        
+        if (isFirefox) {
+            i.src = i.src.replace ("()", "firefox");
+        } else if (isOpera) {
+            i.src = i.src.replace ("()", "opera");
+        } else {
+            i.src = i.src.replace ("()", "chrome");
+        }
+        
+        
+    });
+    
+    //Setup fullscreen windows
+    let windows = document.querySelectorAll<HTMLElement> (".fullscreen-box");
+    windows.forEach (w => {
+        let bg = w.querySelector<HTMLElement> (".fullscreen-grayout")!;
+        let content = w.querySelector<HTMLElement> (".fullscreen-content")!;
+        
+        bg.addEventListener ("click", () => {
+            w.style.display = "none";
+        });
+        
+        w.style.display = "none";
+        FullscreenWindows[w.id] = w;
+    });
     
     //Disable option image dragging (user-select: none; doesn't do it)
     let images = document.querySelectorAll<HTMLElement> (".option-button");
@@ -38,8 +119,8 @@ addEventListener ("DOMContentLoaded", () => {
     
     document.getElementById ("option-button-new")!.addEventListener ("click", NewButton_Click);
     document.getElementById ("option-button-open")!.addEventListener ("click", OpenButton_Click);
-    document.getElementById ("option-button-append")!.addEventListener ("click", AppendButton_Click);
     document.getElementById ("option-button-save")!.addEventListener ("click", SaveButton_Click);
+    document.getElementById ("option-button-cache")!.addEventListener ("click", CacheButton_Click);
     document.getElementById ("option-button-validate")!.addEventListener ("click", ValidateButton_Click);
     document.getElementById ("option-button-export")!.addEventListener ("click", ExportButton_Click);
     document.getElementById ("option-button-duplicate")!.addEventListener ("click", DuplicateButton_Click);
@@ -48,6 +129,17 @@ addEventListener ("DOMContentLoaded", () => {
     
     document.getElementById ("option-button-settings")!.addEventListener ("click", SettingsButton_Click);
     document.getElementById ("option-button-help")!.addEventListener ("click", HelpButton_Click);
+    
+    document.getElementById ("option-button-download-list")!.addEventListener ("click", DownloadListButton_Click);
+    document.getElementById ("option-button-cache-list")!.addEventListener ("click", CacheListButton_Click);
+    document.getElementById ("option-button-clipboard-list")!.addEventListener ("click", ClipboardListButton_Click);
+    
+    document.getElementById ("option-button-open-upload-list")!.addEventListener ("click", OpenUploadButton_Click);
+    document.getElementById ("option-button-append-upload-list")!.addEventListener ("click", AppendUploadButton_Click);
+    document.getElementById ("option-button-open-cache-list")!.addEventListener ("click", OpenCacheButton_Click);
+    document.getElementById ("option-button-append-cache-list")!.addEventListener ("click", AppendCacheButton_Click);
+    document.getElementById ("option-button-open-clipboard-list")!.addEventListener ("click", OpenClipboardButton_Click);
+    document.getElementById ("option-button-append-clipboard-list")!.addEventListener ("click", AppendClipboardButton_Click);
     
     MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
@@ -64,52 +156,198 @@ function NewButton_Click () {
     }
 }
 
+/* Open dialog */
+
 function OpenButton_Click () {
+    FullscreenWindows["open-box"].style.display = "flex";
+}
+
+function OpenUploadButton_Click () {
     if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from file?")) {
         FileIO.OpenBinary (".enl", (data, filename) => {
             if (data) {
-                filename = filename.replace (".enl", "");
+                filename = filename.replace (/\.enl$/, "");
                 ListNameDisplay.SetValue (filename);
                 
                 MainEngineTable.Items = [];
-                Serializer.DeserializeMany (data, MainEngineTable);
+                let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
                 MainEngineTable.RebuildTable ();
+                
+                FullscreenWindows["open-box"].style.display = "none";
+                Notifier.Info (`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
             } else {
                 //No file chosen?
+                Notifier.Warn ("You didn't choose any file");
             }
         });
     }
 }
 
-function AppendButton_Click () {
+function AppendUploadButton_Click () {
     FileIO.OpenBinary (".enl", (data) => { //TODO: Multiple file input
         if (data) {
-            Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
             MainEngineTable.RebuildTable ();
+            
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
         } else {
             //No file chosen?
         }
     });
 }
 
+function OpenCacheButton_Click () {
+    if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
+        BrowserCacheDialog.GetEngineListData ((data, newFilename) => {
+            if (!data) {
+                // Maybe send a notification?
+                return;
+            }
+            
+            if (newFilename) {
+                ListNameDisplay.SetValue (newFilename);
+            }
+            
+            MainEngineTable.Items = [];
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            MainEngineTable.RebuildTable ();
+            
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info (`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        }, "Choose a list to open");
+    }
+}
+
+function AppendCacheButton_Click () {
+    BrowserCacheDialog.GetEngineListData (data => {
+        if (!data) {
+            // Maybe send a notification?
+            return;
+        }
+        
+        let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+        MainEngineTable.RebuildTable ();
+        
+        FullscreenWindows["open-box"].style.display = "none";
+        Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+    }, "Choose a list to append");
+}
+
+function OpenClipboardButton_Click () {
+    if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from base64 string?")) {
+        let b64 = prompt ("Enter the base64 string:");
+        
+        if (b64 == null || b64.length == 0) {
+            Notifier.Warn ("Base64 string was not entered");
+            return;
+        }
+        
+        try {
+            let data = BitConverter.Base64ToByteArray (b64);
+            MainEngineTable.Items = [];
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            MainEngineTable.RebuildTable ();
+            
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info (`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        } catch (e) {
+            Notifier.Warn ("There was an error while parsing the string");
+            return;
+        }
+    }
+}
+
+function AppendClipboardButton_Click () {
+    let b64 = prompt ("Enter the base64 string:");
+        
+        if (b64 == null || b64.length == 0) {
+            Notifier.Warn ("Base64 string was not entered");
+            return;
+        }
+        
+        try {
+            let data = BitConverter.Base64ToByteArray (b64);
+            
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            MainEngineTable.RebuildTable ();
+            
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        } catch (e) {
+            Notifier.Warn ("There was an error while parsing the string");
+            return;
+        }
+}
+
+/* /Open dialog */
+/* Save dialog */
+
 function SaveButton_Click () {
+    FullscreenWindows["save-box"].style.display = "flex";
+}
+
+function DownloadListButton_Click () {
     let data = Serializer.SerializeMany (MainEngineTable.Items);
     
     FileIO.SaveBinary (`${ListName}.enl`, data);
+    FullscreenWindows["save-box"].style.display = "none";
+}
+
+function CacheListButton_Click () {
+    let data = Serializer.SerializeMany (MainEngineTable.Items);
+    
+    if (!Store.Exists (`${ListName}.enl`) || confirm (`${ListName}.enl already exists in cache.\n\nDo you want to overwrite? Old file will be lost.`)) {
+        Notifier.Info (`${ListName}.enl saved in cache`);
+        Store.SetBinary (`${ListName}.enl`, data);
+        FullscreenWindows["save-box"].style.display = "none";
+    } else {
+        Notifier.Warn (`${ListName}.enl already exists in the cache. Current file was not saved`);
+    }
+}
+
+function ClipboardListButton_Click () {
+    let data = Serializer.SerializeMany (MainEngineTable.Items);
+    
+    let b64: string = BitConverter.ByteArrayToBase64 (data);
+    
+    let success = FileIO.ToClipboard (b64);
+    
+    if (success) {
+        Notifier.Info ("Engine list has been copied to clipboard");
+        FullscreenWindows["save-box"].style.display = "none";
+    } else {
+        Notifier.Warn ("There was an error. Engine list was NOT copied to clipboard");
+    }
+}
+
+/* /Save dialog */
+
+function CacheButton_Click () {
+    BrowserCacheDialog.DisplayCache ();
 }
 
 function ValidateButton_Click () {
     let errors = Validator.Validate (MainEngineTable.Items);
     
     if (errors.length == 0) {
-        alert ("No errors found in this list");
+        Notifier.Info ("No errors found in this list");
     } else {
+        Notifier.Warn ("There are errors in this list");
         alert (`Following errors were found:\n\n-> ${errors.join ("\n-> ")}`);
     }
 }
 
 function ExportButton_Click () {
     if (MainEngineTable.Items.length > 0) {
+        
+        let errors = Validator.Validate (MainEngineTable.Items);
+        if (errors.length != 0) {
+            Notifier.Error ("Fix validation errors before exporting");
+            alert (`Fix following errors before exporting the engine:\n\n-> ${errors.join ("\n-> ")}`);
+            return;
+        }
+        
         let blobs: {[blobname: string]: Uint8Array | string} = {};
         
         blobs[`${ListName}.cfg`] = Exporter.ConvertEngineListToConfig (MainEngineTable.Items);
@@ -153,5 +391,5 @@ function SettingsButton_Click () {
 }
 
 function HelpButton_Click () {
-    
+    FullscreenWindows["about-box"].style.display = "flex";
 }

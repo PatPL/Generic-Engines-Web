@@ -2,7 +2,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>Generic Engines</title>
+	<title>Generic Engines </title>
 	<link rel="icon" href="img/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<style id="edit-cell-height-override">/* Changed in JS */</style>
@@ -13,12 +13,85 @@
 </head>
 
 <body>
+	<div class="notify-container">
+		
+	</div>
+	<div class="fullscreen-box" id="about-box" style="display: none;">
+		<div class="fullscreen-grayout"></div>
+		<div class="fullscreen-content">
+			<center>
+				<h1>Generic Engines <span class="js-insert-version"></span></h1>
+				
+				<hr>
+				
+				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/wiki">Wiki 🗗</a>
+				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/releases">Changelog 🗗</a>
+				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/issues/new">Report a bug 🗗</a>
+				
+				<hr>
+				
+				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/tree/master">Source 🗗</a>
+				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/graphs/contributors">Authors 🗗</a>
+			</center>
+		</div>
+	</div>
+	<div class="fullscreen-box" id="cache-box" style="display: none;">
+		<div class="fullscreen-grayout"></div>
+		<div class="fullscreen-content">
+			<span>Browser cache</span>
+			<div id="cache-box-content">
+				<div>12</div>
+				<div>32423</div>
+				<div>432546</div>
+			</div>
+		</div>
+	</div>
+	<div class="fullscreen-box" id="open-box" style="display: none;">
+		<div class="fullscreen-grayout"></div>
+		<div class="fullscreen-content">
+			<div>
+				<img id="option-button-open-upload-list" src="img/button/upload-large.png" class="option-button">
+				<img id="option-button-append-upload-list" src="img/button/upload-append-large.png" class="option-button">
+				<div>(Open/Append) list from a file</div>
+			</div>
+			<div>
+				<img id="option-button-open-cache-list" src="img/button/cache-open-().png" class="option-button browser-relevant">
+				<img id="option-button-append-cache-list" src="img/button/cache-append-().png" class="option-button browser-relevant">
+				<div>(Open/Append) list from browser cache</div>
+			</div>
+			<div>
+				<img id="option-button-open-clipboard-list" src="img/button/base64-open.png" class="option-button">
+				<img id="option-button-append-clipboard-list" src="img/button/base64-append.png" class="option-button">
+				<div>(Open/Append) list from base64 string</div>
+			</div>
+			<div>
+				<div>(Append) You can also try drag&dropping .enl files on this website</div>
+			</div>
+		</div>
+	</div>
+	<div class="fullscreen-box" id="save-box" style="display: none;">
+		<div class="fullscreen-grayout"></div>
+		<div class="fullscreen-content">
+			<div>
+				<img id="option-button-download-list" src="img/button/download-large.png" class="option-button">
+				<div>Download the list as .enl file</div>
+			</div>
+			<div>
+				<img id="option-button-cache-list" src="img/button/cache-save-().png" class="option-button browser-relevant">
+				<div>Store the list in broser cache</div>
+			</div>
+			<div>
+				<img id="option-button-clipboard-list" src="img/button/base64-save.png" class="option-button">
+				<div>Copy the list as a base64 string</div>
+			</div>
+		</div>
+	</div>
 	<div class="option-container" id="option-row">
 		<div class="option-container" id="option-container-left">
-			<img id="option-button-new" title="Create a new, empty list" class="option-button" src="img/button/new.png">
-			<img id="option-button-open" title="Open an existing list from file" class="option-button" src="img/button/open.png">
-			<img id="option-button-append" title="Append contents of an existing list to current list" class="option-button" src="img/button/append.png">
-			<img id="option-button-save" title="Save current list to file" class="option-button" src="img/button/save.png">
+			<img id="option-button-new" title="Clear the current list" class="option-button" src="img/button/clear.png">
+			<img id="option-button-open" title="Open/Append an existing list" class="option-button" src="img/button/open.png">
+			<img id="option-button-save" title="Save current list" class="option-button" src="img/button/save.png">
+			<img id="option-button-cache" title="Open browser cache" class="option-button browser-relevant" src="img/button/cache-().png">
 			<img id="option-button-validate" title="Check current list for inconsistencies" class="option-button" src="img/button/validate.png">
 			<img id="option-button-export" title="Export current list as KSP mod" class="option-button" src="img/button/export.png">
 			<img id="option-button-duplicate" title="Duplicate selected engines" class="option-button" src="img/button/duplicate.png">
@@ -27,7 +100,7 @@
 		</div>
 		<div class="flex-spacer" id="list-name"></div>
 		<div class="option-container" id="option-container-right">
-			<img id="option-button-settings" title="Settings" class="option-button" src="img/button/settings.png">
+			<img id="option-button-settings" title="Settings" class="option-button-disabled" src="img/button/settings.png">
 			<img id="option-button-help" title="Help & About" class="option-button" src="img/button/help.png">
 		</div>
 	</div>

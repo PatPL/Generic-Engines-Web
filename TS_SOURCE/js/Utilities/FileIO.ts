@@ -2,6 +2,23 @@ declare let JSZip: any;
 
 class FileIO {
     
+    public static ToClipboard (value: string): boolean {
+        if (value.length == 0) {
+            return false;
+        }
+        
+        let textArea = document.createElement ("textarea");
+        document.body.appendChild (textArea);
+        
+        textArea.value = value;
+        textArea.focus ();
+        textArea.select ();
+        let ok = document.execCommand ("copy");
+        
+        document.body.removeChild (textArea);
+        return ok;
+    }
+    
     public static ZipBlobs (rootDirName: string, blobs: {[blobname: string]: Uint8Array | string}, callback: (zipBlob: Uint8Array) => void) {
         let zip = new JSZip ();
         let zipRoot = zip.folder (rootDirName);

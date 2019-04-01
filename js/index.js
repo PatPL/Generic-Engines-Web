@@ -1,64 +1,4 @@
 "use strict";
-class AllTankDefinition {
-    static Get() {
-        let definitions = "";
-        for (let i in Fuel) {
-            if (isNaN(parseInt(i))) {
-                break;
-            }
-            let fuelInfo = FuelInfo.GetFuelInfo(parseInt(i));
-            definitions += `
-                TANK
-                {
-                    name = ${fuelInfo.FuelID}
-                    mass = 0.00007
-                    utilization = ${fuelInfo.TankUtilisation}
-                    fillable = True
-                    amount = 0.0
-                    maxAmount = 0.0
-                }
-            `;
-        }
-        return Exporter.CompactConfig(`
-            TANK_DEFINITION {
-                name = All
-                highltPressurized = true
-                basemass = 0.00007 * volume
-
-                ${definitions}
-
-            }
-        `);
-    }
-}
-class BitConverter {
-    static ByteArrayToDouble(array, offset) {
-        for (let i = 0; i < 8; ++i) {
-            this.view8.setUint8(i, array[offset + i]);
-        }
-        return this.view8.getFloat64(0, true);
-    }
-    static ByteArrayToInt(array, offset) {
-        for (let i = 0; i < 4; ++i) {
-            this.view8.setUint8(i, array[offset + i]);
-        }
-        return this.view8.getInt32(0, true);
-    }
-    static DoubleToByteArray(number) {
-        this.doubleBuffer[0] = number;
-        return new Uint8Array(this.buffer8);
-    }
-    static IntToByteArray(number) {
-        this.intBuffer[0] = number;
-        return new Uint8Array(this.buffer4);
-    }
-}
-BitConverter.buffer8 = new ArrayBuffer(8);
-BitConverter.buffer4 = new ArrayBuffer(4);
-BitConverter.view8 = new DataView(BitConverter.buffer8);
-BitConverter.view4 = new DataView(BitConverter.buffer4);
-BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
-BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 class EditableField {
     constructor(valueOwner, valueName, container) {
         this.FieldID = EditableField.IDCounter++;
@@ -311,357 +251,6 @@ window.addEventListener("keyup", (e) => {
         }
     }
 });
-class Exporter {
-    static ConvertEngineListToConfig(engines) {
-        if (Validator.Validate(engines).length > 0) {
-            console.error("Tried to export a list with errors. Aborting");
-            return "";
-        }
-        let output = "";
-        let engineDict = {};
-        engines.forEach(e => {
-            if (!e.Active) {
-                return;
-            }
-            engineDict[e.ID] = e;
-        });
-        engines.forEach(e => {
-            if (!e.Active) {
-                return;
-            }
-            switch (e.Polymorphism.PolyType) {
-                case PolymorphismType.Single:
-                case PolymorphismType.MultiModeMaster:
-                case PolymorphismType.MultiConfigMaster:
-                    output += this.RegularEngineConfig(e, engineDict);
-                    break;
-                case PolymorphismType.MultiModeSlave:
-                    output += this.MultiModeSlaveEngineConfig(e, engineDict);
-                    break;
-                case PolymorphismType.MultiConfigSlave:
-                    output += this.MultiConfigSlaveEngineConfig(e, engineDict);
-                    break;
-            }
-        });
-        return Exporter.CompactConfig(output);
-    }
-    static CompactConfig(input) {
-        let output = "";
-        let lines = input.split("\n");
-        lines.forEach(l => {
-            let tmp = l.trim();
-            if (tmp != "") {
-                output += `${tmp}\n`;
-            }
-        });
-        return output;
-    }
-    static RegularEngineConfig(engine, allEngines) {
-        let modelInfo = ModelInfo.GetModelInfo(engine.Visuals.ModelID);
-        return `
-            PART
-            {
-                name = GE-${engine.ID}
-                module = Part
-                author = Generic Engines
-                
-                ${engine.Visuals.GetModelConfig(engine.Dimensions)}
-
-                TechRequired = ${TechNode[engine.TechUnlockNode]}
-                entryCost = ${engine.EntryCost}
-                cost = ${engine.Cost}
-                category = Engine
-                subcategory = 0
-                title = ${engine.Labels.EngineName == "" ? engine.ID : engine.Labels.EngineName}
-                manufacturer = ${engine.Labels.EngineManufacturer}
-                description = ${engine.Labels.EngineDescription}
-                attachRules = 1,1,1,${modelInfo.CanAttachOnModel ? 1 : 0},0
-                mass = ${engine.Mass}
-                heatConductivity = 0.06
-                skinInternalConductionMult = 4.0
-                emissiveConstant = 0.8
-                dragModelType = default
-                maximum_drag = 0.2
-                minimum_drag = 0.2
-                angularDrag = 2
-                crashTolerance = 12
-                maxTemp = 2200 // = 3600
-                bulkheadProfiles = size1
-                tags = REP
-
-                MODULE
-                {
-                    name = GenericEnginesPlumeScaleFixer
-                }
-
-                ${engine.Visuals.GetHiddenObjectsConfig()}
-
-                MODULE
-                {
-                    name = ModuleEngines
-                    thrustVectorTransformName = thrustTransform
-                    exhaustDamage = True
-                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
-                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
-                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
-                    ignitionThreshold = 0.1
-                    minThrust = 0
-                    maxThrust = 610
-                    heatProduction = 200
-                    EngineType = ${engine.EngineTypeConfig()}
-                    useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    exhaustDamageDistanceOffset = 0.79
-
-                    atmosphereCurve
-                    {
-                        key = 0 345
-                        key = 1 204
-                        key = 6 0.001
-                    }
-                    
-                    ${engine.GetThrustCurveConfig()}
-                    
-                }
-
-                ${engine.Gimbal.GetConfig(modelInfo)}
-
-                ${engine.GetAlternatorConfig()}
-
-                MODULE
-                {
-                    name = ModuleSurfaceFX
-                    thrustProviderModuleIndex = 0
-                    fxMax = 0.5
-                    maxDistance = 30
-                    falloff = 1.7
-                    thrustTransformName = thrustTransform
-                }
-            }
-
-            @PART[GE-${engine.ID}]:FOR[RealismOverhaul]
-            {
-                %RSSROConfig = True
-                %RP0conf = True
-                
-                %breakingForce = 250
-                %breakingTorque = 250
-                @maxTemp = 573.15
-                %skinMaxTemp = 673.15
-                %stageOffset = 1
-                %childStageOffset = 1
-                %stagingIcon = ${engine.StagingIconConfig()}
-                @bulkheadProfiles = srf, size3
-                @tags = Generic Engine
-
-                ${engine.Tank.GetTankConfig()}
-
-                @MODULE[ModuleEngines*]
-                {
-                    %engineID = PrimaryMode
-                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
-                    @maxThrust = ${engine.Thrust}
-                    @heatProduction = 180
-                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.Visuals.PlumeID).PlumeID}
-
-                    ${engine.FuelRatios.GetPropellantConfig(engine)}
-
-                    @atmosphereCurve
-                    {
-                        @key,0 = 0 ${engine.VacIsp}
-                        @key,1 = 1 ${engine.AtmIsp}
-                    }
-
-                    ${engine.GetThrustCurveConfig()}
-
-                }
-
-                ${engine.GetEngineModuleConfig(allEngines)}
-
-                !RESOURCE,*{}
-            }
-
-            ${engine.Visuals.GetPlumeConfig(engine)}
-
-            ${engine.TestFlight.GetTestFlightConfig(engine)}
-        `;
-    }
-    static MultiModeSlaveEngineConfig(engine, allEngines) {
-        return `
-            @PART[GE-${engine.Polymorphism.MasterEngineName}]
-            {
-                MODULE
-                {
-                    name = MultiModeEngine
-                    primaryEngineID = PrimaryMode
-                    primaryEngineModeDisplayName = Primary mode (GE-${engine.Polymorphism.MasterEngineName})
-                    secondaryEngineID = SecondaryMode
-                    secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
-                }
-            }
-            
-            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
-            {
-                +MODULE[ModuleEngines*]
-                {
-                    @engineID = SecondaryMode
-                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
-                    @maxThrust = ${engine.Thrust}
-                    @heatProduction = 180
-                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.Visuals.PlumeID).PlumeID}
-
-                    !PROPELLANT,*
-                    {
-                    }
-
-                    ${engine.FuelRatios.GetPropellantConfig(engine)}
-
-                    @atmosphereCurve
-                    {
-                        @key,0 = 0 ${engine.VacIsp}
-                        @key,1 = 1 ${engine.AtmIsp}
-                    }
-
-                    ${engine.GetThrustCurveConfig()}
-
-                }
-            }
-
-            ${engine.Visuals.GetPlumeConfig(allEngines[engine.Polymorphism.MasterEngineName])}
-        `;
-    }
-    static MultiConfigSlaveEngineConfig(engine, allEngines) {
-        return `
-            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
-            {
-                @MODULE[ModuleEngineConfigs]
-                {
-                    ${engine.GetEngineConfig(allEngines)}
-                }
-            }
-            
-            ${engine.Visuals.GetPlumeConfig(allEngines[engine.Polymorphism.MasterEngineName])}
-            
-            ${engine.TestFlight.GetTestFlightConfig(engine)}
-            
-            @ENTRYCOSTMODS:FOR[xxxRP-0]
-            {
-                GE-${engine.ID} = ${engine.EntryCost}
-            }
-        `;
-    }
-}
-class FileIO {
-    static ZipBlobs(rootDirName, blobs, callback) {
-        let zip = new JSZip();
-        let zipRoot = zip.folder(rootDirName);
-        for (let blobname in blobs) {
-            let blob = blobs[blobname];
-            if (blob instanceof Uint8Array) {
-                zipRoot.file(blobname, blob, {
-                    binary: true
-                });
-            }
-            else {
-                zipRoot.file(blobname, blob, {
-                    binary: false
-                });
-            }
-        }
-        zip.generateAsync({
-            type: "uint8array"
-        }).then(callback);
-    }
-    static OpenText(extensions, callback) {
-        this.Open(FileType.Text, extensions, (result, filename) => {
-            if (callback) {
-                if (result) {
-                    if (typeof result === "string") {
-                        callback(result, filename);
-                    }
-                    else {
-                        callback(null, filename);
-                    }
-                }
-                else {
-                    callback(null, filename);
-                }
-            }
-        });
-    }
-    static OpenBinary(extensions, callback) {
-        this.Open(FileType.Binary, extensions, (result, filename) => {
-            if (callback) {
-                if (result) {
-                    if (result instanceof Uint8Array) {
-                        callback(result, filename);
-                    }
-                    else {
-                        callback(null, filename);
-                    }
-                }
-                else {
-                    callback(null, filename);
-                }
-            }
-        });
-    }
-    static Open(type, extensions, callback) {
-        let fileDialog = document.createElement("input");
-        fileDialog.type = "file";
-        if (extensions && extensions != "") {
-            fileDialog.accept = extensions;
-        }
-        fileDialog.click();
-        fileDialog.addEventListener("change", () => {
-            if (!fileDialog.files || !fileDialog.files[0]) {
-                console.log("No file selected?");
-                if (callback) {
-                    callback(null, "");
-                }
-                return;
-            }
-            let file = fileDialog.files[0];
-            let reader = new FileReader();
-            reader.onload = () => {
-                if (callback) {
-                    if (reader.result instanceof ArrayBuffer) {
-                        callback(new Uint8Array(reader.result), file.name);
-                    }
-                    else {
-                        callback(reader.result, file.name);
-                    }
-                }
-            };
-            if (type == FileType.Text) {
-                reader.readAsText(file);
-            }
-            else if (type == FileType.Binary) {
-                reader.readAsArrayBuffer(file);
-            }
-        });
-    }
-    static SaveText(filename, contents) {
-        let saveDialog = document.createElement("a");
-        saveDialog.href = `data:application/x-none;charset=UTF-8;base64,${btoa(contents)}`;
-        saveDialog.download = filename;
-        let evt = document.createEvent("MouseEvents");
-        evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        saveDialog.dispatchEvent(evt);
-    }
-    static SaveBinary(filename, contents) {
-        let saveDialog = document.createElement("a");
-        let blob = new Blob([contents], {
-            type: "application/octet-stream"
-        });
-        saveDialog.href = URL.createObjectURL(blob);
-        saveDialog.download = filename;
-        let evt = document.createEvent("MouseEvents");
-        evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-        saveDialog.dispatchEvent(evt);
-    }
-}
 class HtmlTable {
     constructor(container) {
         this.Items = [];
@@ -862,510 +451,88 @@ class HtmlTable {
     }
 }
 HtmlTable.RowCounter = 1;
-class Input {
+addEventListener("DOMContentLoaded", () => {
+    Notifier.Container = document.querySelector(".notify-container");
+});
+class Notifier {
+    static Info(text, lifetime = this.NotificationLifetime) {
+        let box = document.createElement("div");
+        box.classList.add("notify-box");
+        box.classList.add("info");
+        box.innerHTML = text;
+        Notifier.Container.appendChild(box);
+        box.addEventListener("click", () => {
+            box.remove();
+        });
+        if (lifetime > 0) {
+            setTimeout(() => {
+                box.remove();
+            }, lifetime);
+        }
+    }
+    static Warn(text, lifetime = this.NotificationLifetime) {
+        let box = document.createElement("div");
+        box.classList.add("notify-box");
+        box.classList.add("warn");
+        box.innerHTML = text;
+        Notifier.Container.appendChild(box);
+        box.addEventListener("click", () => {
+            box.remove();
+        });
+        if (lifetime > 0) {
+            setTimeout(() => {
+                box.remove();
+            }, lifetime);
+        }
+    }
+    static Error(text, lifetime = this.NotificationLifetime) {
+        let box = document.createElement("div");
+        box.classList.add("notify-box");
+        box.classList.add("error");
+        box.innerHTML = text;
+        Notifier.Container.appendChild(box);
+        box.addEventListener("click", () => {
+            box.remove();
+        });
+        if (lifetime > 0) {
+            setTimeout(() => {
+                box.remove();
+            }, lifetime);
+        }
+    }
 }
-Input.MouseX = 0;
-Input.MouseY = 0;
-window.onpointermove = (event) => {
-    Input.MouseX = event.clientX;
-    Input.MouseY = event.clientY;
-};
-class Serializer {
-    static Copy(engine) {
-        let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0, engine.EngineList);
-        return copiedEngine;
-    }
-    static SerializeMany(engines) {
-        let data = [];
-        let length = 0;
-        engines.forEach(engine => {
-            data.push(Serializer.Serialize(engine));
-            length += data[data.length - 1].length;
-        });
-        let output = new Uint8Array(length);
-        let i = 0;
-        data.forEach(array => {
-            output.set(array, i);
-            i += array.length;
-        });
-        return output;
-    }
-    static DeserializeMany(data, appendToExisting) {
-        let offset = 0;
-        while (offset < data.length) {
-            let [engine, addedOffset] = Serializer.Deserialize(data, offset, appendToExisting);
-            MainEngineTable.AddItem(engine);
-            offset += addedOffset;
-        }
-        if (offset != data.length) {
-            console.warn("Possible data corruption?");
-        }
-    }
-    static Serialize(e) {
-        let i = 0;
-        let output = new Uint8Array(2 +
-            1 +
-            (e.ID.length + 2) +
-            8 +
-            8 +
-            8 +
-            8 +
-            e.FuelRatios.Items.length * 10 + 2 +
-            8 +
-            8 +
-            8 +
-            4 +
-            8 +
-            4 +
-            1 +
-            1 +
-            1 +
-            1 +
-            (!TestFlight.IsDefault(e.TestFlight) ? 1 : 0) * (1 +
-                4 +
-                8 +
-                8 +
-                8 +
-                8) +
-            8 +
-            1 +
-            (!Gimbal.IsDefault(e.Gimbal) ? 1 : 0) * (1 +
-                8 +
-                8 +
-                8 +
-                8) +
-            2 +
-            2 +
-            2 +
-            4 +
-            (e.Labels.EngineName.length + 2) +
-            1 +
-            (!Labels.IsManufacturerDefault(e.Labels) ? 1 : 0) * (e.Labels.EngineManufacturer.length + 2) +
-            1 +
-            (!Labels.IsDescriptionDefault(e.Labels) ? 1 : 0) * (e.Labels.EngineDescription.length + 2) +
-            1 +
-            1 +
-            8 +
-            e.Tank.TanksContents.length * 10 + 2 +
-            e.ThrustCurve.length * 16 + 2 +
-            1 +
-            1 +
-            1 +
-            e.Polymorphism.MasterEngineName.length + 2);
-        output[i++] = Serializer.Version / 256;
-        output[i++] = Serializer.Version % 256;
-        output[i++] = e.Active ? 1 : 0;
-        output[i++] = e.ID.length % 256;
-        output[i++] = e.ID.length / 256;
-        for (let c = 0; c < e.ID.length; ++c) {
-            output[i++] = e.ID.charCodeAt(c);
-        }
-        output.set(BitConverter.DoubleToByteArray(e.Mass), i);
-        i += 8;
-        output.set(BitConverter.DoubleToByteArray(e.Thrust), i);
-        i += 8;
-        output.set(BitConverter.DoubleToByteArray(e.AtmIsp), i);
-        i += 8;
-        output.set(BitConverter.DoubleToByteArray(e.VacIsp), i);
-        i += 8;
-        output[i++] = e.FuelRatios.Items.length % 256;
-        output[i++] = e.FuelRatios.Items.length / 256;
-        e.FuelRatios.Items.forEach(f => {
-            output[i++] = f[0] % 256;
-            output[i++] = f[0] / 256;
-            output.set(BitConverter.DoubleToByteArray(f[1]), i);
-            i += 8;
-        });
-        output.set(BitConverter.DoubleToByteArray(e.Dimensions.Width), i);
-        i += 8;
-        output.set(BitConverter.DoubleToByteArray(e.Dimensions.Height), i);
-        i += 8;
-        output.set(BitConverter.DoubleToByteArray(e.Gimbal.Gimbal), i);
-        i += 8;
-        output.set(BitConverter.IntToByteArray(e.Cost), i);
-        i += 4;
-        output.set(BitConverter.DoubleToByteArray(e.MinThrust), i);
-        i += 8;
-        output.set(BitConverter.IntToByteArray(e.Ignitions), i);
-        i += 4;
-        output[i++] = e.PressureFed ? 1 : 0;
-        output[i++] = e.NeedsUllage ? 1 : 0;
-        output[i++] = e.FuelRatios.FuelVolumeRatios ? 1 : 0;
-        output[i++] = !TestFlight.IsDefault(e.TestFlight) ? 1 : 0;
-        if (!TestFlight.IsDefault(e.TestFlight)) {
-            output[i++] = e.TestFlight.EnableTestFlight ? 1 : 0;
-            output.set(BitConverter.IntToByteArray(e.TestFlight.RatedBurnTime), i);
-            i += 4;
-            output.set(BitConverter.DoubleToByteArray(e.TestFlight.StartReliability0), i);
-            i += 8;
-            output.set(BitConverter.DoubleToByteArray(e.TestFlight.StartReliability10k), i);
-            i += 8;
-            output.set(BitConverter.DoubleToByteArray(e.TestFlight.CycleReliability0), i);
-            i += 8;
-            output.set(BitConverter.DoubleToByteArray(e.TestFlight.CycleReliability10k), i);
-            i += 8;
-        }
-        output.set(BitConverter.DoubleToByteArray(e.AlternatorPower), i);
-        i += 8;
-        output[i++] = !Gimbal.IsDefault(e.Gimbal) ? 1 : 0;
-        if (!Gimbal.IsDefault(e.Gimbal)) {
-            output[i++] = e.Gimbal.AdvancedGimbal ? 1 : 0;
-            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalNX), i);
-            i += 8;
-            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalPX), i);
-            i += 8;
-            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalNY), i);
-            i += 8;
-            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalPY), i);
-            i += 8;
-        }
-        output[i++] = e.Visuals.ModelID % 256;
-        output[i++] = e.Visuals.ModelID / 256;
-        output[i++] = e.Visuals.PlumeID % 256;
-        output[i++] = e.Visuals.PlumeID / 256;
-        output[i++] = e.TechUnlockNode % 256;
-        output[i++] = e.TechUnlockNode / 256;
-        output.set(BitConverter.IntToByteArray(e.EntryCost), i);
-        i += 4;
-        output[i++] = e.Labels.EngineName.length % 256;
-        output[i++] = e.Labels.EngineName.length / 256;
-        for (let c = 0; c < e.Labels.EngineName.length; ++c) {
-            output[i++] = e.Labels.EngineName.charCodeAt(c);
-        }
-        output[i++] = !Labels.IsManufacturerDefault(e.Labels) ? 1 : 0;
-        if (!Labels.IsManufacturerDefault(e.Labels)) {
-            output[i++] = e.Labels.EngineManufacturer.length % 256;
-            output[i++] = e.Labels.EngineManufacturer.length / 256;
-            for (let c = 0; c < e.Labels.EngineManufacturer.length; ++c) {
-                output[i++] = e.Labels.EngineManufacturer.charCodeAt(c);
-            }
-        }
-        output[i++] = !Labels.IsDescriptionDefault(e.Labels) ? 1 : 0;
-        if (!Labels.IsDescriptionDefault(e.Labels)) {
-            output[i++] = e.Labels.EngineDescription.length % 256;
-            output[i++] = e.Labels.EngineDescription.length / 256;
-            for (let c = 0; c < e.Labels.EngineDescription.length; ++c) {
-                output[i++] = e.Labels.EngineDescription.charCodeAt(c);
-            }
-        }
-        output[i++] = e.Dimensions.UseBaseWidth ? 1 : 0;
-        output[i++] = e.EngineVariant;
-        output.set(BitConverter.DoubleToByteArray(e.Tank.TanksVolume), i);
-        i += 8;
-        output[i++] = e.Tank.TanksContents.length % 256;
-        output[i++] = e.Tank.TanksContents.length / 256;
-        e.Tank.TanksContents.forEach(f => {
-            output[i++] = f[0] % 256;
-            output[i++] = f[0] / 256;
-            output.set(BitConverter.DoubleToByteArray(f[1]), i);
-            i += 8;
-        });
-        output[i++] = e.ThrustCurve.length % 256;
-        output[i++] = e.ThrustCurve.length / 256;
-        e.ThrustCurve.forEach(f => {
-            output.set(BitConverter.DoubleToByteArray(f[0]), i);
-            i += 8;
-            output.set(BitConverter.DoubleToByteArray(f[1]), i);
-            i += 8;
-        });
-        output[i++] = e.Tank.UseTanks ? 1 : 0;
-        output[i++] = e.Tank.LimitTanks ? 1 : 0;
-        output[i++] = e.Polymorphism.PolyType;
-        output[i++] = e.Polymorphism.MasterEngineName.length % 256;
-        output[i++] = e.Polymorphism.MasterEngineName.length / 256;
-        for (let c = 0; c < e.Polymorphism.MasterEngineName.length; ++c) {
-            output[i++] = e.Polymorphism.MasterEngineName.charCodeAt(c);
-        }
-        return output;
-    }
-    static Deserialize(input, startOffset, originList) {
-        let output = new Engine(originList);
-        let i = startOffset;
-        let version = 0;
-        version += input[i++];
-        version *= 256;
-        version += input[i++];
-        if (version >= 0) {
-            output.Active = input[i++] == 1;
-            let stringLength = 0;
-            if (version >= 3) {
-                stringLength += input[i++];
-                stringLength += input[i++] * 256;
-            }
-            else {
-                stringLength += input[i++] * 256;
-                stringLength += input[i++];
-            }
-            output.ID = "";
-            for (let c = 0; c < stringLength; ++c) {
-                output.ID += String.fromCharCode(input[i++]);
-            }
-            output.Mass = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-            output.Thrust = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-            output.AtmIsp = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-            output.VacIsp = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-            let dataLength = 0;
-            if (version >= 3) {
-                dataLength += input[i++];
-                dataLength += input[i++] * 256;
-            }
-            else {
-                dataLength += input[i++] * 256;
-                dataLength += input[i++];
-            }
-            output.FuelRatios.Items = [];
-            for (let c = 0; c < dataLength; ++c) {
-                let fuelType = 0;
-                if (version >= 3) {
-                    fuelType += input[i++];
-                    fuelType += input[i++] * 256;
-                }
-                else {
-                    fuelType += input[i++] * 256;
-                    fuelType += input[i++];
-                }
-                output.FuelRatios.Items.push([fuelType, BitConverter.ByteArrayToDouble(input, i)]);
-                i += 8;
-            }
-            output.Dimensions.Width = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-            output.Dimensions.Height = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-            output.Gimbal.Gimbal = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-            output.Cost = BitConverter.ByteArrayToInt(input, i);
-            i += 4;
-        }
-        if (version >= 1) {
-            output.MinThrust = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-            output.Ignitions = BitConverter.ByteArrayToInt(input, i);
-            i += 4;
-            output.PressureFed = input[i++] == 1;
-            output.NeedsUllage = input[i++] == 1;
-        }
-        if (version >= 2) {
-            output.FuelRatios.FuelVolumeRatios = input[i++] == 1;
-        }
-        if (version >= 3) {
-            if (input[i++] == 1) {
-                output.TestFlight.EnableTestFlight = input[i++] == 1;
-                output.TestFlight.RatedBurnTime = BitConverter.ByteArrayToInt(input, i);
-                i += 4;
-                output.TestFlight.StartReliability0 = BitConverter.ByteArrayToDouble(input, i);
-                i += 8;
-                output.TestFlight.StartReliability10k = BitConverter.ByteArrayToDouble(input, i);
-                i += 8;
-                output.TestFlight.CycleReliability0 = BitConverter.ByteArrayToDouble(input, i);
-                i += 8;
-                output.TestFlight.CycleReliability10k = BitConverter.ByteArrayToDouble(input, i);
-                i += 8;
-            }
-        }
-        if (version >= 4) {
-            output.AlternatorPower = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-        }
-        if (version >= 5) {
-            if (input[i++] == 1) {
-                output.Gimbal.AdvancedGimbal = input[i++] == 1;
-                output.Gimbal.GimbalNX = BitConverter.ByteArrayToDouble(input, i);
-                i += 8;
-                output.Gimbal.GimbalPX = BitConverter.ByteArrayToDouble(input, i);
-                i += 8;
-                output.Gimbal.GimbalNY = BitConverter.ByteArrayToDouble(input, i);
-                i += 8;
-                output.Gimbal.GimbalPY = BitConverter.ByteArrayToDouble(input, i);
-                i += 8;
-            }
-        }
-        if (version >= 6) {
-            output.Visuals.ModelID += input[i++];
-            output.Visuals.ModelID += input[i++] * 256;
-            output.Visuals.PlumeID += input[i++];
-            output.Visuals.PlumeID += input[i++] * 256;
-        }
-        if (version >= 7) {
-            output.TechUnlockNode += input[i++];
-            output.TechUnlockNode += input[i++] * 256;
-            output.EntryCost = BitConverter.ByteArrayToInt(input, i);
-            i += 4;
-            let stringLength = 0;
-            stringLength += input[i++];
-            stringLength += input[i++] * 256;
-            output.Labels.EngineName = "";
-            for (let c = 0; c < stringLength; ++c) {
-                output.Labels.EngineName += String.fromCharCode(input[i++]);
-            }
-            if (input[i++] == 1) {
-                let stringLength = 0;
-                stringLength += input[i++];
-                stringLength += input[i++] * 256;
-                output.Labels.EngineManufacturer = "";
-                for (let c = 0; c < stringLength; ++c) {
-                    output.Labels.EngineManufacturer += String.fromCharCode(input[i++]);
-                }
-            }
-            if (input[i++] == 1) {
-                let stringLength = 0;
-                stringLength += input[i++];
-                stringLength += input[i++] * 256;
-                output.Labels.EngineDescription = "";
-                for (let c = 0; c < stringLength; ++c) {
-                    output.Labels.EngineDescription += String.fromCharCode(input[i++]);
-                }
-            }
-        }
-        if (version >= 8) {
-            output.Dimensions.UseBaseWidth = input[i++] == 1;
+Notifier.NotificationLifetime = 7500;
+class Version {
+}
+Version.CurrentVersion = "Web.0.8.0 Prerelease";
+addEventListener("DOMContentLoaded", () => {
+    if (Store.Exists("lastVersion")) {
+        if (Store.GetText("lastVersion") != Version.CurrentVersion) {
+            Notifier.Info(`Generic Engines updated to version ${Version.CurrentVersion}; Click to dismiss`, 0);
         }
         else {
-            output.Dimensions.UseBaseWidth = false;
         }
-        if (version >= 9) {
-            output.EngineVariant = input[i++];
-            output.Tank.TanksVolume = BitConverter.ByteArrayToDouble(input, i);
-            i += 8;
-            let dataLength = 0;
-            dataLength += input[i++];
-            dataLength += input[i++] * 256;
-            for (let c = 0; c < dataLength; ++c) {
-                let fuelType = 0;
-                fuelType += input[i++];
-                fuelType += input[i++] * 256;
-                output.Tank.TanksContents.push([fuelType, BitConverter.ByteArrayToDouble(input, i)]);
-                i += 8;
-            }
-            dataLength = 0;
-            dataLength += input[i++];
-            dataLength += input[i++] * 256;
-            for (let c = 0; c < dataLength; ++c) {
-                let tmp = BitConverter.ByteArrayToDouble(input, i);
-                i += 8;
-                output.ThrustCurve.push([tmp, BitConverter.ByteArrayToDouble(input, i)]);
-                i += 8;
-            }
-        }
-        if (version >= 10) {
-            output.Tank.UseTanks = input[i++] == 1;
-            output.Tank.LimitTanks = input[i++] == 1;
-        }
-        if (version >= 11) {
-            output.Polymorphism.PolyType = input[i++];
-            let stringLength = 0;
-            stringLength += input[i++];
-            stringLength += input[i++] * 256;
-            output.Polymorphism.MasterEngineName = "";
-            for (let c = 0; c < stringLength; ++c) {
-                output.Polymorphism.MasterEngineName += String.fromCharCode(input[i++]);
-            }
-        }
-        if (version == 12) {
-            i += 12;
-        }
-        return [output, i - startOffset];
     }
-}
-Serializer.Version = 13;
-class Store {
-    static SetBinary(id, value) {
-        localStorage[id] = this.decoder.decode(value);
+    else {
+        Notifier.Info(`Thank you for using Generic Engines`, 10000);
     }
-    static GetBinary(id) {
-        return this.encoder.encode(localStorage[id]);
-    }
-    static SetText(id, value) {
-        localStorage[id] = value;
-    }
-    static GetText(id) {
-        return localStorage[id];
-    }
-}
-Store.encoder = new TextEncoder();
-Store.decoder = new TextDecoder();
-class Validator {
-    static Validate(engines) {
-        let output = [];
-        output = output.concat(this.CheckDuplicateIDs(engines));
-        output = output.concat(this.CheckPolymorphismConsistency(engines));
-        return output;
-    }
-    static CheckPolymorphismConsistency(engines) {
-        let output = [];
-        let Masters = {};
-        engines.forEach(e => {
-            if (!e.Active) {
-                return;
-            }
-            switch (e.Polymorphism.PolyType) {
-                case PolymorphismType.MultiConfigMaster:
-                    Masters[e.ID] = [false, 0];
-                    break;
-                case PolymorphismType.MultiModeMaster:
-                    Masters[e.ID] = [true, 0];
-                    break;
-            }
-        });
-        engines.forEach(e => {
-            if (!e.Active) {
-                return;
-            }
-            switch (e.Polymorphism.PolyType) {
-                case PolymorphismType.MultiConfigSlave:
-                    if (Masters[e.Polymorphism.MasterEngineName] &&
-                        !Masters[e.Polymorphism.MasterEngineName][0]) {
-                        Masters[e.Polymorphism.MasterEngineName][1] += 1;
-                    }
-                    else {
-                        output.push(`Polymorphism error in engine ${e.ID}. There is no active MultiConfigMaster with ID ${e.Polymorphism.MasterEngineName}`);
-                    }
-                    break;
-                case PolymorphismType.MultiModeSlave:
-                    if (Masters[e.Polymorphism.MasterEngineName] &&
-                        Masters[e.Polymorphism.MasterEngineName][0]) {
-                        if (Masters[e.Polymorphism.MasterEngineName][1] == 0) {
-                        }
-                        else {
-                            output.push(`Polymorphism error in engine ${e.ID}. ${e.Polymorphism.MasterEngineName} already has a slave MultiMode engine config`);
-                        }
-                        Masters[e.Polymorphism.MasterEngineName][1] += 1;
-                    }
-                    else {
-                        output.push(`Polymorphism error in engine ${e.ID}. There is no active MultiModeMaster with ID ${e.Polymorphism.MasterEngineName}`);
-                    }
-                    break;
-            }
-        });
-        return output;
-    }
-    static CheckDuplicateIDs(engines) {
-        let output = [];
-        let takenIDs = [];
-        engines.forEach(e => {
-            if (!e.Active) {
-                return;
-            }
-            if (/[^A-Za-z0-9-]/.test(e.ID)) {
-                output.push(`ID contains invalid characters: ${e.ID}. Change the ID`);
-                return;
-            }
-            if (takenIDs.some(x => x == e.ID)) {
-                output.push(`ID duplicate found: ${e.ID}. Change the ID`);
-            }
-            else {
-                takenIDs.push(e.ID);
-            }
-        });
-        return output;
-    }
-}
+    Store.SetText("lastVersion", Version.CurrentVersion);
+    document.head.querySelector("title").innerHTML += Version.CurrentVersion;
+    document.body.querySelectorAll(".js-insert-version").forEach(e => {
+        e.innerHTML = Version.CurrentVersion;
+    });
+});
 var ListName = "Unnamed";
+var EditableFieldMetadata = {
+    ListName: {
+        ApplyValueToDisplayElement: e => {
+            e.innerHTML = `${ListName}.enl`;
+        }
+    }
+};
 let ListNameDisplay;
 let MainEngineTable;
+let FullscreenWindows = {};
 window.onbeforeunload = (e) => {
     if (MainEngineTable.Items.length != 0) {
         e.returnValue = "Are you sure that you want to leave this page? You will lose all unsaved data";
@@ -1377,6 +544,56 @@ window.onbeforeunload = (e) => {
 };
 addEventListener("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
+    window.addEventListener("dragover", e => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (e.dataTransfer) {
+            e.dataTransfer.dropEffect = "copy";
+        }
+    });
+    window.addEventListener("drop", e => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (!e.dataTransfer) {
+            return;
+        }
+        let files = e.dataTransfer.files;
+        if (files.length == 0) {
+            return;
+        }
+        let reader = new FileReader();
+        reader.onload = () => {
+            let data = new Uint8Array(reader.result);
+            let engineCount = Serializer.DeserializeMany(data, MainEngineTable);
+            MainEngineTable.RebuildTable();
+            Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
+        };
+        reader.readAsArrayBuffer(files[0]);
+    });
+    let imgs = document.querySelectorAll("img.browser-relevant");
+    imgs.forEach(i => {
+        let isFirefox = typeof InstallTrigger !== 'undefined';
+        let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+        if (isFirefox) {
+            i.src = i.src.replace("()", "firefox");
+        }
+        else if (isOpera) {
+            i.src = i.src.replace("()", "opera");
+        }
+        else {
+            i.src = i.src.replace("()", "chrome");
+        }
+    });
+    let windows = document.querySelectorAll(".fullscreen-box");
+    windows.forEach(w => {
+        let bg = w.querySelector(".fullscreen-grayout");
+        let content = w.querySelector(".fullscreen-content");
+        bg.addEventListener("click", () => {
+            w.style.display = "none";
+        });
+        w.style.display = "none";
+        FullscreenWindows[w.id] = w;
+    });
     let images = document.querySelectorAll(".option-button");
     images.forEach(image => {
         image.ondragstart = () => { return false; };
@@ -1393,8 +610,8 @@ addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(TechNodeAutocomplete);
     document.getElementById("option-button-new").addEventListener("click", NewButton_Click);
     document.getElementById("option-button-open").addEventListener("click", OpenButton_Click);
-    document.getElementById("option-button-append").addEventListener("click", AppendButton_Click);
     document.getElementById("option-button-save").addEventListener("click", SaveButton_Click);
+    document.getElementById("option-button-cache").addEventListener("click", CacheButton_Click);
     document.getElementById("option-button-validate").addEventListener("click", ValidateButton_Click);
     document.getElementById("option-button-export").addEventListener("click", ExportButton_Click);
     document.getElementById("option-button-duplicate").addEventListener("click", DuplicateButton_Click);
@@ -1402,6 +619,15 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-remove").addEventListener("click", RemoveButton_Click);
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
+    document.getElementById("option-button-download-list").addEventListener("click", DownloadListButton_Click);
+    document.getElementById("option-button-cache-list").addEventListener("click", CacheListButton_Click);
+    document.getElementById("option-button-clipboard-list").addEventListener("click", ClipboardListButton_Click);
+    document.getElementById("option-button-open-upload-list").addEventListener("click", OpenUploadButton_Click);
+    document.getElementById("option-button-append-upload-list").addEventListener("click", AppendUploadButton_Click);
+    document.getElementById("option-button-open-cache-list").addEventListener("click", OpenCacheButton_Click);
+    document.getElementById("option-button-append-cache-list").addEventListener("click", AppendCacheButton_Click);
+    document.getElementById("option-button-open-clipboard-list").addEventListener("click", OpenClipboardButton_Click);
+    document.getElementById("option-button-append-clipboard-list").addEventListener("click", AppendClipboardButton_Click);
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
     MainEngineTable.RebuildTable();
@@ -1414,45 +640,157 @@ function NewButton_Click() {
     }
 }
 function OpenButton_Click() {
+    FullscreenWindows["open-box"].style.display = "flex";
+}
+function OpenUploadButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from file?")) {
         FileIO.OpenBinary(".enl", (data, filename) => {
             if (data) {
-                filename = filename.replace(".enl", "");
+                filename = filename.replace(/\.enl$/, "");
                 ListNameDisplay.SetValue(filename);
                 MainEngineTable.Items = [];
-                Serializer.DeserializeMany(data, MainEngineTable);
+                let engineCount = Serializer.DeserializeMany(data, MainEngineTable);
                 MainEngineTable.RebuildTable();
+                FullscreenWindows["open-box"].style.display = "none";
+                Notifier.Info(`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
             }
             else {
+                Notifier.Warn("You didn't choose any file");
             }
         });
     }
 }
-function AppendButton_Click() {
+function AppendUploadButton_Click() {
     FileIO.OpenBinary(".enl", (data) => {
         if (data) {
-            Serializer.DeserializeMany(data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany(data, MainEngineTable);
             MainEngineTable.RebuildTable();
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
         }
         else {
         }
     });
 }
+function OpenCacheButton_Click() {
+    if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
+        BrowserCacheDialog.GetEngineListData((data, newFilename) => {
+            if (!data) {
+                return;
+            }
+            if (newFilename) {
+                ListNameDisplay.SetValue(newFilename);
+            }
+            MainEngineTable.Items = [];
+            let engineCount = Serializer.DeserializeMany(data, MainEngineTable);
+            MainEngineTable.RebuildTable();
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info(`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        }, "Choose a list to open");
+    }
+}
+function AppendCacheButton_Click() {
+    BrowserCacheDialog.GetEngineListData(data => {
+        if (!data) {
+            return;
+        }
+        let engineCount = Serializer.DeserializeMany(data, MainEngineTable);
+        MainEngineTable.RebuildTable();
+        FullscreenWindows["open-box"].style.display = "none";
+        Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+    }, "Choose a list to append");
+}
+function OpenClipboardButton_Click() {
+    if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from base64 string?")) {
+        let b64 = prompt("Enter the base64 string:");
+        if (b64 == null || b64.length == 0) {
+            Notifier.Warn("Base64 string was not entered");
+            return;
+        }
+        try {
+            let data = BitConverter.Base64ToByteArray(b64);
+            MainEngineTable.Items = [];
+            let engineCount = Serializer.DeserializeMany(data, MainEngineTable);
+            MainEngineTable.RebuildTable();
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info(`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        }
+        catch (e) {
+            Notifier.Warn("There was an error while parsing the string");
+            return;
+        }
+    }
+}
+function AppendClipboardButton_Click() {
+    let b64 = prompt("Enter the base64 string:");
+    if (b64 == null || b64.length == 0) {
+        Notifier.Warn("Base64 string was not entered");
+        return;
+    }
+    try {
+        let data = BitConverter.Base64ToByteArray(b64);
+        let engineCount = Serializer.DeserializeMany(data, MainEngineTable);
+        MainEngineTable.RebuildTable();
+        FullscreenWindows["open-box"].style.display = "none";
+        Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+    }
+    catch (e) {
+        Notifier.Warn("There was an error while parsing the string");
+        return;
+    }
+}
 function SaveButton_Click() {
+    FullscreenWindows["save-box"].style.display = "flex";
+}
+function DownloadListButton_Click() {
     let data = Serializer.SerializeMany(MainEngineTable.Items);
     FileIO.SaveBinary(`${ListName}.enl`, data);
+    FullscreenWindows["save-box"].style.display = "none";
+}
+function CacheListButton_Click() {
+    let data = Serializer.SerializeMany(MainEngineTable.Items);
+    if (!Store.Exists(`${ListName}.enl`) || confirm(`${ListName}.enl already exists in cache.\n\nDo you want to overwrite? Old file will be lost.`)) {
+        Notifier.Info(`${ListName}.enl saved in cache`);
+        Store.SetBinary(`${ListName}.enl`, data);
+        FullscreenWindows["save-box"].style.display = "none";
+    }
+    else {
+        Notifier.Warn(`${ListName}.enl already exists in the cache. Current file was not saved`);
+    }
+}
+function ClipboardListButton_Click() {
+    let data = Serializer.SerializeMany(MainEngineTable.Items);
+    let b64 = BitConverter.ByteArrayToBase64(data);
+    let success = FileIO.ToClipboard(b64);
+    if (success) {
+        Notifier.Info("Engine list has been copied to clipboard");
+        FullscreenWindows["save-box"].style.display = "none";
+    }
+    else {
+        Notifier.Warn("There was an error. Engine list was NOT copied to clipboard");
+    }
+}
+function CacheButton_Click() {
+    BrowserCacheDialog.DisplayCache();
 }
 function ValidateButton_Click() {
     let errors = Validator.Validate(MainEngineTable.Items);
     if (errors.length == 0) {
-        alert("No errors found in this list");
+        Notifier.Info("No errors found in this list");
     }
     else {
+        Notifier.Warn("There are errors in this list");
         alert(`Following errors were found:\n\n-> ${errors.join("\n-> ")}`);
     }
 }
 function ExportButton_Click() {
     if (MainEngineTable.Items.length > 0) {
+        let errors = Validator.Validate(MainEngineTable.Items);
+        if (errors.length != 0) {
+            Notifier.Error("Fix validation errors before exporting");
+            alert(`Fix following errors before exporting the engine:\n\n-> ${errors.join("\n-> ")}`);
+            return;
+        }
         let blobs = {};
         blobs[`${ListName}.cfg`] = Exporter.ConvertEngineListToConfig(MainEngineTable.Items);
         blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
@@ -1486,6 +824,7 @@ function RemoveButton_Click() {
 function SettingsButton_Click() {
 }
 function HelpButton_Click() {
+    FullscreenWindows["about-box"].style.display = "flex";
 }
 var FuelType;
 (function (FuelType) {
@@ -2592,6 +1931,122 @@ PlumeInfo.plumes = [
     }
 ];
 PlumeInfo.Dropdown = PlumeInfo.BuildDropdown();
+document.addEventListener("DOMContentLoaded", () => {
+    BrowserCacheDialog.DialogBoxElement = document.getElementById("cache-box");
+    document.querySelector("#cache-box > div.fullscreen-grayout").addEventListener("click", () => {
+        BrowserCacheDialog.FinishTransaction(null);
+    });
+});
+class BrowserCacheDialog {
+    static SetTransaction(transaction) {
+        if (this.CurrentTransaction) {
+            this.CurrentTransaction(null);
+        }
+        this.DialogBoxElement.style.display = "flex";
+        this.CurrentTransaction = transaction;
+    }
+    static FinishTransaction(message, name) {
+        if (this.CurrentTransaction) {
+            this.CurrentTransaction(message, name);
+        }
+        this.DialogBoxElement.style.display = "none";
+        this.CurrentTransaction = null;
+    }
+    static GetEngineListData(callback, message = "Browser cache") {
+        this.SetTransaction(callback);
+        this.DialogBoxElement.querySelector("span").innerHTML = message;
+        let container = document.getElementById("cache-box-content");
+        container.innerHTML = "";
+        let lists = [];
+        for (let i in localStorage) {
+            if (/^(.)+\.enl$/.test(i)) {
+                lists.push(i);
+            }
+        }
+        lists = lists.sort();
+        lists.forEach(i => {
+            let listItem = document.createElement("div");
+            listItem.classList.add("option-button");
+            listItem.addEventListener("click", () => {
+                this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl$/, ""));
+            });
+            listItem.innerHTML = i;
+            container.appendChild(listItem);
+        });
+    }
+    static DisplayCache(message = "Browser cache") {
+        this.DialogBoxElement.style.display = "flex";
+        this.DialogBoxElement.querySelector("span").innerHTML = message;
+        let container = document.getElementById("cache-box-content");
+        container.innerHTML = "";
+        let lists = [];
+        for (let i in localStorage) {
+            if (/^(.)+\.enl$/.test(i)) {
+                lists.push(i);
+            }
+        }
+        lists = lists.sort();
+        lists.forEach(i => {
+            let listItem = document.createElement("div");
+            listItem.innerHTML = i;
+            let removeButton = document.createElement("img");
+            removeButton.src = "img/button/remove-cache.png";
+            removeButton.title = "Remove this list from cache";
+            removeButton.classList.add("option-button");
+            removeButton.classList.add("cache-option-button");
+            removeButton.addEventListener("click", () => {
+                if (confirm(`You are going to delete ${i}\n\nAre you sure?`)) {
+                    Store.Remove(i);
+                    this.DisplayCache();
+                    Notifier.Info(`${i} deleted from cache`);
+                }
+            });
+            listItem.appendChild(removeButton);
+            let renameButton = document.createElement("img");
+            renameButton.src = "img/button/rename-cache.png";
+            renameButton.title = "Rename this list";
+            renameButton.classList.add("option-button");
+            renameButton.classList.add("cache-option-button");
+            renameButton.addEventListener("click", () => {
+                let newName = prompt("Enter a new name:", i.replace(/\.enl$/, ""));
+                if (newName) {
+                    newName = newName.replace(/\.enl$/, "");
+                    newName += ".enl";
+                    Store.Rename(i, newName);
+                    this.DisplayCache();
+                }
+            });
+            listItem.appendChild(renameButton);
+            let appendButton = document.createElement("img");
+            appendButton.src = "img/button/append-cache.png";
+            appendButton.title = "Append this list";
+            appendButton.classList.add("option-button");
+            appendButton.classList.add("cache-option-button");
+            appendButton.addEventListener("click", () => {
+                Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable);
+                MainEngineTable.RebuildTable();
+                this.DialogBoxElement.style.display = "none";
+            });
+            listItem.appendChild(appendButton);
+            let openButton = document.createElement("img");
+            openButton.src = "img/button/open-cache.png";
+            openButton.title = "Open this list";
+            openButton.classList.add("option-button");
+            openButton.classList.add("cache-option-button");
+            openButton.addEventListener("click", () => {
+                if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
+                    ListNameDisplay.SetValue(i.replace(/\.enl$/, ""));
+                    MainEngineTable.Items = [];
+                    Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable);
+                    MainEngineTable.RebuildTable();
+                    this.DialogBoxElement.style.display = "none";
+                }
+            });
+            listItem.appendChild(openButton);
+            container.appendChild(listItem);
+        });
+    }
+}
 class Dimensions {
     constructor(objectParent) {
         this.UseBaseWidth = true;
@@ -4013,7 +3468,7 @@ class Visuals {
         this.ParentEngine = parent;
     }
     GetPlumeConfig(engine) {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(engine.Visuals.ModelID);
         let plumeInfo = PlumeInfo.GetPlumeInfo(this.PlumeID);
         let targetID = (engine.Polymorphism.PolyType == PolymorphismType.MultiConfigSlave ||
             engine.Polymorphism.PolyType == PolymorphismType.MultiModeSlave ?
@@ -4533,4 +3988,951 @@ var TechNode;
     TechNode[TechNode["colonization2100Science"] = 284] = "colonization2100Science";
     TechNode[TechNode["colonization2150Science"] = 285] = "colonization2150Science";
 })(TechNode || (TechNode = {}));
+class AllTankDefinition {
+    static Get() {
+        let definitions = "";
+        for (let i in Fuel) {
+            if (isNaN(parseInt(i))) {
+                break;
+            }
+            let fuelInfo = FuelInfo.GetFuelInfo(parseInt(i));
+            definitions += `
+                TANK
+                {
+                    name = ${fuelInfo.FuelID}
+                    mass = 0.00007
+                    utilization = ${fuelInfo.TankUtilisation}
+                    fillable = True
+                    amount = 0.0
+                    maxAmount = 0.0
+                }
+            `;
+        }
+        return Exporter.CompactConfig(`
+            TANK_DEFINITION {
+                name = All
+                highltPressurized = true
+                basemass = 0.00007 * volume
+
+                ${definitions}
+
+            }
+        `);
+    }
+}
+class BitConverter {
+    static ByteArrayToBase64(data) {
+        return btoa(String.fromCharCode.apply(null, data));
+    }
+    static Base64ToByteArray(b64) {
+        return new Uint8Array(atob(b64).split("").map(c => { return c.charCodeAt(0); }));
+    }
+    static ByteArrayToDouble(array, offset) {
+        for (let i = 0; i < 8; ++i) {
+            this.view8.setUint8(i, array[offset + i]);
+        }
+        return this.view8.getFloat64(0, true);
+    }
+    static ByteArrayToInt(array, offset) {
+        for (let i = 0; i < 4; ++i) {
+            this.view8.setUint8(i, array[offset + i]);
+        }
+        return this.view8.getInt32(0, true);
+    }
+    static DoubleToByteArray(number) {
+        this.doubleBuffer[0] = number;
+        return new Uint8Array(this.buffer8);
+    }
+    static IntToByteArray(number) {
+        this.intBuffer[0] = number;
+        return new Uint8Array(this.buffer4);
+    }
+}
+BitConverter.buffer8 = new ArrayBuffer(8);
+BitConverter.buffer4 = new ArrayBuffer(4);
+BitConverter.view8 = new DataView(BitConverter.buffer8);
+BitConverter.view4 = new DataView(BitConverter.buffer4);
+BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
+BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
+BitConverter.encoder = new TextEncoder();
+BitConverter.decoder = new TextDecoder();
+class Exporter {
+    static ConvertEngineListToConfig(engines) {
+        if (Validator.Validate(engines).length > 0) {
+            console.error("Tried to export a list with errors. Aborting");
+            return "";
+        }
+        let output = "";
+        let engineDict = {};
+        engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
+            engineDict[e.ID] = e;
+        });
+        engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
+            switch (e.Polymorphism.PolyType) {
+                case PolymorphismType.Single:
+                case PolymorphismType.MultiModeMaster:
+                case PolymorphismType.MultiConfigMaster:
+                    output += this.RegularEngineConfig(e, engineDict);
+                    break;
+                case PolymorphismType.MultiModeSlave:
+                    output += this.MultiModeSlaveEngineConfig(e, engineDict);
+                    break;
+                case PolymorphismType.MultiConfigSlave:
+                    output += this.MultiConfigSlaveEngineConfig(e, engineDict);
+                    break;
+            }
+        });
+        return Exporter.CompactConfig(output);
+    }
+    static CompactConfig(input) {
+        let output = "";
+        let lines = input.split("\n");
+        lines.forEach(l => {
+            let tmp = l.trim();
+            if (tmp != "") {
+                output += `${tmp}\n`;
+            }
+        });
+        return output;
+    }
+    static RegularEngineConfig(engine, allEngines) {
+        let modelInfo = ModelInfo.GetModelInfo(engine.Visuals.ModelID);
+        return `
+            PART
+            {
+                name = GE-${engine.ID}
+                module = Part
+                author = Generic Engines
+                
+                ${engine.Visuals.GetModelConfig(engine.Dimensions)}
+
+                TechRequired = ${TechNode[engine.TechUnlockNode]}
+                entryCost = ${engine.EntryCost}
+                cost = ${engine.Cost}
+                category = Engine
+                subcategory = 0
+                title = ${engine.Labels.EngineName == "" ? engine.ID : engine.Labels.EngineName}
+                manufacturer = ${engine.Labels.EngineManufacturer}
+                description = ${engine.Labels.EngineDescription}
+                attachRules = 1,1,1,${modelInfo.CanAttachOnModel ? 1 : 0},0
+                mass = ${engine.Mass}
+                heatConductivity = 0.06
+                skinInternalConductionMult = 4.0
+                emissiveConstant = 0.8
+                dragModelType = default
+                maximum_drag = 0.2
+                minimum_drag = 0.2
+                angularDrag = 2
+                crashTolerance = 12
+                maxTemp = 2200 // = 3600
+                bulkheadProfiles = size1
+                tags = REP
+
+                MODULE
+                {
+                    name = GenericEnginesPlumeScaleFixer
+                }
+
+                ${engine.Visuals.GetHiddenObjectsConfig()}
+
+                MODULE
+                {
+                    name = ModuleEngines
+                    thrustVectorTransformName = thrustTransform
+                    exhaustDamage = True
+                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
+                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
+                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
+                    ignitionThreshold = 0.1
+                    minThrust = 0
+                    maxThrust = 610
+                    heatProduction = 200
+                    EngineType = ${engine.EngineTypeConfig()}
+                    useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    exhaustDamageDistanceOffset = 0.79
+
+                    atmosphereCurve
+                    {
+                        key = 0 345
+                        key = 1 204
+                        key = 6 0.001
+                    }
+                    
+                    ${engine.GetThrustCurveConfig()}
+                    
+                }
+
+                ${engine.Gimbal.GetConfig(modelInfo)}
+
+                ${engine.GetAlternatorConfig()}
+
+                MODULE
+                {
+                    name = ModuleSurfaceFX
+                    thrustProviderModuleIndex = 0
+                    fxMax = 0.5
+                    maxDistance = 30
+                    falloff = 1.7
+                    thrustTransformName = thrustTransform
+                }
+            }
+
+            @PART[GE-${engine.ID}]:FOR[RealismOverhaul]
+            {
+                %RSSROConfig = True
+                %RP0conf = True
+                
+                %breakingForce = 250
+                %breakingTorque = 250
+                @maxTemp = 573.15
+                %skinMaxTemp = 673.15
+                %stageOffset = 1
+                %childStageOffset = 1
+                %stagingIcon = ${engine.StagingIconConfig()}
+                @bulkheadProfiles = srf, size3
+                @tags = Generic Engine
+
+                ${engine.Tank.GetTankConfig()}
+
+                @MODULE[ModuleEngines*]
+                {
+                    %engineID = PrimaryMode
+                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${engine.Thrust}
+                    @heatProduction = 180
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.Visuals.PlumeID).PlumeID}
+
+                    ${engine.FuelRatios.GetPropellantConfig(engine)}
+
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${engine.VacIsp}
+                        @key,1 = 1 ${engine.AtmIsp}
+                    }
+
+                    ${engine.GetThrustCurveConfig()}
+
+                }
+
+                ${engine.GetEngineModuleConfig(allEngines)}
+
+                !RESOURCE,*{}
+            }
+
+            ${engine.Visuals.GetPlumeConfig(engine)}
+
+            ${engine.TestFlight.GetTestFlightConfig(engine)}
+        `;
+    }
+    static MultiModeSlaveEngineConfig(engine, allEngines) {
+        return `
+            @PART[GE-${engine.Polymorphism.MasterEngineName}]
+            {
+                MODULE
+                {
+                    name = MultiModeEngine
+                    primaryEngineID = PrimaryMode
+                    primaryEngineModeDisplayName = Primary mode (GE-${engine.Polymorphism.MasterEngineName})
+                    secondaryEngineID = SecondaryMode
+                    secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
+                }
+            }
+            
+            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                +MODULE[ModuleEngines*]
+                {
+                    @engineID = SecondaryMode
+                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${engine.Thrust}
+                    @heatProduction = 180
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.Visuals.PlumeID).PlumeID}
+
+                    !PROPELLANT,*
+                    {
+                    }
+
+                    ${engine.FuelRatios.GetPropellantConfig(engine)}
+
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${engine.VacIsp}
+                        @key,1 = 1 ${engine.AtmIsp}
+                    }
+
+                    ${engine.GetThrustCurveConfig()}
+
+                }
+            }
+
+            ${engine.Visuals.GetPlumeConfig(allEngines[engine.Polymorphism.MasterEngineName])}
+        `;
+    }
+    static MultiConfigSlaveEngineConfig(engine, allEngines) {
+        return `
+            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                @MODULE[ModuleEngineConfigs]
+                {
+                    ${engine.GetEngineConfig(allEngines)}
+                }
+            }
+            
+            ${engine.Visuals.GetPlumeConfig(allEngines[engine.Polymorphism.MasterEngineName])}
+            
+            ${engine.TestFlight.GetTestFlightConfig(engine)}
+            
+            @ENTRYCOSTMODS:FOR[xxxRP-0]
+            {
+                GE-${engine.ID} = ${engine.EntryCost}
+            }
+        `;
+    }
+}
+class FileIO {
+    static ToClipboard(value) {
+        if (value.length == 0) {
+            return false;
+        }
+        let textArea = document.createElement("textarea");
+        document.body.appendChild(textArea);
+        textArea.value = value;
+        textArea.focus();
+        textArea.select();
+        let ok = document.execCommand("copy");
+        document.body.removeChild(textArea);
+        return ok;
+    }
+    static ZipBlobs(rootDirName, blobs, callback) {
+        let zip = new JSZip();
+        let zipRoot = zip.folder(rootDirName);
+        for (let blobname in blobs) {
+            let blob = blobs[blobname];
+            if (blob instanceof Uint8Array) {
+                zipRoot.file(blobname, blob, {
+                    binary: true
+                });
+            }
+            else {
+                zipRoot.file(blobname, blob, {
+                    binary: false
+                });
+            }
+        }
+        zip.generateAsync({
+            type: "uint8array"
+        }).then(callback);
+    }
+    static OpenText(extensions, callback) {
+        this.Open(FileType.Text, extensions, (result, filename) => {
+            if (callback) {
+                if (result) {
+                    if (typeof result === "string") {
+                        callback(result, filename);
+                    }
+                    else {
+                        callback(null, filename);
+                    }
+                }
+                else {
+                    callback(null, filename);
+                }
+            }
+        });
+    }
+    static OpenBinary(extensions, callback) {
+        this.Open(FileType.Binary, extensions, (result, filename) => {
+            if (callback) {
+                if (result) {
+                    if (result instanceof Uint8Array) {
+                        callback(result, filename);
+                    }
+                    else {
+                        callback(null, filename);
+                    }
+                }
+                else {
+                    callback(null, filename);
+                }
+            }
+        });
+    }
+    static Open(type, extensions, callback) {
+        let fileDialog = document.createElement("input");
+        fileDialog.type = "file";
+        if (extensions && extensions != "") {
+            fileDialog.accept = extensions;
+        }
+        fileDialog.click();
+        fileDialog.addEventListener("change", () => {
+            if (!fileDialog.files || !fileDialog.files[0]) {
+                console.log("No file selected?");
+                if (callback) {
+                    callback(null, "");
+                }
+                return;
+            }
+            let file = fileDialog.files[0];
+            let reader = new FileReader();
+            reader.onload = () => {
+                if (callback) {
+                    if (reader.result instanceof ArrayBuffer) {
+                        callback(new Uint8Array(reader.result), file.name);
+                    }
+                    else {
+                        callback(reader.result, file.name);
+                    }
+                }
+            };
+            if (type == FileType.Text) {
+                reader.readAsText(file);
+            }
+            else if (type == FileType.Binary) {
+                reader.readAsArrayBuffer(file);
+            }
+        });
+    }
+    static SaveText(filename, contents) {
+        let saveDialog = document.createElement("a");
+        saveDialog.href = `data:application/x-none;charset=UTF-8;base64,${btoa(contents)}`;
+        saveDialog.download = filename;
+        let evt = document.createEvent("MouseEvents");
+        evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        saveDialog.dispatchEvent(evt);
+    }
+    static SaveBinary(filename, contents) {
+        let saveDialog = document.createElement("a");
+        let blob = new Blob([contents], {
+            type: "application/octet-stream"
+        });
+        saveDialog.href = URL.createObjectURL(blob);
+        saveDialog.download = filename;
+        let evt = document.createEvent("MouseEvents");
+        evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        saveDialog.dispatchEvent(evt);
+    }
+}
+class Input {
+}
+Input.MouseX = 0;
+Input.MouseY = 0;
+window.onpointermove = (event) => {
+    Input.MouseX = event.clientX;
+    Input.MouseY = event.clientY;
+};
+class Serializer {
+    static Copy(engine) {
+        let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0, engine.EngineList);
+        return copiedEngine;
+    }
+    static SerializeMany(engines) {
+        let data = [];
+        let length = 0;
+        engines.forEach(engine => {
+            data.push(Serializer.Serialize(engine));
+            length += data[data.length - 1].length;
+        });
+        let output = new Uint8Array(length);
+        let i = 0;
+        data.forEach(array => {
+            output.set(array, i);
+            i += array.length;
+        });
+        return output;
+    }
+    static DeserializeMany(data, appendToExisting) {
+        let offset = 0;
+        let engineCount = 0;
+        while (offset < data.length) {
+            let [engine, addedOffset] = Serializer.Deserialize(data, offset, appendToExisting);
+            MainEngineTable.AddItem(engine);
+            offset += addedOffset;
+            ++engineCount;
+        }
+        if (offset != data.length) {
+            console.warn("Possible data corruption?");
+        }
+        return engineCount;
+    }
+    static Serialize(e) {
+        let i = 0;
+        let output = new Uint8Array(2 +
+            1 +
+            (e.ID.length + 2) +
+            8 +
+            8 +
+            8 +
+            8 +
+            e.FuelRatios.Items.length * 10 + 2 +
+            8 +
+            8 +
+            8 +
+            4 +
+            8 +
+            4 +
+            1 +
+            1 +
+            1 +
+            1 +
+            (!TestFlight.IsDefault(e.TestFlight) ? 1 : 0) * (1 +
+                4 +
+                8 +
+                8 +
+                8 +
+                8) +
+            8 +
+            1 +
+            (!Gimbal.IsDefault(e.Gimbal) ? 1 : 0) * (1 +
+                8 +
+                8 +
+                8 +
+                8) +
+            2 +
+            2 +
+            2 +
+            4 +
+            (e.Labels.EngineName.length + 2) +
+            1 +
+            (!Labels.IsManufacturerDefault(e.Labels) ? 1 : 0) * (e.Labels.EngineManufacturer.length + 2) +
+            1 +
+            (!Labels.IsDescriptionDefault(e.Labels) ? 1 : 0) * (e.Labels.EngineDescription.length + 2) +
+            1 +
+            1 +
+            8 +
+            e.Tank.TanksContents.length * 10 + 2 +
+            e.ThrustCurve.length * 16 + 2 +
+            1 +
+            1 +
+            1 +
+            e.Polymorphism.MasterEngineName.length + 2);
+        output[i++] = Serializer.Version / 256;
+        output[i++] = Serializer.Version % 256;
+        output[i++] = e.Active ? 1 : 0;
+        output[i++] = e.ID.length % 256;
+        output[i++] = e.ID.length / 256;
+        for (let c = 0; c < e.ID.length; ++c) {
+            output[i++] = e.ID.charCodeAt(c);
+        }
+        output.set(BitConverter.DoubleToByteArray(e.Mass), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.Thrust), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.AtmIsp), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.VacIsp), i);
+        i += 8;
+        output[i++] = e.FuelRatios.Items.length % 256;
+        output[i++] = e.FuelRatios.Items.length / 256;
+        e.FuelRatios.Items.forEach(f => {
+            output[i++] = f[0] % 256;
+            output[i++] = f[0] / 256;
+            output.set(BitConverter.DoubleToByteArray(f[1]), i);
+            i += 8;
+        });
+        output.set(BitConverter.DoubleToByteArray(e.Dimensions.Width), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.Dimensions.Height), i);
+        i += 8;
+        output.set(BitConverter.DoubleToByteArray(e.Gimbal.Gimbal), i);
+        i += 8;
+        output.set(BitConverter.IntToByteArray(e.Cost), i);
+        i += 4;
+        output.set(BitConverter.DoubleToByteArray(e.MinThrust), i);
+        i += 8;
+        output.set(BitConverter.IntToByteArray(e.Ignitions), i);
+        i += 4;
+        output[i++] = e.PressureFed ? 1 : 0;
+        output[i++] = e.NeedsUllage ? 1 : 0;
+        output[i++] = e.FuelRatios.FuelVolumeRatios ? 1 : 0;
+        output[i++] = !TestFlight.IsDefault(e.TestFlight) ? 1 : 0;
+        if (!TestFlight.IsDefault(e.TestFlight)) {
+            output[i++] = e.TestFlight.EnableTestFlight ? 1 : 0;
+            output.set(BitConverter.IntToByteArray(e.TestFlight.RatedBurnTime), i);
+            i += 4;
+            output.set(BitConverter.DoubleToByteArray(e.TestFlight.StartReliability0), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.TestFlight.StartReliability10k), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.TestFlight.CycleReliability0), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.TestFlight.CycleReliability10k), i);
+            i += 8;
+        }
+        output.set(BitConverter.DoubleToByteArray(e.AlternatorPower), i);
+        i += 8;
+        output[i++] = !Gimbal.IsDefault(e.Gimbal) ? 1 : 0;
+        if (!Gimbal.IsDefault(e.Gimbal)) {
+            output[i++] = e.Gimbal.AdvancedGimbal ? 1 : 0;
+            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalNX), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalPX), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalNY), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.Gimbal.GimbalPY), i);
+            i += 8;
+        }
+        output[i++] = e.Visuals.ModelID % 256;
+        output[i++] = e.Visuals.ModelID / 256;
+        output[i++] = e.Visuals.PlumeID % 256;
+        output[i++] = e.Visuals.PlumeID / 256;
+        output[i++] = e.TechUnlockNode % 256;
+        output[i++] = e.TechUnlockNode / 256;
+        output.set(BitConverter.IntToByteArray(e.EntryCost), i);
+        i += 4;
+        output[i++] = e.Labels.EngineName.length % 256;
+        output[i++] = e.Labels.EngineName.length / 256;
+        for (let c = 0; c < e.Labels.EngineName.length; ++c) {
+            output[i++] = e.Labels.EngineName.charCodeAt(c);
+        }
+        output[i++] = !Labels.IsManufacturerDefault(e.Labels) ? 1 : 0;
+        if (!Labels.IsManufacturerDefault(e.Labels)) {
+            output[i++] = e.Labels.EngineManufacturer.length % 256;
+            output[i++] = e.Labels.EngineManufacturer.length / 256;
+            for (let c = 0; c < e.Labels.EngineManufacturer.length; ++c) {
+                output[i++] = e.Labels.EngineManufacturer.charCodeAt(c);
+            }
+        }
+        output[i++] = !Labels.IsDescriptionDefault(e.Labels) ? 1 : 0;
+        if (!Labels.IsDescriptionDefault(e.Labels)) {
+            output[i++] = e.Labels.EngineDescription.length % 256;
+            output[i++] = e.Labels.EngineDescription.length / 256;
+            for (let c = 0; c < e.Labels.EngineDescription.length; ++c) {
+                output[i++] = e.Labels.EngineDescription.charCodeAt(c);
+            }
+        }
+        output[i++] = e.Dimensions.UseBaseWidth ? 1 : 0;
+        output[i++] = e.EngineVariant;
+        output.set(BitConverter.DoubleToByteArray(e.Tank.TanksVolume), i);
+        i += 8;
+        output[i++] = e.Tank.TanksContents.length % 256;
+        output[i++] = e.Tank.TanksContents.length / 256;
+        e.Tank.TanksContents.forEach(f => {
+            output[i++] = f[0] % 256;
+            output[i++] = f[0] / 256;
+            output.set(BitConverter.DoubleToByteArray(f[1]), i);
+            i += 8;
+        });
+        output[i++] = e.ThrustCurve.length % 256;
+        output[i++] = e.ThrustCurve.length / 256;
+        e.ThrustCurve.forEach(f => {
+            output.set(BitConverter.DoubleToByteArray(f[0]), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(f[1]), i);
+            i += 8;
+        });
+        output[i++] = e.Tank.UseTanks ? 1 : 0;
+        output[i++] = e.Tank.LimitTanks ? 1 : 0;
+        output[i++] = e.Polymorphism.PolyType;
+        output[i++] = e.Polymorphism.MasterEngineName.length % 256;
+        output[i++] = e.Polymorphism.MasterEngineName.length / 256;
+        for (let c = 0; c < e.Polymorphism.MasterEngineName.length; ++c) {
+            output[i++] = e.Polymorphism.MasterEngineName.charCodeAt(c);
+        }
+        return output;
+    }
+    static Deserialize(input, startOffset, originList) {
+        let output = new Engine(originList);
+        let i = startOffset;
+        let version = 0;
+        version += input[i++];
+        version *= 256;
+        version += input[i++];
+        if (version >= 0) {
+            output.Active = input[i++] == 1;
+            let stringLength = 0;
+            if (version >= 3) {
+                stringLength += input[i++];
+                stringLength += input[i++] * 256;
+            }
+            else {
+                stringLength += input[i++] * 256;
+                stringLength += input[i++];
+            }
+            output.ID = "";
+            for (let c = 0; c < stringLength; ++c) {
+                output.ID += String.fromCharCode(input[i++]);
+            }
+            output.Mass = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Thrust = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.AtmIsp = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.VacIsp = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            let dataLength = 0;
+            if (version >= 3) {
+                dataLength += input[i++];
+                dataLength += input[i++] * 256;
+            }
+            else {
+                dataLength += input[i++] * 256;
+                dataLength += input[i++];
+            }
+            output.FuelRatios.Items = [];
+            for (let c = 0; c < dataLength; ++c) {
+                let fuelType = 0;
+                if (version >= 3) {
+                    fuelType += input[i++];
+                    fuelType += input[i++] * 256;
+                }
+                else {
+                    fuelType += input[i++] * 256;
+                    fuelType += input[i++];
+                }
+                output.FuelRatios.Items.push([fuelType, BitConverter.ByteArrayToDouble(input, i)]);
+                i += 8;
+            }
+            output.Dimensions.Width = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Dimensions.Height = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Gimbal.Gimbal = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Cost = BitConverter.ByteArrayToInt(input, i);
+            i += 4;
+        }
+        if (version >= 1) {
+            output.MinThrust = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            output.Ignitions = BitConverter.ByteArrayToInt(input, i);
+            i += 4;
+            output.PressureFed = input[i++] == 1;
+            output.NeedsUllage = input[i++] == 1;
+        }
+        if (version >= 2) {
+            output.FuelRatios.FuelVolumeRatios = input[i++] == 1;
+        }
+        if (version >= 3) {
+            if (input[i++] == 1) {
+                output.TestFlight.EnableTestFlight = input[i++] == 1;
+                output.TestFlight.RatedBurnTime = BitConverter.ByteArrayToInt(input, i);
+                i += 4;
+                output.TestFlight.StartReliability0 = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.TestFlight.StartReliability10k = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.TestFlight.CycleReliability0 = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.TestFlight.CycleReliability10k = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+            }
+        }
+        if (version >= 4) {
+            output.AlternatorPower = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+        }
+        if (version >= 5) {
+            if (input[i++] == 1) {
+                output.Gimbal.AdvancedGimbal = input[i++] == 1;
+                output.Gimbal.GimbalNX = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.Gimbal.GimbalPX = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.Gimbal.GimbalNY = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.Gimbal.GimbalPY = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+            }
+        }
+        if (version >= 6) {
+            output.Visuals.ModelID += input[i++];
+            output.Visuals.ModelID += input[i++] * 256;
+            output.Visuals.PlumeID += input[i++];
+            output.Visuals.PlumeID += input[i++] * 256;
+        }
+        if (version >= 7) {
+            output.TechUnlockNode += input[i++];
+            output.TechUnlockNode += input[i++] * 256;
+            output.EntryCost = BitConverter.ByteArrayToInt(input, i);
+            i += 4;
+            let stringLength = 0;
+            stringLength += input[i++];
+            stringLength += input[i++] * 256;
+            output.Labels.EngineName = "";
+            for (let c = 0; c < stringLength; ++c) {
+                output.Labels.EngineName += String.fromCharCode(input[i++]);
+            }
+            if (input[i++] == 1) {
+                let stringLength = 0;
+                stringLength += input[i++];
+                stringLength += input[i++] * 256;
+                output.Labels.EngineManufacturer = "";
+                for (let c = 0; c < stringLength; ++c) {
+                    output.Labels.EngineManufacturer += String.fromCharCode(input[i++]);
+                }
+            }
+            if (input[i++] == 1) {
+                let stringLength = 0;
+                stringLength += input[i++];
+                stringLength += input[i++] * 256;
+                output.Labels.EngineDescription = "";
+                for (let c = 0; c < stringLength; ++c) {
+                    output.Labels.EngineDescription += String.fromCharCode(input[i++]);
+                }
+            }
+        }
+        if (version >= 8) {
+            output.Dimensions.UseBaseWidth = input[i++] == 1;
+        }
+        else {
+            output.Dimensions.UseBaseWidth = false;
+        }
+        if (version >= 9) {
+            output.EngineVariant = input[i++];
+            output.Tank.TanksVolume = BitConverter.ByteArrayToDouble(input, i);
+            i += 8;
+            let dataLength = 0;
+            dataLength += input[i++];
+            dataLength += input[i++] * 256;
+            for (let c = 0; c < dataLength; ++c) {
+                let fuelType = 0;
+                fuelType += input[i++];
+                fuelType += input[i++] * 256;
+                output.Tank.TanksContents.push([fuelType, BitConverter.ByteArrayToDouble(input, i)]);
+                i += 8;
+            }
+            dataLength = 0;
+            dataLength += input[i++];
+            dataLength += input[i++] * 256;
+            for (let c = 0; c < dataLength; ++c) {
+                let tmp = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.ThrustCurve.push([tmp, BitConverter.ByteArrayToDouble(input, i)]);
+                i += 8;
+            }
+        }
+        if (version >= 10) {
+            output.Tank.UseTanks = input[i++] == 1;
+            output.Tank.LimitTanks = input[i++] == 1;
+        }
+        if (version >= 11) {
+            output.Polymorphism.PolyType = input[i++];
+            let stringLength = 0;
+            stringLength += input[i++];
+            stringLength += input[i++] * 256;
+            output.Polymorphism.MasterEngineName = "";
+            for (let c = 0; c < stringLength; ++c) {
+                output.Polymorphism.MasterEngineName += String.fromCharCode(input[i++]);
+            }
+        }
+        if (version == 12) {
+            i += 12;
+        }
+        return [output, i - startOffset];
+    }
+}
+Serializer.Version = 13;
+class Store {
+    static Exists(id) {
+        return localStorage[id] != undefined;
+    }
+    static Remove(id) {
+        localStorage.removeItem(id);
+    }
+    static Rename(oldID, newID) {
+        let value = localStorage[oldID];
+        localStorage.removeItem(oldID);
+        localStorage[newID] = value;
+    }
+    static SetBinary(id, value) {
+        localStorage[id] = String.fromCharCode.apply(null, value);
+    }
+    static GetBinary(id) {
+        return new Uint8Array(localStorage[id].split("").map(c => { return c.charCodeAt(0); }));
+    }
+    static SetText(id, value) {
+        localStorage[id] = value;
+    }
+    static GetText(id) {
+        return localStorage[id];
+    }
+}
+Store.encoder = new TextEncoder();
+Store.decoder = new TextDecoder();
+class Validator {
+    static Validate(engines) {
+        let output = [];
+        output = output.concat(this.CheckDuplicateIDs(engines));
+        output = output.concat(this.CheckPolymorphismConsistency(engines));
+        return output;
+    }
+    static CheckPolymorphismConsistency(engines) {
+        let output = [];
+        let Masters = {};
+        engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
+            switch (e.Polymorphism.PolyType) {
+                case PolymorphismType.MultiConfigMaster:
+                    Masters[e.ID] = [false, 0];
+                    break;
+                case PolymorphismType.MultiModeMaster:
+                    Masters[e.ID] = [true, 0];
+                    break;
+            }
+        });
+        engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
+            switch (e.Polymorphism.PolyType) {
+                case PolymorphismType.MultiConfigSlave:
+                    if (Masters[e.Polymorphism.MasterEngineName] &&
+                        !Masters[e.Polymorphism.MasterEngineName][0]) {
+                        Masters[e.Polymorphism.MasterEngineName][1] += 1;
+                    }
+                    else {
+                        output.push(`Polymorphism error in engine ${e.ID}. There is no active MultiConfigMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                    }
+                    break;
+                case PolymorphismType.MultiModeSlave:
+                    if (Masters[e.Polymorphism.MasterEngineName] &&
+                        Masters[e.Polymorphism.MasterEngineName][0]) {
+                        if (Masters[e.Polymorphism.MasterEngineName][1] == 0) {
+                        }
+                        else {
+                            output.push(`Polymorphism error in engine ${e.ID}. ${e.Polymorphism.MasterEngineName} already has a slave MultiMode engine config`);
+                        }
+                        Masters[e.Polymorphism.MasterEngineName][1] += 1;
+                    }
+                    else {
+                        output.push(`Polymorphism error in engine ${e.ID}. There is no active MultiModeMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                    }
+                    break;
+            }
+        });
+        return output;
+    }
+    static CheckDuplicateIDs(engines) {
+        let output = [];
+        let takenIDs = [];
+        engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
+            if (/[^A-Za-z0-9-]/.test(e.ID)) {
+                output.push(`ID contains invalid characters: ${e.ID}. Change the ID`);
+                return;
+            }
+            if (takenIDs.some(x => x == e.ID)) {
+                output.push(`ID duplicate found: ${e.ID}. Change the ID`);
+            }
+            else {
+                takenIDs.push(e.ID);
+            }
+        });
+        return output;
+    }
+}
 //# sourceMappingURL=index.js.map

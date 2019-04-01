@@ -5,4 +5,4 @@ Browser version of [Generic Engines](https://github.com/PatPL/Generic-Engines), 
 
 [Generic Engines Web - Wiki & guides](https://github.com/PatPL/Generic-Engines-Web/wiki)
 
-[Report a bug](https://github.com/PatPL/Generic-Engines-Web/issues/new)
+[Report a bug](https://github.com/PatPL/Generic-Engines-Web/issues/new/choose)

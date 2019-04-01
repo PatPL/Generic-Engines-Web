@@ -72,13 +72,17 @@ addEventListener ("DOMContentLoaded", () => {
         //@ts-ignore
         let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
         
+        
+        
         if (isFirefox) {
-            i.src += "firefox.png";
+            i.src = i.src.replace ("()", "firefox");
         } else if (isOpera) {
-            i.src += "opera.png";
+            i.src = i.src.replace ("()", "opera");
         } else {
-            i.src += "chrome.png";
+            i.src = i.src.replace ("()", "chrome");
         }
+        
+        
     });
     
     //Setup fullscreen windows
@@ -116,6 +120,7 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-new")!.addEventListener ("click", NewButton_Click);
     document.getElementById ("option-button-open")!.addEventListener ("click", OpenButton_Click);
     document.getElementById ("option-button-save")!.addEventListener ("click", SaveButton_Click);
+    document.getElementById ("option-button-cache")!.addEventListener ("click", CacheButton_Click);
     document.getElementById ("option-button-validate")!.addEventListener ("click", ValidateButton_Click);
     document.getElementById ("option-button-export")!.addEventListener ("click", ExportButton_Click);
     document.getElementById ("option-button-duplicate")!.addEventListener ("click", DuplicateButton_Click);
@@ -317,6 +322,10 @@ function ClipboardListButton_Click () {
 }
 
 /* /Save dialog */
+
+function CacheButton_Click () {
+    BrowserCacheDialog.DisplayCache ();
+}
 
 function ValidateButton_Click () {
     let errors = Validator.Validate (MainEngineTable.Items);

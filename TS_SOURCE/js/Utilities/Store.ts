@@ -7,6 +7,16 @@ class Store {
         return localStorage[id] != undefined;
     }
     
+    public static Remove (id: string) {
+        localStorage.removeItem (id);
+    }
+    
+    public static Rename (oldID: string, newID: string) {
+        let value = localStorage[oldID];
+        localStorage.removeItem (oldID);
+        localStorage[newID] = value;
+    }
+    
     public static SetBinary (id: string, value: Uint8Array) {
         localStorage[id] = String.fromCharCode.apply (null, value as unknown as number[]);
     }

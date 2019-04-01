@@ -504,13 +504,13 @@ addEventListener("DOMContentLoaded", () => {
         let isFirefox = typeof InstallTrigger !== 'undefined';
         let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
         if (isFirefox) {
-            i.src += "firefox.png";
+            i.src = i.src.replace("()", "firefox");
         }
         else if (isOpera) {
-            i.src += "opera.png";
+            i.src = i.src.replace("()", "opera");
         }
         else {
-            i.src += "chrome.png";
+            i.src = i.src.replace("()", "chrome");
         }
     });
     let windows = document.querySelectorAll(".fullscreen-box");
@@ -540,6 +540,7 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-new").addEventListener("click", NewButton_Click);
     document.getElementById("option-button-open").addEventListener("click", OpenButton_Click);
     document.getElementById("option-button-save").addEventListener("click", SaveButton_Click);
+    document.getElementById("option-button-cache").addEventListener("click", CacheButton_Click);
     document.getElementById("option-button-validate").addEventListener("click", ValidateButton_Click);
     document.getElementById("option-button-export").addEventListener("click", ExportButton_Click);
     document.getElementById("option-button-duplicate").addEventListener("click", DuplicateButton_Click);
@@ -697,6 +698,9 @@ function ClipboardListButton_Click() {
     else {
         Notifier.Warn("There was an error. Engine list was NOT copied to clipboard");
     }
+}
+function CacheButton_Click() {
+    BrowserCacheDialog.DisplayCache();
 }
 function ValidateButton_Click() {
     let errors = Validator.Validate(MainEngineTable.Items);
@@ -1894,6 +1898,77 @@ class BrowserCacheDialog {
                 this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl$/, ""));
             });
             listItem.innerHTML = i;
+            container.appendChild(listItem);
+        });
+    }
+    static DisplayCache(message = "Browser cache") {
+        this.DialogBoxElement.style.display = "flex";
+        this.DialogBoxElement.querySelector("span").innerHTML = message;
+        let container = document.getElementById("cache-box-content");
+        container.innerHTML = "";
+        let lists = [];
+        for (let i in localStorage) {
+            if (/^(.)+\.enl$/.test(i)) {
+                lists.push(i);
+            }
+        }
+        lists.forEach(i => {
+            let listItem = document.createElement("div");
+            listItem.innerHTML = i;
+            let removeButton = document.createElement("img");
+            removeButton.src = "img/button/remove-cache.png";
+            removeButton.title = "Remove this list from cache";
+            removeButton.classList.add("option-button");
+            removeButton.classList.add("cache-option-button");
+            removeButton.addEventListener("click", () => {
+                if (confirm(`You are going to delete ${i}\n\nAre you sure?`)) {
+                    Store.Remove(i);
+                    this.DisplayCache();
+                    Notifier.Info(`${i} deleted from cache`);
+                }
+            });
+            listItem.appendChild(removeButton);
+            let renameButton = document.createElement("img");
+            renameButton.src = "img/button/rename-cache.png";
+            renameButton.title = "Rename this list";
+            renameButton.classList.add("option-button");
+            renameButton.classList.add("cache-option-button");
+            renameButton.addEventListener("click", () => {
+                let newName = prompt("Enter a new name:");
+                if (newName) {
+                    newName = newName.replace(/\.enl$/, "");
+                    newName += ".enl";
+                    Store.Rename(i, newName);
+                    this.DisplayCache();
+                }
+            });
+            listItem.appendChild(renameButton);
+            let openButton = document.createElement("img");
+            openButton.src = "img/button/open-cache.png";
+            openButton.title = "Open this list";
+            openButton.classList.add("option-button");
+            openButton.classList.add("cache-option-button");
+            openButton.addEventListener("click", () => {
+                if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
+                    ListNameDisplay.SetValue(i.replace(/\.enl$/, ""));
+                    MainEngineTable.Items = [];
+                    Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable);
+                    MainEngineTable.RebuildTable();
+                    this.DialogBoxElement.style.display = "none";
+                }
+            });
+            listItem.appendChild(openButton);
+            let appendButton = document.createElement("img");
+            appendButton.src = "img/button/append-cache.png";
+            appendButton.title = "Append this list";
+            appendButton.classList.add("option-button");
+            appendButton.classList.add("cache-option-button");
+            appendButton.addEventListener("click", () => {
+                Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable);
+                MainEngineTable.RebuildTable();
+                this.DialogBoxElement.style.display = "none";
+            });
+            listItem.appendChild(appendButton);
             container.appendChild(listItem);
         });
     }
@@ -4731,6 +4806,14 @@ Serializer.Version = 13;
 class Store {
     static Exists(id) {
         return localStorage[id] != undefined;
+    }
+    static Remove(id) {
+        localStorage.removeItem(id);
+    }
+    static Rename(oldID, newID) {
+        let value = localStorage[oldID];
+        localStorage.removeItem(oldID);
+        localStorage[newID] = value;
     }
     static SetBinary(id, value) {
         localStorage[id] = String.fromCharCode.apply(null, value);

@@ -2012,6 +2012,10 @@ class BrowserCacheDialog {
                 if (newName) {
                     newName = newName.replace(/\.enl$/, "");
                     newName += ".enl";
+                    if (Store.Exists(newName)) {
+                        Notifier.Warn("List with this name already exists. Choose a different name");
+                        return;
+                    }
                     Store.Rename(i, newName);
                     this.DisplayCache();
                 }

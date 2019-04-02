@@ -214,7 +214,7 @@ class FuelRatios implements IEditable {
         this.Items = [];
         
         for (let i = 0; i < selects.length; ++i) {
-            this.Items.push ([parseInt (selects[i].value), parseFloat (inputs[i + 1].value)]);
+            this.Items.push ([parseInt (selects[i].value), parseFloat (inputs[i + 1].value.replace (",", "."))]);
         }
         
     }

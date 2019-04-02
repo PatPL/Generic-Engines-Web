@@ -149,10 +149,14 @@ class Engine {
         }, Cost: {
             ApplyValueToDisplayElement: (e) => {
                 e.innerHTML = `${this.Cost}VF`;
+            }, ApplyChangesToValue: (e) => {
+                this.Cost = parseInt ((e as HTMLInputElement).value);
             }
         }, EntryCost: {
             ApplyValueToDisplayElement: (e) => {
                 e.innerHTML = `${this.EntryCost}VF`;
+            }, ApplyChangesToValue: (e) => {
+                this.EntryCost = parseInt ((e as HTMLInputElement).value);
             }
         }, MinThrust: {
             ApplyValueToDisplayElement: (e) => {
@@ -165,6 +169,8 @@ class Engine {
         }, Ignitions: {
             ApplyValueToDisplayElement: (e) => {
                 e.innerHTML = this.Ignitions <= 0 ? "Infinite" : this.Ignitions.toString ();
+            }, ApplyChangesToValue: (e) => {
+                this.Ignitions = parseInt ((e as HTMLInputElement).value);
             }
         }, TechUnlockNode: {
             ApplyValueToDisplayElement: (e) => {
@@ -255,7 +261,7 @@ class Engine {
                     let inputs = tmp.querySelectorAll<HTMLInputElement> (`input`);
                     
                     for (let i = 0; i < inputs.length; i += 2) {
-                        tmpCurve.push ([parseFloat (inputs[i].value), parseFloat (inputs[i + 1].value)]);
+                        tmpCurve.push ([parseFloat (inputs[i].value.replace (",", ".")), parseFloat (inputs[i + 1].value.replace (",", "."))]);
                     }
                     
                     tmpCurve = tmpCurve.sort ((a, b) => {
@@ -316,7 +322,7 @@ class Engine {
                 this.ThrustCurve = [];
                 
                 for (let i = 0; i < inputs.length; i += 2) {
-                    this.ThrustCurve.push ([parseFloat (inputs[i].value), parseFloat (inputs[i + 1].value)]);
+                    this.ThrustCurve.push ([parseFloat (inputs[i].value.replace (",", ".")), parseFloat (inputs[i + 1].value.replace (",", "."))]);
                 }
                 
                 this.ThrustCurve = this.ThrustCurve.sort ((a, b) => {

@@ -504,7 +504,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.0 Prerelease";
+Version.CurrentVersion = "Web.0.8.0";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -2166,10 +2166,14 @@ class Engine {
             }, Cost: {
                 ApplyValueToDisplayElement: (e) => {
                     e.innerHTML = `${this.Cost}VF`;
+                }, ApplyChangesToValue: (e) => {
+                    this.Cost = parseInt(e.value);
                 }
             }, EntryCost: {
                 ApplyValueToDisplayElement: (e) => {
                     e.innerHTML = `${this.EntryCost}VF`;
+                }, ApplyChangesToValue: (e) => {
+                    this.EntryCost = parseInt(e.value);
                 }
             }, MinThrust: {
                 ApplyValueToDisplayElement: (e) => {
@@ -2182,6 +2186,8 @@ class Engine {
             }, Ignitions: {
                 ApplyValueToDisplayElement: (e) => {
                     e.innerHTML = this.Ignitions <= 0 ? "Infinite" : this.Ignitions.toString();
+                }, ApplyChangesToValue: (e) => {
+                    this.Ignitions = parseInt(e.value);
                 }
             }, TechUnlockNode: {
                 ApplyValueToDisplayElement: (e) => {
@@ -2259,7 +2265,7 @@ class Engine {
                         let tmpCurve = [];
                         let inputs = tmp.querySelectorAll(`input`);
                         for (let i = 0; i < inputs.length; i += 2) {
-                            tmpCurve.push([parseFloat(inputs[i].value), parseFloat(inputs[i + 1].value)]);
+                            tmpCurve.push([parseFloat(inputs[i].value.replace(",", ".")), parseFloat(inputs[i + 1].value.replace(",", "."))]);
                         }
                         tmpCurve = tmpCurve.sort((a, b) => {
                             return b[0] - a[0];
@@ -2305,7 +2311,7 @@ class Engine {
                     let inputs = e.querySelectorAll(`input`);
                     this.ThrustCurve = [];
                     for (let i = 0; i < inputs.length; i += 2) {
-                        this.ThrustCurve.push([parseFloat(inputs[i].value), parseFloat(inputs[i + 1].value)]);
+                        this.ThrustCurve.push([parseFloat(inputs[i].value.replace(",", ".")), parseFloat(inputs[i + 1].value.replace(",", "."))]);
                     }
                     this.ThrustCurve = this.ThrustCurve.sort((a, b) => {
                         return b[0] - a[0];
@@ -2760,7 +2766,7 @@ class FuelRatios {
         }
         this.Items = [];
         for (let i = 0; i < selects.length; ++i) {
-            this.Items.push([parseInt(selects[i].value), parseFloat(inputs[i + 1].value)]);
+            this.Items.push([parseInt(selects[i].value), parseFloat(inputs[i + 1].value.replace(",", "."))]);
         }
     }
 }

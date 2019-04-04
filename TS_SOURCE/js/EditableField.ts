@@ -84,8 +84,17 @@ class EditableField {
     }
     
     private GetDisplayElement (): HTMLElement {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         let output: HTMLElement;
@@ -135,8 +144,17 @@ class EditableField {
     }
     
     private GetEditElement (): HTMLElement {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         let output: HTMLElement;
@@ -172,8 +190,17 @@ class EditableField {
     }
     
     private ApplyValueToDisplayElement (): void {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
@@ -197,8 +224,17 @@ class EditableField {
     }
     
     private ApplyValueToEditElement (): void {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToEditElement" in this.ValueOwner[this.ValueName]) {
@@ -222,8 +258,17 @@ class EditableField {
     }
     
     private ApplyChangesToValue (): void {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {

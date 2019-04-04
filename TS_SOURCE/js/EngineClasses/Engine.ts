@@ -1,3 +1,4 @@
+///<reference path="../Enums/PolymorphismType.ts" />
 class Engine {
     
     public static readonly ColumnDefinitions: { [id: string]: IColumnInfo } = {

@@ -51,7 +51,7 @@ addEventListener ("DOMContentLoaded", () => {
         reader.onload = () => {
             let data = new Uint8Array (reader.result as ArrayBuffer);
             
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
@@ -170,7 +170,7 @@ function OpenUploadButton_Click () {
                 ListNameDisplay.SetValue (filename);
                 
                 MainEngineTable.Items = [];
-                let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+                let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
                 MainEngineTable.RebuildTable ();
                 
                 FullscreenWindows["open-box"].style.display = "none";
@@ -186,7 +186,7 @@ function OpenUploadButton_Click () {
 function AppendUploadButton_Click () {
     FileIO.OpenBinary (".enl", (data) => { //TODO: Multiple file input
         if (data) {
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
@@ -210,7 +210,7 @@ function OpenCacheButton_Click () {
             }
             
             MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
@@ -226,7 +226,7 @@ function AppendCacheButton_Click () {
             return;
         }
         
-        let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+        let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
         MainEngineTable.RebuildTable ();
         
         FullscreenWindows["open-box"].style.display = "none";
@@ -246,7 +246,7 @@ function OpenClipboardButton_Click () {
         try {
             let data = BitConverter.Base64ToByteArray (b64);
             MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
@@ -269,7 +269,7 @@ function AppendClipboardButton_Click () {
         try {
             let data = BitConverter.Base64ToByteArray (b64);
             
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
@@ -377,7 +377,7 @@ function DuplicateButton_Click () {
 }
 
 function AddButton_Click () {
-    MainEngineTable.AddItem (new Engine (MainEngineTable));
+    MainEngineTable.AddItem (new Engine (MainEngineTable.Items));
 }
 
 function RemoveButton_Click () {

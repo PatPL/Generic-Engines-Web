@@ -126,7 +126,7 @@ class BrowserCacheDialog {
             appendButton.classList.add ("cache-option-button");
             appendButton.addEventListener ("click", () => {
                 
-                Serializer.DeserializeMany (Store.GetBinary (i), MainEngineTable);
+                Serializer.DeserializeMany (Store.GetBinary (i), MainEngineTable.Items);
                 MainEngineTable.RebuildTable ();
                 
                 this.DialogBoxElement.style.display = "none";
@@ -143,7 +143,7 @@ class BrowserCacheDialog {
                     ListNameDisplay.SetValue (i.replace (/\.enl$/, ""))
                     
                     MainEngineTable.Items = [];
-                    Serializer.DeserializeMany (Store.GetBinary (i), MainEngineTable);
+                    Serializer.DeserializeMany (Store.GetBinary (i), MainEngineTable.Items);
                     MainEngineTable.RebuildTable ();
                     this.DialogBoxElement.style.display = "none";
                 }

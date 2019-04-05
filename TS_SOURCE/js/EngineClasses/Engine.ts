@@ -818,7 +818,7 @@ class Engine {
                             
                             usedVolume = Math.min (usedVolume, this.TanksVolume);
                             
-                            output = `Enabled, ${usedVolume}L/${this.TanksVolume}L`;
+                            output = `Enabled, ${Unit.Display (usedVolume, "L", false)}/${Unit.Display (this.TanksVolume, "L", false)}`;
                         }
                     } else {
                         if (this.TanksContents.length == 0) {
@@ -830,7 +830,7 @@ class Engine {
                                 usedVolume += v[1] / FuelInfo.GetFuelInfo (v[0]).TankUtilisation;
                             });
                             
-                            output = `Enabled, ${usedVolume}L`;
+                            output = `Enabled, ${Unit.Display (usedVolume, "L", false)}`;
                         }
                     }
                 } else {
@@ -874,7 +874,7 @@ class Engine {
                     
                     <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
                     <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
-                    <div class="content-cell-content" style="grid-area: j; overflow: auto;"><table><tr><th style="width: 35%;">Fuel</th><th style="width: 35%;">Volume (L)</th><th style="width: 30%;">Mass (t)</th></tr></table></div>
+                    <div class="content-cell-content" style="grid-area: j; overflow: auto;"><table><tr><th style="width: 35%;">Fuel</th><th style="width: 35%;">Volume</th><th style="width: 30%;">Mass</th></tr></table></div>
                 `;
                 
                 let inputs = grid.querySelectorAll ("input");
@@ -892,26 +892,26 @@ class Engine {
                     
                     tr.innerHTML = `
                         <td></td>
-                        <td><input style="width: calc(100%);" value="1"></td>
-                        <td><input style="width: calc(100%);" value="${1 * FuelInfo.GetFuelInfo (Fuel.Hydrazine).Density}"></td>
+                        <td><input style="width: calc(100%);" value="${Unit.Display (1, "L", false)}"></td>
+                        <td><input style="width: calc(100%);" value="${Unit.Display (1 * FuelInfo.GetFuelInfo (Fuel.Hydrazine).Density, "t", false)}"></td>
                     `;
                     
                     let inputs = tr.querySelectorAll ("input");
                     
                     select.addEventListener ("change", () => {
-                        inputs[1].value = (parseFloat (inputs[0].value.replace (",", ".")) * FuelInfo.GetFuelInfo (parseInt (select.value)).Density).toString ();
+                        inputs[1].value = Unit.Display (Unit.Parse (inputs[0].value, "L") * FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "t", false);
                     });
                     
                     inputs[0].addEventListener ("keydown", (e) => {
                         setTimeout (() => {
-                            inputs[1].value = (parseFloat (inputs[0].value.replace (",", ".")) * FuelInfo.GetFuelInfo (parseInt (select.value)).Density).toString ();
-                        }, 10); //Update value before using it
+                            inputs[1].value = Unit.Display (Unit.Parse (inputs[0].value, "L") * FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "t", false);
+                        }, 20); //Update value before using it
                     });
                     
                     inputs[1].addEventListener ("keydown", (e) => {
                         setTimeout (() => {
-                            inputs[0].value = (parseFloat (inputs[1].value.replace (",", ".")) / FuelInfo.GetFuelInfo (parseInt (select.value)).Density).toString ();
-                        }, 10); //Update value before using it
+                            inputs[0].value = Unit.Display (Unit.Parse (inputs[1].value, "t") / FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "L", false);
+                        }, 20); //Update value before using it
                     });
                     
                     tr.children[0].appendChild (select);
@@ -933,9 +933,9 @@ class Engine {
                 
                 allInputs[0].checked = this.UseTanks;
                 allInputs[1].checked = this.LimitTanks;
-                allInputs[2].value = this.TanksVolume.toString ();
+                allInputs[2].value = Unit.Display (this.TanksVolume, "L", false);
                 
-                e.querySelectorAll ("span")[1].innerHTML = `${this.GetTankSizeEstimate ()}L`;
+                e.querySelectorAll ("span")[1].innerHTML = Unit.Display (this.GetTankSizeEstimate (), "L", false);
                 
                 (e.children[1] as HTMLElement).style.display = this.UseTanks ? "grid" : "none";
                 allInputs[2].disabled = !this.LimitTanks;
@@ -956,26 +956,26 @@ class Engine {
                     
                     tr.innerHTML = `
                         <td></td>
-                        <td><input style="width: calc(100%);" value="${v[1]}"></td>
-                        <td><input style="width: calc(100%);" value="${v[1] * FuelInfo.GetFuelInfo (v[0]).Density}"></td>
+                        <td><input style="width: calc(100%);" value="${Unit.Display (v[1], "L", false)}"></td>
+                        <td><input style="width: calc(100%);" value="${Unit.Display (v[1] * FuelInfo.GetFuelInfo (v[0]).Density, "t", false)}"></td>
                     `;
                     
                     let inputs = tr.querySelectorAll ("input");
                     
                     select.addEventListener ("change", () => {
-                        inputs[1].value = (parseFloat (inputs[0].value.replace (",", ".")) * FuelInfo.GetFuelInfo (parseInt (select.value)).Density).toString ();
+                        inputs[1].value = Unit.Display (Unit.Parse (inputs[0].value, "L") * FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "t", false);
                     });
                     
                     inputs[0].addEventListener ("keydown", (e) => {
                         setTimeout (() => {
-                            inputs[1].value = (parseFloat (inputs[0].value.replace (",", ".")) * FuelInfo.GetFuelInfo (parseInt (select.value)).Density).toString ();
-                        }, 10); //Update value before using it
+                            inputs[1].value = Unit.Display (Unit.Parse (inputs[0].value, "L") * FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "t", false);
+                        }, 20); //Update value before using it
                     });
                     
                     inputs[1].addEventListener ("keydown", (e) => {
                         setTimeout (() => {
-                            inputs[0].value = (parseFloat (inputs[1].value.replace (",", ".")) / FuelInfo.GetFuelInfo (parseInt (select.value)).Density).toString ();
-                        }, 10); //Update value before using it
+                            inputs[0].value = Unit.Display (Unit.Parse (inputs[1].value, "t") / FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "L", false);
+                        }, 20); //Update value before using it
                     });
                     
                     tr.children[0].appendChild (select);
@@ -988,16 +988,16 @@ class Engine {
                 
                 this.UseTanks = allInputs[0].checked;
                 this.LimitTanks = allInputs[1].checked;
-                this.TanksVolume = parseFloat (allInputs[2].value.replace (",", "."));
+                this.TanksVolume = Unit.Parse (allInputs[2].value, "L");
                 
-                if (selects.length != inputs.length) {
+                if (selects.length * 2 != inputs.length) {
                     console.warn ("table misaligned?");
                 }
                 
                 this.TanksContents = [];
                 
                 for (let i = 0; i < selects.length; ++i) {
-                    this.TanksContents.push ([parseInt (selects[i].value), parseFloat (inputs[2 * i].value.replace (",", "."))]);
+                    this.TanksContents.push ([parseInt (selects[i].value), Unit.Parse (inputs[2 * i].value, "L")]);
                 }
             }
         }, TestFlight: {

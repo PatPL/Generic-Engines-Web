@@ -261,9 +261,9 @@ class Serializer {
         }
         
         //bool - ManufacturerNotDefault
-        output[i++] = !e.IsManufacturerDefault ? 1 : 0;
+        output[i++] = !e.IsManufacturerDefault () ? 1 : 0;
         
-        if (!e.IsManufacturerDefault) {
+        if (!e.IsManufacturerDefault ()) {
             //1B * length + 2B length header - EngineManufacturer
             //String header
             output[i++] = e.EngineManufacturer.length % 256;

@@ -133,31 +133,51 @@ class Engine {
             }
         }, Mass: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = `${this.Mass}t`;
+                e.innerHTML = Unit.Display (this.Mass, "t", false); //TODO: 'Classic' setting?
+            }, ApplyValueToEditElement: (e) => {
+                (e as HTMLInputElement).value = Unit.Display (this.Mass, "t", false);
+            }, ApplyChangesToValue: (e) => {
+                this.Mass = Unit.Parse ((e as HTMLInputElement).value, "t");
             }
         }, Thrust: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = `${this.Thrust}kN`;
+                e.innerHTML = Unit.Display (this.Thrust, "kN", false);
+            }, ApplyValueToEditElement: (e) => {
+                (e as HTMLInputElement).value = Unit.Display (this.Thrust, "kN", false);
+            }, ApplyChangesToValue: (e) => {
+                this.Thrust = Unit.Parse ((e as HTMLInputElement).value, "kN");
             }
         }, AtmIsp: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = `${this.AtmIsp}s`;
+                e.innerHTML = Unit.Display (this.AtmIsp, "s", true); //Keep true. Isp hardly ever goes above 1000, and kiloseconds look weird
+            }, ApplyValueToEditElement: (e) => {
+                (e as HTMLInputElement).value = Unit.Display (this.AtmIsp, "s", true);
+            }, ApplyChangesToValue: (e) => {
+                this.AtmIsp = Unit.Parse ((e as HTMLInputElement).value, "s");
             }
         }, VacIsp: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = `${this.VacIsp}s`;
+                e.innerHTML = Unit.Display (this.VacIsp, "s", true); //Keep true. Isp hardly ever goes above 1000, and kiloseconds look weird
+            }, ApplyValueToEditElement: (e) => {
+                (e as HTMLInputElement).value = Unit.Display (this.VacIsp, "s", true);
+            }, ApplyChangesToValue: (e) => {
+                this.VacIsp = Unit.Parse ((e as HTMLInputElement).value, "s");
             }
         }, Cost: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = `${this.Cost}VF`;
+                e.innerHTML = Unit.Display (this.Cost, " VF", false);
+            }, ApplyValueToEditElement: (e) => {
+                (e as HTMLInputElement).value = Unit.Display (this.Cost, " VF", false);
             }, ApplyChangesToValue: (e) => {
-                this.Cost = parseInt ((e as HTMLInputElement).value);
+                this.Cost = Unit.Parse ((e as HTMLInputElement).value, " VF");
             }
         }, EntryCost: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = `${this.EntryCost}VF`;
+                e.innerHTML = Unit.Display (this.EntryCost, " VF", false);
+            }, ApplyValueToEditElement: (e) => {
+                (e as HTMLInputElement).value = Unit.Display (this.EntryCost, " VF", false);
             }, ApplyChangesToValue: (e) => {
-                this.EntryCost = parseInt ((e as HTMLInputElement).value);
+                this.EntryCost = Unit.Parse ((e as HTMLInputElement).value, " VF");
             }
         }, MinThrust: {
             ApplyValueToDisplayElement: (e) => {
@@ -165,7 +185,11 @@ class Engine {
             }
         }, AlternatorPower: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = `${this.AlternatorPower}kW`;
+                e.innerHTML = Unit.Display (this.AlternatorPower, "kW", false);
+            }, ApplyValueToEditElement: (e) => {
+                (e as HTMLInputElement).value = Unit.Display (this.AlternatorPower, "kW", false);
+            }, ApplyChangesToValue: (e) => {
+                this.AlternatorPower = Unit.Parse ((e as HTMLInputElement).value, "kW");
             }
         }, Ignitions: {
             ApplyValueToDisplayElement: (e) => {

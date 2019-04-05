@@ -49,8 +49,16 @@ class EditableField {
         EditableField.EditedField = this;
         
         this.ApplyValueToEditElement ();
-        
         this.ShowEditMode (true);
+        
+        //Autoselect number in fields with numbers
+        if (/^[0-9]/.test ((this.EditElement as HTMLInputElement).value)) {
+            let length = /^[0-9,.]+/.exec ((this.EditElement as HTMLInputElement).value)!;
+            (this.EditElement as HTMLInputElement).focus ();
+            (this.EditElement as HTMLInputElement).selectionStart = 0;
+            (this.EditElement as HTMLInputElement).selectionEnd = length[0].length;
+        }
+        
         
         if (this.EditElement.parentElement!.getAttribute ("data-tablerow")) {
             document.getElementById ("edit-cell-height-override")!.innerHTML = `

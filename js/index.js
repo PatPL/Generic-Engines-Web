@@ -30,6 +30,12 @@ class EditableField {
         EditableField.EditedField = this;
         this.ApplyValueToEditElement();
         this.ShowEditMode(true);
+        if (/^[0-9]/.test(this.EditElement.value)) {
+            let length = /^[0-9,.]+/.exec(this.EditElement.value);
+            this.EditElement.focus();
+            this.EditElement.selectionStart = 0;
+            this.EditElement.selectionEnd = length[0].length;
+        }
         if (this.EditElement.parentElement.getAttribute("data-tablerow")) {
             document.getElementById("edit-cell-height-override").innerHTML = `
                 .selected {
@@ -2091,31 +2097,51 @@ class Engine {
                 }
             }, Mass: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `${this.Mass}t`;
+                    e.innerHTML = Unit.Display(this.Mass, "t", false);
+                }, ApplyValueToEditElement: (e) => {
+                    e.value = Unit.Display(this.Mass, "t", false);
+                }, ApplyChangesToValue: (e) => {
+                    this.Mass = Unit.Parse(e.value, "t");
                 }
             }, Thrust: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `${this.Thrust}kN`;
+                    e.innerHTML = Unit.Display(this.Thrust, "kN", false);
+                }, ApplyValueToEditElement: (e) => {
+                    e.value = Unit.Display(this.Thrust, "kN", false);
+                }, ApplyChangesToValue: (e) => {
+                    this.Thrust = Unit.Parse(e.value, "kN");
                 }
             }, AtmIsp: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `${this.AtmIsp}s`;
+                    e.innerHTML = Unit.Display(this.AtmIsp, "s", true);
+                }, ApplyValueToEditElement: (e) => {
+                    e.value = Unit.Display(this.AtmIsp, "s", true);
+                }, ApplyChangesToValue: (e) => {
+                    this.AtmIsp = Unit.Parse(e.value, "s");
                 }
             }, VacIsp: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `${this.VacIsp}s`;
+                    e.innerHTML = Unit.Display(this.VacIsp, "s", true);
+                }, ApplyValueToEditElement: (e) => {
+                    e.value = Unit.Display(this.VacIsp, "s", true);
+                }, ApplyChangesToValue: (e) => {
+                    this.VacIsp = Unit.Parse(e.value, "s");
                 }
             }, Cost: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `${this.Cost}VF`;
+                    e.innerHTML = Unit.Display(this.Cost, " VF", false);
+                }, ApplyValueToEditElement: (e) => {
+                    e.value = Unit.Display(this.Cost, " VF", false);
                 }, ApplyChangesToValue: (e) => {
-                    this.Cost = parseInt(e.value);
+                    this.Cost = Unit.Parse(e.value, " VF");
                 }
             }, EntryCost: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `${this.EntryCost}VF`;
+                    e.innerHTML = Unit.Display(this.EntryCost, " VF", false);
+                }, ApplyValueToEditElement: (e) => {
+                    e.value = Unit.Display(this.EntryCost, " VF", false);
                 }, ApplyChangesToValue: (e) => {
-                    this.EntryCost = parseInt(e.value);
+                    this.EntryCost = Unit.Parse(e.value, " VF");
                 }
             }, MinThrust: {
                 ApplyValueToDisplayElement: (e) => {
@@ -2123,7 +2149,11 @@ class Engine {
                 }
             }, AlternatorPower: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `${this.AlternatorPower}kW`;
+                    e.innerHTML = Unit.Display(this.AlternatorPower, "kW", false);
+                }, ApplyValueToEditElement: (e) => {
+                    e.value = Unit.Display(this.AlternatorPower, "kW", false);
+                }, ApplyChangesToValue: (e) => {
+                    this.AlternatorPower = Unit.Parse(e.value, "kW");
                 }
             }, Ignitions: {
                 ApplyValueToDisplayElement: (e) => {
@@ -4543,8 +4573,8 @@ class Serializer {
         for (let c = 0; c < e.EngineName.length; ++c) {
             output[i++] = e.EngineName.charCodeAt(c);
         }
-        output[i++] = !e.IsManufacturerDefault ? 1 : 0;
-        if (!e.IsManufacturerDefault) {
+        output[i++] = !e.IsManufacturerDefault() ? 1 : 0;
+        if (!e.IsManufacturerDefault()) {
             output[i++] = e.EngineManufacturer.length % 256;
             output[i++] = e.EngineManufacturer.length / 256;
             for (let c = 0; c < e.EngineManufacturer.length; ++c) {
@@ -4809,6 +4839,87 @@ class Store {
 }
 Store.encoder = new TextEncoder();
 Store.decoder = new TextDecoder();
+class Unit {
+    static Display(value, unit, forceUnit) {
+        if (forceUnit) {
+            return `${value}${unit}`;
+        }
+        let targetUnit = this.ParseUnit(unit);
+        let rawValue = value * targetUnit[0];
+        if (targetUnit[1] == "t" && rawValue < 1) {
+            targetUnit[1] = "g";
+            rawValue *= 1000000;
+        }
+        else if (targetUnit[1] == "g" && rawValue >= 1000000) {
+            targetUnit[1] = "t";
+            rawValue /= 1000000;
+        }
+        let closestTo500 = Number.MAX_VALUE;
+        let closestPrefix = ["", 1];
+        if (rawValue != 0) {
+            MetricPrefix.forEach(x => {
+                let newDistanceTo500 = Math.abs(rawValue / x[1] - 500.5);
+                if (newDistanceTo500 < closestTo500) {
+                    closestTo500 = newDistanceTo500;
+                    closestPrefix = x;
+                }
+            });
+        }
+        return `${rawValue / closestPrefix[1]}${closestPrefix[0]}${targetUnit[1]}`;
+    }
+    static ParseUnit(rawUnit) {
+        if (rawUnit.length == 0) {
+            console.error("Bad input unit");
+            return [0, ""];
+        }
+        let prefix = MetricPrefix.find(x => x[0] == rawUnit[0]);
+        if (prefix) {
+            return [prefix[1], rawUnit.substring(1)];
+        }
+        else {
+            return [1, rawUnit];
+        }
+    }
+    static Parse(value, baseUnit) {
+        let rawInputNumber = /^[0-9,.]+/.exec(value);
+        let inputNumber = rawInputNumber ? parseFloat(rawInputNumber[0].replace(",", ".")) : 0;
+        let rawInputUnit = /[^0-9,.]+$/.exec(value);
+        let inputUnit = this.ParseUnit(rawInputUnit ? rawInputUnit[0] : baseUnit);
+        let targetUnit = this.ParseUnit(baseUnit);
+        if (inputUnit[1] == "g" && targetUnit[1] == "t") {
+            inputUnit[0] /= 1000000;
+            inputUnit[1] = "t";
+        }
+        else if (inputUnit[1] == "t" && targetUnit[1] == "g") {
+            inputUnit[0] *= 1000000;
+            inputUnit[1] = "g";
+        }
+        if (inputUnit[1] != targetUnit[1]) {
+            console.warn("Units mismatched. Changing to expected unit");
+            inputUnit[1] = targetUnit[1];
+        }
+        return inputNumber * inputUnit[0] / targetUnit[0];
+    }
+}
+const MetricPrefix = [
+    ["Y", 1e+24],
+    ["Z", 1e+21],
+    ["E", 1000000000000000000],
+    ["P", 1000000000000000],
+    ["T", 1000000000000],
+    ["G", 1000000000],
+    ["M", 1000000],
+    ["k", 1000],
+    ["", 1],
+    ["m", 0.001],
+    ["u", 0.000001],
+    ["n", 1e-9],
+    ["p", 1e-12],
+    ["f", 1e-15],
+    ["a", 1e-18],
+    ["z", 1e-21],
+    ["y", 1e-24],
+];
 class Validator {
     static Validate(engines) {
         let output = [];

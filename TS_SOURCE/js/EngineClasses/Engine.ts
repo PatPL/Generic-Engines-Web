@@ -360,31 +360,30 @@ class Engine {
                 tmp.classList.add ("content-cell-content");
                 return tmp;
             }, ApplyValueToDisplayElement: (e: HTMLElement) => {
-                e.innerHTML = `${this.Width}m x ${this.Height}m`;
+                e.innerHTML = `↔${Unit.Display (this.Width, "m", false)} x ↕${Unit.Display (this.Height, "m", false)}`;
             }, GetEditElement: () => {
                 let tmp = document.createElement ("div");
                 tmp.classList.add ("content-cell-content");
-                tmp.style.height = "75px";
+                tmp.style.height = "77px";
                 tmp.style.padding = "0";
                 
                 let grid = document.createElement ("div");
                 grid.style.display = "grid";
-                grid.style.gridTemplateColumns = "62px auto 24px";
-                grid.style.gridTemplateRows = "24px 24px 24px";
+                grid.style.gridTemplateColumns = "62px auto 2px";
+                grid.style.gridTemplateRows = "24px 24px 2px 24px";
                 grid.style.gridTemplateAreas = `
-                    "a a a"
-                    "b c d"
-                    "e f g"
+                    "a a z"
+                    "b c z"
+                    "x x x"
+                    "e f y"
                 `;
                 
                 grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: a;"></div>
                     <div class="content-cell-content" style="grid-area: b;">Width</div>
                     <div style="grid-area: c;"><input style="width: calc(100%);"></div>
-                    <div class="content-cell-content" style="grid-area: d;">m</div>
                     <div class="content-cell-content" style="grid-area: e;">Height</div>
                     <div style="grid-area: f;"><input style="width: calc(100%);"></div>
-                    <div class="content-cell-content" style="grid-area: g;">m</div>
                 `;
                 
                 let checkboxLabel = document.createElement ("span");
@@ -410,16 +409,16 @@ class Engine {
                 let inputs = e.querySelectorAll ("input");
                 
                 inputs[0].checked = this.UseBaseWidth;
-                inputs[1].value = this.Width.toString ();
-                inputs[2].value = this.Height.toString ();
+                inputs[1].value = Unit.Display (this.Width, "m", false);
+                inputs[2].value = Unit.Display (this.Height, "m", false);
                 
                 e.querySelector ("span")!.innerHTML = inputs[0].checked ? "Base width" : "Bell width";
             }, ApplyChangesToValue: (e: HTMLElement) => {
                 let inputs = e.querySelectorAll ("input");
                 
                 this.UseBaseWidth = inputs[0].checked;
-                this.Width = parseFloat (inputs[1].value.replace (",", "."));
-                this.Height = parseFloat (inputs[2].value.replace (",", "."));
+                this.Width = Unit.Parse (inputs[1].value, "m");
+                this.Height = Unit.Parse (inputs[2].value, "m");
             }
         }, FuelRatios: {
             GetDisplayElement: () => {

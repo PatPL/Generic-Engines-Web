@@ -45,13 +45,22 @@ class Unit {
             return [0, ""];
         }
         
+        if (rawUnit.length == 1) {
+            //Stuff like m
+            return [1, rawUnit];
+        }
+        
         let prefix = MetricPrefix.find (x => x[0] == rawUnit[0]);
         if (prefix) {
             //Metric prefix, i.e kg or mN
             return [prefix[1], rawUnit.substring (1)];
         } else {
             // No metric prefix, i.e. N or s
-            return [1, rawUnit];
+            if (rawUnit[0] == "c") { //Allow centi- ONLY for input. (For cm)
+                return [0.01, rawUnit.substring (1)];
+            } else {
+                return [1, rawUnit];
+            }
         }
     }
     

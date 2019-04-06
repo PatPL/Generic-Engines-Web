@@ -29,8 +29,13 @@ class Store {
         localStorage[id] = value;
     }
     
-    public static GetText (id: string): string {
-        return localStorage[id];
+    public static GetText (id: string, defaultValue: string = "undefined"): string {
+        if (localStorage[id] == undefined) {
+            this.SetText (id, defaultValue);
+            return this.GetText (id);
+        } else {
+            return localStorage[id];
+        }
     }
     
 }

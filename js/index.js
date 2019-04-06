@@ -833,6 +833,7 @@ function RemoveButton_Click() {
     }
 }
 function SettingsButton_Click() {
+    SettingsDialog.Show();
 }
 function HelpButton_Click() {
     FullscreenWindows["about-box"].style.display = "flex";
@@ -2062,6 +2063,73 @@ class BrowserCacheDialog {
         });
     }
 }
+document.addEventListener("DOMContentLoaded", () => {
+    SettingsDialog.SettingsBoxElement = document.getElementById("settings-box");
+    SettingsDialog.SettingsBoxElement.querySelector("div.fullscreen-grayout").addEventListener("click", () => {
+        SettingsDialog.Apply();
+    });
+});
+class SettingsDialog {
+    static Show() {
+        let inputs = this.SettingsBoxElement.querySelectorAll("input");
+        inputs.forEach(i => {
+            let field = i.getAttribute("setting-field");
+            if (field) {
+                if (Settings[field] != undefined) {
+                    if (typeof Settings[field] == "boolean") {
+                        i.checked = Settings[field];
+                    }
+                    else if (typeof Settings[field] == "string") {
+                        i.value = Settings[field];
+                    }
+                    else {
+                        console.error("Unsupported setting type");
+                    }
+                }
+                else {
+                    console.error("Unknown setting field");
+                }
+            }
+            else {
+                return;
+            }
+        });
+        FullscreenWindows["settings-box"].style.display = "flex";
+    }
+    static Apply() {
+        let inputs = this.SettingsBoxElement.querySelectorAll("input");
+        inputs.forEach(i => {
+            let field = i.getAttribute("setting-field");
+            if (field) {
+                if (Settings[field] != undefined) {
+                    if (typeof Settings[field] == "boolean") {
+                        Settings[field] = i.checked;
+                    }
+                    else if (typeof Settings[field] == "string") {
+                        Settings[field] = i.value;
+                    }
+                    else {
+                        console.error("Unsupported setting type");
+                    }
+                }
+                else {
+                    console.error("Unknown setting field");
+                }
+            }
+            else {
+                return;
+            }
+        });
+        MainEngineTable.RebuildTable();
+    }
+}
+const Settings = {
+    get classic_unit_display() {
+        return Store.GetText("setting:classic_unit_display", "0") == "1";
+    }, set classic_unit_display(value) {
+        Store.SetText("setting:classic_unit_display", value ? "1" : "0");
+    }
+};
 var PolymorphismType;
 (function (PolymorphismType) {
     PolymorphismType[PolymorphismType["Single"] = 0] = "Single";
@@ -2097,17 +2165,17 @@ class Engine {
                 }
             }, Mass: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.Mass, "t", false);
+                    e.innerHTML = Unit.Display(this.Mass, "t", Settings.classic_unit_display);
                 }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.Mass, "t", false);
+                    e.value = Unit.Display(this.Mass, "t", Settings.classic_unit_display);
                 }, ApplyChangesToValue: (e) => {
                     this.Mass = Unit.Parse(e.value, "t");
                 }
             }, Thrust: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.Thrust, "kN", false);
+                    e.innerHTML = Unit.Display(this.Thrust, "kN", Settings.classic_unit_display);
                 }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.Thrust, "kN", false);
+                    e.value = Unit.Display(this.Thrust, "kN", Settings.classic_unit_display);
                 }, ApplyChangesToValue: (e) => {
                     this.Thrust = Unit.Parse(e.value, "kN");
                 }
@@ -2129,17 +2197,17 @@ class Engine {
                 }
             }, Cost: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.Cost, " VF", false);
+                    e.innerHTML = Unit.Display(this.Cost, " VF", Settings.classic_unit_display);
                 }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.Cost, " VF", false);
+                    e.value = Unit.Display(this.Cost, " VF", Settings.classic_unit_display);
                 }, ApplyChangesToValue: (e) => {
                     this.Cost = Unit.Parse(e.value, " VF");
                 }
             }, EntryCost: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.EntryCost, " VF", false);
+                    e.innerHTML = Unit.Display(this.EntryCost, " VF", Settings.classic_unit_display);
                 }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.EntryCost, " VF", false);
+                    e.value = Unit.Display(this.EntryCost, " VF", Settings.classic_unit_display);
                 }, ApplyChangesToValue: (e) => {
                     this.EntryCost = Unit.Parse(e.value, " VF");
                 }
@@ -2149,9 +2217,9 @@ class Engine {
                 }
             }, AlternatorPower: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.AlternatorPower, "kW", false);
+                    e.innerHTML = Unit.Display(this.AlternatorPower, "kW", Settings.classic_unit_display);
                 }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.AlternatorPower, "kW", false);
+                    e.value = Unit.Display(this.AlternatorPower, "kW", Settings.classic_unit_display);
                 }, ApplyChangesToValue: (e) => {
                     this.AlternatorPower = Unit.Parse(e.value, "kW");
                 }
@@ -2378,7 +2446,7 @@ class Engine {
                         output += `${ratios} ${names}`;
                     }
                     if (electric > 0) {
-                        output += ` | Electric: ${electric}kW`;
+                        output += ` | Electric: ${Unit.Display(electric, "kW", Settings.classic_unit_display)}`;
                     }
                     e.innerHTML = output;
                 }, GetEditElement: () => {
@@ -2687,7 +2755,7 @@ class Engine {
                                     usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
                                 });
                                 usedVolume = Math.min(usedVolume, this.TanksVolume);
-                                output = `Enabled, ${Unit.Display(usedVolume, "L", false)}/${Unit.Display(this.TanksVolume, "L", false)}`;
+                                output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display)}/${Unit.Display(this.TanksVolume, "L", Settings.classic_unit_display)}`;
                             }
                         }
                         else {
@@ -2699,7 +2767,7 @@ class Engine {
                                 this.TanksContents.forEach(v => {
                                     usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
                                 });
-                                output = `Enabled, ${Unit.Display(usedVolume, "L", false)}`;
+                                output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display)}`;
                             }
                         }
                     }
@@ -2753,21 +2821,21 @@ class Engine {
                         select.querySelector(`option[value="${Fuel.Hydrazine}"]`).selected = true;
                         tr.innerHTML = `
                         <td></td>
-                        <td><input style="width: calc(100%);" value="${Unit.Display(1, "L", false)}"></td>
-                        <td><input style="width: calc(100%);" value="${Unit.Display(1 * FuelInfo.GetFuelInfo(Fuel.Hydrazine).Density, "t", false)}"></td>
+                        <td><input style="width: calc(100%);" value="${Unit.Display(1, "L", Settings.classic_unit_display)}"></td>
+                        <td><input style="width: calc(100%);" value="${Unit.Display(1 * FuelInfo.GetFuelInfo(Fuel.Hydrazine).Density, "t", Settings.classic_unit_display)}"></td>
                     `;
                         let inputs = tr.querySelectorAll("input");
                         select.addEventListener("change", () => {
-                            inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", false);
+                            inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
                         });
                         inputs[0].addEventListener("keydown", (e) => {
                             setTimeout(() => {
-                                inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", false);
+                                inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
                             }, 20);
                         });
                         inputs[1].addEventListener("keydown", (e) => {
                             setTimeout(() => {
-                                inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", false);
+                                inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
                             }, 20);
                         });
                         tr.children[0].appendChild(select);
@@ -2785,8 +2853,8 @@ class Engine {
                     let allInputs = e.querySelectorAll(`input`);
                     allInputs[0].checked = this.UseTanks;
                     allInputs[1].checked = this.LimitTanks;
-                    allInputs[2].value = Unit.Display(this.TanksVolume, "L", false);
-                    e.querySelectorAll("span")[1].innerHTML = Unit.Display(this.GetTankSizeEstimate(), "L", false);
+                    allInputs[2].value = Unit.Display(this.TanksVolume, "L", Settings.classic_unit_display);
+                    e.querySelectorAll("span")[1].innerHTML = Unit.Display(this.GetTankSizeEstimate(), "L", Settings.classic_unit_display);
                     e.children[1].style.display = this.UseTanks ? "grid" : "none";
                     allInputs[2].disabled = !this.LimitTanks;
                     let table = e.querySelector("tbody");
@@ -2802,21 +2870,21 @@ class Engine {
                         select.querySelector(`option[value="${v[0]}"]`).selected = true;
                         tr.innerHTML = `
                         <td></td>
-                        <td><input style="width: calc(100%);" value="${Unit.Display(v[1], "L", false)}"></td>
-                        <td><input style="width: calc(100%);" value="${Unit.Display(v[1] * FuelInfo.GetFuelInfo(v[0]).Density, "t", false)}"></td>
+                        <td><input style="width: calc(100%);" value="${Unit.Display(v[1], "L", Settings.classic_unit_display)}"></td>
+                        <td><input style="width: calc(100%);" value="${Unit.Display(v[1] * FuelInfo.GetFuelInfo(v[0]).Density, "t", Settings.classic_unit_display)}"></td>
                     `;
                         let inputs = tr.querySelectorAll("input");
                         select.addEventListener("change", () => {
-                            inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", false);
+                            inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
                         });
                         inputs[0].addEventListener("keydown", (e) => {
                             setTimeout(() => {
-                                inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", false);
+                                inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
                             }, 20);
                         });
                         inputs[1].addEventListener("keydown", (e) => {
                             setTimeout(() => {
-                                inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", false);
+                                inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
                             }, 20);
                         });
                         tr.children[0].appendChild(select);
@@ -4832,8 +4900,14 @@ class Store {
     static SetText(id, value) {
         localStorage[id] = value;
     }
-    static GetText(id) {
-        return localStorage[id];
+    static GetText(id, defaultValue = "undefined") {
+        if (localStorage[id] == undefined) {
+            this.SetText(id, defaultValue);
+            return this.GetText(id);
+        }
+        else {
+            return localStorage[id];
+        }
     }
 }
 Store.encoder = new TextEncoder();

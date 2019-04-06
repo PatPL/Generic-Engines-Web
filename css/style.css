@@ -68,6 +68,13 @@ input[type="checkbox"]:checked {
     background: #4B4;
 }
 
+span.checkbox-label {
+    position: relative;
+    top: -4px;
+    left: 8px;
+    margin-right: 8px;
+}
+
 /**/
 
 #option-row {

@@ -387,7 +387,7 @@ function RemoveButton_Click () {
 }
 
 function SettingsButton_Click () {
-    
+    SettingsDialog.Show ();
 }
 
 function HelpButton_Click () {

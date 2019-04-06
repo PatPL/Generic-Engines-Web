@@ -64,13 +64,13 @@ class SettingsDialog {
         });
         
         //Update stuff
-        (document.getElementById ("css-palette")! as HTMLLinkElement).href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
+        ApplySettings ();
         MainEngineTable.RebuildTable ();
     }
     
 }
 
-const Settings: { [id: string]: string | boolean } = {
+const Settings: ISettings = {
     get classic_unit_display(): boolean {
         return Store.GetText ("setting:classic_unit_display", "0") == "1";
     }, set classic_unit_display(value: boolean) {
@@ -79,5 +79,16 @@ const Settings: { [id: string]: string | boolean } = {
         return Store.GetText ("setting:dark_theme", "0") == "1";
     }, set dark_theme(value: boolean) {
         Store.SetText ("setting:dark_theme", value ? "1" : "0");
+    }, get show_info_panel(): boolean {
+        return Store.GetText ("setting:show_info_panel", "0") == "1";
+    }, set show_info_panel(value: boolean) {
+        Store.SetText ("setting:show_info_panel", value ? "1" : "0");
     }
+}
+
+interface ISettings {
+    [id: string]: string | boolean;
+    classic_unit_display: boolean;
+    dark_theme: boolean;
+    show_info_panel: boolean;
 }

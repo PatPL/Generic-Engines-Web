@@ -1,3 +1,7 @@
+:root {
+    --infoPanelWidth: 0px;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -67,6 +71,17 @@ optgroup {
 }
 
 input {
+    font-size: inherit;
+    font-family: inherit;
+    
+    padding-left: 3px;
+    height: 100%;
+    background: var(--lighterGrayBackground);
+    color: var(--darkText);
+    border: 1px var(--darkerBorder) solid;
+}
+
+textarea {
     font-size: inherit;
     font-family: inherit;
     
@@ -181,9 +196,41 @@ span.checkbox-label {
 /**/
 
 #list-container {
-    width: 100%;
+    width: calc(100% - var(--infoPanelWidth));
     height: calc(100vh - 40px);
     background: var(--lightGrayBackground);
+}
+
+#content-container {
+    display: flex;
+    width: 100%;
+}
+
+#info-panel {
+    position: relative;
+    width: var(--infoPanelWidth);
+    height: calc(100vh - 40px);
+    
+    box-sizing: border-box;
+    
+    background: var(--sidePanelBackground);
+    border-left: 1px var(--darkBorder) solid;
+    z-index: 200;
+    padding: 8px;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#info-panel-resize {
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    
+    left: 0px;
+    top: 0px;
+    
+    cursor: ew-resize;
 }
 
 .content-table {

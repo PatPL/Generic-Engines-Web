@@ -22,11 +22,76 @@ window.onbeforeunload = (e) => {
     }
 }
 
-//Set color palette for dark/other theme
-(document.getElementById ("css-palette")! as HTMLLinkElement).href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
+function ApplySettings () {
+    //Set color palette for dark/other theme
+    (document.getElementById ("css-palette")! as HTMLLinkElement).href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
+
+    //Toggle info panel
+    document.documentElement.style.setProperty ("--infoPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
+}
+
+ApplySettings ();
+
+function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
+    if (!Settings.show_info_panel) {
+        return;
+    }
+    
+    let gravity = 9.80665;
+    let infoPanel = document.getElementById ("info-panel")!;    
+    let properties: { [id: string]: string } = {};
+    
+    let engineMass = engine.GetMass ();
+    
+    let propellantMass = 0;
+    engine.GetConstrainedTankContents ().forEach (i => {
+        propellantMass += i[1] * FuelInfo.GetFuelInfo (i[0]).Density;
+    });
+    
+    // ==
+    
+    properties["id"] = engine.ID;
+    
+    properties["dry_mass"] = Unit.Display (engineMass, "t", Settings.classic_unit_display, 6);
+    properties["wet_mass"] = Unit.Display (engineMass+ propellantMass, "t", Settings.classic_unit_display, 6);
+    
+    properties["thrust_min_vac"] = Unit.Display (engine.Thrust * engine.MinThrust / 100, "kN", Settings.classic_unit_display, 3);
+    properties["thrust_max_vac"] = Unit.Display (engine.Thrust, "kN", Settings.classic_unit_display, 3);
+    properties["thrust_min_atm"] = Unit.Display (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
+    properties["thrust_max_atm"] = Unit.Display (engine.Thrust * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
+    
+    properties["twr_wet_vac"] = (engine.Thrust / (engineMass + propellantMass) / gravity).toFixed (3);
+    properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / gravity).toFixed (3);
+    properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed (3);
+    properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed (3);
+    
+    // ==
+    
+    for (let i in properties) {
+        let element = infoPanel.querySelector (`span[info-field="${i}"]`);
+        
+        if (element) {
+            element.innerHTML = clear ? "" : properties[i];
+        }
+    }
+}
 
 addEventListener ("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField (window, "ListName", document.getElementById ("list-name")!);
+    
+    //Info panel resize
+    let infoPanel = document.getElementById ("info-panel")!;
+    let mainCSS = document.getElementById ("main-css")!;
+    document.getElementById ("info-panel-resize")!.addEventListener ("pointerdown", () => {
+        let originalX = Input.MouseX;
+        let originalWidth = parseFloat (document.documentElement.style.getPropertyValue ("--infoPanelWidth"));
+        originalWidth = isNaN (originalWidth) ? 200 : originalWidth;
+        Dragger.Drag (() => {
+            let newWidth = originalWidth - Input.MouseX + originalX;
+            newWidth = Math.max (50, newWidth);
+            document.documentElement.style.setProperty ("--infoPanelWidth", `${newWidth}px`);
+        });
+    });
     
     //File drag&drop (append list)
     window.addEventListener ("dragover", e => {

@@ -53,11 +53,17 @@ class EditableField {
             this.ApplyChangesToValue();
             this.ApplyValueToDisplayElement();
         }
+        if (this.ValueOwner.hasOwnProperty("OnEditEnd")) {
+            this.ValueOwner.OnEditEnd();
+        }
         EditableField.EditedField = null;
         this.ShowEditMode(false);
     }
     SetValue(newValue) {
         this.ValueOwner[this.ValueName] = newValue;
+        this.ApplyValueToDisplayElement();
+    }
+    RefreshDisplayElement() {
         this.ApplyValueToDisplayElement();
     }
     GetDisplayElement() {
@@ -269,18 +275,11 @@ class HtmlTable {
         this.Columns = {};
         this.Rows = {};
         this.SelectedRows = [];
-        this.DragInterval = null;
         this.TableContainer = container;
         this.TableElement = document.createElement("div");
         this.TableElement.classList.add("content-table");
         this.TableContainer.innerHTML = "";
         this.TableContainer.appendChild(this.TableElement);
-        window.addEventListener("pointerup", () => {
-            if (this.DragInterval) {
-                clearInterval(this.DragInterval);
-            }
-            this.DragInterval = null;
-        });
         window.addEventListener("pointerdown", (e) => {
             if (e.button == 1) {
                 return;
@@ -327,6 +326,9 @@ class HtmlTable {
             columnCell.classList.add("content-cell");
             columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter).toString());
             let cellField = new EditableField(newItem, columnID, columnCell);
+            if (newItem.hasOwnProperty("EditableFields")) {
+                newItem.EditableFields.push(cellField);
+            }
             this.Rows[HtmlTable.RowCounter][0][x] = columnCell;
             this.Columns[columnID].appendChild(columnCell);
             ++x;
@@ -345,6 +347,7 @@ class HtmlTable {
             delete this.Rows[row];
         });
         this.SelectedRows = [];
+        ApplyEngineToInfoPanel(new Engine(), true);
     }
     SelectRow(appendToggle, row, rangeSelect = false) {
         if (this.SelectedRows.length > 0) {
@@ -400,6 +403,7 @@ class HtmlTable {
             });
         }
         if (this.SelectedRows.length > 0) {
+            ApplyEngineToInfoPanel(this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][1]);
             this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][0].forEach(cell => {
                 cell.classList.add("last");
             });
@@ -446,12 +450,12 @@ class HtmlTable {
             columnResizer.onpointerdown = () => {
                 let originalX = Input.MouseX;
                 let originalWidth = column.style.width ? parseInt(column.style.width) : 400;
-                this.DragInterval = setInterval(() => {
+                Dragger.Drag(() => {
                     let newWidth = originalWidth + Input.MouseX - originalX;
                     newWidth = Math.max(24, newWidth);
                     column.style.width = `${newWidth}px`;
                     columnHeader.style.width = `${newWidth}px`;
-                }, 10);
+                });
             };
             columnHeader.appendChild(columnResizer);
             this.TableElement.appendChild(column);
@@ -623,7 +627,7 @@ class SettingsDialog {
                 return;
             }
         });
-        document.getElementById("css-palette").href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
+        ApplySettings();
         MainEngineTable.RebuildTable();
     }
 }
@@ -636,6 +640,10 @@ const Settings = {
         return Store.GetText("setting:dark_theme", "0") == "1";
     }, set dark_theme(value) {
         Store.SetText("setting:dark_theme", value ? "1" : "0");
+    }, get show_info_panel() {
+        return Store.GetText("setting:show_info_panel", "0") == "1";
+    }, set show_info_panel(value) {
+        Store.SetText("setting:show_info_panel", value ? "1" : "0");
     }
 };
 var ListName = "Unnamed";
@@ -658,9 +666,55 @@ window.onbeforeunload = (e) => {
         return;
     }
 };
-document.getElementById("css-palette").href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
+function ApplySettings() {
+    document.getElementById("css-palette").href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
+    document.documentElement.style.setProperty("--infoPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
+}
+ApplySettings();
+function ApplyEngineToInfoPanel(engine, clear = false) {
+    if (!Settings.show_info_panel) {
+        return;
+    }
+    let gravity = 9.80665;
+    let infoPanel = document.getElementById("info-panel");
+    let properties = {};
+    let engineMass = engine.GetMass();
+    let propellantMass = 0;
+    engine.GetConstrainedTankContents().forEach(i => {
+        propellantMass += i[1] * FuelInfo.GetFuelInfo(i[0]).Density;
+    });
+    properties["id"] = engine.ID;
+    properties["dry_mass"] = Unit.Display(engineMass, "t", Settings.classic_unit_display, 6);
+    properties["wet_mass"] = Unit.Display(engineMass + propellantMass, "t", Settings.classic_unit_display, 6);
+    properties["thrust_min_vac"] = Unit.Display(engine.Thrust * engine.MinThrust / 100, "kN", Settings.classic_unit_display, 3);
+    properties["thrust_max_vac"] = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 3);
+    properties["thrust_min_atm"] = Unit.Display(engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
+    properties["thrust_max_atm"] = Unit.Display(engine.Thrust * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
+    properties["twr_wet_vac"] = (engine.Thrust / (engineMass + propellantMass) / gravity).toFixed(3);
+    properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / gravity).toFixed(3);
+    properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed(3);
+    properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed(3);
+    for (let i in properties) {
+        let element = infoPanel.querySelector(`span[info-field="${i}"]`);
+        if (element) {
+            element.innerHTML = clear ? "" : properties[i];
+        }
+    }
+}
 addEventListener("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
+    let infoPanel = document.getElementById("info-panel");
+    let mainCSS = document.getElementById("main-css");
+    document.getElementById("info-panel-resize").addEventListener("pointerdown", () => {
+        let originalX = Input.MouseX;
+        let originalWidth = parseFloat(document.documentElement.style.getPropertyValue("--infoPanelWidth"));
+        originalWidth = isNaN(originalWidth) ? 200 : originalWidth;
+        Dragger.Drag(() => {
+            let newWidth = originalWidth - Input.MouseX + originalX;
+            newWidth = Math.max(50, newWidth);
+            document.documentElement.style.setProperty("--infoPanelWidth", `${newWidth}px`);
+        });
+    });
     window.addEventListener("dragover", e => {
         e.stopPropagation();
         e.preventDefault();
@@ -2674,8 +2728,9 @@ class Engine {
                     tmp.classList.add("content-cell-content");
                     return tmp;
                 }, ApplyValueToDisplayElement: (e) => {
-                    if (this.EngineName == "") {
-                        e.innerHTML = `<<< Same as ID`;
+                    let isSlave = this.PolyType == PolymorphismType.MultiModeSlave || this.PolyType == PolymorphismType.MultiConfigSlave;
+                    if (this.EngineName == "" || isSlave) {
+                        e.innerHTML = `${this.ID}`;
                     }
                     else {
                         e.innerHTML = `${this.EngineName}`;
@@ -3031,7 +3086,13 @@ class Engine {
                     tmp.classList.add("content-cell-content");
                     return tmp;
                 }, ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `${ModelInfo.GetModelInfo(this.ModelID).ModelName}, ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeName}`;
+                    let isSlave = this.PolyType == PolymorphismType.MultiModeSlave || this.PolyType == PolymorphismType.MultiConfigSlave;
+                    if (isSlave) {
+                        e.innerHTML = `${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeName}`;
+                    }
+                    else {
+                        e.innerHTML = `${ModelInfo.GetModelInfo(this.ModelID).ModelName}, ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeName}`;
+                    }
                 }, GetEditElement: () => {
                     let tmp = document.createElement("div");
                     tmp.classList.add("content-cell-content");
@@ -3054,8 +3115,11 @@ class Engine {
                     tmp.appendChild(grid);
                     return tmp;
                 }, ApplyValueToEditElement: (e) => {
+                    let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
+                        this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
+                    targetEngine = targetEngine != undefined ? targetEngine : this;
                     let selects = e.querySelectorAll("select");
-                    selects[0].value = this.ModelID.toString();
+                    selects[0].value = targetEngine.ModelID.toString();
                     selects[1].value = this.PlumeID.toString();
                     selects[0].disabled = (this.PolyType == PolymorphismType.MultiConfigSlave ||
                         this.PolyType == PolymorphismType.MultiModeSlave);
@@ -3067,6 +3131,7 @@ class Engine {
             }
         };
         this.ListCols = [];
+        this.EditableFields = [];
         this.Active = false;
         this.ID = "New-Engine";
         this.Mass = 1;
@@ -3111,7 +3176,22 @@ class Engine {
         this.CycleReliability10k = 98;
         this.ModelID = Model.LR91;
         this.PlumeID = Plume.Kerolox_Upper;
+        this.OnEditEnd = () => {
+            this.UpdateEveryDisplay();
+        };
         this.EngineList = originList;
+    }
+    UpdateEveryDisplay() {
+        this.EditableFields.forEach(f => {
+            f.RefreshDisplayElement();
+        });
+        ApplyEngineToInfoPanel(this);
+    }
+    GetMass() {
+        let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
+            this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
+        targetEngine = targetEngine != undefined ? targetEngine : this;
+        return targetEngine.Mass;
     }
     GetPlumeConfig() {
         let plumeInfo = PlumeInfo.GetPlumeInfo(this.PlumeID);
@@ -3253,13 +3333,16 @@ class Engine {
         return output;
     }
     GetConstrainedTankContents() {
-        if (!this.LimitTanks) {
-            return new Array().concat(this.TanksContents);
+        let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
+            this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
+        targetEngine = targetEngine != undefined ? targetEngine : this;
+        if (!targetEngine.LimitTanks) {
+            return new Array().concat(targetEngine.TanksContents);
         }
         let output = [];
         let usedVolume = 0;
-        this.TanksContents.forEach(v => {
-            let thisVol = Math.min(v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation, this.TanksVolume - usedVolume);
+        targetEngine.TanksContents.forEach(v => {
+            let thisVol = Math.min(v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation, targetEngine.TanksVolume - usedVolume);
             output.push([v[0], thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
         });
         return output;
@@ -3655,7 +3738,7 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b00000
     }, Spacer: {
         Name: "",
-        DefaultWidth: 200,
+        DefaultWidth: 300,
         DisplayFlags: 0b00000
     }
 };
@@ -4142,6 +4225,23 @@ BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
+class Dragger {
+    static Drop() {
+        if (this.currentInterval) {
+            clearInterval(this.currentInterval);
+            this.currentInterval = null;
+        }
+    }
+    static Drag(action) {
+        if (this.currentInterval) {
+            this.Drop();
+        }
+        this.currentInterval = setInterval(action, 20);
+    }
+}
+window.addEventListener("pointerup", () => {
+    Dragger.Drop();
+});
 class Exporter {
     static ConvertEngineListToConfig(engines) {
         if (Validator.Validate(engines).length > 0) {
@@ -4919,7 +5019,7 @@ class Serializer {
 }
 Serializer.Version = 13;
 class Unit {
-    static Display(value, unit, forceUnit) {
+    static Display(value, unit, forceUnit, decimalPlaces = 20) {
         if (forceUnit) {
             return `${value}${unit}`;
         }
@@ -4944,7 +5044,10 @@ class Unit {
                 }
             });
         }
-        return `${rawValue / closestPrefix[1]}${closestPrefix[0]}${targetUnit[1]}`;
+        let number = rawValue / closestPrefix[1];
+        let trimmed = number.toFixed(decimalPlaces);
+        let numberString = number.toString().length >= trimmed.length ? trimmed : number.toString();
+        return `${numberString}${closestPrefix[0]}${targetUnit[1]}`;
     }
     static ParseUnit(rawUnit) {
         if (rawUnit.length == 0) {

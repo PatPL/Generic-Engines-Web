@@ -11,7 +11,6 @@ class HtmlTable {
     
     readonly TableContainer: HTMLElement;
     TableElement: HTMLElement;
-    DragInterval: number | null = null;
     
     constructor (container: HTMLElement) {
         this.TableContainer = container;
@@ -22,14 +21,6 @@ class HtmlTable {
         this.TableContainer.innerHTML = "";
         this.TableContainer.appendChild (this.TableElement);
         
-        window.addEventListener ("pointerup", () => {
-            if (this.DragInterval) {
-                clearInterval (this.DragInterval);
-            }
-            
-            this.DragInterval = null;
-        });
-        
         window.addEventListener ("pointerdown", (e) => {
             //Ignore if MMB pressed
             if (e.button == 1) {
@@ -37,7 +28,7 @@ class HtmlTable {
             }
             
             if (e.srcElement) {
-                let currentElement: Element | null = e.srcElement;
+                let currentElement: Element | null = e.srcElement as Element;
                 let pressedOnRow: number | null = null;
                 
                 let i : number | string | null;
@@ -91,6 +82,10 @@ class HtmlTable {
             columnCell.setAttribute ("data-tableRow", (HtmlTable.RowCounter).toString ());
             let cellField = new EditableField (newItem, columnID, columnCell);
             
+            if ((newItem as Object).hasOwnProperty ("EditableFields")) {
+                newItem.EditableFields.push (cellField);
+            }
+            
             this.Rows[HtmlTable.RowCounter][0][x] = columnCell;
             
             this.Columns[columnID].appendChild (columnCell);
@@ -115,6 +110,7 @@ class HtmlTable {
         });
         
         this.SelectedRows = [];
+        ApplyEngineToInfoPanel (new Engine (), true);
     }
     
     public SelectRow (appendToggle: boolean, row: number, rangeSelect: boolean = false) {
@@ -175,6 +171,7 @@ class HtmlTable {
         }
         
         if (this.SelectedRows.length > 0) {
+            ApplyEngineToInfoPanel (this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][1]);
             this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][0].forEach (cell => {
                 cell.classList.add ("last");
             });
@@ -234,12 +231,12 @@ class HtmlTable {
             columnResizer.onpointerdown = () => {
                 let originalX = Input.MouseX;
                 let originalWidth = column.style.width ? parseInt (column.style.width) : 400;
-                this.DragInterval = setInterval (() => {
+                Dragger.Drag (() => {
                     let newWidth = originalWidth + Input.MouseX - originalX;
                     newWidth = Math.max (24, newWidth);
                     column.style.width = `${newWidth}px`;
                     columnHeader.style.width = `${newWidth}px`;
-                }, 10);
+                });
             }
             columnHeader.appendChild (columnResizer);
             

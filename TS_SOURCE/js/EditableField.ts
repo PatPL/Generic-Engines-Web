@@ -81,6 +81,10 @@ class EditableField {
             this.ApplyValueToDisplayElement ();
         }
         
+        if (this.ValueOwner.hasOwnProperty ("OnEditEnd")) {
+            this.ValueOwner.OnEditEnd ();
+        }
+        
         EditableField.EditedField = null;
         
         this.ShowEditMode (false);
@@ -88,6 +92,10 @@ class EditableField {
     
     public SetValue (newValue: any) {
         this.ValueOwner[this.ValueName] = newValue;
+        this.ApplyValueToDisplayElement ();
+    }
+    
+    public RefreshDisplayElement () {
         this.ApplyValueToDisplayElement ();
     }
     
@@ -142,7 +150,7 @@ class EditableField {
         
         if (typeof this.ValueOwner[this.ValueName] != "boolean") {
             output.addEventListener ("dblclick", (e) => {
-                if (!e.srcElement!.parentElement!.classList.contains ("hideCell")) {
+                if (!(e.srcElement! as Element).parentElement!.classList.contains ("hideCell")) {
                     this.StartEdit ();
                 }
             });
@@ -305,7 +313,7 @@ window.addEventListener ("pointerdown", (e) => {
     if (EditableField.EditedField) {
         //Check whether pointer was over current field
         if (e.srcElement) {
-            let currentElement: Element | null = e.srcElement;
+            let currentElement: Element | null = e.srcElement as Element;
             let foundEdited = false;
             
             while (currentElement != null) {

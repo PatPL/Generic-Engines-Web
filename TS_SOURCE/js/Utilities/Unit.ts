@@ -1,6 +1,6 @@
 class Unit {
     
-    public static Display (value: number, unit: string, forceUnit: boolean): string {
+    public static Display (value: number, unit: string, forceUnit: boolean, decimalPlaces: number = 20): string {
         if (forceUnit) {
             return `${value}${unit}`;
         }
@@ -29,7 +29,10 @@ class Unit {
             });
         }
         
-        return `${rawValue / closestPrefix[1]}${closestPrefix[0]}${targetUnit[1]}`;
+        let number = rawValue / closestPrefix[1];
+        let trimmed = number.toFixed (decimalPlaces);
+        let numberString = number.toString ().length >= trimmed.length ? trimmed : number.toString ();
+        return `${numberString}${closestPrefix[0]}${targetUnit[1]}`;
     }
     
     /** Changes string into a unit

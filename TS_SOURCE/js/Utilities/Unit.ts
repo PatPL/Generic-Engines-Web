@@ -2,7 +2,9 @@ class Unit {
     
     public static Display (value: number, unit: string, forceUnit: boolean, decimalPlaces: number = 20): string {
         if (forceUnit) {
-            return `${value}${unit}`;
+            let trimmed = value.toFixed (decimalPlaces);
+            let valueString = value.toString ().length >= trimmed.length ? trimmed : value.toString ();
+            return `${valueString}${unit}`;
         }
         
         let targetUnit = this.ParseUnit (unit);

@@ -5021,7 +5021,9 @@ Serializer.Version = 13;
 class Unit {
     static Display(value, unit, forceUnit, decimalPlaces = 20) {
         if (forceUnit) {
-            return `${value}${unit}`;
+            let trimmed = value.toFixed(decimalPlaces);
+            let valueString = value.toString().length >= trimmed.length ? trimmed : value.toString();
+            return `${valueString}${unit}`;
         }
         let targetUnit = this.ParseUnit(unit);
         let rawValue = value * targetUnit[0];

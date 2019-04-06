@@ -1,3 +1,4 @@
+///<reference path="DialogBoxes/SettingsDialog.ts" />
 var ListName = "Unnamed";
 var EditableFieldMetadata: { [id: string]: IEditable } = {
     ListName: {
@@ -20,6 +21,9 @@ window.onbeforeunload = (e) => {
         return;
     }
 }
+
+//Set color palette for dark/other theme
+(document.getElementById ("css-palette")! as HTMLLinkElement).href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
 
 addEventListener ("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField (window, "ListName", document.getElementById ("list-name")!);

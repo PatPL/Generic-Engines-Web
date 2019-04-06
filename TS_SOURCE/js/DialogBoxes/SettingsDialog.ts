@@ -1,3 +1,4 @@
+///<reference path="../Utilities/Store.ts" />
 document.addEventListener ("DOMContentLoaded", () => {
     
     SettingsDialog.SettingsBoxElement = document.getElementById ("settings-box")!;
@@ -62,6 +63,8 @@ class SettingsDialog {
             }
         });
         
+        //Update stuff
+        (document.getElementById ("css-palette")! as HTMLLinkElement).href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
         MainEngineTable.RebuildTable ();
     }
     
@@ -72,5 +75,9 @@ const Settings: { [id: string]: string | boolean } = {
         return Store.GetText ("setting:classic_unit_display", "0") == "1";
     }, set classic_unit_display(value: boolean) {
         Store.SetText ("setting:classic_unit_display", value ? "1" : "0");
+    }, get dark_theme(): boolean {
+        return Store.GetText ("setting:dark_theme", "0") == "1";
+    }, set dark_theme(value: boolean) {
+        Store.SetText ("setting:dark_theme", value ? "1" : "0");
     }
 }

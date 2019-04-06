@@ -1,0 +1,30 @@
+:root {
+    
+    --lighterGrayBackground: #444;
+    
+    --lightGrayBackground: #333;
+    
+    --grayBackground: #222;
+    --grayBorder: #222;
+    
+    --darkBorder: #666;
+    --darkBackground: #111;
+    --darkText: #CCC;
+    
+    --darkerBorder: #BBB;
+    --darkerText: #AAA;
+    
+    --rowEven: #282828;
+    --rowOdd: #383838;
+    
+    --confirm: #262;
+    
+    --textSelection: #B44;
+    --selection: #336;
+    --selectionMajor: #226;
+    
+    --info: #228;
+    --warn: #842;
+    --error: #822;
+    
+}

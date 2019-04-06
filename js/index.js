@@ -533,6 +533,111 @@ addEventListener("DOMContentLoaded", () => {
         e.innerHTML = Version.CurrentVersion;
     });
 });
+class Store {
+    static Exists(id) {
+        return localStorage[id] != undefined;
+    }
+    static Remove(id) {
+        localStorage.removeItem(id);
+    }
+    static Rename(oldID, newID) {
+        let value = localStorage[oldID];
+        localStorage.removeItem(oldID);
+        localStorage[newID] = value;
+    }
+    static SetBinary(id, value) {
+        localStorage[id] = String.fromCharCode.apply(null, value);
+    }
+    static GetBinary(id) {
+        return new Uint8Array(localStorage[id].split("").map(c => { return c.charCodeAt(0); }));
+    }
+    static SetText(id, value) {
+        localStorage[id] = value;
+    }
+    static GetText(id, defaultValue = "undefined") {
+        if (localStorage[id] == undefined) {
+            this.SetText(id, defaultValue);
+            return this.GetText(id);
+        }
+        else {
+            return localStorage[id];
+        }
+    }
+}
+Store.encoder = new TextEncoder();
+Store.decoder = new TextDecoder();
+document.addEventListener("DOMContentLoaded", () => {
+    SettingsDialog.SettingsBoxElement = document.getElementById("settings-box");
+    SettingsDialog.SettingsBoxElement.querySelector("div.fullscreen-grayout").addEventListener("click", () => {
+        SettingsDialog.Apply();
+    });
+});
+class SettingsDialog {
+    static Show() {
+        let inputs = this.SettingsBoxElement.querySelectorAll("input");
+        inputs.forEach(i => {
+            let field = i.getAttribute("setting-field");
+            if (field) {
+                if (Settings[field] != undefined) {
+                    if (typeof Settings[field] == "boolean") {
+                        i.checked = Settings[field];
+                    }
+                    else if (typeof Settings[field] == "string") {
+                        i.value = Settings[field];
+                    }
+                    else {
+                        console.error("Unsupported setting type");
+                    }
+                }
+                else {
+                    console.error("Unknown setting field");
+                }
+            }
+            else {
+                return;
+            }
+        });
+        FullscreenWindows["settings-box"].style.display = "flex";
+    }
+    static Apply() {
+        let inputs = this.SettingsBoxElement.querySelectorAll("input");
+        inputs.forEach(i => {
+            let field = i.getAttribute("setting-field");
+            if (field) {
+                if (Settings[field] != undefined) {
+                    if (typeof Settings[field] == "boolean") {
+                        Settings[field] = i.checked;
+                    }
+                    else if (typeof Settings[field] == "string") {
+                        Settings[field] = i.value;
+                    }
+                    else {
+                        console.error("Unsupported setting type");
+                    }
+                }
+                else {
+                    console.error("Unknown setting field");
+                }
+            }
+            else {
+                return;
+            }
+        });
+        document.getElementById("css-palette").href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
+        MainEngineTable.RebuildTable();
+    }
+}
+const Settings = {
+    get classic_unit_display() {
+        return Store.GetText("setting:classic_unit_display", "0") == "1";
+    }, set classic_unit_display(value) {
+        Store.SetText("setting:classic_unit_display", value ? "1" : "0");
+    }, get dark_theme() {
+        return Store.GetText("setting:dark_theme", "0") == "1";
+    }, set dark_theme(value) {
+        Store.SetText("setting:dark_theme", value ? "1" : "0");
+    }
+};
 var ListName = "Unnamed";
 var EditableFieldMetadata = {
     ListName: {
@@ -553,6 +658,7 @@ window.onbeforeunload = (e) => {
         return;
     }
 };
+document.getElementById("css-palette").href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
 addEventListener("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     window.addEventListener("dragover", e => {
@@ -2063,73 +2169,6 @@ class BrowserCacheDialog {
         });
     }
 }
-document.addEventListener("DOMContentLoaded", () => {
-    SettingsDialog.SettingsBoxElement = document.getElementById("settings-box");
-    SettingsDialog.SettingsBoxElement.querySelector("div.fullscreen-grayout").addEventListener("click", () => {
-        SettingsDialog.Apply();
-    });
-});
-class SettingsDialog {
-    static Show() {
-        let inputs = this.SettingsBoxElement.querySelectorAll("input");
-        inputs.forEach(i => {
-            let field = i.getAttribute("setting-field");
-            if (field) {
-                if (Settings[field] != undefined) {
-                    if (typeof Settings[field] == "boolean") {
-                        i.checked = Settings[field];
-                    }
-                    else if (typeof Settings[field] == "string") {
-                        i.value = Settings[field];
-                    }
-                    else {
-                        console.error("Unsupported setting type");
-                    }
-                }
-                else {
-                    console.error("Unknown setting field");
-                }
-            }
-            else {
-                return;
-            }
-        });
-        FullscreenWindows["settings-box"].style.display = "flex";
-    }
-    static Apply() {
-        let inputs = this.SettingsBoxElement.querySelectorAll("input");
-        inputs.forEach(i => {
-            let field = i.getAttribute("setting-field");
-            if (field) {
-                if (Settings[field] != undefined) {
-                    if (typeof Settings[field] == "boolean") {
-                        Settings[field] = i.checked;
-                    }
-                    else if (typeof Settings[field] == "string") {
-                        Settings[field] = i.value;
-                    }
-                    else {
-                        console.error("Unsupported setting type");
-                    }
-                }
-                else {
-                    console.error("Unknown setting field");
-                }
-            }
-            else {
-                return;
-            }
-        });
-        MainEngineTable.RebuildTable();
-    }
-}
-const Settings = {
-    get classic_unit_display() {
-        return Store.GetText("setting:classic_unit_display", "0") == "1";
-    }, set classic_unit_display(value) {
-        Store.SetText("setting:classic_unit_display", value ? "1" : "0");
-    }
-};
 var PolymorphismType;
 (function (PolymorphismType) {
     PolymorphismType[PolymorphismType["Single"] = 0] = "Single";
@@ -4879,39 +4918,6 @@ class Serializer {
     }
 }
 Serializer.Version = 13;
-class Store {
-    static Exists(id) {
-        return localStorage[id] != undefined;
-    }
-    static Remove(id) {
-        localStorage.removeItem(id);
-    }
-    static Rename(oldID, newID) {
-        let value = localStorage[oldID];
-        localStorage.removeItem(oldID);
-        localStorage[newID] = value;
-    }
-    static SetBinary(id, value) {
-        localStorage[id] = String.fromCharCode.apply(null, value);
-    }
-    static GetBinary(id) {
-        return new Uint8Array(localStorage[id].split("").map(c => { return c.charCodeAt(0); }));
-    }
-    static SetText(id, value) {
-        localStorage[id] = value;
-    }
-    static GetText(id, defaultValue = "undefined") {
-        if (localStorage[id] == undefined) {
-            this.SetText(id, defaultValue);
-            return this.GetText(id);
-        }
-        else {
-            return localStorage[id];
-        }
-    }
-}
-Store.encoder = new TextEncoder();
-Store.decoder = new TextDecoder();
 class Unit {
     static Display(value, unit, forceUnit) {
         if (forceUnit) {

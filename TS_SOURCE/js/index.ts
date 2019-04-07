@@ -1,3 +1,4 @@
+///<reference path="DialogBoxes/SettingsDialog.ts" />
 var ListName = "Unnamed";
 var EditableFieldMetadata: { [id: string]: IEditable } = {
     ListName: {
@@ -21,8 +22,76 @@ window.onbeforeunload = (e) => {
     }
 }
 
+function ApplySettings () {
+    //Set color palette for dark/other theme
+    (document.getElementById ("css-palette")! as HTMLLinkElement).href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
+
+    //Toggle info panel
+    document.documentElement.style.setProperty ("--infoPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
+}
+
+ApplySettings ();
+
+function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
+    if (!Settings.show_info_panel) {
+        return;
+    }
+    
+    let gravity = 9.80665;
+    let infoPanel = document.getElementById ("info-panel")!;    
+    let properties: { [id: string]: string } = {};
+    
+    let engineMass = engine.GetMass ();
+    
+    let propellantMass = 0;
+    engine.GetConstrainedTankContents ().forEach (i => {
+        propellantMass += i[1] * FuelInfo.GetFuelInfo (i[0]).Density;
+    });
+    
+    // ==
+    
+    properties["id"] = engine.ID;
+    
+    properties["dry_mass"] = Unit.Display (engineMass, "t", Settings.classic_unit_display, 6);
+    properties["wet_mass"] = Unit.Display (engineMass+ propellantMass, "t", Settings.classic_unit_display, 6);
+    
+    properties["thrust_min_vac"] = Unit.Display (engine.Thrust * engine.MinThrust / 100, "kN", Settings.classic_unit_display, 3);
+    properties["thrust_max_vac"] = Unit.Display (engine.Thrust, "kN", Settings.classic_unit_display, 3);
+    properties["thrust_min_atm"] = Unit.Display (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
+    properties["thrust_max_atm"] = Unit.Display (engine.Thrust * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
+    
+    properties["twr_wet_vac"] = (engine.Thrust / (engineMass + propellantMass) / gravity).toFixed (3);
+    properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / gravity).toFixed (3);
+    properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed (3);
+    properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed (3);
+    
+    // ==
+    
+    for (let i in properties) {
+        let element = infoPanel.querySelector (`span[info-field="${i}"]`);
+        
+        if (element) {
+            element.innerHTML = clear ? "" : properties[i];
+        }
+    }
+}
+
 addEventListener ("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField (window, "ListName", document.getElementById ("list-name")!);
+    
+    //Info panel resize
+    let infoPanel = document.getElementById ("info-panel")!;
+    let mainCSS = document.getElementById ("main-css")!;
+    document.getElementById ("info-panel-resize")!.addEventListener ("pointerdown", () => {
+        let originalX = Input.MouseX;
+        let originalWidth = parseFloat (document.documentElement.style.getPropertyValue ("--infoPanelWidth"));
+        originalWidth = isNaN (originalWidth) ? 200 : originalWidth;
+        Dragger.Drag (() => {
+            let newWidth = originalWidth - Input.MouseX + originalX;
+            newWidth = Math.max (50, newWidth);
+            document.documentElement.style.setProperty ("--infoPanelWidth", `${newWidth}px`);
+        });
+    });
     
     //File drag&drop (append list)
     window.addEventListener ("dragover", e => {
@@ -51,7 +120,7 @@ addEventListener ("DOMContentLoaded", () => {
         reader.onload = () => {
             let data = new Uint8Array (reader.result as ArrayBuffer);
             
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
@@ -170,7 +239,7 @@ function OpenUploadButton_Click () {
                 ListNameDisplay.SetValue (filename);
                 
                 MainEngineTable.Items = [];
-                let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+                let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
                 MainEngineTable.RebuildTable ();
                 
                 FullscreenWindows["open-box"].style.display = "none";
@@ -186,7 +255,7 @@ function OpenUploadButton_Click () {
 function AppendUploadButton_Click () {
     FileIO.OpenBinary (".enl", (data) => { //TODO: Multiple file input
         if (data) {
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
@@ -210,7 +279,7 @@ function OpenCacheButton_Click () {
             }
             
             MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
@@ -226,7 +295,7 @@ function AppendCacheButton_Click () {
             return;
         }
         
-        let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+        let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
         MainEngineTable.RebuildTable ();
         
         FullscreenWindows["open-box"].style.display = "none";
@@ -246,7 +315,7 @@ function OpenClipboardButton_Click () {
         try {
             let data = BitConverter.Base64ToByteArray (b64);
             MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
@@ -269,7 +338,7 @@ function AppendClipboardButton_Click () {
         try {
             let data = BitConverter.Base64ToByteArray (b64);
             
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable);
+            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
             MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
@@ -377,7 +446,7 @@ function DuplicateButton_Click () {
 }
 
 function AddButton_Click () {
-    MainEngineTable.AddItem (new Engine (MainEngineTable));
+    MainEngineTable.AddItem (new Engine (MainEngineTable.Items));
 }
 
 function RemoveButton_Click () {
@@ -387,7 +456,7 @@ function RemoveButton_Click () {
 }
 
 function SettingsButton_Click () {
-    
+    SettingsDialog.Show ();
 }
 
 function HelpButton_Click () {

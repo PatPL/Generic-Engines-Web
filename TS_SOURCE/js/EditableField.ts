@@ -49,8 +49,16 @@ class EditableField {
         EditableField.EditedField = this;
         
         this.ApplyValueToEditElement ();
-        
         this.ShowEditMode (true);
+        
+        //Autoselect number in fields with numbers
+        if (/^[0-9]/.test ((this.EditElement as HTMLInputElement).value)) {
+            let length = /^[0-9,.]+/.exec ((this.EditElement as HTMLInputElement).value)!;
+            (this.EditElement as HTMLInputElement).focus ();
+            (this.EditElement as HTMLInputElement).selectionStart = 0;
+            (this.EditElement as HTMLInputElement).selectionEnd = length[0].length;
+        }
+        
         
         if (this.EditElement.parentElement!.getAttribute ("data-tablerow")) {
             document.getElementById ("edit-cell-height-override")!.innerHTML = `
@@ -73,6 +81,10 @@ class EditableField {
             this.ApplyValueToDisplayElement ();
         }
         
+        if (this.ValueOwner.hasOwnProperty ("OnEditEnd")) {
+            this.ValueOwner.OnEditEnd ();
+        }
+        
         EditableField.EditedField = null;
         
         this.ShowEditMode (false);
@@ -83,9 +95,22 @@ class EditableField {
         this.ApplyValueToDisplayElement ();
     }
     
+    public RefreshDisplayElement () {
+        this.ApplyValueToDisplayElement ();
+    }
+    
     private GetDisplayElement (): HTMLElement {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         let output: HTMLElement;
@@ -125,7 +150,7 @@ class EditableField {
         
         if (typeof this.ValueOwner[this.ValueName] != "boolean") {
             output.addEventListener ("dblclick", (e) => {
-                if (!e.srcElement!.parentElement!.classList.contains ("hideCell")) {
+                if (!(e.srcElement! as Element).parentElement!.classList.contains ("hideCell")) {
                     this.StartEdit ();
                 }
             });
@@ -135,8 +160,17 @@ class EditableField {
     }
     
     private GetEditElement (): HTMLElement {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         let output: HTMLElement;
@@ -172,8 +206,17 @@ class EditableField {
     }
     
     private ApplyValueToDisplayElement (): void {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
@@ -197,8 +240,17 @@ class EditableField {
     }
     
     private ApplyValueToEditElement (): void {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToEditElement" in this.ValueOwner[this.ValueName]) {
@@ -222,8 +274,17 @@ class EditableField {
     }
     
     private ApplyChangesToValue (): void {
-        if (!this.ValueOwner || !this.ValueOwner.hasOwnProperty (this.ValueName)) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is null/undefined`;
+        if (
+            !(
+                this.ValueOwner && (
+                    this.ValueOwner.hasOwnProperty (this.ValueName) || (
+                        this.ValueOwner.hasOwnProperty ("EditableFieldMetadata") &&
+                        this.ValueOwner.EditableFieldMetadata.hasOwnProperty (this.ValueName)
+                    )
+                )
+            )
+        ) {
+            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
@@ -252,14 +313,15 @@ window.addEventListener ("pointerdown", (e) => {
     if (EditableField.EditedField) {
         //Check whether pointer was over current field
         if (e.srcElement) {
-            let currentElement: Element | null = e.srcElement;
+            let currentElement: Element | null = e.srcElement as Element;
             let foundEdited = false;
             
             while (currentElement != null) {
                 
                 if (
                     currentElement.getAttribute ("data-FieldID") == EditableField.EditedField.FieldID.toString () ||
-                    currentElement.getAttribute ("data-FieldID") == "-1"
+                    currentElement.getAttribute ("data-FieldID") == "-1" ||
+                    currentElement.classList.contains ("fullscreen-box")
                 ) {
                     foundEdited = true;
                     break;

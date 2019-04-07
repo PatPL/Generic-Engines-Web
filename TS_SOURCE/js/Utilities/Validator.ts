@@ -21,7 +21,7 @@ class Validator {
             }
             
             //Find all masters for later
-            switch (e.Polymorphism.PolyType) {
+            switch (e.PolyType) {
                 case PolymorphismType.MultiConfigMaster:
                 Masters[e.ID] = [false, 0];
                 break;
@@ -38,35 +38,35 @@ class Validator {
             }
             
             //Check every slave
-            switch (e.Polymorphism.PolyType) {
+            switch (e.PolyType) {
                 case PolymorphismType.MultiConfigSlave:
                 if ( //Check whether ConfigMaster exists
-                    Masters[e.Polymorphism.MasterEngineName] &&
-                    !Masters[e.Polymorphism.MasterEngineName][0]
+                    Masters[e.MasterEngineName] &&
+                    !Masters[e.MasterEngineName][0]
                 ) {
                     //Master exists
-                    Masters[e.Polymorphism.MasterEngineName][1] += 1;
+                    Masters[e.MasterEngineName][1] += 1;
                 } else {
                     //Master doesn't exist
-                    output.push (`Polymorphism error in engine ${e.ID}. There is no active MultiConfigMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                    output.push (`Polymorphism error in engine ${e.ID}. There is no active MultiConfigMaster with ID ${e.MasterEngineName}`);
                 }
                 break;
                 case PolymorphismType.MultiModeSlave:
                 if ( //Check whether ModeMaster exists
-                    Masters[e.Polymorphism.MasterEngineName] &&
-                    Masters[e.Polymorphism.MasterEngineName][0]
+                    Masters[e.MasterEngineName] &&
+                    Masters[e.MasterEngineName][0]
                 ) {
                     //Master exists
-                    if (Masters[e.Polymorphism.MasterEngineName][1] == 0) {
+                    if (Masters[e.MasterEngineName][1] == 0) {
                         //Not linked yet, OK
                     } else {
                         //Already linked, Error
-                        output.push (`Polymorphism error in engine ${e.ID}. ${e.Polymorphism.MasterEngineName} already has a slave MultiMode engine config`);
+                        output.push (`Polymorphism error in engine ${e.ID}. ${e.MasterEngineName} already has a slave MultiMode engine config`);
                     }
-                    Masters[e.Polymorphism.MasterEngineName][1] += 1;
+                    Masters[e.MasterEngineName][1] += 1;
                 } else {
                     //Master doesn't exist
-                    output.push (`Polymorphism error in engine ${e.ID}. There is no active MultiModeMaster with ID ${e.Polymorphism.MasterEngineName}`);
+                    output.push (`Polymorphism error in engine ${e.ID}. There is no active MultiModeMaster with ID ${e.MasterEngineName}`);
                 }
                 break;
             }

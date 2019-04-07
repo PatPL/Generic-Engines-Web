@@ -22,7 +22,7 @@ class Exporter {
                 return;
             }
             
-            switch (e.Polymorphism.PolyType) {
+            switch (e.PolyType) {
                 case PolymorphismType.Single:
                 case PolymorphismType.MultiModeMaster:
                 case PolymorphismType.MultiConfigMaster:
@@ -58,7 +58,7 @@ class Exporter {
     }
     
     private static RegularEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
-        let modelInfo = ModelInfo.GetModelInfo (engine.Visuals.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo (engine.ModelID);
         return `
             PART
             {
@@ -66,16 +66,16 @@ class Exporter {
                 module = Part
                 author = Generic Engines
                 
-                ${engine.Visuals.GetModelConfig (engine.Dimensions)}
+                ${engine.GetModelConfig ()}
 
                 TechRequired = ${TechNode[engine.TechUnlockNode]}
                 entryCost = ${engine.EntryCost}
                 cost = ${engine.Cost}
                 category = Engine
                 subcategory = 0
-                title = ${engine.Labels.EngineName == "" ? engine.ID : engine.Labels.EngineName}
-                manufacturer = ${engine.Labels.EngineManufacturer}
-                description = ${engine.Labels.EngineDescription}
+                title = ${engine.EngineName == "" ? engine.ID : engine.EngineName}
+                manufacturer = ${engine.EngineManufacturer}
+                description = ${engine.EngineDescription}
                 attachRules = 1,1,1,${modelInfo.CanAttachOnModel ? 1 : 0},0
                 mass = ${engine.Mass}
                 heatConductivity = 0.06
@@ -95,7 +95,7 @@ class Exporter {
                     name = GenericEnginesPlumeScaleFixer
                 }
 
-                ${engine.Visuals.GetHiddenObjectsConfig ()}
+                ${engine.GetHiddenObjectsConfig ()}
 
                 MODULE
                 {
@@ -124,7 +124,7 @@ class Exporter {
                     
                 }
 
-                ${engine.Gimbal.GetConfig (modelInfo)}
+                ${engine.GetGimbalConfig ()}
 
                 ${engine.GetAlternatorConfig ()}
 
@@ -154,7 +154,7 @@ class Exporter {
                 @bulkheadProfiles = srf, size3
                 @tags = Generic Engine
 
-                ${engine.Tank.GetTankConfig ()}
+                ${engine.GetTankConfig ()}
 
                 @MODULE[ModuleEngines*]
                 {
@@ -163,9 +163,9 @@ class Exporter {
                     @maxThrust = ${engine.Thrust}
                     @heatProduction = 180
                     @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.Visuals.PlumeID).PlumeID}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeID}
 
-                    ${engine.FuelRatios.GetPropellantConfig (engine)}
+                    ${engine.GetPropellantConfig ()}
 
                     @atmosphereCurve
                     {
@@ -182,27 +182,27 @@ class Exporter {
                 !RESOURCE,*{}
             }
 
-            ${engine.Visuals.GetPlumeConfig (engine)}
+            ${engine.GetPlumeConfig ()}
 
-            ${engine.TestFlight.GetTestFlightConfig (engine)}
+            ${engine.GetTestFlightConfig ()}
         `;
     }
     
     private static MultiModeSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
         return `
-            @PART[GE-${engine.Polymorphism.MasterEngineName}]
+            @PART[GE-${engine.MasterEngineName}]
             {
                 MODULE
                 {
                     name = MultiModeEngine
                     primaryEngineID = PrimaryMode
-                    primaryEngineModeDisplayName = Primary mode (GE-${engine.Polymorphism.MasterEngineName})
+                    primaryEngineModeDisplayName = Primary mode (GE-${engine.MasterEngineName})
                     secondaryEngineID = SecondaryMode
                     secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
                 }
             }
             
-            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
             {
                 +MODULE[ModuleEngines*]
                 {
@@ -211,13 +211,13 @@ class Exporter {
                     @maxThrust = ${engine.Thrust}
                     @heatProduction = 180
                     @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.Visuals.PlumeID).PlumeID}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeID}
 
                     !PROPELLANT,*
                     {
                     }
 
-                    ${engine.FuelRatios.GetPropellantConfig (engine)}
+                    ${engine.GetPropellantConfig ()}
 
                     @atmosphereCurve
                     {
@@ -230,13 +230,13 @@ class Exporter {
                 }
             }
 
-            ${engine.Visuals.GetPlumeConfig (allEngines[engine.Polymorphism.MasterEngineName])}
+            ${engine.GetPlumeConfig ()}
         `;
     }
     
     private static MultiConfigSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
         return `
-            @PART[GE-${engine.Polymorphism.MasterEngineName}]:FOR[RealismOverhaul]
+            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
             {
                 @MODULE[ModuleEngineConfigs]
                 {
@@ -244,9 +244,9 @@ class Exporter {
                 }
             }
             
-            ${engine.Visuals.GetPlumeConfig (allEngines[engine.Polymorphism.MasterEngineName])}
+            ${engine.GetPlumeConfig ()}
             
-            ${engine.TestFlight.GetTestFlightConfig (engine)}
+            ${engine.GetTestFlightConfig ()}
             
             @ENTRYCOSTMODS:FOR[xxxRP-0]
             {

@@ -1,0 +1,32 @@
+:root {
+    
+    --lighterGrayBackground: #DDD;
+    
+    --lightGrayBackground: #BBB;
+    
+    --sidePanelBackground: #AAA;
+    
+    --grayBackground: #888;
+    --grayBorder: #888;
+    
+    --darkBorder: #444;
+    --darkBackground: #444;
+    --darkText: #444;
+    
+    --darkerBorder: #222;
+    --darkerText: #222;
+    
+    --rowEven: #AAA;
+    --rowOdd: #CCC;
+    
+    --confirm: #4B4;
+    
+    --textSelection: #66F;
+    --selection: #88F;
+    --selectionMajor: #66F;
+    
+    --info: #88F;
+    --warn: #FB8;
+    --error: #F44;
+    
+}

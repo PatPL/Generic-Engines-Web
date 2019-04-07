@@ -1,3 +1,7 @@
+:root {
+    --infoPanelWidth: 0px;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -12,7 +16,7 @@ body {
     overflow: hidden; /* Small screen? ¯\_(ツ)_/¯ */
     
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: #444;
+    color: var(--darkerText);
 }
 
 textarea {
@@ -47,9 +51,57 @@ img.mini-button {
     margin: 4px 0px 0px 4px;
 }
 
+select {
+    background: var(--lighterGrayBackground);
+    color: var(--darkText);
+    
+    border: none;
+    
+    outline: 1px var(--darkBorder) solid;
+    outline-offset: -1px;
+    
+    box-sizing: border-box;
+    font-size: 14px !important;
+    font-family: inherit;
+}
+
+optgroup {
+    background: var(--grayBackground);
+    color: var(--darkText);
+}
+
 input {
     font-size: inherit;
     font-family: inherit;
+    
+    padding-left: 3px;
+    height: 100%;
+    background: var(--lighterGrayBackground);
+    color: var(--darkText);
+    border: 1px var(--darkerBorder) solid;
+}
+
+textarea {
+    font-size: inherit;
+    font-family: inherit;
+    
+    padding-left: 3px;
+    height: 100%;
+    background: var(--lighterGrayBackground);
+    color: var(--darkText);
+    border: 1px var(--darkerBorder) solid;
+}
+
+input:disabled {
+    background: var(--lightGrayBackground);
+    color: var(--darkerText);
+    border: 1px var(--error) solid;
+    cursor: not-allowed;
+}
+
+input::selection {
+    background: var(--textSelection);
+    color: var(--darkerText);
 }
 
 input[type="checkbox"] {
@@ -59,13 +111,56 @@ input[type="checkbox"] {
     margin: 2px auto 1px auto;
     width: 19px;
     height: 19px;
-    background: #444;
-    border: 1px #222 solid;
+    background: var(--darkBackground);
+    border: 1px var(--darkerBorder) solid;
     outline: none;
 }
 
 input[type="checkbox"]:checked {
-    background: #4B4;
+    background: var(--confirm);
+}
+
+span.checkbox-label {
+    position: relative;
+    top: -4px;
+    left: 8px;
+    margin-right: 8px;
+}
+
+.clickable-text {
+    display: block;
+    width: 100%;
+    height: 100%;
+    
+    cursor: pointer;
+    background: var(--lighterGrayBackground);
+    padding: 2px;
+    
+    border: 1px solid var(--grayBorder);
+    box-sizing: border-box;
+    
+    overflow: hidden;
+    white-space: nowrap;
+    
+    color: var(--darkText);
+}
+
+.clickable-text:hover {
+    filter: brightness(1.2) contrast(1.2);
+    
+    outline: #44B 2px solid;
+    outline-offset: -2px;
+    
+    color: var(--darkerText);
+}
+
+.clickable-text:active {
+    filter: brightness(0.8) contrast(0.8);
+    
+    outline: #00B 2px solid;
+    outline-offset: -2px;
+    
+    color: var(--darkerText);
 }
 
 /**/
@@ -75,7 +170,7 @@ input[type="checkbox"]:checked {
     height: 40px;
     padding: 4px;
     box-sizing: border-box;
-    background: #DDD;
+    background: var(--lighterGrayBackground);
 }
 
 .option-container {
@@ -84,7 +179,7 @@ input[type="checkbox"]:checked {
 
 .flex-spacer {
     flex: auto;
-    background: #CCC;
+    background: var(--lightGrayBackground);
     line-height: 28px;
     font-size: 20px;
     text-align: center;
@@ -137,9 +232,41 @@ input[type="checkbox"]:checked {
 /**/
 
 #list-container {
-    width: 100%;
+    width: calc(100% - var(--infoPanelWidth));
     height: calc(100vh - 40px);
-    background: #BBB;
+    background: var(--lightGrayBackground);
+}
+
+#content-container {
+    display: flex;
+    width: 100%;
+}
+
+#info-panel {
+    position: relative;
+    width: var(--infoPanelWidth);
+    height: calc(100vh - 40px);
+    
+    box-sizing: border-box;
+    
+    background: var(--sidePanelBackground);
+    border-left: 1px var(--darkBorder) solid;
+    z-index: 200;
+    padding: 8px;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#info-panel-resize {
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    
+    left: 0px;
+    top: 0px;
+    
+    cursor: ew-resize;
 }
 
 .content-table {
@@ -148,7 +275,7 @@ input[type="checkbox"]:checked {
     
     height: 100%;
     width: auto;
-    background: #BBB;
+    background: var(--lightGrayBackground);
     color: white;
 }
 
@@ -188,7 +315,7 @@ input[type="checkbox"]:checked {
     word-break: break-all;
     
     box-sizing: border-box;
-    border-color: #444;
+    border-color: var(--darkBorder);
     border-style: solid;
     border-width: 0px;
     border-right-width: 1px;
@@ -197,18 +324,18 @@ input[type="checkbox"]:checked {
     width: 100%;
     height: 24px;
     padding: 2px 4px 2px 4px;
-    line-height: 18px;
+    line-height: 19px;
     font-size: 16px;
     
     overflow: hidden;
     
-    background: #999;
-    color: #222;
+    background: var(--grayBackground);
+    color: var(--darkerText);
 }
 
 .content-cell {
     box-sizing: border-box;
-    border-color: #444;
+    border-color: var(--darkBorder);
     border-style: solid;
     border-width: 0px;
     border-right-width: 1px;
@@ -220,7 +347,7 @@ input[type="checkbox"]:checked {
     line-height: 19px;
     font-size: 16px;
     overflow: hidden;
-    color: #222;
+    color: var(--darkerText);
 }
 
 .content-cell-content {
@@ -242,34 +369,34 @@ input.content-cell-content {
 }
 
 .selected {
-    background: #88F !important;
+    background: var(--selection) !important;
 }
 
 .selected.last {
-    background: #66F !important;
+    background: var(--selectionMajor) !important;
 }
 
 .selected.hideCell {
-    color: #444 !important;
-    background: #444 !important;
+    color: var(--darkBackground) !important;
+    background: var(--darkBackground) !important;
 }
 
 .selected.last.hideCell {
-    color: #444 !important;
-    background: #444 !important;
+    color: var(--darkBackground) !important;
+    background: var(--darkBackground) !important;
 }
 
 .hideCell {
-    color: #444 !important;
-    background: #444 !important;
+    color: var(--darkBackground) !important;
+    background: var(--darkBackground) !important;
 }
 
 .content-cell:nth-child(even) {
-    background: #AAA;
+    background: var(--rowEven);
 }
 
 .content-cell:nth-child(odd) {
-    background: #CCC;
+    background: var(--rowOdd);
 }
 
 /**/
@@ -292,15 +419,15 @@ input.content-cell-content {
     width: 100%;
     height: 100%;
     
-    background: #444;
+    background: var(--darkBackground);
     opacity: 0.66;
 }
 
 .fullscreen-content {
     z-index: 999;
     
-    background: #DDD;
-    border: #444 2px solid;
+    background: var(--lighterGrayBackground);
+    border: var(--darkBorder) 2px solid;
     padding: 8px;
     
     width: auto;
@@ -378,7 +505,7 @@ input.content-cell-content {
     width: 800px;
     height: 560px;
     
-    background: #999;
+    background: var(--grayBackground);
     padding-top: 2px;
     
     display: flex;
@@ -397,8 +524,8 @@ input.content-cell-content {
     font-size: 20px;
     
     box-sizing: border-box;
-    background: #bbb;
-    border: #444 2px solid;
+    background: var(--lightGrayBackground);
+    border: var(--darkBorder) 2px solid;
 }
 
 .cache-option-button {
@@ -420,8 +547,54 @@ input.content-cell-content {
 }
 
 #about-box hr {
-    border: #888 solid 1px;
+    border: var(--grayBorder) solid 1px;
     margin: 8px -8px 8px -8px;
+}
+
+#model-selector {
+    z-index: 9999;
+}
+
+#model-selector > div.fullscreen-content {
+    width: 800px;
+    height: 90vh;
+    padding: 0;
+    
+    font-size: 32px;
+    
+    text-align: center;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#model-selector-content {
+    columns: 4;
+    column-gap: 0;
+    column-rule: 2px solid var(--darkBorder);
+}
+
+#model-selector-content > div {
+    box-sizing: border-box;
+    
+    /* Don't break in columns */
+    -webkit-column-break-inside: avoid; /* Chrome, Safari */
+    page-break-inside: avoid;           /* Theoretically FF 20+ */
+    break-inside: avoid-column;         /* IE 11 */
+    display:table;                      /* Actually FF 20+ */
+    
+    width: 100%;
+    height: auto;
+    
+    border-top: 2px solid var(--darkBorder);
+    
+    padding: 8px;
+    
+    font-size: 20px;
+}
+
+#model-selector-content > div > img {
+    width: 100%;
 }
 
 /**/
@@ -454,25 +627,25 @@ input.content-cell-content {
     height: 36px;
     width: auto;
     
-    color: #222;
-    background: #888;
-    border: #444 2px solid;
+    color: var(--darkerText);
+    background: var(--grayBackground);
+    border: var(--darkBorder) 2px solid;
 }
 
 .notify-box.info {
-    color: #222;
-    background: #88F;
-    border: #444 2px solid;
+    color: var(--darkerText);
+    background: var(--info);
+    border: var(--darkBorder) 2px solid;
 }
 
 .notify-box.warn {
-    color: #222;
-    background: #FB8;
-    border: #444 2px solid;
+    color: var(--darkerText);
+    background: var(--warn);
+    border: var(--darkBorder) 2px solid;
 }
 
 .notify-box.error {
-    color: #222;
-    background: #F44;
-    border: #444 2px solid;
+    color: var(--darkerText);
+    background: var(--error);
+    border: var(--darkBorder) 2px solid;
 }

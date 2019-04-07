@@ -133,7 +133,7 @@ class Engine {
             }
         }, Mass: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = Unit.Display (this.Mass, "t", Settings.classic_unit_display);
+                e.innerHTML = Unit.Display (this.Mass, "t", Settings.classic_unit_display, 9);
             }, ApplyValueToEditElement: (e) => {
                 (e as HTMLInputElement).value = Unit.Display (this.Mass, "t", Settings.classic_unit_display);
             }, ApplyChangesToValue: (e) => {
@@ -141,7 +141,7 @@ class Engine {
             }
         }, Thrust: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = Unit.Display (this.Thrust, "kN", Settings.classic_unit_display);
+                e.innerHTML = Unit.Display (this.Thrust, "kN", Settings.classic_unit_display, 9);
             }, ApplyValueToEditElement: (e) => {
                 (e as HTMLInputElement).value = Unit.Display (this.Thrust, "kN", Settings.classic_unit_display);
             }, ApplyChangesToValue: (e) => {
@@ -185,7 +185,7 @@ class Engine {
             }
         }, AlternatorPower: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = Unit.Display (this.AlternatorPower, "kW", Settings.classic_unit_display);
+                e.innerHTML = Unit.Display (this.AlternatorPower, "kW", Settings.classic_unit_display, 9);
             }, ApplyValueToEditElement: (e) => {
                 (e as HTMLInputElement).value = Unit.Display (this.AlternatorPower, "kW", Settings.classic_unit_display);
             }, ApplyChangesToValue: (e) => {
@@ -239,7 +239,7 @@ class Engine {
             }, GetEditElement: () => {
                 let tmp = document.createElement ("div");
                 tmp.classList.add ("content-cell-content");
-                tmp.style.height = "153px";
+                tmp.style.height = "150px";
                 tmp.style.padding = "0";
                 
                 let grid = document.createElement ("div");
@@ -360,11 +360,11 @@ class Engine {
                 tmp.classList.add ("content-cell-content");
                 return tmp;
             }, ApplyValueToDisplayElement: (e: HTMLElement) => {
-                e.innerHTML = `↔${Unit.Display (this.Width, "m", false)} x ↕${Unit.Display (this.Height, "m", false)}`;
+                e.innerHTML = `↔${Unit.Display (this.Width, "m", false, 9)} x ↕${Unit.Display (this.Height, "m", false, 9)}`;
             }, GetEditElement: () => {
                 let tmp = document.createElement ("div");
                 tmp.classList.add ("content-cell-content");
-                tmp.style.height = "77px";
+                tmp.style.height = "76px";
                 tmp.style.padding = "0";
                 
                 let grid = document.createElement ("div");
@@ -458,14 +458,14 @@ class Engine {
                 }
                 
                 if (electric > 0) {
-                    output += ` | Electric: ${Unit.Display (electric, "kW", Settings.classic_unit_display)}`;
+                    output += ` | Electric: ${Unit.Display (electric, "kW", Settings.classic_unit_display, 9)}`;
                 }
                 
                 e.innerHTML = output;
             }, GetEditElement: () => {
                 let tmp = document.createElement ("div");
                 tmp.classList.add ("content-cell-content");
-                tmp.style.height = "129px";
+                tmp.style.height = "126px";
                 tmp.style.padding = "0";
                 
                 let grid = document.createElement ("div");
@@ -820,7 +820,7 @@ class Engine {
                             
                             usedVolume = Math.min (usedVolume, this.TanksVolume);
                             
-                            output = `Enabled, ${Unit.Display (usedVolume, "L",  Settings.classic_unit_display)}/${Unit.Display (this.TanksVolume, "L",  Settings.classic_unit_display)}`;
+                            output = `Enabled, ${Unit.Display (usedVolume, "L",  Settings.classic_unit_display, 3)}/${Unit.Display (this.TanksVolume, "L",  Settings.classic_unit_display, 3)}`;
                         }
                     } else {
                         if (this.TanksContents.length == 0) {
@@ -832,7 +832,7 @@ class Engine {
                                 usedVolume += v[1] / FuelInfo.GetFuelInfo (v[0]).TankUtilisation;
                             });
                             
-                            output = `Enabled, ${Unit.Display (usedVolume, "L",  Settings.classic_unit_display)}`;
+                            output = `Enabled, ${Unit.Display (usedVolume, "L",  Settings.classic_unit_display, 3)}`;
                         }
                     }
                 } else {
@@ -843,7 +843,7 @@ class Engine {
             }, GetEditElement: () => {
                 let tmp = document.createElement ("div");
                 tmp.classList.add ("content-cell-content");
-                tmp.style.height = "225px";
+                tmp.style.height = "222px";
                 tmp.style.padding = "0";
                 
                 tmp.innerHTML = `
@@ -937,7 +937,7 @@ class Engine {
                 allInputs[1].checked = this.LimitTanks;
                 allInputs[2].value = Unit.Display (this.TanksVolume, "L",  Settings.classic_unit_display);
                 
-                e.querySelectorAll ("span")[1].innerHTML = Unit.Display (this.GetTankSizeEstimate (), "L",  Settings.classic_unit_display);
+                e.querySelectorAll ("span")[1].innerHTML = Unit.Display (this.GetTankSizeEstimate (), "L",  Settings.classic_unit_display, 3);
                 
                 (e.children[1] as HTMLElement).style.display = this.UseTanks ? "grid" : "none";
                 allInputs[2].disabled = !this.LimitTanks;
@@ -1120,10 +1120,20 @@ class Engine {
                 
                 grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: a;">Model</div>
-                    <div style="grid-area: b;">${ModelInfo.Dropdown.outerHTML}</div>
+                    <div style="grid-area: b;"><span class="clickable-text" value="999">Placeholder</span></div>
                     <div class="content-cell-content" style="grid-area: c;">Plume</div>
                     <div style="grid-area: d;">${PlumeInfo.Dropdown.outerHTML}</div>
                 `;
+                
+                let span = grid.querySelector ("span")!;
+                span.addEventListener ("click", () => {
+                    ModelSelector.GetModel (m => {
+                        if (m != null) {
+                            span.setAttribute ("value", m.toString ());
+                            span.innerHTML = ModelInfo.GetModelInfo (m).ModelName;
+                        }
+                    });
+                });
                 
                 tmp.appendChild (grid);
                 
@@ -1135,20 +1145,23 @@ class Engine {
                 ) ? this.EngineList.find (x => x.ID == this.MasterEngineName) : this;
                 targetEngine = targetEngine != undefined ? targetEngine : this;
                 
-                let selects = e.querySelectorAll ("select");
+                let select = e.querySelector ("select")!;
+                let span = e.querySelector ("span")!;
                 
-                selects[0].value = targetEngine.ModelID.toString ();
-                selects[1].value = this.PlumeID.toString ();
+                span.setAttribute ("value", targetEngine.ModelID.toString ());
+                span.innerHTML = ModelInfo.GetModelInfo (targetEngine.ModelID).ModelName;
+                select.value = this.PlumeID.toString ();
                 
-                selects[0].disabled = (
+                span.style.pointerEvents = (
                     this.PolyType == PolymorphismType.MultiConfigSlave ||
                     this.PolyType == PolymorphismType.MultiModeSlave
-                );
+                ) ? "none" : "all";
             }, ApplyChangesToValue: (e: HTMLElement) => {
-                let selects = e.querySelectorAll ("select");
+                let select = e.querySelector ("select")!;
+                let span = e.querySelector ("span")!;
                 
-                this.ModelID = parseInt (selects[0].value);
-                this.PlumeID = parseInt (selects[1].value);
+                this.ModelID = parseInt (span.getAttribute ("value")!);
+                this.PlumeID = parseInt (select.value);
             }
         }
     }
@@ -1224,8 +1237,7 @@ class Engine {
     
     public GetMass (): number {
         let targetEngine = (
-            this.PolyType == PolymorphismType.MultiModeSlave ||
-            this.PolyType == PolymorphismType.MultiConfigSlave
+            this.PolyType == PolymorphismType.MultiModeSlave
         ) ? this.EngineList.find (x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
         

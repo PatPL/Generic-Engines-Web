@@ -127,6 +127,42 @@ span.checkbox-label {
     margin-right: 8px;
 }
 
+.clickable-text {
+    display: block;
+    width: 100%;
+    height: 100%;
+    
+    cursor: pointer;
+    background: var(--lighterGrayBackground);
+    padding: 2px;
+    
+    border: 1px solid var(--grayBorder);
+    box-sizing: border-box;
+    
+    overflow: hidden;
+    white-space: nowrap;
+    
+    color: var(--darkText);
+}
+
+.clickable-text:hover {
+    filter: brightness(1.2) contrast(1.2);
+    
+    outline: #44B 2px solid;
+    outline-offset: -2px;
+    
+    color: var(--darkerText);
+}
+
+.clickable-text:active {
+    filter: brightness(0.8) contrast(0.8);
+    
+    outline: #00B 2px solid;
+    outline-offset: -2px;
+    
+    color: var(--darkerText);
+}
+
 /**/
 
 #option-row {
@@ -513,6 +549,52 @@ input.content-cell-content {
 #about-box hr {
     border: var(--grayBorder) solid 1px;
     margin: 8px -8px 8px -8px;
+}
+
+#model-selector {
+    z-index: 9999;
+}
+
+#model-selector > div.fullscreen-content {
+    width: 800px;
+    height: 90vh;
+    padding: 0;
+    
+    font-size: 32px;
+    
+    text-align: center;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#model-selector-content {
+    columns: 4;
+    column-gap: 0;
+    column-rule: 2px solid var(--darkBorder);
+}
+
+#model-selector-content > div {
+    box-sizing: border-box;
+    
+    /* Don't break in columns */
+    -webkit-column-break-inside: avoid; /* Chrome, Safari */
+    page-break-inside: avoid;           /* Theoretically FF 20+ */
+    break-inside: avoid-column;         /* IE 11 */
+    display:table;                      /* Actually FF 20+ */
+    
+    width: 100%;
+    height: auto;
+    
+    border-top: 2px solid var(--darkBorder);
+    
+    padding: 8px;
+    
+    font-size: 20px;
+}
+
+#model-selector-content > div > img {
+    width: 100%;
 }
 
 /**/

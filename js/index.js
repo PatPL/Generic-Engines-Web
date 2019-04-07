@@ -240,7 +240,8 @@ window.addEventListener("pointerdown", (e) => {
             let foundEdited = false;
             while (currentElement != null) {
                 if (currentElement.getAttribute("data-FieldID") == EditableField.EditedField.FieldID.toString() ||
-                    currentElement.getAttribute("data-FieldID") == "-1") {
+                    currentElement.getAttribute("data-FieldID") == "-1" ||
+                    currentElement.classList.contains("fullscreen-box")) {
                     foundEdited = true;
                     break;
                 }
@@ -1412,7 +1413,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR91.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.654,
         OriginalBellWidth: 0.285,
@@ -1437,7 +1440,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/AJ10.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.5,
         OriginalBellWidth: 0.865,
@@ -1458,7 +1463,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RS25.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.3055,
         OriginalBellWidth: 0.12,
@@ -1477,7 +1484,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Thruster.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.393,
         OriginalBellWidth: 0.234,
@@ -1499,7 +1508,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Aestus.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.3935,
         OriginalBellWidth: 0.459,
@@ -1521,7 +1532,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/IonThruster.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 4.48,
         OriginalBellWidth: 1.802,
@@ -1542,7 +1555,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/F1.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.727,
         OriginalBellWidth: 0.445,
@@ -1565,7 +1580,9 @@ ModelInfo.models = [
         ],
         CanAttachOnModel: false,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD0105T.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 8.018,
         OriginalBellWidth: 1.05265,
@@ -1586,7 +1603,9 @@ ModelInfo.models = [
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [
             "fairing"
-        ]
+        ],
+        ImageSource: "img/modelPreviews/SRBLong.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.444,
         OriginalBellWidth: 0.773,
@@ -1607,7 +1626,9 @@ ModelInfo.models = [
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [
             "fairing"
-        ]
+        ],
+        ImageSource: "img/modelPreviews/RT5.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.5,
         OriginalBellWidth: 0.5945,
@@ -1626,7 +1647,9 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "RT-2 (VSR)",
         ModelType: EngineGroupType.SRB,
-        HiddenMuObjects: []
+        HiddenMuObjects: [],
+        ImageSource: "img/modelPreviews/RT2.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 14.81,
         OriginalBellWidth: 1.043,
@@ -1645,7 +1668,9 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "S-1 (VSR)",
         ModelType: EngineGroupType.SRB,
-        HiddenMuObjects: []
+        HiddenMuObjects: [],
+        ImageSource: "img/modelPreviews/S1.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.633,
         OriginalBellWidth: 0.445,
@@ -1667,7 +1692,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD0105.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.25,
         OriginalBellWidth: 0.996,
@@ -1690,7 +1717,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/NERVA.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.574,
         OriginalBellWidth: 0.653,
@@ -1712,7 +1741,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LVT30.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.643,
         OriginalBellWidth: 0.602,
@@ -1735,7 +1766,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LVT45.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.615,
         OriginalBellWidth: 0.226,
@@ -1757,7 +1790,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/P1057.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.228,
         OriginalBellWidth: 0.773,
@@ -1776,7 +1811,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/OMSL.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.584,
         OriginalBellWidth: 1.222,
@@ -1798,7 +1835,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Poodle.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.868,
         OriginalBellWidth: 0.886,
@@ -1819,7 +1858,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/BallNuke.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.767,
         OriginalBellWidth: 0.407,
@@ -1841,7 +1882,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/BallNukeS.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.514,
         OriginalBellWidth: 1.6,
@@ -1862,7 +1905,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Skipper.jpg",
+        get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 2.655,
         OriginalBellWidth: 1.415,
@@ -1884,7 +1929,9 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
-        RadialAttachmentPoint: 0
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/SkipperR.jpg",
+        get ImageLabel() { return this.ModelName; }
     }
 ];
 ModelInfo.Dropdown = ModelInfo.BuildDropdown();
@@ -2223,6 +2270,48 @@ class BrowserCacheDialog {
         });
     }
 }
+document.addEventListener("DOMContentLoaded", () => {
+    ModelSelector.DialogBoxElement = document.getElementById("model-selector");
+    ModelSelector.DialogBoxElement.querySelector("div.fullscreen-grayout").addEventListener("click", () => {
+        ModelSelector.FinishTransaction(null);
+    });
+    let container = ModelSelector.DialogBoxElement.querySelector("#model-selector-content");
+    container.innerHTML = "";
+    for (let i in Model) {
+        if (isNaN(parseInt(i))) {
+            break;
+        }
+        let modelInfo = ModelInfo.GetModelInfo(parseInt(i));
+        let newElement = document.createElement("div");
+        newElement.innerHTML = `
+            <img class="option-button" src="${modelInfo.ImageSource}"><br>
+            ${modelInfo.ImageLabel}
+        `;
+        newElement.querySelector("img").addEventListener("click", () => {
+            ModelSelector.FinishTransaction(parseInt(i));
+        });
+        container.appendChild(newElement);
+    }
+});
+class ModelSelector {
+    static SetTransaction(transaction) {
+        if (this.CurrentTransaction) {
+            this.CurrentTransaction(null);
+        }
+        this.DialogBoxElement.style.display = "flex";
+        this.CurrentTransaction = transaction;
+    }
+    static FinishTransaction(message) {
+        if (this.CurrentTransaction) {
+            this.CurrentTransaction(message);
+        }
+        this.DialogBoxElement.style.display = "none";
+        this.CurrentTransaction = null;
+    }
+    static GetModel(callback) {
+        this.SetTransaction(callback);
+    }
+}
 var PolymorphismType;
 (function (PolymorphismType) {
     PolymorphismType[PolymorphismType["Single"] = 0] = "Single";
@@ -2258,7 +2347,7 @@ class Engine {
                 }
             }, Mass: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.Mass, "t", Settings.classic_unit_display);
+                    e.innerHTML = Unit.Display(this.Mass, "t", Settings.classic_unit_display, 9);
                 }, ApplyValueToEditElement: (e) => {
                     e.value = Unit.Display(this.Mass, "t", Settings.classic_unit_display);
                 }, ApplyChangesToValue: (e) => {
@@ -2266,7 +2355,7 @@ class Engine {
                 }
             }, Thrust: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.Thrust, "kN", Settings.classic_unit_display);
+                    e.innerHTML = Unit.Display(this.Thrust, "kN", Settings.classic_unit_display, 9);
                 }, ApplyValueToEditElement: (e) => {
                     e.value = Unit.Display(this.Thrust, "kN", Settings.classic_unit_display);
                 }, ApplyChangesToValue: (e) => {
@@ -2310,7 +2399,7 @@ class Engine {
                 }
             }, AlternatorPower: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.AlternatorPower, "kW", Settings.classic_unit_display);
+                    e.innerHTML = Unit.Display(this.AlternatorPower, "kW", Settings.classic_unit_display, 9);
                 }, ApplyValueToEditElement: (e) => {
                     e.value = Unit.Display(this.AlternatorPower, "kW", Settings.classic_unit_display);
                 }, ApplyChangesToValue: (e) => {
@@ -2361,7 +2450,7 @@ class Engine {
                 }, GetEditElement: () => {
                     let tmp = document.createElement("div");
                     tmp.classList.add("content-cell-content");
-                    tmp.style.height = "153px";
+                    tmp.style.height = "150px";
                     tmp.style.padding = "0";
                     let grid = document.createElement("div");
                     grid.style.display = "grid";
@@ -2456,11 +2545,11 @@ class Engine {
                     tmp.classList.add("content-cell-content");
                     return tmp;
                 }, ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `↔${Unit.Display(this.Width, "m", false)} x ↕${Unit.Display(this.Height, "m", false)}`;
+                    e.innerHTML = `↔${Unit.Display(this.Width, "m", false, 9)} x ↕${Unit.Display(this.Height, "m", false, 9)}`;
                 }, GetEditElement: () => {
                     let tmp = document.createElement("div");
                     tmp.classList.add("content-cell-content");
-                    tmp.style.height = "77px";
+                    tmp.style.height = "76px";
                     tmp.style.padding = "0";
                     let grid = document.createElement("div");
                     grid.style.display = "grid";
@@ -2539,13 +2628,13 @@ class Engine {
                         output += `${ratios} ${names}`;
                     }
                     if (electric > 0) {
-                        output += ` | Electric: ${Unit.Display(electric, "kW", Settings.classic_unit_display)}`;
+                        output += ` | Electric: ${Unit.Display(electric, "kW", Settings.classic_unit_display, 9)}`;
                     }
                     e.innerHTML = output;
                 }, GetEditElement: () => {
                     let tmp = document.createElement("div");
                     tmp.classList.add("content-cell-content");
-                    tmp.style.height = "129px";
+                    tmp.style.height = "126px";
                     tmp.style.padding = "0";
                     let grid = document.createElement("div");
                     grid.style.display = "grid";
@@ -2849,7 +2938,7 @@ class Engine {
                                     usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
                                 });
                                 usedVolume = Math.min(usedVolume, this.TanksVolume);
-                                output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display)}/${Unit.Display(this.TanksVolume, "L", Settings.classic_unit_display)}`;
+                                output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display, 3)}/${Unit.Display(this.TanksVolume, "L", Settings.classic_unit_display, 3)}`;
                             }
                         }
                         else {
@@ -2861,7 +2950,7 @@ class Engine {
                                 this.TanksContents.forEach(v => {
                                     usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
                                 });
-                                output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display)}`;
+                                output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display, 3)}`;
                             }
                         }
                     }
@@ -2872,7 +2961,7 @@ class Engine {
                 }, GetEditElement: () => {
                     let tmp = document.createElement("div");
                     tmp.classList.add("content-cell-content");
-                    tmp.style.height = "225px";
+                    tmp.style.height = "222px";
                     tmp.style.padding = "0";
                     tmp.innerHTML = `
                     <div class="content-cell-content" style="height: 24px;"><input type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Add tank</span></div>
@@ -2948,7 +3037,7 @@ class Engine {
                     allInputs[0].checked = this.UseTanks;
                     allInputs[1].checked = this.LimitTanks;
                     allInputs[2].value = Unit.Display(this.TanksVolume, "L", Settings.classic_unit_display);
-                    e.querySelectorAll("span")[1].innerHTML = Unit.Display(this.GetTankSizeEstimate(), "L", Settings.classic_unit_display);
+                    e.querySelectorAll("span")[1].innerHTML = Unit.Display(this.GetTankSizeEstimate(), "L", Settings.classic_unit_display, 3);
                     e.children[1].style.display = this.UseTanks ? "grid" : "none";
                     allInputs[2].disabled = !this.LimitTanks;
                     let table = e.querySelector("tbody");
@@ -3108,25 +3197,37 @@ class Engine {
                 `;
                     grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: a;">Model</div>
-                    <div style="grid-area: b;">${ModelInfo.Dropdown.outerHTML}</div>
+                    <div style="grid-area: b;"><span class="clickable-text" value="999">Placeholder</span></div>
                     <div class="content-cell-content" style="grid-area: c;">Plume</div>
                     <div style="grid-area: d;">${PlumeInfo.Dropdown.outerHTML}</div>
                 `;
+                    let span = grid.querySelector("span");
+                    span.addEventListener("click", () => {
+                        ModelSelector.GetModel(m => {
+                            if (m != null) {
+                                span.setAttribute("value", m.toString());
+                                span.innerHTML = ModelInfo.GetModelInfo(m).ModelName;
+                            }
+                        });
+                    });
                     tmp.appendChild(grid);
                     return tmp;
                 }, ApplyValueToEditElement: (e) => {
                     let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
                         this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
                     targetEngine = targetEngine != undefined ? targetEngine : this;
-                    let selects = e.querySelectorAll("select");
-                    selects[0].value = targetEngine.ModelID.toString();
-                    selects[1].value = this.PlumeID.toString();
-                    selects[0].disabled = (this.PolyType == PolymorphismType.MultiConfigSlave ||
-                        this.PolyType == PolymorphismType.MultiModeSlave);
+                    let select = e.querySelector("select");
+                    let span = e.querySelector("span");
+                    span.setAttribute("value", targetEngine.ModelID.toString());
+                    span.innerHTML = ModelInfo.GetModelInfo(targetEngine.ModelID).ModelName;
+                    select.value = this.PlumeID.toString();
+                    span.style.pointerEvents = (this.PolyType == PolymorphismType.MultiConfigSlave ||
+                        this.PolyType == PolymorphismType.MultiModeSlave) ? "none" : "all";
                 }, ApplyChangesToValue: (e) => {
-                    let selects = e.querySelectorAll("select");
-                    this.ModelID = parseInt(selects[0].value);
-                    this.PlumeID = parseInt(selects[1].value);
+                    let select = e.querySelector("select");
+                    let span = e.querySelector("span");
+                    this.ModelID = parseInt(span.getAttribute("value"));
+                    this.PlumeID = parseInt(select.value);
                 }
             }
         };
@@ -3188,8 +3289,7 @@ class Engine {
         ApplyEngineToInfoPanel(this);
     }
     GetMass() {
-        let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
-            this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
+        let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
         return targetEngine.Mass;
     }
@@ -5019,11 +5119,11 @@ class Serializer {
 }
 Serializer.Version = 13;
 class Unit {
-    static Display(value, unit, forceUnit, decimalPlaces = 20) {
+    static Display(value, unit, forceUnit, decimalPlaces = 12) {
         if (forceUnit) {
             let trimmed = value.toFixed(decimalPlaces);
             let valueString = value.toString().length >= trimmed.length ? trimmed : value.toString();
-            return `${valueString}${unit}`;
+            return `${parseFloat(valueString)}${unit}`;
         }
         let targetUnit = this.ParseUnit(unit);
         let rawValue = value * targetUnit[0];
@@ -5049,7 +5149,7 @@ class Unit {
         let number = rawValue / closestPrefix[1];
         let trimmed = number.toFixed(decimalPlaces);
         let numberString = number.toString().length >= trimmed.length ? trimmed : number.toString();
-        return `${numberString}${closestPrefix[0]}${targetUnit[1]}`;
+        return `${parseFloat(numberString)}${closestPrefix[0]}${targetUnit[1]}`;
     }
     static ParseUnit(rawUnit) {
         if (rawUnit.length == 0) {

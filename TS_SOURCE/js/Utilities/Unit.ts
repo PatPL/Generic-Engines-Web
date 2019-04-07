@@ -1,10 +1,10 @@
 class Unit {
     
-    public static Display (value: number, unit: string, forceUnit: boolean, decimalPlaces: number = 20): string {
+    public static Display (value: number, unit: string, forceUnit: boolean, decimalPlaces: number = 12): string {
         if (forceUnit) {
             let trimmed = value.toFixed (decimalPlaces);
             let valueString = value.toString ().length >= trimmed.length ? trimmed : value.toString ();
-            return `${valueString}${unit}`;
+            return `${parseFloat (valueString)}${unit}`;
         }
         
         let targetUnit = this.ParseUnit (unit);
@@ -34,7 +34,7 @@ class Unit {
         let number = rawValue / closestPrefix[1];
         let trimmed = number.toFixed (decimalPlaces);
         let numberString = number.toString ().length >= trimmed.length ? trimmed : number.toString ();
-        return `${numberString}${closestPrefix[0]}${targetUnit[1]}`;
+        return `${parseFloat (numberString)}${closestPrefix[0]}${targetUnit[1]}`;
     }
     
     /** Changes string into a unit

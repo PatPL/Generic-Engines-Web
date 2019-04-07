@@ -1,4 +1,4 @@
-interface IModelInfo {
+interface IModelInfo extends IImageSelectable {
     
     readonly OriginalHeight: number;
     readonly OriginalBellWidth: number;

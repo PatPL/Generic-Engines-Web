@@ -24,7 +24,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/LR91.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.AJ10
             OriginalHeight: 0.654,
             OriginalBellWidth: 0.285,
@@ -49,7 +51,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/AJ10.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.RS25
             OriginalHeight: 1.5,
             OriginalBellWidth: 0.865,
@@ -70,7 +74,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/RS25.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.Thruster
             OriginalHeight: 0.3055,
             OriginalBellWidth: 0.12,
@@ -89,7 +95,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/Thruster.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.Aestus
             OriginalHeight: 0.393,
             OriginalBellWidth: 0.234,
@@ -111,7 +119,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/Aestus.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.IonThruster
             OriginalHeight: 0.3935,
             OriginalBellWidth: 0.459,
@@ -133,7 +143,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/IonThruster.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.F1
             OriginalHeight: 4.48,
             OriginalBellWidth: 1.802,
@@ -154,7 +166,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/F1.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD0105T
             OriginalHeight: 0.727,
             OriginalBellWidth: 0.445,
@@ -177,7 +191,9 @@ class ModelInfo {
             ],
             CanAttachOnModel: false,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/RD0105T.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.SRBLong
             OriginalHeight: 8.018,
             OriginalBellWidth: 1.05265,
@@ -198,7 +214,9 @@ class ModelInfo {
             ModelType: EngineGroupType.SRB,
             HiddenMuObjects: [
                 "fairing"
-            ]
+            ],
+            ImageSource: "img/modelPreviews/SRBLong.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.RT5
             OriginalHeight: 1.444,
             OriginalBellWidth: 0.773,
@@ -219,7 +237,9 @@ class ModelInfo {
             ModelType: EngineGroupType.SRB,
             HiddenMuObjects: [
                 "fairing"
-            ]
+            ],
+            ImageSource: "img/modelPreviews/RT5.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.RT2
             OriginalHeight: 3.5,
             OriginalBellWidth: 0.5945,
@@ -238,7 +258,9 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform",
             ModelName: "RT-2 (VSR)",
             ModelType: EngineGroupType.SRB,
-            HiddenMuObjects: []
+            HiddenMuObjects: [],
+            ImageSource: "img/modelPreviews/RT2.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.S1
             OriginalHeight: 14.81,
             OriginalBellWidth: 1.043,
@@ -257,7 +279,9 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform", //This model has separate Nozzle object but its origin is in wrong place :(
             ModelName: "S-1 (VSR)",
             ModelType: EngineGroupType.SRB,
-            HiddenMuObjects: []
+            HiddenMuObjects: [],
+            ImageSource: "img/modelPreviews/S1.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD0105
             OriginalHeight: 0.633,
             OriginalBellWidth: 0.445,
@@ -279,7 +303,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/RD0105.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.NERVA
             OriginalHeight: 3.25,
             OriginalBellWidth: 0.996,
@@ -302,7 +328,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/NERVA.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.LVT30
             OriginalHeight: 1.574,
             OriginalBellWidth: 0.653,
@@ -324,7 +352,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/LVT30.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.LVT45
             OriginalHeight: 1.643,
             OriginalBellWidth: 0.602,
@@ -347,7 +377,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/LVT45.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.P1057
             OriginalHeight: 0.615,
             OriginalBellWidth: 0.226,
@@ -369,7 +401,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/P1057.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.OMSL
             OriginalHeight: 1.228,
             OriginalBellWidth: 0.773,
@@ -388,7 +422,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/OMSL.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.Poodle
             OriginalHeight: 1.584,
             OriginalBellWidth: 1.222,
@@ -410,7 +446,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/Poodle.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.BallNuke
             OriginalHeight: 1.868,
             OriginalBellWidth: 0.886,
@@ -431,7 +469,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/BallNuke.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.BallNukeS
             OriginalHeight: 0.767,
             OriginalBellWidth: 0.407,
@@ -453,7 +493,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/BallNukeS.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.Skipper
             OriginalHeight: 3.514,
             OriginalBellWidth: 1.6,
@@ -474,7 +516,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/Skipper.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }, { //Model.SkipperR
             OriginalHeight: 2.655,
             OriginalBellWidth: 1.415,
@@ -496,7 +540,9 @@ class ModelInfo {
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
-            RadialAttachmentPoint: 0
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/SkipperR.jpg",
+            get ImageLabel(): string { return this.ModelName }
         }
     ];
     

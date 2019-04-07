@@ -320,7 +320,8 @@ window.addEventListener ("pointerdown", (e) => {
                 
                 if (
                     currentElement.getAttribute ("data-FieldID") == EditableField.EditedField.FieldID.toString () ||
-                    currentElement.getAttribute ("data-FieldID") == "-1"
+                    currentElement.getAttribute ("data-FieldID") == "-1" ||
+                    currentElement.classList.contains ("fullscreen-box")
                 ) {
                     foundEdited = true;
                     break;

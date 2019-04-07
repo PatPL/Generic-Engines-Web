@@ -520,7 +520,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.1 Prerelease";
+Version.CurrentVersion = "Web.0.8.1";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -642,7 +642,7 @@ const Settings = {
     }, set dark_theme(value) {
         Store.SetText("setting:dark_theme", value ? "1" : "0");
     }, get show_info_panel() {
-        return Store.GetText("setting:show_info_panel", "0") == "1";
+        return Store.GetText("setting:show_info_panel", "1") == "1";
     }, set show_info_panel(value) {
         Store.SetText("setting:show_info_panel", value ? "1" : "0");
     }

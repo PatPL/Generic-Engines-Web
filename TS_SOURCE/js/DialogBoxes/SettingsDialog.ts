@@ -80,7 +80,7 @@ const Settings: ISettings = {
     }, set dark_theme(value: boolean) {
         Store.SetText ("setting:dark_theme", value ? "1" : "0");
     }, get show_info_panel(): boolean {
-        return Store.GetText ("setting:show_info_panel", "0") == "1";
+        return Store.GetText ("setting:show_info_panel", "1") == "1";
     }, set show_info_panel(value: boolean) {
         Store.SetText ("setting:show_info_panel", value ? "1" : "0");
     }

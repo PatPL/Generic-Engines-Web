@@ -1,7 +1,7 @@
 ///<reference path="./Utilities/Notifier.ts" />
 class Version {
     
-    public static readonly CurrentVersion = "Web.0.8.1 Prerelease";
+    public static readonly CurrentVersion = "Web.0.8.1";
     
 }
 

@@ -1,0 +1,6 @@
+Source: https://github.com/KSP-RO/RealismOverhaul
+Creators: https://github.com/KSP-RO/RealismOverhaul/graphs/contributors
+Original licence from https://github.com/KSP-RO/RealismOverhaul/blob/master/GameData/RealismOverhaul/Credits.txt
+
+The licence doesn't say anything about creator or licence of model LR91.mu (originally LR-91eng.mu)
+If you're the creator of this model and don't want my website to share your work, contact me at patrykwyp@poczta.fm

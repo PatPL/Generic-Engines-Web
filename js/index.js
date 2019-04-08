@@ -963,19 +963,9 @@ function ExportButton_Click() {
             alert(`Fix following errors before exporting the engine:\n\n-> ${errors.join("\n-> ")}`);
             return;
         }
-        let blobs = {};
-        blobs[`${ListName}.cfg`] = Exporter.ConvertEngineListToConfig(MainEngineTable.Items);
-        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
-        let dll = new XMLHttpRequest();
-        dll.open("GET", "./files/PlumeScaleFixer.dll", true);
-        dll.responseType = "arraybuffer";
-        dll.addEventListener("loadend", () => {
-            blobs["PlumeScaleFixer.dll"] = new Uint8Array(dll.response);
-            FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
-                FileIO.SaveBinary(`${ListName}.zip`, zipData);
-            });
+        Packager.BuildMod(ListName, MainEngineTable.Items, (data) => {
+            FileIO.SaveBinary(`${ListName}.zip`, data);
         });
-        dll.send(null);
     }
 }
 function DuplicateButton_Click() {
@@ -1403,7 +1393,10 @@ ModelInfo.models = [
         PlumePositionOffset: 0.8,
         NodeStackTop: 0.7215,
         NodeStackBottom: -1.1635,
-        ModelPath: "RealismOverhaul/Models/LR-91eng",
+        ModelPath: "GenericEngines/models/RealismOverhaul/LR-91eng",
+        ModelFiles: [
+            "files/models/RealismOverhaul/LR-91eng.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1424,7 +1417,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.09,
         NodeStackTop: 0.33,
         NodeStackBottom: -0.324,
-        ModelPath: "SXT/Parts/Rocketry/Engine/Vanguard/model",
+        ModelPath: "GenericEngines/models/SXT/AJ10",
+        ModelFiles: [
+            "files/models/SXT/AJ10.mu"
+        ],
         TextureDefinitions: `
                 texture: fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
                 texture: model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
@@ -1451,7 +1447,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.8,
         NodeStackTop: -0.025,
         NodeStackBottom: -1.525,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/KS-25",
+        ModelPath: "GenericEngines/models/VenStockRevamp/KS-25",
+        ModelFiles: [
+            "files/models/VenStockRevamp/KS-25.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
@@ -1474,7 +1473,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.04,
         NodeStackTop: 0.0495,
         NodeStackBottom: -0.256,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LV-1B",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LV-1B",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LV-1B.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Gimbal",
@@ -1495,7 +1497,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.06,
         NodeStackTop: 0.0,
         NodeStackBottom: -0.393,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/48-7S",
+        ModelPath: "GenericEngines/models/VenStockRevamp/48-7S",
+        ModelFiles: [
+            "files/models/VenStockRevamp/48-7S.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
@@ -1519,7 +1524,10 @@ ModelInfo.models = [
         PlumePositionOffset: 0,
         NodeStackTop: 0.1965,
         NodeStackBottom: -0.197,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/IonEngine",
+        ModelPath: "GenericEngines/models/VenStockRevamp/IonEngine",
+        ModelFiles: [
+            "files/models/VenStockRevamp/IonEngine.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1543,7 +1551,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.7,
         NodeStackTop: 1.49,
         NodeStackBottom: -2.99,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/KR-2L",
+        ModelPath: "GenericEngines/models/VenStockRevamp/KR-2L",
+        ModelFiles: [
+            "files/models/VenStockRevamp/KR-2L.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
@@ -1567,7 +1578,10 @@ ModelInfo.models = [
         NodeStackTop: 0.195,
         NodeStackBottom: -0.532,
         OriginalTankVolume: 110,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LV900",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LV900",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LV900.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
@@ -1595,7 +1609,10 @@ ModelInfo.models = [
         OriginalTankVolume: 6780,
         RadialAttachment: true,
         CanAttachOnModel: true,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/BACC",
+        ModelPath: "GenericEngines/models/VenStockRevamp/BACC",
+        ModelFiles: [
+            "files/models/VenStockRevamp/BACC.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1618,7 +1635,10 @@ ModelInfo.models = [
         OriginalTankVolume: 528,
         RadialAttachment: true,
         CanAttachOnModel: true,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/RT5",
+        ModelPath: "GenericEngines/models/VenStockRevamp/RT5",
+        ModelFiles: [
+            "files/models/VenStockRevamp/RT5.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1641,7 +1661,10 @@ ModelInfo.models = [
         OriginalTankVolume: 640,
         RadialAttachment: true,
         CanAttachOnModel: true,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/RT2",
+        ModelPath: "GenericEngines/models/VenStockRevamp/RT2",
+        ModelFiles: [
+            "files/models/VenStockRevamp/RT2.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1662,7 +1685,10 @@ ModelInfo.models = [
         OriginalTankVolume: 11190,
         RadialAttachment: true,
         CanAttachOnModel: true,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/S1",
+        ModelPath: "GenericEngines/models/VenStockRevamp/S1",
+        ModelFiles: [
+            "files/models/VenStockRevamp/S1.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1679,7 +1705,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.14,
         NodeStackTop: 0.193,
         NodeStackBottom: -0.44,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LV909",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LV909",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LV909.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
@@ -1703,7 +1732,10 @@ ModelInfo.models = [
         PlumePositionOffset: 0.56,
         NodeStackTop: 1.414,
         NodeStackBottom: -1.836,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LVN",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LVN",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LVN.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1728,7 +1760,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.1,
         NodeStackTop: 0.774,
         NodeStackBottom: -0.8,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LVT30",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LVT30",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LVT30.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1752,7 +1787,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.16,
         NodeStackTop: 0.75,
         NodeStackBottom: -0.893,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LVT45",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LVT45",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LVT45.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
@@ -1777,7 +1815,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.075,
         NodeStackTop: 0.02,
         NodeStackBottom: -0.595,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/105-7P",
+        ModelPath: "GenericEngines/models/VenStockRevamp/105-7P",
+        ModelFiles: [
+            "files/models/VenStockRevamp/105-7P.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "nozzle",
@@ -1801,7 +1842,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.3,
         NodeStackTop: -0.012,
         NodeStackBottom: -1.24,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/OMS-L",
+        ModelPath: "GenericEngines/models/VenStockRevamp/OMS-L",
+        ModelFiles: [
+            "files/models/VenStockRevamp/OMS-L.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
@@ -1822,7 +1866,10 @@ ModelInfo.models = [
         PlumePositionOffset: 0.0,
         NodeStackTop: 0.722,
         NodeStackBottom: -0.862,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/Poodle",
+        ModelPath: "GenericEngines/models/VenStockRevamp/Poodle",
+        ModelFiles: [
+            "files/models/VenStockRevamp/Poodle.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
@@ -1846,7 +1893,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.4,
         NodeStackTop: 0.0,
         NodeStackBottom: -1.868,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/PoodleLargeNTR",
+        ModelPath: "GenericEngines/models/VenStockRevamp/PoodleLargeNTR",
+        ModelFiles: [
+            "files/models/VenStockRevamp/PoodleLargeNTR.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1869,7 +1919,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.03,
         NodeStackTop: 0.065,
         NodeStackBottom: -0.702,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/PoodleNTR",
+        ModelPath: "GenericEngines/models/VenStockRevamp/PoodleNTR",
+        ModelFiles: [
+            "files/models/VenStockRevamp/PoodleNTR.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1893,7 +1946,10 @@ ModelInfo.models = [
         PlumePositionOffset: -0.65,
         NodeStackTop: 1.19,
         NodeStackBottom: -2.324,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/Size2MedEngineB",
+        ModelPath: "GenericEngines/models/VenStockRevamp/Size2MedEngineB",
+        ModelFiles: [
+            "files/models/VenStockRevamp/Size2MedEngineB.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
@@ -1916,7 +1972,10 @@ ModelInfo.models = [
         PlumePositionOffset: 0.0,
         NodeStackTop: 0.007,
         NodeStackBottom: -2.648,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/Skipper",
+        ModelPath: "GenericEngines/models/VenStockRevamp/Skipper",
+        ModelFiles: [
+            "files/models/VenStockRevamp/Skipper.mu"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
@@ -4714,6 +4773,50 @@ window.onpointermove = (event) => {
     Input.MouseX = event.clientX;
     Input.MouseY = event.clientY;
 };
+class Packager {
+    static BuildMod(name, engines, callback) {
+        let blobs = {};
+        let toFetch = [];
+        blobs[`${name}.cfg`] = Exporter.ConvertEngineListToConfig(engines);
+        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
+        toFetch.push(["files/PlumeScaleFixer.dll", "PlumeScaleFixer.dll"]);
+        engines.forEach(e => {
+            let modelInfo = ModelInfo.GetModelInfo(e.ModelID);
+            modelInfo.ModelFiles.forEach(f => {
+                if (!toFetch.some(x => x[0] == f)) {
+                    toFetch.push([f, f.replace(/^files\//, "")]);
+                }
+            });
+        });
+        const SendCallbackIfDone = () => {
+            console.log(`Remaining: ${toFetch.length}`);
+            if (toFetch.length == 0) {
+                FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
+                    callback(zipData);
+                });
+            }
+        };
+        toFetch.forEach(resource => {
+            fetch(resource[0]).then(res => {
+                if (!res.ok) {
+                    console.warn(`Resource not fetched: ${resource[0]}`);
+                    toFetch = toFetch.filter(x => x != resource);
+                    SendCallbackIfDone();
+                    return;
+                }
+                if (res.body) {
+                    res.body.getReader().read().then(data => {
+                        if (data) {
+                            blobs[resource[1]] = data.value;
+                            toFetch = toFetch.filter(x => x != resource);
+                            SendCallbackIfDone();
+                        }
+                    });
+                }
+            });
+        });
+    }
+}
 class Serializer {
     static Copy(engine) {
         let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0, engine.EngineList);

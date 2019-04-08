@@ -417,22 +417,10 @@ function ExportButton_Click () {
             return;
         }
         
-        let blobs: {[blobname: string]: Uint8Array | string} = {};
-        
-        blobs[`${ListName}.cfg`] = Exporter.ConvertEngineListToConfig (MainEngineTable.Items);
-        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get ();
-        
-        let dll = new XMLHttpRequest ();
-        dll.open ("GET", "./files/PlumeScaleFixer.dll", true);
-        dll.responseType = "arraybuffer";
-        dll.addEventListener ("loadend", () => {
-            blobs["PlumeScaleFixer.dll"] = new Uint8Array (dll.response);
-            
-            FileIO.ZipBlobs ("GenericEngines", blobs, zipData => {
-                FileIO.SaveBinary (`${ListName}.zip`, zipData);
-            });
+        Packager.BuildMod (ListName, MainEngineTable.Items, (data) => {
+            FileIO.SaveBinary (`${ListName}.zip`, data);
         });
-        dll.send (null);
+        
     }
 }
 

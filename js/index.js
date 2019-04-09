@@ -1422,12 +1422,14 @@ ModelInfo.models = [
         ModelPath: "GenericEngines/models/SXT/AJ-10/model",
         ModelFiles: [
             "files/models/SXT/AJ-10/model.mu",
+            "files/models/SXT/AJ-10/fairing.dds",
             "files/models/SXT/AJ-10/model000.dds",
             "files/models/SXT/AJ-10/model001.dds"
         ],
         TextureDefinitions: `
-                texture = model000, Squad/Parts/Engine/liquidEngineLV-T45/model000
-                texture = model001, Squad/Parts/Engine/liquidEngineLV-T45/model001
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
+                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001
             `,
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",

@@ -38,7 +38,11 @@ class FileIO {
         }
         
         zip.generateAsync ({
-            type: "uint8array"
+            type: "uint8array",
+            compression: "DEFLATE", //Doesn't slow down zipping as much, and halves the size
+            compressionOptions: {
+                level: 1
+            }
         }).then (callback);
         
     }

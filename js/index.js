@@ -1395,7 +1395,9 @@ ModelInfo.models = [
         NodeStackBottom: -1.1635,
         ModelPath: "GenericEngines/models/RealismOverhaul/LR-91eng",
         ModelFiles: [
-            "files/models/RealismOverhaul/LR-91eng.mu"
+            "files/models/RealismOverhaul/LR-91eng.mu",
+            "files/models/RealismOverhaul/LR87diff.dds",
+            "files/models/RealismOverhaul/LR87emis.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
@@ -1417,9 +1419,11 @@ ModelInfo.models = [
         PlumePositionOffset: -0.09,
         NodeStackTop: 0.33,
         NodeStackBottom: -0.324,
-        ModelPath: "GenericEngines/models/SXT/AJ10",
+        ModelPath: "GenericEngines/models/SXT/AJ-10/model",
         ModelFiles: [
-            "files/models/SXT/AJ10.mu"
+            "files/models/SXT/AJ-10/model.mu",
+            "files/models/SXT/AJ-10/model000.dds",
+            "files/models/SXT/AJ-10/model001.dds"
         ],
         TextureDefinitions: `
                 texture: fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
@@ -1449,7 +1453,11 @@ ModelInfo.models = [
         NodeStackBottom: -1.525,
         ModelPath: "GenericEngines/models/VenStockRevamp/KS-25",
         ModelFiles: [
-            "files/models/VenStockRevamp/KS-25.mu"
+            "files/models/VenStockRevamp/KS-25.mu",
+            "files/models/VenStockRevamp/RCS_CLR.dds",
+            "files/models/VenStockRevamp/RCS_NRM.dds",
+            "files/models/VenStockRevamp/Size3Engines_CLR.dds",
+            "files/models/VenStockRevamp/Size3Engines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
@@ -1475,7 +1483,9 @@ ModelInfo.models = [
         NodeStackBottom: -0.256,
         ModelPath: "GenericEngines/models/VenStockRevamp/LV-1B",
         ModelFiles: [
-            "files/models/VenStockRevamp/LV-1B.mu"
+            "files/models/VenStockRevamp/LV-1B.mu",
+            "files/models/VenStockRevamp/SmallEngines_CLR.dds",
+            "files/models/VenStockRevamp/SmallEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
@@ -1499,12 +1509,14 @@ ModelInfo.models = [
         NodeStackBottom: -0.393,
         ModelPath: "GenericEngines/models/VenStockRevamp/48-7S",
         ModelFiles: [
-            "files/models/VenStockRevamp/48-7S.mu"
+            "files/models/VenStockRevamp/48-7S.mu",
+            "files/models/VenStockRevamp/SmallEngines_CLR.dds",
+            "files/models/VenStockRevamp/SmallEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "Spark (VSR)",
+        ModelName: "Spark",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size2A",
@@ -1526,7 +1538,9 @@ ModelInfo.models = [
         NodeStackBottom: -0.197,
         ModelPath: "GenericEngines/models/VenStockRevamp/IonEngine",
         ModelFiles: [
-            "files/models/VenStockRevamp/IonEngine.mu"
+            "files/models/VenStockRevamp/IonEngine.mu",
+            "files/models/VenStockRevamp/Ion_CLR.dds",
+            "files/models/VenStockRevamp/Ion_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
@@ -1553,12 +1567,14 @@ ModelInfo.models = [
         NodeStackBottom: -2.99,
         ModelPath: "GenericEngines/models/VenStockRevamp/KR-2L",
         ModelFiles: [
-            "files/models/VenStockRevamp/KR-2L.mu"
+            "files/models/VenStockRevamp/KR-2L.mu",
+            "files/models/VenStockRevamp/Size3Engines_CLR.dds",
+            "files/models/VenStockRevamp/Size3Engines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
-        ModelName: "Rhino (VSR)",
+        ModelName: "Rhino",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing"
@@ -1580,12 +1596,14 @@ ModelInfo.models = [
         OriginalTankVolume: 110,
         ModelPath: "GenericEngines/models/VenStockRevamp/LV900",
         ModelFiles: [
-            "files/models/VenStockRevamp/LV900.mu"
+            "files/models/VenStockRevamp/LV900.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "Beagle (VSR)",
+        ModelName: "Beagle",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size2B",
@@ -1611,12 +1629,14 @@ ModelInfo.models = [
         CanAttachOnModel: true,
         ModelPath: "GenericEngines/models/VenStockRevamp/BACC",
         ModelFiles: [
-            "files/models/VenStockRevamp/BACC.mu"
+            "files/models/VenStockRevamp/BACC.mu",
+            "files/models/VenStockRevamp/SolidBoosters_CLR.dds",
+            "files/models/VenStockRevamp/SolidBoosters_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "BACC (VSR)",
+        ModelName: "BACC",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [
             "fairing"
@@ -1637,12 +1657,14 @@ ModelInfo.models = [
         CanAttachOnModel: true,
         ModelPath: "GenericEngines/models/VenStockRevamp/RT5",
         ModelFiles: [
-            "files/models/VenStockRevamp/RT5.mu"
+            "files/models/VenStockRevamp/RT5.mu",
+            "files/models/VenStockRevamp/SolidBoosters_CLR.dds",
+            "files/models/VenStockRevamp/SolidBoosters_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "RT-5 (VSR)",
+        ModelName: "RT-5",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [
             "fairing"
@@ -1663,12 +1685,14 @@ ModelInfo.models = [
         CanAttachOnModel: true,
         ModelPath: "GenericEngines/models/VenStockRevamp/RT2",
         ModelFiles: [
-            "files/models/VenStockRevamp/RT2.mu"
+            "files/models/VenStockRevamp/RT2.mu",
+            "files/models/VenStockRevamp/SolidBoosters_CLR.dds",
+            "files/models/VenStockRevamp/SolidBoosters_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "RT-2 (VSR)",
+        ModelName: "RT-2",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         ImageSource: "img/modelPreviews/RT2.jpg",
@@ -1687,12 +1711,14 @@ ModelInfo.models = [
         CanAttachOnModel: true,
         ModelPath: "GenericEngines/models/VenStockRevamp/S1",
         ModelFiles: [
-            "files/models/VenStockRevamp/S1.mu"
+            "files/models/VenStockRevamp/S1.mu",
+            "files/models/VenStockRevamp/SolidBoosters_CLR.dds",
+            "files/models/VenStockRevamp/SolidBoosters_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "S-1 (VSR)",
+        ModelName: "S-1",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         ImageSource: "img/modelPreviews/S1.jpg",
@@ -1707,12 +1733,14 @@ ModelInfo.models = [
         NodeStackBottom: -0.44,
         ModelPath: "GenericEngines/models/VenStockRevamp/LV909",
         ModelFiles: [
-            "files/models/VenStockRevamp/LV909.mu"
+            "files/models/VenStockRevamp/LV909.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "LV-909 (VSR)",
+        ModelName: "LV-909",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing",
@@ -1734,12 +1762,14 @@ ModelInfo.models = [
         NodeStackBottom: -1.836,
         ModelPath: "GenericEngines/models/VenStockRevamp/LVN",
         ModelFiles: [
-            "files/models/VenStockRevamp/LVN.mu"
+            "files/models/VenStockRevamp/LVN.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "NERVA (VSR)",
+        ModelName: "NERVA",
         ModelType: EngineGroupType.IRL,
         HiddenMuObjects: [
             "fairingL",
@@ -1762,12 +1792,14 @@ ModelInfo.models = [
         NodeStackBottom: -0.8,
         ModelPath: "GenericEngines/models/VenStockRevamp/LVT30",
         ModelFiles: [
-            "files/models/VenStockRevamp/LVT30.mu"
+            "files/models/VenStockRevamp/LVT30.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "LV-T30 (VSR)",
+        ModelName: "LV-T30",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing",
@@ -1789,12 +1821,14 @@ ModelInfo.models = [
         NodeStackBottom: -0.893,
         ModelPath: "GenericEngines/models/VenStockRevamp/LVT45",
         ModelFiles: [
-            "files/models/VenStockRevamp/LVT45.mu"
+            "files/models/VenStockRevamp/LVT45.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "LV-T45 (VSR)",
+        ModelName: "LV-T45",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing",
@@ -1817,12 +1851,14 @@ ModelInfo.models = [
         NodeStackBottom: -0.595,
         ModelPath: "GenericEngines/models/VenStockRevamp/105-7P",
         ModelFiles: [
-            "files/models/VenStockRevamp/105-7P.mu"
+            "files/models/VenStockRevamp/105-7P.mu",
+            "files/models/VenStockRevamp/SmallEngines_CLR.dds",
+            "files/models/VenStockRevamp/SmallEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "nozzle",
-        ModelName: "105-7P (VSR)",
+        ModelName: "105-7P",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size2A",
@@ -1844,12 +1880,14 @@ ModelInfo.models = [
         NodeStackBottom: -1.24,
         ModelPath: "GenericEngines/models/VenStockRevamp/OMS-L",
         ModelFiles: [
-            "files/models/VenStockRevamp/OMS-L.mu"
+            "files/models/VenStockRevamp/OMS-L.mu",
+            "files/models/VenStockRevamp/RCS_CLR.dds",
+            "files/models/VenStockRevamp/RCS_NRM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
-        ModelName: "OMS-L (VSR)",
+        ModelName: "OMS-L",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [],
         CanAttachOnModel: false,
@@ -1868,12 +1906,14 @@ ModelInfo.models = [
         NodeStackBottom: -0.862,
         ModelPath: "GenericEngines/models/VenStockRevamp/Poodle",
         ModelFiles: [
-            "files/models/VenStockRevamp/Poodle.mu"
+            "files/models/VenStockRevamp/Poodle.mu",
+            "files/models/VenStockRevamp/RockoMaxEngines_CLR.dds",
+            "files/models/VenStockRevamp/RockoMaxEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "Poodle (VSR)",
+        ModelName: "Poodle",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size2B",
@@ -1895,12 +1935,14 @@ ModelInfo.models = [
         NodeStackBottom: -1.868,
         ModelPath: "GenericEngines/models/VenStockRevamp/PoodleLargeNTR",
         ModelFiles: [
-            "files/models/VenStockRevamp/PoodleLargeNTR.mu"
+            "files/models/VenStockRevamp/PoodleLargeNTR.mu",
+            "files/models/VenStockRevamp/RockoMaxEngines_CLR.dds",
+            "files/models/VenStockRevamp/RockoMaxEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "Sphere NTR (VSR)",
+        ModelName: "Sphere NTR",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing"
@@ -1921,12 +1963,14 @@ ModelInfo.models = [
         NodeStackBottom: -0.702,
         ModelPath: "GenericEngines/models/VenStockRevamp/PoodleNTR",
         ModelFiles: [
-            "files/models/VenStockRevamp/PoodleNTR.mu"
+            "files/models/VenStockRevamp/PoodleNTR.mu",
+            "files/models/VenStockRevamp/SmallEngines_CLR.dds",
+            "files/models/VenStockRevamp/SmallEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "Small Sphere NTR (VSR)",
+        ModelName: "Small Sphere NTR",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size1B",
@@ -1948,12 +1992,14 @@ ModelInfo.models = [
         NodeStackBottom: -2.324,
         ModelPath: "GenericEngines/models/VenStockRevamp/Size2MedEngineB",
         ModelFiles: [
-            "files/models/VenStockRevamp/Size2MedEngineB.mu"
+            "files/models/VenStockRevamp/Size2MedEngineB.mu",
+            "files/models/VenStockRevamp/RockoMaxEnginesB_CLR.dds",
+            "files/models/VenStockRevamp/RockoMaxEnginesB_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
-        ModelName: "Gas Generator (VSR)",
+        ModelName: "Gas Generator",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing"
@@ -1974,12 +2020,14 @@ ModelInfo.models = [
         NodeStackBottom: -2.648,
         ModelPath: "GenericEngines/models/VenStockRevamp/Skipper",
         ModelFiles: [
-            "files/models/VenStockRevamp/Skipper.mu"
+            "files/models/VenStockRevamp/Skipper.mu",
+            "files/models/VenStockRevamp/RockoMaxEngines_CLR.dds",
+            "files/models/VenStockRevamp/RockoMaxEngines_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "Skipper (VSR)",
+        ModelName: "Skipper",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "obj_fairing",
@@ -4673,7 +4721,11 @@ class FileIO {
             }
         }
         zip.generateAsync({
-            type: "uint8array"
+            type: "uint8array",
+            compression: "DEFLATE",
+            compressionOptions: {
+                level: 1
+            }
         }).then(callback);
     }
     static OpenText(extensions, callback) {
@@ -4781,6 +4833,9 @@ class Packager {
         blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
         toFetch.push(["files/PlumeScaleFixer.dll", "PlumeScaleFixer.dll"]);
         engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
             let modelInfo = ModelInfo.GetModelInfo(e.ModelID);
             modelInfo.ModelFiles.forEach(f => {
                 if (!toFetch.some(x => x[0] == f)) {
@@ -4791,12 +4846,15 @@ class Packager {
         const SendCallbackIfDone = () => {
             console.log(`Remaining: ${toFetch.length}`);
             if (toFetch.length == 0) {
+                console.log(`ZIP start`);
                 FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
+                    console.log(`ZIP end`);
                     callback(zipData);
                 });
             }
         };
         toFetch.forEach(resource => {
+            console.log(`Fetching ${resource[0]}`);
             fetch(resource[0]).then(res => {
                 if (!res.ok) {
                     console.warn(`Resource not fetched: ${resource[0]}`);
@@ -4804,13 +4862,13 @@ class Packager {
                     SendCallbackIfDone();
                     return;
                 }
-                if (res.body) {
-                    res.body.getReader().read().then(data => {
-                        if (data) {
-                            blobs[resource[1]] = data.value;
-                            toFetch = toFetch.filter(x => x != resource);
-                            SendCallbackIfDone();
-                        }
+                console.log(`Fetched ${resource[0]}`);
+                if (res) {
+                    res.arrayBuffer().then(data => {
+                        console.log(`Read ${resource[0]}`);
+                        blobs[resource[1]] = new Uint8Array(data);
+                        toFetch = toFetch.filter(x => x != resource);
+                        SendCallbackIfDone();
                     });
                 }
             });

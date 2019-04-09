@@ -17,6 +17,10 @@ class Packager {
         toFetch.push (["files/PlumeScaleFixer.dll", "PlumeScaleFixer.dll"]);
         
         engines.forEach (e => {
+            if (!e.Active) {
+                return; //continue;
+            }
+            
             let modelInfo = ModelInfo.GetModelInfo (e.ModelID);
             
             modelInfo.ModelFiles.forEach (f => {
@@ -28,15 +32,18 @@ class Packager {
         });
         
         const SendCallbackIfDone = () => {
-            console.log (`Remaining: ${toFetch.length}`);
+            /**/console.log (`Remaining: ${toFetch.length}`);
             if (toFetch.length == 0) {
+                /**/console.log (`ZIP start`);
                 FileIO.ZipBlobs ("GenericEngines", blobs, zipData => {
+                    /**/console.log (`ZIP end`);
                     callback (zipData);
                 });
             }
         }
         
         toFetch.forEach (resource => {
+            /**/console.log (`Fetching ${resource[0]}`);
             fetch (resource[0]).then (res => {
                 if (!res.ok) {
                     console.warn (`Resource not fetched: ${resource[0]}`);
@@ -44,14 +51,13 @@ class Packager {
                     SendCallbackIfDone ();
                     return;
                 }
-                
-                if (res.body) {
-                    res.body.getReader ().read ().then (data => {
-                        if (data) {
-                            blobs[resource[1]] = data.value;
-                            toFetch = toFetch.filter (x => x != resource);
-                            SendCallbackIfDone ();
-                        }
+                /**/console.log (`Fetched ${resource[0]}`);
+                if (res) {
+                    res.arrayBuffer ().then (data => {
+                        /**/console.log (`Read ${resource[0]}`);
+                        blobs[resource[1]] = new Uint8Array (data);
+                        toFetch = toFetch.filter (x => x != resource);
+                        SendCallbackIfDone ();
                     });
                 }
             });

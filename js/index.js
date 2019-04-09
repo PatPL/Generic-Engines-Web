@@ -1426,9 +1426,8 @@ ModelInfo.models = [
             "files/models/SXT/AJ-10/model001.dds"
         ],
         TextureDefinitions: `
-                texture: fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
-                texture: model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
-                texture: model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001
+                texture = model000, Squad/Parts/Engine/liquidEngineLV-T45/model000
+                texture = model001, Squad/Parts/Engine/liquidEngineLV-T45/model001
             `,
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1686,8 +1685,8 @@ ModelInfo.models = [
         ModelPath: "GenericEngines/models/VenStockRevamp/RT2",
         ModelFiles: [
             "files/models/VenStockRevamp/RT2.mu",
-            "files/models/VenStockRevamp/SolidBoosters_CLR.dds",
-            "files/models/VenStockRevamp/SolidBoosters_LUM.dds"
+            "files/models/VenStockRevamp/NewSolidboosters_CLR.dds",
+            "files/models/VenStockRevamp/NewSolidboosters_LUM.dds"
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",

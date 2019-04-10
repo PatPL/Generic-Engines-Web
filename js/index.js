@@ -2051,6 +2051,41 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SkipperR.jpg",
         get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.96,
+        OriginalBaseWidth: 3.73,
+        PlumeSizeMultiplier: 1.8,
+        PlumePositionOffset: -1,
+        NodeStackTop: 0.3,
+        NodeStackBottom: -8.06,
+        ModelPath: "GenericEngines/models/SXT/NERVA/model",
+        ModelFiles: [
+            "files/models/SXT/NERVA/model.mu",
+            "files/models/SXT/NERVA/fairing.dds",
+            "files/models/SXT/NERVA/model000.dds",
+            "files/models/SXT/NERVA/model001_NRM.dds",
+            "files/models/SXT/NERVA/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-N/model000
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineLV-N/model001
+                texture = model002 , Squad/Parts/Engine/liquidEngineLV-N/model002
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-N/model003
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "NERVA 2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/load32.gif",
+        get ImageLabel() { return this.ModelName; }
     }
 ];
 ModelInfo.Dropdown = ModelInfo.BuildDropdown();
@@ -4063,6 +4098,8 @@ var Model;
     Model[Model["BallNukeS"] = 20] = "BallNukeS";
     Model[Model["Skipper"] = 21] = "Skipper";
     Model[Model["SkipperR"] = 22] = "SkipperR";
+    Model[Model["NERVA2"] = 23] = "NERVA2";
+    Model[Model["NERVAwide"] = 24] = "NERVAwide";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {

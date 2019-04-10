@@ -21,5 +21,7 @@ enum Model {
     BallNuke,
     BallNukeS,
     Skipper,
-    SkipperR
+    SkipperR,
+    NERVA2,
+    NERVAwide
 }

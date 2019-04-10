@@ -661,6 +661,41 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/SkipperR.jpg",
             get ImageLabel(): string { return this.ModelName }
+        }, { //Model.NERVA2
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: 1.96,
+            OriginalBaseWidth: 3.73,
+            PlumeSizeMultiplier: 1.8,
+            PlumePositionOffset: -1,
+            NodeStackTop: 0.3,
+            NodeStackBottom: -8.06,
+            ModelPath: "GenericEngines/models/SXT/NERVA/model",
+            ModelFiles: [
+                "files/models/SXT/NERVA/model.mu",
+                "files/models/SXT/NERVA/fairing.dds",
+                "files/models/SXT/NERVA/model000.dds",
+                "files/models/SXT/NERVA/model001_NRM.dds",
+                "files/models/SXT/NERVA/model002.dds"
+            ],
+            TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-N/model000
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineLV-N/model001
+                texture = model002 , Squad/Parts/Engine/liquidEngineLV-N/model002
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-N/model003
+            `,
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "NERVA 2",
+            ModelType: EngineGroupType.IRL,
+            HiddenMuObjects: [
+                "fairing"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/load32.gif",
+            get ImageLabel(): string { return this.ModelName }
         }
     ];
     
@@ -688,3 +723,34 @@ class ModelInfo {
     }
     
 }
+/*
+, { //Model.
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: ,
+            OriginalBaseWidth: ,
+            PlumeSizeMultiplier: ,
+            PlumePositionOffset: ,
+            NodeStackTop: ,
+            NodeStackBottom: ,
+            ModelPath: "GenericEngines/models/",
+            ModelFiles: [
+                "files/models/",
+                "files/models/",
+                "files/models/"
+            ],
+            TextureDefinitions: "",
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "",
+            ModelName: "",
+            ModelType: EngineGroupType.,
+            HiddenMuObjects: [
+                ""
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/load32.gif",
+            get ImageLabel(): string { return this.ModelName }
+        }
+*/

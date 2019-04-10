@@ -1244,6 +1244,14 @@ class Engine {
         return targetEngine.Mass;
     }
     
+    public GetModelID (): Model {
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            return this.EngineList.find (x => x.ID == this.MasterEngineName)!.ModelID;
+        } else {
+            return this.ModelID;
+        }
+    }
+    
     public GetPlumeConfig (): string {
         let plumeInfo: IPlumeInfo = PlumeInfo.GetPlumeInfo (this.PlumeID);
         let modelInfo: IModelInfo;

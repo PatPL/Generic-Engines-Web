@@ -19,6 +19,21 @@
 	<div class="notify-container">
 		
 	</div>
+	<div class="fullscreen-box" id="export-box" style="display: none;">
+		<div class="fullscreen-grayout"></div>
+		<div class="fullscreen-content">
+			<div>
+				You can click off this window. Exporting will continue on background. Click 'Export' again to reopen this window. (Only while current exporting is still in progress)<br><br>
+				
+				Downloaded files: <span id="export-done"></span>/<span id="export-to-download"></span> | Current status: <span id="export-status">Waiting</span><br><br>
+				
+				<button id="export-refresh">Retry downloading (Press ONLY if there are any files with errors)</button><button id="export-abort" class="right">Abort exporting</button><hr>
+			</div>
+			<div id="export-box-container">
+				
+			</div>
+		</div>
+	</div>
 	<div class="fullscreen-box" id="model-selector" style="display: none;">
 		<div class="fullscreen-grayout"></div>
 		<div class="fullscreen-content">

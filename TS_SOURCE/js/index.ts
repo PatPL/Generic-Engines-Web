@@ -408,19 +408,28 @@ function ValidateButton_Click () {
 }
 
 function ExportButton_Click () {
-    if (MainEngineTable.Items.length > 0) {
-        
-        let errors = Validator.Validate (MainEngineTable.Items);
-        if (errors.length != 0) {
-            Notifier.Error ("Fix validation errors before exporting");
-            alert (`Fix following errors before exporting the engine:\n\n-> ${errors.join ("\n-> ")}`);
-            return;
+    if (Packager.IsWorking) {
+        FullscreenWindows["export-box"].style.display = "flex";
+    } else {
+        if (MainEngineTable.Items.length > 0) {
+            
+            let errors = Validator.Validate (MainEngineTable.Items);
+            if (errors.length != 0) {
+                Notifier.Error ("Fix validation errors before exporting");
+                alert (`Fix following errors before exporting the engine:\n\n-> ${errors.join ("\n-> ")}`);
+                return;
+            }
+            
+            Packager.BuildMod (ListName, MainEngineTable.Items, (data) => {
+                if (data) {
+                    Notifier.Info ("Exporting finished");
+                    FileIO.SaveBinary (`${ListName}.zip`, data);
+                } else {
+                    Notifier.Warn ("Exporting aborted");
+                }
+            });
+            
         }
-        
-        Packager.BuildMod (ListName, MainEngineTable.Items, (data) => {
-            FileIO.SaveBinary (`${ListName}.zip`, data);
-        });
-        
     }
 }
 

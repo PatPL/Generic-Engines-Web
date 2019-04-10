@@ -956,16 +956,27 @@ function ValidateButton_Click() {
     }
 }
 function ExportButton_Click() {
-    if (MainEngineTable.Items.length > 0) {
-        let errors = Validator.Validate(MainEngineTable.Items);
-        if (errors.length != 0) {
-            Notifier.Error("Fix validation errors before exporting");
-            alert(`Fix following errors before exporting the engine:\n\n-> ${errors.join("\n-> ")}`);
-            return;
+    if (Packager.IsWorking) {
+        FullscreenWindows["export-box"].style.display = "flex";
+    }
+    else {
+        if (MainEngineTable.Items.length > 0) {
+            let errors = Validator.Validate(MainEngineTable.Items);
+            if (errors.length != 0) {
+                Notifier.Error("Fix validation errors before exporting");
+                alert(`Fix following errors before exporting the engine:\n\n-> ${errors.join("\n-> ")}`);
+                return;
+            }
+            Packager.BuildMod(ListName, MainEngineTable.Items, (data) => {
+                if (data) {
+                    Notifier.Info("Exporting finished");
+                    FileIO.SaveBinary(`${ListName}.zip`, data);
+                }
+                else {
+                    Notifier.Warn("Exporting aborted");
+                }
+            });
         }
-        Packager.BuildMod(ListName, MainEngineTable.Items, (data) => {
-            FileIO.SaveBinary(`${ListName}.zip`, data);
-        });
     }
 }
 function DuplicateButton_Click() {
@@ -3401,6 +3412,14 @@ class Engine {
         targetEngine = targetEngine != undefined ? targetEngine : this;
         return targetEngine.Mass;
     }
+    GetModelID() {
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            return this.EngineList.find(x => x.ID == this.MasterEngineName).ModelID;
+        }
+        else {
+            return this.ModelID;
+        }
+    }
     GetPlumeConfig() {
         let plumeInfo = PlumeInfo.GetPlumeInfo(this.PlumeID);
         let modelInfo;
@@ -4826,8 +4845,30 @@ window.onpointermove = (event) => {
     Input.MouseX = event.clientX;
     Input.MouseY = event.clientY;
 };
+window.addEventListener("DOMContentLoaded", () => {
+    Packager.StatusWindowElement = document.getElementById("export-box");
+});
 class Packager {
     static BuildMod(name, engines, callback) {
+        this.IsWorking = true;
+        this.StatusWindowElement.style.display = "flex";
+        let downloadedFilesCountElement = document.getElementById("export-done");
+        let exportBoxContainer = document.getElementById("export-box-container");
+        let exportStatusElement = document.getElementById("export-status");
+        let toDownload;
+        exportBoxContainer.innerHTML = "";
+        let RequestRound = 0;
+        let fetchAborter = new AbortController();
+        document.getElementById("export-refresh").onclick = () => {
+            SendRequests();
+        };
+        document.getElementById("export-abort").onclick = () => {
+            fetchAborter.abort();
+            RequestRound++;
+            callback(null);
+            this.IsWorking = false;
+            this.StatusWindowElement.style.display = "none";
+        };
         let blobs = {};
         let toFetch = [];
         blobs[`${name}.cfg`] = Exporter.ConvertEngineListToConfig(engines);
@@ -4837,43 +4878,81 @@ class Packager {
             if (!e.Active) {
                 return;
             }
-            let modelInfo = ModelInfo.GetModelInfo(e.ModelID);
+            let modelInfo = ModelInfo.GetModelInfo(e.GetModelID());
             modelInfo.ModelFiles.forEach(f => {
                 if (!toFetch.some(x => x[0] == f)) {
                     toFetch.push([f, f.replace(/^files\//, "")]);
                 }
             });
         });
-        const SendCallbackIfDone = () => {
-            console.log(`Remaining: ${toFetch.length}`);
+        downloadedFilesCountElement.innerHTML = "0";
+        toDownload = toFetch.length;
+        document.getElementById("export-to-download").innerHTML = toDownload.toString();
+        exportStatusElement.innerHTML = "Downloading files";
+        let SendCallbackIfDone = () => {
+            downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString();
             if (toFetch.length == 0) {
-                console.log(`ZIP start`);
+                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files`;
+                let thisRequest = ++RequestRound;
                 FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
-                    console.log(`ZIP end`);
-                    callback(zipData);
+                    if (this.IsWorking && thisRequest == RequestRound) {
+                        exportStatusElement.innerHTML = "Done";
+                        this.IsWorking = false;
+                        callback(zipData);
+                    }
                 });
             }
         };
         toFetch.forEach(resource => {
-            console.log(`Fetching ${resource[0]}`);
-            fetch(resource[0]).then(res => {
-                if (!res.ok) {
-                    console.warn(`Resource not fetched: ${resource[0]}`);
-                    toFetch = toFetch.filter(x => x != resource);
-                    SendCallbackIfDone();
-                    return;
-                }
-                console.log(`Fetched ${resource[0]}`);
-                if (res) {
-                    res.arrayBuffer().then(data => {
-                        console.log(`Read ${resource[0]}`);
-                        blobs[resource[1]] = new Uint8Array(data);
-                        toFetch = toFetch.filter(x => x != resource);
-                        SendCallbackIfDone();
-                    });
-                }
-            });
+            resource[2] = document.createElement("div");
+            resource[2].innerHTML = `
+                <span class="left">${resource[1]}</span>
+                <span class="right">Waiting</span>
+            `;
+            exportBoxContainer.appendChild(resource[2]);
         });
+        const SendRequests = () => {
+            fetchAborter.abort();
+            fetchAborter = new AbortController();
+            let thisRound = ++RequestRound;
+            toFetch.forEach(resource => {
+                resource[2].children[1].innerHTML = "Fetching resource";
+                fetch(resource[0], {
+                    signal: fetchAborter.signal
+                }).then(res => {
+                    if (thisRound != RequestRound) {
+                        console.warn(`(fetch) Promise finished for expired round: ${resource[0]}`);
+                    }
+                    if (!res.ok) {
+                        resource[2].children[1].innerHTML = "Error. Not fetched";
+                        console.warn(`Resource not fetched: ${resource[0]}`);
+                        return;
+                    }
+                    resource[2].children[1].innerHTML = "Downloading";
+                    if (this.IsWorking) {
+                        res.arrayBuffer().then(data => {
+                            if (thisRound != RequestRound) {
+                                console.warn(`(download) Promise finished for expired round: ${resource[0]}`);
+                            }
+                            blobs[resource[1]] = new Uint8Array(data);
+                            toFetch = toFetch.filter(x => x != resource);
+                            resource[2].remove();
+                            SendCallbackIfDone();
+                        });
+                    }
+                }).catch((e) => {
+                    if (e.code == 20) {
+                        resource[2].children[1].innerHTML = "Refetching resource";
+                    }
+                    else {
+                        resource[2].children[1].innerHTML = "Fetch error";
+                        console.warn(`(Fetch error) Resource not fetched: ${resource[0]}`);
+                    }
+                    return;
+                });
+            });
+        };
+        SendRequests();
     }
 }
 class Serializer {

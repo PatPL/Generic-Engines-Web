@@ -94,6 +94,8 @@ button {
     background: var(--lightGrayBackground);
     padding: 4px;
     font-size: 16px;
+    
+    color: var(--darkerText);
 }
 
 button:hover {

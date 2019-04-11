@@ -696,6 +696,41 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/load32.gif",
             get ImageLabel(): string { return this.ModelName }
+        }, { //Model.NERVAwide
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: 2.074,
+            OriginalBaseWidth: 2.895,
+            PlumeSizeMultiplier: 1.8,
+            PlumePositionOffset: -2,
+            NodeStackTop: 0.05,
+            NodeStackBottom: -5.74,
+            ModelPath: "GenericEngines/models/SXT/NERVA/portlyman",
+            ModelFiles: [
+                "files/models/SXT/NERVA/portlyman.mu",
+                "files/models/SXT/NERVA/fairing.dds",
+                "files/models/SXT/NERVA/model000.dds",
+                "files/models/SXT/NERVA/model001_NRM.dds",
+                "files/models/SXT/NERVA/model002.dds"
+            ],
+            TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-N/model000
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineLV-N/model001	
+                texture = model002 , Squad/Parts/Engine/liquidEngineLV-N/model002
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-N/model003
+            `,
+            ThrustTransformName: "thrustTransform",
+            GimbalTransformName: "thrustTransform",
+            ModelName: "NERVA wide",
+            ModelType: EngineGroupType.Fake,
+            HiddenMuObjects: [
+                "fairing"
+            ],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/NERVAwide.png",
+            get ImageLabel(): string { return this.ModelName }
         }
     ];
     
@@ -723,34 +758,34 @@ class ModelInfo {
     }
     
 }
-/*
+/* NEW MODEL TEMPLATE
 , { //Model.
-            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
-            OriginalBellWidth: ,
-            OriginalBaseWidth: ,
-            PlumeSizeMultiplier: ,
-            PlumePositionOffset: ,
-            NodeStackTop: ,
-            NodeStackBottom: ,
-            ModelPath: "GenericEngines/models/",
-            ModelFiles: [
-                "files/models/",
-                "files/models/",
-                "files/models/"
-            ],
-            TextureDefinitions: "",
-            ThrustTransformName: "thrustTransform",
-            GimbalTransformName: "",
-            ModelName: "",
-            ModelType: EngineGroupType.,
-            HiddenMuObjects: [
-                ""
-            ],
-            CanAttachOnModel: false,
-            OriginalTankVolume: 0,
-            RadialAttachment: false,
-            RadialAttachmentPoint: 0,
-            ImageSource: "img/load32.gif",
-            get ImageLabel(): string { return this.ModelName }
-        }
+    get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+    OriginalBellWidth: ,
+    OriginalBaseWidth: ,
+    PlumeSizeMultiplier: ,
+    PlumePositionOffset: ,
+    NodeStackTop: ,
+    NodeStackBottom: ,
+    ModelPath: "GenericEngines/models/",
+    ModelFiles: [
+        "files/models/",
+        "files/models/",
+        "files/models/"
+    ],
+    TextureDefinitions: "",
+    ThrustTransformName: "thrustTransform",
+    GimbalTransformName: "",
+    ModelName: "",
+    ModelType: EngineGroupType.,
+    HiddenMuObjects: [
+        ""
+    ],
+    CanAttachOnModel: false,
+    OriginalTankVolume: 0,
+    RadialAttachment: false,
+    RadialAttachmentPoint: 0,
+    ImageSource: "img/load32.gif",
+    get ImageLabel(): string { return this.ModelName }
+}
 */

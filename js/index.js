@@ -1420,7 +1420,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR91.jpg",
+        ImageSource: "img/modelPreviews/LR91.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.654,
@@ -1453,7 +1453,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/AJ10.jpg",
+        ImageSource: "img/modelPreviews/AJ10.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.5,
@@ -1483,7 +1483,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RS25.jpg",
+        ImageSource: "img/modelPreviews/RS25.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.3055,
@@ -1509,7 +1509,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Thruster.jpg",
+        ImageSource: "img/modelPreviews/Thruster.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.393,
@@ -1538,7 +1538,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Aestus.jpg",
+        ImageSource: "img/modelPreviews/Aestus.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.3935,
@@ -1567,7 +1567,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/IonThruster.jpg",
+        ImageSource: "img/modelPreviews/IonThruster.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 4.48,
@@ -1595,7 +1595,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/F1.jpg",
+        ImageSource: "img/modelPreviews/F1.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.727,
@@ -1625,7 +1625,7 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD0105T.jpg",
+        ImageSource: "img/modelPreviews/RD0105T.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 8.018,
@@ -1653,7 +1653,7 @@ ModelInfo.models = [
         HiddenMuObjects: [
             "fairing"
         ],
-        ImageSource: "img/modelPreviews/SRBLong.jpg",
+        ImageSource: "img/modelPreviews/SRBLong.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.444,
@@ -1681,7 +1681,7 @@ ModelInfo.models = [
         HiddenMuObjects: [
             "fairing"
         ],
-        ImageSource: "img/modelPreviews/RT5.jpg",
+        ImageSource: "img/modelPreviews/RT5.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.5,
@@ -1707,7 +1707,7 @@ ModelInfo.models = [
         ModelName: "RT-2",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
-        ImageSource: "img/modelPreviews/RT2.jpg",
+        ImageSource: "img/modelPreviews/RT2.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 14.81,
@@ -1733,7 +1733,7 @@ ModelInfo.models = [
         ModelName: "S-1",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
-        ImageSource: "img/modelPreviews/S1.jpg",
+        ImageSource: "img/modelPreviews/S1.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.633,
@@ -1762,7 +1762,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD0105.jpg",
+        ImageSource: "img/modelPreviews/RD0105.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.25,
@@ -1792,7 +1792,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/NERVA.jpg",
+        ImageSource: "img/modelPreviews/NERVA.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.574,
@@ -1821,7 +1821,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LVT30.jpg",
+        ImageSource: "img/modelPreviews/LVT30.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.643,
@@ -1851,7 +1851,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LVT45.jpg",
+        ImageSource: "img/modelPreviews/LVT45.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.615,
@@ -1880,7 +1880,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/P1057.jpg",
+        ImageSource: "img/modelPreviews/P1057.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.228,
@@ -1906,7 +1906,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/OMSL.jpg",
+        ImageSource: "img/modelPreviews/OMSL.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.584,
@@ -1935,7 +1935,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Poodle.jpg",
+        ImageSource: "img/modelPreviews/Poodle.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.868,
@@ -1963,7 +1963,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/BallNuke.jpg",
+        ImageSource: "img/modelPreviews/BallNuke.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.767,
@@ -1992,7 +1992,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/BallNukeS.jpg",
+        ImageSource: "img/modelPreviews/BallNukeS.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.514,
@@ -2020,7 +2020,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Skipper.jpg",
+        ImageSource: "img/modelPreviews/Skipper.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 2.655,
@@ -2049,7 +2049,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/SkipperR.jpg",
+        ImageSource: "img/modelPreviews/SkipperR.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2084,7 +2084,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/load32.gif",
+        ImageSource: "img/modelPreviews/NERVA2.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2120,6 +2120,196 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVAwide.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.5,
+        OriginalBaseWidth: 2,
+        PlumeSizeMultiplier: 0.43,
+        PlumePositionOffset: 0.13,
+        NodeStackTop: 0,
+        NodeStackBottom: -0.288,
+        ModelPath: "GenericEngines/models/SXT/Kopo4e/model",
+        ModelFiles: [
+            "files/models/SXT/Kopo4e/model.mu",
+            "files/models/SXT/Kopo4e/model000.dds",
+            "files/models/SXT/Kopo4e/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_diff
+                texture = model002 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_emissive
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "obj_gimbal",
+        ModelName: "Pancake",
+        ModelType: EngineGroupType.Fake,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Pancake.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.512,
+        OriginalBaseWidth: 1.25,
+        PlumeSizeMultiplier: 0.44,
+        PlumePositionOffset: 0.4,
+        NodeStackTop: 0.594,
+        NodeStackBottom: -0.75,
+        ModelPath: "GenericEngines/models/SXT/KickMotor/model",
+        ModelFiles: [
+            "files/models/SXT/KickMotor/model.mu",
+            "files/models/SXT/KickMotor/model000.dds",
+            "files/models/SXT/KickMotor/model001.dds",
+            "files/models/SXT/KickMotor/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/solidBoosterBACC/model000
+                texture = model002 , Squad/Parts/Engine/solidBoosterBACC/model002
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "RT-3",
+        ModelType: EngineGroupType.Fake,
+        HiddenMuObjects: [
+            "solidBooster2_001"
+        ],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 607,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.625,
+        ImageSource: "img/modelPreviews/RT3.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.517,
+        OriginalBaseWidth: 3.74,
+        PlumeSizeMultiplier: 1.33,
+        PlumePositionOffset: -0.25,
+        NodeStackTop: 0.1,
+        NodeStackBottom: -3.54,
+        ModelPath: "GenericEngines/models/SXT/K170/model",
+        ModelFiles: [
+            "files/models/SXT/K170/model.mu",
+            "files/models/SXT/K170/model000.dds",
+            "files/models/SXT/K170/model001_NRM.dds",
+            "files/models/SXT/K170/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_diff
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_normal
+                texture = model002 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_emissive
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "obj_gimbal",
+        ModelName: "RD-170",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD170.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.671,
+        OriginalBaseWidth: 2.548,
+        PlumeSizeMultiplier: 1.45,
+        PlumePositionOffset: -0.4,
+        NodeStackTop: 0.7,
+        NodeStackBottom: -1.92,
+        ModelPath: "GenericEngines/models/SXT/K170/model25m",
+        ModelFiles: [
+            "files/models/SXT/K170/model25m.mu",
+            "files/models/SXT/K170/fairing.dds",
+            "files/models/SXT/K170/model000.dds",
+            "files/models/SXT/K170/model001_NRM.dds",
+            "files/models/SXT/K170/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_diff
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_normal
+                texture = model002 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_emissive
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "obj_gimbal",
+        ModelName: "RD-0120 (Shroud)",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "bottom"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD0120.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.143,
+        OriginalBaseWidth: 0.361,
+        PlumeSizeMultiplier: 0.12,
+        PlumePositionOffset: 0,
+        NodeStackTop: -0.034,
+        NodeStackBottom: -0.49,
+        ModelPath: "GenericEngines/models/SXT/BlackAdder/gamma2",
+        ModelFiles: [
+            "files/models/SXT/BlackAdder/gamma2.mu",
+            "files/models/SXT/BlackAdder/model000.dds",
+            "files/models/SXT/BlackAdder/model001.dds",
+            "files/models/SXT/BlackAdder/fairing.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
+                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001	
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Gamma 2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "bottom",
+            "Cylinder"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Gamma2.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.142,
+        OriginalBaseWidth: 1.031,
+        PlumeSizeMultiplier: 0.10,
+        PlumePositionOffset: -0.05,
+        NodeStackTop: 0,
+        NodeStackBottom: -0.575,
+        ModelPath: "GenericEngines/models/SXT/BlackAdder/model",
+        ModelFiles: [
+            "files/models/SXT/BlackAdder/model.mu",
+            "files/models/SXT/BlackAdder/model000.dds",
+            "files/models/SXT/BlackAdder/model001.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
+                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001	
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Gamma 8",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Gamma8.png",
         get ImageLabel() { return this.ModelName; }
     }
 ];
@@ -4135,6 +4325,12 @@ var Model;
     Model[Model["SkipperR"] = 22] = "SkipperR";
     Model[Model["NERVA2"] = 23] = "NERVA2";
     Model[Model["NERVAwide"] = 24] = "NERVAwide";
+    Model[Model["Pancake"] = 25] = "Pancake";
+    Model[Model["RT3"] = 26] = "RT3";
+    Model[Model["RD170"] = 27] = "RD170";
+    Model[Model["RD0120"] = 28] = "RD0120";
+    Model[Model["Gamma2"] = 29] = "Gamma2";
+    Model[Model["Gamma8"] = 30] = "Gamma8";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {
@@ -4524,6 +4720,26 @@ BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
+class DebugLists {
+    static AppendListForPreviews() {
+        let toAppend = [];
+        let modelCount = Object.getOwnPropertyNames(Model).length / 2;
+        for (let i = 0; i < modelCount; ++i) {
+            let newEngine = new Engine();
+            let modelInfo = ModelInfo.GetModelInfo(i);
+            newEngine.Active = true;
+            newEngine.ID = `PREVIEW-${("0000" + i).slice(-4)}`;
+            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model preview - ${modelInfo.ModelName}`;
+            newEngine.ModelID = i;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = 2;
+            newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
+        MainEngineTable.RebuildTable();
+    }
+}
 class Dragger {
     static Drop() {
         if (this.currentInterval) {

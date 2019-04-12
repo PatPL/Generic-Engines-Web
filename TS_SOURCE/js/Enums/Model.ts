@@ -23,5 +23,11 @@ enum Model {
     Skipper,
     SkipperR,
     NERVA2,
-    NERVAwide
+    NERVAwide,
+    Pancake,
+    RT3,
+    RD170,
+    RD0120,
+    Gamma2,
+    Gamma8
 }

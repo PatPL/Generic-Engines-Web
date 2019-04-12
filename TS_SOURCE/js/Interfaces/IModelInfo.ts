@@ -13,6 +13,7 @@ interface IModelInfo extends IImageSelectable {
     readonly RadialAttachment: boolean;
     readonly CanAttachOnModel: boolean;
     
+    readonly ModelFiles: string[];
     readonly ModelPath: string;
     readonly TextureDefinitions: string;
     readonly ThrustTransformName: string;

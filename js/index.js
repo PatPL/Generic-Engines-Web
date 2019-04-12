@@ -520,7 +520,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.1";
+Version.CurrentVersion = "Web.0.8.2";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -956,26 +956,27 @@ function ValidateButton_Click() {
     }
 }
 function ExportButton_Click() {
-    if (MainEngineTable.Items.length > 0) {
-        let errors = Validator.Validate(MainEngineTable.Items);
-        if (errors.length != 0) {
-            Notifier.Error("Fix validation errors before exporting");
-            alert(`Fix following errors before exporting the engine:\n\n-> ${errors.join("\n-> ")}`);
-            return;
-        }
-        let blobs = {};
-        blobs[`${ListName}.cfg`] = Exporter.ConvertEngineListToConfig(MainEngineTable.Items);
-        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
-        let dll = new XMLHttpRequest();
-        dll.open("GET", "./files/PlumeScaleFixer.dll", true);
-        dll.responseType = "arraybuffer";
-        dll.addEventListener("loadend", () => {
-            blobs["PlumeScaleFixer.dll"] = new Uint8Array(dll.response);
-            FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
-                FileIO.SaveBinary(`${ListName}.zip`, zipData);
+    if (Packager.IsWorking) {
+        FullscreenWindows["export-box"].style.display = "flex";
+    }
+    else {
+        if (MainEngineTable.Items.length > 0) {
+            let errors = Validator.Validate(MainEngineTable.Items);
+            if (errors.length != 0) {
+                Notifier.Error("Fix validation errors before exporting");
+                alert(`Fix following errors before exporting the engine:\n\n-> ${errors.join("\n-> ")}`);
+                return;
+            }
+            Packager.BuildMod(ListName, MainEngineTable.Items, (data) => {
+                if (data) {
+                    Notifier.Info("Exporting finished");
+                    FileIO.SaveBinary(`${ListName}.zip`, data);
+                }
+                else {
+                    Notifier.Warn("Exporting aborted");
+                }
             });
-        });
-        dll.send(null);
+        }
     }
 }
 function DuplicateButton_Click() {
@@ -1403,7 +1404,12 @@ ModelInfo.models = [
         PlumePositionOffset: 0.8,
         NodeStackTop: 0.7215,
         NodeStackBottom: -1.1635,
-        ModelPath: "RealismOverhaul/Models/LR-91eng",
+        ModelPath: "GenericEngines/models/RealismOverhaul/LR-91eng",
+        ModelFiles: [
+            "files/models/RealismOverhaul/LR-91eng.mu",
+            "files/models/RealismOverhaul/LR87diff.dds",
+            "files/models/RealismOverhaul/LR87emis.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1414,7 +1420,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR91.jpg",
+        ImageSource: "img/modelPreviews/LR91.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.654,
@@ -1424,11 +1430,17 @@ ModelInfo.models = [
         PlumePositionOffset: -0.09,
         NodeStackTop: 0.33,
         NodeStackBottom: -0.324,
-        ModelPath: "SXT/Parts/Rocketry/Engine/Vanguard/model",
+        ModelPath: "GenericEngines/models/SXT/AJ-10/model",
+        ModelFiles: [
+            "files/models/SXT/AJ-10/model.mu",
+            "files/models/SXT/AJ-10/fairing.dds",
+            "files/models/SXT/AJ-10/model000.dds",
+            "files/models/SXT/AJ-10/model001.dds"
+        ],
         TextureDefinitions: `
-                texture: fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
-                texture: model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
-                texture: model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
+                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001
             `,
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1441,7 +1453,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/AJ10.jpg",
+        ImageSource: "img/modelPreviews/AJ10.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.5,
@@ -1451,7 +1463,14 @@ ModelInfo.models = [
         PlumePositionOffset: -0.8,
         NodeStackTop: -0.025,
         NodeStackBottom: -1.525,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/KS-25",
+        ModelPath: "GenericEngines/models/VenStockRevamp/KS-25",
+        ModelFiles: [
+            "files/models/VenStockRevamp/KS-25.mu",
+            "files/models/VenStockRevamp/RCS_CLR.dds",
+            "files/models/VenStockRevamp/RCS_NRM.dds",
+            "files/models/VenStockRevamp/Size3Engines_CLR.dds",
+            "files/models/VenStockRevamp/Size3Engines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
@@ -1464,7 +1483,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RS25.jpg",
+        ImageSource: "img/modelPreviews/RS25.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.3055,
@@ -1474,7 +1493,12 @@ ModelInfo.models = [
         PlumePositionOffset: -0.04,
         NodeStackTop: 0.0495,
         NodeStackBottom: -0.256,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LV-1B",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LV-1B",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LV-1B.mu",
+            "files/models/VenStockRevamp/SmallEngines_CLR.dds",
+            "files/models/VenStockRevamp/SmallEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Gimbal",
@@ -1485,7 +1509,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Thruster.jpg",
+        ImageSource: "img/modelPreviews/Thruster.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.393,
@@ -1495,11 +1519,16 @@ ModelInfo.models = [
         PlumePositionOffset: -0.06,
         NodeStackTop: 0.0,
         NodeStackBottom: -0.393,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/48-7S",
+        ModelPath: "GenericEngines/models/VenStockRevamp/48-7S",
+        ModelFiles: [
+            "files/models/VenStockRevamp/48-7S.mu",
+            "files/models/VenStockRevamp/SmallEngines_CLR.dds",
+            "files/models/VenStockRevamp/SmallEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "Spark (VSR)",
+        ModelName: "Spark",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size2A",
@@ -1509,7 +1538,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Aestus.jpg",
+        ImageSource: "img/modelPreviews/Aestus.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.3935,
@@ -1519,7 +1548,12 @@ ModelInfo.models = [
         PlumePositionOffset: 0,
         NodeStackTop: 0.1965,
         NodeStackBottom: -0.197,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/IonEngine",
+        ModelPath: "GenericEngines/models/VenStockRevamp/IonEngine",
+        ModelFiles: [
+            "files/models/VenStockRevamp/IonEngine.mu",
+            "files/models/VenStockRevamp/Ion_CLR.dds",
+            "files/models/VenStockRevamp/Ion_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -1533,7 +1567,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/IonThruster.jpg",
+        ImageSource: "img/modelPreviews/IonThruster.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 4.48,
@@ -1543,11 +1577,16 @@ ModelInfo.models = [
         PlumePositionOffset: -0.7,
         NodeStackTop: 1.49,
         NodeStackBottom: -2.99,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/KR-2L",
+        ModelPath: "GenericEngines/models/VenStockRevamp/KR-2L",
+        ModelFiles: [
+            "files/models/VenStockRevamp/KR-2L.mu",
+            "files/models/VenStockRevamp/Size3Engines_CLR.dds",
+            "files/models/VenStockRevamp/Size3Engines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
-        ModelName: "Rhino (VSR)",
+        ModelName: "Rhino",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing"
@@ -1556,7 +1595,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/F1.jpg",
+        ImageSource: "img/modelPreviews/F1.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.727,
@@ -1567,11 +1606,16 @@ ModelInfo.models = [
         NodeStackTop: 0.195,
         NodeStackBottom: -0.532,
         OriginalTankVolume: 110,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LV900",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LV900",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LV900.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "Beagle (VSR)",
+        ModelName: "Beagle",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size2B",
@@ -1581,7 +1625,7 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD0105T.jpg",
+        ImageSource: "img/modelPreviews/RD0105T.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 8.018,
@@ -1595,16 +1639,21 @@ ModelInfo.models = [
         OriginalTankVolume: 6780,
         RadialAttachment: true,
         CanAttachOnModel: true,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/BACC",
+        ModelPath: "GenericEngines/models/VenStockRevamp/BACC",
+        ModelFiles: [
+            "files/models/VenStockRevamp/BACC.mu",
+            "files/models/VenStockRevamp/SolidBoosters_CLR.dds",
+            "files/models/VenStockRevamp/SolidBoosters_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "BACC (VSR)",
+        ModelName: "BACC",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [
             "fairing"
         ],
-        ImageSource: "img/modelPreviews/SRBLong.jpg",
+        ImageSource: "img/modelPreviews/SRBLong.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.444,
@@ -1618,16 +1667,21 @@ ModelInfo.models = [
         OriginalTankVolume: 528,
         RadialAttachment: true,
         CanAttachOnModel: true,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/RT5",
+        ModelPath: "GenericEngines/models/VenStockRevamp/RT5",
+        ModelFiles: [
+            "files/models/VenStockRevamp/RT5.mu",
+            "files/models/VenStockRevamp/SolidBoosters_CLR.dds",
+            "files/models/VenStockRevamp/SolidBoosters_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "RT-5 (VSR)",
+        ModelName: "RT-5",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [
             "fairing"
         ],
-        ImageSource: "img/modelPreviews/RT5.jpg",
+        ImageSource: "img/modelPreviews/RT5.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.5,
@@ -1641,14 +1695,19 @@ ModelInfo.models = [
         OriginalTankVolume: 640,
         RadialAttachment: true,
         CanAttachOnModel: true,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/RT2",
+        ModelPath: "GenericEngines/models/VenStockRevamp/RT2",
+        ModelFiles: [
+            "files/models/VenStockRevamp/RT2.mu",
+            "files/models/VenStockRevamp/NewSolidboosters_CLR.dds",
+            "files/models/VenStockRevamp/NewSolidboosters_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "RT-2 (VSR)",
+        ModelName: "RT-2",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
-        ImageSource: "img/modelPreviews/RT2.jpg",
+        ImageSource: "img/modelPreviews/RT2.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 14.81,
@@ -1662,14 +1721,19 @@ ModelInfo.models = [
         OriginalTankVolume: 11190,
         RadialAttachment: true,
         CanAttachOnModel: true,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/S1",
+        ModelPath: "GenericEngines/models/VenStockRevamp/S1",
+        ModelFiles: [
+            "files/models/VenStockRevamp/S1.mu",
+            "files/models/VenStockRevamp/SolidBoosters_CLR.dds",
+            "files/models/VenStockRevamp/SolidBoosters_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "S-1 (VSR)",
+        ModelName: "S-1",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
-        ImageSource: "img/modelPreviews/S1.jpg",
+        ImageSource: "img/modelPreviews/S1.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.633,
@@ -1679,11 +1743,16 @@ ModelInfo.models = [
         PlumePositionOffset: -0.14,
         NodeStackTop: 0.193,
         NodeStackBottom: -0.44,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LV909",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LV909",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LV909.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "LV-909 (VSR)",
+        ModelName: "LV-909",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing",
@@ -1693,7 +1762,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD0105.jpg",
+        ImageSource: "img/modelPreviews/RD0105.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.25,
@@ -1703,11 +1772,16 @@ ModelInfo.models = [
         PlumePositionOffset: 0.56,
         NodeStackTop: 1.414,
         NodeStackBottom: -1.836,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LVN",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LVN",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LVN.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "NERVA (VSR)",
+        ModelName: "NERVA",
         ModelType: EngineGroupType.IRL,
         HiddenMuObjects: [
             "fairingL",
@@ -1718,7 +1792,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/NERVA.jpg",
+        ImageSource: "img/modelPreviews/NERVA.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.574,
@@ -1728,11 +1802,16 @@ ModelInfo.models = [
         PlumePositionOffset: -0.1,
         NodeStackTop: 0.774,
         NodeStackBottom: -0.8,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LVT30",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LVT30",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LVT30.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "LV-T30 (VSR)",
+        ModelName: "LV-T30",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing",
@@ -1742,7 +1821,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LVT30.jpg",
+        ImageSource: "img/modelPreviews/LVT30.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.643,
@@ -1752,11 +1831,16 @@ ModelInfo.models = [
         PlumePositionOffset: -0.16,
         NodeStackTop: 0.75,
         NodeStackBottom: -0.893,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/LVT45",
+        ModelPath: "GenericEngines/models/VenStockRevamp/LVT45",
+        ModelFiles: [
+            "files/models/VenStockRevamp/LVT45.mu",
+            "files/models/VenStockRevamp/JebEngines_CLR.dds",
+            "files/models/VenStockRevamp/JebEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "LV-T45 (VSR)",
+        ModelName: "LV-T45",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing",
@@ -1767,7 +1851,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LVT45.jpg",
+        ImageSource: "img/modelPreviews/LVT45.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.615,
@@ -1777,11 +1861,16 @@ ModelInfo.models = [
         PlumePositionOffset: -0.075,
         NodeStackTop: 0.02,
         NodeStackBottom: -0.595,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/105-7P",
+        ModelPath: "GenericEngines/models/VenStockRevamp/105-7P",
+        ModelFiles: [
+            "files/models/VenStockRevamp/105-7P.mu",
+            "files/models/VenStockRevamp/SmallEngines_CLR.dds",
+            "files/models/VenStockRevamp/SmallEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "nozzle",
-        ModelName: "105-7P (VSR)",
+        ModelName: "105-7P",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size2A",
@@ -1791,7 +1880,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/P1057.jpg",
+        ImageSource: "img/modelPreviews/P1057.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.228,
@@ -1801,18 +1890,23 @@ ModelInfo.models = [
         PlumePositionOffset: -0.3,
         NodeStackTop: -0.012,
         NodeStackBottom: -1.24,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/OMS-L",
+        ModelPath: "GenericEngines/models/VenStockRevamp/OMS-L",
+        ModelFiles: [
+            "files/models/VenStockRevamp/OMS-L.mu",
+            "files/models/VenStockRevamp/RCS_CLR.dds",
+            "files/models/VenStockRevamp/RCS_NRM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
-        ModelName: "OMS-L (VSR)",
+        ModelName: "OMS-L",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/OMSL.jpg",
+        ImageSource: "img/modelPreviews/OMSL.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.584,
@@ -1822,11 +1916,16 @@ ModelInfo.models = [
         PlumePositionOffset: 0.0,
         NodeStackTop: 0.722,
         NodeStackBottom: -0.862,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/Poodle",
+        ModelPath: "GenericEngines/models/VenStockRevamp/Poodle",
+        ModelFiles: [
+            "files/models/VenStockRevamp/Poodle.mu",
+            "files/models/VenStockRevamp/RockoMaxEngines_CLR.dds",
+            "files/models/VenStockRevamp/RockoMaxEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "Poodle (VSR)",
+        ModelName: "Poodle",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size2B",
@@ -1836,7 +1935,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Poodle.jpg",
+        ImageSource: "img/modelPreviews/Poodle.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.868,
@@ -1846,11 +1945,16 @@ ModelInfo.models = [
         PlumePositionOffset: -0.4,
         NodeStackTop: 0.0,
         NodeStackBottom: -1.868,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/PoodleLargeNTR",
+        ModelPath: "GenericEngines/models/VenStockRevamp/PoodleLargeNTR",
+        ModelFiles: [
+            "files/models/VenStockRevamp/PoodleLargeNTR.mu",
+            "files/models/VenStockRevamp/RockoMaxEngines_CLR.dds",
+            "files/models/VenStockRevamp/RockoMaxEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "Sphere NTR (VSR)",
+        ModelName: "Sphere NTR",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing"
@@ -1859,7 +1963,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/BallNuke.jpg",
+        ImageSource: "img/modelPreviews/BallNuke.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.767,
@@ -1869,11 +1973,16 @@ ModelInfo.models = [
         PlumePositionOffset: -0.03,
         NodeStackTop: 0.065,
         NodeStackBottom: -0.702,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/PoodleNTR",
+        ModelPath: "GenericEngines/models/VenStockRevamp/PoodleNTR",
+        ModelFiles: [
+            "files/models/VenStockRevamp/PoodleNTR.mu",
+            "files/models/VenStockRevamp/SmallEngines_CLR.dds",
+            "files/models/VenStockRevamp/SmallEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "Small Sphere NTR (VSR)",
+        ModelName: "Small Sphere NTR",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "Size1B",
@@ -1883,7 +1992,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/BallNukeS.jpg",
+        ImageSource: "img/modelPreviews/BallNukeS.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.514,
@@ -1893,11 +2002,16 @@ ModelInfo.models = [
         PlumePositionOffset: -0.65,
         NodeStackTop: 1.19,
         NodeStackBottom: -2.324,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/Size2MedEngineB",
+        ModelPath: "GenericEngines/models/VenStockRevamp/Size2MedEngineB",
+        ModelFiles: [
+            "files/models/VenStockRevamp/Size2MedEngineB.mu",
+            "files/models/VenStockRevamp/RockoMaxEnginesB_CLR.dds",
+            "files/models/VenStockRevamp/RockoMaxEnginesB_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Nozzle",
-        ModelName: "Gas Generator (VSR)",
+        ModelName: "Gas Generator",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "fairing"
@@ -1906,7 +2020,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Skipper.jpg",
+        ImageSource: "img/modelPreviews/Skipper.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 2.655,
@@ -1916,11 +2030,16 @@ ModelInfo.models = [
         PlumePositionOffset: 0.0,
         NodeStackTop: 0.007,
         NodeStackBottom: -2.648,
-        ModelPath: "VenStockRevamp/Squad/Parts/Propulsion/Skipper",
+        ModelPath: "GenericEngines/models/VenStockRevamp/Skipper",
+        ModelFiles: [
+            "files/models/VenStockRevamp/Skipper.mu",
+            "files/models/VenStockRevamp/RockoMaxEngines_CLR.dds",
+            "files/models/VenStockRevamp/RockoMaxEngines_LUM.dds"
+        ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "Obj_Gimbal",
-        ModelName: "Skipper (VSR)",
+        ModelName: "Skipper",
         ModelType: EngineGroupType.Fake,
         HiddenMuObjects: [
             "obj_fairing",
@@ -1930,7 +2049,267 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/SkipperR.jpg",
+        ImageSource: "img/modelPreviews/SkipperR.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.96,
+        OriginalBaseWidth: 3.73,
+        PlumeSizeMultiplier: 1.8,
+        PlumePositionOffset: -1,
+        NodeStackTop: 0.3,
+        NodeStackBottom: -8.06,
+        ModelPath: "GenericEngines/models/SXT/NERVA/model",
+        ModelFiles: [
+            "files/models/SXT/NERVA/model.mu",
+            "files/models/SXT/NERVA/fairing.dds",
+            "files/models/SXT/NERVA/model000.dds",
+            "files/models/SXT/NERVA/model001_NRM.dds",
+            "files/models/SXT/NERVA/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-N/model000
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineLV-N/model001
+                texture = model002 , Squad/Parts/Engine/liquidEngineLV-N/model002
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-N/model003
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "NERVA 2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/NERVA2.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 2.074,
+        OriginalBaseWidth: 2.895,
+        PlumeSizeMultiplier: 1.8,
+        PlumePositionOffset: -2,
+        NodeStackTop: 0.05,
+        NodeStackBottom: -5.74,
+        ModelPath: "GenericEngines/models/SXT/NERVA/portlyman",
+        ModelFiles: [
+            "files/models/SXT/NERVA/portlyman.mu",
+            "files/models/SXT/NERVA/fairing.dds",
+            "files/models/SXT/NERVA/model000.dds",
+            "files/models/SXT/NERVA/model001_NRM.dds",
+            "files/models/SXT/NERVA/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-N/model000
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineLV-N/model001	
+                texture = model002 , Squad/Parts/Engine/liquidEngineLV-N/model002
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-N/model003
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "NERVA wide",
+        ModelType: EngineGroupType.Fake,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/NERVAwide.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.5,
+        OriginalBaseWidth: 2,
+        PlumeSizeMultiplier: 0.43,
+        PlumePositionOffset: 0.13,
+        NodeStackTop: 0,
+        NodeStackBottom: -0.288,
+        ModelPath: "GenericEngines/models/SXT/Kopo4e/model",
+        ModelFiles: [
+            "files/models/SXT/Kopo4e/model.mu",
+            "files/models/SXT/Kopo4e/model000.dds",
+            "files/models/SXT/Kopo4e/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_diff
+                texture = model002 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_emissive
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "obj_gimbal",
+        ModelName: "Pancake",
+        ModelType: EngineGroupType.Fake,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Pancake.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.512,
+        OriginalBaseWidth: 1.25,
+        PlumeSizeMultiplier: 0.44,
+        PlumePositionOffset: 0.4,
+        NodeStackTop: 0.594,
+        NodeStackBottom: -0.75,
+        ModelPath: "GenericEngines/models/SXT/KickMotor/model",
+        ModelFiles: [
+            "files/models/SXT/KickMotor/model.mu",
+            "files/models/SXT/KickMotor/model000.dds",
+            "files/models/SXT/KickMotor/model001.dds",
+            "files/models/SXT/KickMotor/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/solidBoosterBACC/model000
+                texture = model002 , Squad/Parts/Engine/solidBoosterBACC/model002
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "RT-3",
+        ModelType: EngineGroupType.Fake,
+        HiddenMuObjects: [
+            "solidBooster2_001"
+        ],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 607,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.625,
+        ImageSource: "img/modelPreviews/RT3.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.517,
+        OriginalBaseWidth: 3.74,
+        PlumeSizeMultiplier: 1.33,
+        PlumePositionOffset: -0.25,
+        NodeStackTop: 0.1,
+        NodeStackBottom: -3.54,
+        ModelPath: "GenericEngines/models/SXT/K170/model",
+        ModelFiles: [
+            "files/models/SXT/K170/model.mu",
+            "files/models/SXT/K170/model000.dds",
+            "files/models/SXT/K170/model001_NRM.dds",
+            "files/models/SXT/K170/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_diff
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_normal
+                texture = model002 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_emissive
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "obj_gimbal",
+        ModelName: "RD-170",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD170.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.671,
+        OriginalBaseWidth: 2.548,
+        PlumeSizeMultiplier: 1.45,
+        PlumePositionOffset: -0.4,
+        NodeStackTop: 0.7,
+        NodeStackBottom: -1.92,
+        ModelPath: "GenericEngines/models/SXT/K170/model25m",
+        ModelFiles: [
+            "files/models/SXT/K170/model25m.mu",
+            "files/models/SXT/K170/fairing.dds",
+            "files/models/SXT/K170/model000.dds",
+            "files/models/SXT/K170/model001_NRM.dds",
+            "files/models/SXT/K170/model002.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_diff
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_normal
+                texture = model002 , Squad/Parts/Engine/liquidEngineSkipper/ksp_l_midrangeEngine_emissive
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "obj_gimbal",
+        ModelName: "RD-0120 (Shroud)",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "bottom"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD0120.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.143,
+        OriginalBaseWidth: 0.361,
+        PlumeSizeMultiplier: 0.12,
+        PlumePositionOffset: 0,
+        NodeStackTop: -0.034,
+        NodeStackBottom: -0.49,
+        ModelPath: "GenericEngines/models/SXT/BlackAdder/gamma2",
+        ModelFiles: [
+            "files/models/SXT/BlackAdder/gamma2.mu",
+            "files/models/SXT/BlackAdder/model000.dds",
+            "files/models/SXT/BlackAdder/model001.dds",
+            "files/models/SXT/BlackAdder/fairing.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
+                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001	
+                texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Gamma 2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "bottom",
+            "Cylinder"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Gamma2.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.142,
+        OriginalBaseWidth: 1.031,
+        PlumeSizeMultiplier: 0.10,
+        PlumePositionOffset: -0.05,
+        NodeStackTop: 0,
+        NodeStackBottom: -0.575,
+        ModelPath: "GenericEngines/models/SXT/BlackAdder/model",
+        ModelFiles: [
+            "files/models/SXT/BlackAdder/model.mu",
+            "files/models/SXT/BlackAdder/model000.dds",
+            "files/models/SXT/BlackAdder/model001.dds"
+        ],
+        TextureDefinitions: `
+                texture = model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
+                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001	
+            `,
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Gamma 8",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Gamma8.png",
         get ImageLabel() { return this.ModelName; }
     }
 ];
@@ -3293,6 +3672,14 @@ class Engine {
         targetEngine = targetEngine != undefined ? targetEngine : this;
         return targetEngine.Mass;
     }
+    GetModelID() {
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            return this.EngineList.find(x => x.ID == this.MasterEngineName).ModelID;
+        }
+        else {
+            return this.ModelID;
+        }
+    }
     GetPlumeConfig() {
         let plumeInfo = PlumeInfo.GetPlumeInfo(this.PlumeID);
         let modelInfo;
@@ -3936,6 +4323,14 @@ var Model;
     Model[Model["BallNukeS"] = 20] = "BallNukeS";
     Model[Model["Skipper"] = 21] = "Skipper";
     Model[Model["SkipperR"] = 22] = "SkipperR";
+    Model[Model["NERVA2"] = 23] = "NERVA2";
+    Model[Model["NERVAwide"] = 24] = "NERVAwide";
+    Model[Model["Pancake"] = 25] = "Pancake";
+    Model[Model["RT3"] = 26] = "RT3";
+    Model[Model["RD170"] = 27] = "RD170";
+    Model[Model["RD0120"] = 28] = "RD0120";
+    Model[Model["Gamma2"] = 29] = "Gamma2";
+    Model[Model["Gamma8"] = 30] = "Gamma8";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {
@@ -4325,6 +4720,26 @@ BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
+class DebugLists {
+    static AppendListForPreviews() {
+        let toAppend = [];
+        let modelCount = Object.getOwnPropertyNames(Model).length / 2;
+        for (let i = 0; i < modelCount; ++i) {
+            let newEngine = new Engine();
+            let modelInfo = ModelInfo.GetModelInfo(i);
+            newEngine.Active = true;
+            newEngine.ID = `PREVIEW-${("0000" + i).slice(-4)}`;
+            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model preview - ${modelInfo.ModelName}`;
+            newEngine.ModelID = i;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = 2;
+            newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
+        MainEngineTable.RebuildTable();
+    }
+}
 class Dragger {
     static Drop() {
         if (this.currentInterval) {
@@ -4614,7 +5029,11 @@ class FileIO {
             }
         }
         zip.generateAsync({
-            type: "uint8array"
+            type: "uint8array",
+            compression: "DEFLATE",
+            compressionOptions: {
+                level: 1
+            }
         }).then(callback);
     }
     static OpenText(extensions, callback) {
@@ -4714,6 +5133,116 @@ window.onpointermove = (event) => {
     Input.MouseX = event.clientX;
     Input.MouseY = event.clientY;
 };
+window.addEventListener("DOMContentLoaded", () => {
+    Packager.StatusWindowElement = document.getElementById("export-box");
+});
+class Packager {
+    static BuildMod(name, engines, callback) {
+        this.IsWorking = true;
+        this.StatusWindowElement.style.display = "flex";
+        let downloadedFilesCountElement = document.getElementById("export-done");
+        let exportBoxContainer = document.getElementById("export-box-container");
+        let exportStatusElement = document.getElementById("export-status");
+        let toDownload;
+        exportBoxContainer.innerHTML = "";
+        let RequestRound = 0;
+        let fetchAborter = new AbortController();
+        document.getElementById("export-refresh").onclick = () => {
+            SendRequests();
+        };
+        document.getElementById("export-abort").onclick = () => {
+            fetchAborter.abort();
+            RequestRound++;
+            callback(null);
+            this.IsWorking = false;
+            this.StatusWindowElement.style.display = "none";
+        };
+        let blobs = {};
+        let toFetch = [];
+        blobs[`${name}.cfg`] = Exporter.ConvertEngineListToConfig(engines);
+        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
+        toFetch.push(["files/PlumeScaleFixer.dll", "PlumeScaleFixer.dll"]);
+        engines.forEach(e => {
+            if (!e.Active) {
+                return;
+            }
+            let modelInfo = ModelInfo.GetModelInfo(e.GetModelID());
+            modelInfo.ModelFiles.forEach(f => {
+                if (!toFetch.some(x => x[0] == f)) {
+                    toFetch.push([f, f.replace(/^files\//, "")]);
+                }
+            });
+        });
+        downloadedFilesCountElement.innerHTML = "0";
+        toDownload = toFetch.length;
+        document.getElementById("export-to-download").innerHTML = toDownload.toString();
+        exportStatusElement.innerHTML = "Downloading files";
+        let SendCallbackIfDone = () => {
+            downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString();
+            if (toFetch.length == 0) {
+                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files`;
+                let thisRequest = ++RequestRound;
+                FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
+                    if (this.IsWorking && thisRequest == RequestRound) {
+                        exportStatusElement.innerHTML = "Done";
+                        this.IsWorking = false;
+                        callback(zipData);
+                    }
+                });
+            }
+        };
+        toFetch.forEach(resource => {
+            resource[2] = document.createElement("div");
+            resource[2].innerHTML = `
+                <span class="left">${resource[1]}</span>
+                <span class="right">Waiting</span>
+            `;
+            exportBoxContainer.appendChild(resource[2]);
+        });
+        const SendRequests = () => {
+            fetchAborter.abort();
+            fetchAborter = new AbortController();
+            let thisRound = ++RequestRound;
+            toFetch.forEach(resource => {
+                resource[2].children[1].innerHTML = "Fetching resource";
+                fetch(resource[0], {
+                    signal: fetchAborter.signal
+                }).then(res => {
+                    if (thisRound != RequestRound) {
+                        console.warn(`(fetch) Promise finished for expired round: ${resource[0]}`);
+                    }
+                    if (!res.ok) {
+                        resource[2].children[1].innerHTML = "Error. Not fetched";
+                        console.warn(`Resource not fetched: ${resource[0]}`);
+                        return;
+                    }
+                    resource[2].children[1].innerHTML = "Downloading";
+                    if (this.IsWorking) {
+                        res.arrayBuffer().then(data => {
+                            if (thisRound != RequestRound) {
+                                console.warn(`(download) Promise finished for expired round: ${resource[0]}`);
+                            }
+                            blobs[resource[1]] = new Uint8Array(data);
+                            toFetch = toFetch.filter(x => x != resource);
+                            resource[2].remove();
+                            SendCallbackIfDone();
+                        });
+                    }
+                }).catch((e) => {
+                    if (e.code == 20) {
+                        resource[2].children[1].innerHTML = "Refetching resource";
+                    }
+                    else {
+                        resource[2].children[1].innerHTML = "Fetch error";
+                        console.warn(`(Fetch error) Resource not fetched: ${resource[0]}`);
+                    }
+                    return;
+                });
+            });
+        };
+        SendRequests();
+    }
+}
 class Serializer {
     static Copy(engine) {
         let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0, engine.EngineList);

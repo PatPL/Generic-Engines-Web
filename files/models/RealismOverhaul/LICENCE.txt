@@ -1,0 +1,7 @@
+Source: https://github.com/KSP-RO/RealismOverhaul
+Creators: https://github.com/KSP-RO/RealismOverhaul/graphs/contributors
+Original licence from https://github.com/KSP-RO/RealismOverhaul/blob/master/GameData/RealismOverhaul/Credits.txt
+
+The licence doesn't say anything about creator or licence of LR-91eng.mu model, or LR87diff.dds and LR87emis.dds textures.
+According to the credits file, LR-87 mesh was created by Lack, so I guess he's the creator.
+If you're the creator of this model and don't want my website to share your work, contact me at patrykwyp@poczta.fm

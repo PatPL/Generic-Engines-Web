@@ -21,5 +21,13 @@ enum Model {
     BallNuke,
     BallNukeS,
     Skipper,
-    SkipperR
+    SkipperR,
+    NERVA2,
+    NERVAwide,
+    Pancake,
+    RT3,
+    RD170,
+    RD0120,
+    Gamma2,
+    Gamma8
 }

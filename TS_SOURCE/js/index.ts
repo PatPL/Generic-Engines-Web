@@ -408,31 +408,28 @@ function ValidateButton_Click () {
 }
 
 function ExportButton_Click () {
-    if (MainEngineTable.Items.length > 0) {
-        
-        let errors = Validator.Validate (MainEngineTable.Items);
-        if (errors.length != 0) {
-            Notifier.Error ("Fix validation errors before exporting");
-            alert (`Fix following errors before exporting the engine:\n\n-> ${errors.join ("\n-> ")}`);
-            return;
-        }
-        
-        let blobs: {[blobname: string]: Uint8Array | string} = {};
-        
-        blobs[`${ListName}.cfg`] = Exporter.ConvertEngineListToConfig (MainEngineTable.Items);
-        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get ();
-        
-        let dll = new XMLHttpRequest ();
-        dll.open ("GET", "./files/PlumeScaleFixer.dll", true);
-        dll.responseType = "arraybuffer";
-        dll.addEventListener ("loadend", () => {
-            blobs["PlumeScaleFixer.dll"] = new Uint8Array (dll.response);
+    if (Packager.IsWorking) {
+        FullscreenWindows["export-box"].style.display = "flex";
+    } else {
+        if (MainEngineTable.Items.length > 0) {
             
-            FileIO.ZipBlobs ("GenericEngines", blobs, zipData => {
-                FileIO.SaveBinary (`${ListName}.zip`, zipData);
+            let errors = Validator.Validate (MainEngineTable.Items);
+            if (errors.length != 0) {
+                Notifier.Error ("Fix validation errors before exporting");
+                alert (`Fix following errors before exporting the engine:\n\n-> ${errors.join ("\n-> ")}`);
+                return;
+            }
+            
+            Packager.BuildMod (ListName, MainEngineTable.Items, (data) => {
+                if (data) {
+                    Notifier.Info ("Exporting finished");
+                    FileIO.SaveBinary (`${ListName}.zip`, data);
+                } else {
+                    Notifier.Warn ("Exporting aborted");
+                }
             });
-        });
-        dll.send (null);
+            
+        }
     }
 }
 

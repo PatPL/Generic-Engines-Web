@@ -3686,13 +3686,13 @@ class Engine {
                     tmp.style.padding = "0";
                     let grid = document.createElement("div");
                     grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "62px auto 2px";
+                    grid.style.gridTemplateColumns = "62px auto 2px 24px 2px";
                     grid.style.gridTemplateRows = "24px 24px 2px 24px";
                     grid.style.gridTemplateAreas = `
-                    "a a z"
-                    "b c z"
-                    "x x x"
-                    "e f y"
+                    "a a a a z"
+                    "b c c c z"
+                    "x x x x x"
+                    "e f q g y"
                 `;
                     grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: a;"></div>
@@ -3700,6 +3700,7 @@ class Engine {
                     <div style="grid-area: c;"><input style="width: calc(100%);"></div>
                     <div class="content-cell-content" style="grid-area: e;">Height</div>
                     <div style="grid-area: f;"><input style="width: calc(100%);"></div>
+                    <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="img/button/aspectRatio.png"></div>
                 `;
                     let checkboxLabel = document.createElement("span");
                     let checkbox = document.createElement("input");
@@ -3712,6 +3713,11 @@ class Engine {
                     });
                     grid.children[0].appendChild(checkbox);
                     grid.children[0].appendChild(checkboxLabel);
+                    grid.querySelector("img").addEventListener("click", () => {
+                        let inputs = grid.querySelectorAll("input");
+                        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
+                        inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false);
+                    });
                     tmp.appendChild(grid);
                     return tmp;
                 }, ApplyValueToEditElement: (e) => {

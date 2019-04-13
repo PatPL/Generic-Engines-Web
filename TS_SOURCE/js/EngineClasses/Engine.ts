@@ -1284,7 +1284,7 @@ class Engine {
     }
     
     public GetHiddenObjectsConfig (): string {
-        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (this.ModelID);
+        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
         let output = "";
         
         modelInfo.HiddenMuObjects.forEach (m => {
@@ -1303,7 +1303,7 @@ class Engine {
     }
     
     public GetModelConfig (): string {
-        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (this.ModelID);
+        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
         let heightScale = this.Height / modelInfo.OriginalHeight;
         let widthScale = this.Width / heightScale / (this.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
         
@@ -1405,7 +1405,7 @@ class Engine {
     }
     
     public GetTankSizeEstimate (): number {
-        let modelInfo = ModelInfo.GetModelInfo (this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
         let output = modelInfo.OriginalTankVolume;
         
         output *= ((this.GetBaseWidth () / modelInfo.OriginalBaseWidth) ** 2);
@@ -1522,7 +1522,7 @@ class Engine {
     }
     
     public GetGimbalConfig (): string {
-        let modelInfo = ModelInfo.GetModelInfo (this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
         
         if (this.AdvancedGimbal) {
             return `
@@ -1611,7 +1611,7 @@ class Engine {
         if (this.UseBaseWidth) {
             return this.Width;
         } else {
-            let modelInfo = ModelInfo.GetModelInfo (this.ModelID);
+            let modelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
             return this.Width * modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
         }
     }

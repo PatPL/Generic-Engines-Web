@@ -5,7 +5,7 @@ enum Model {
     Thruster,
     Aestus,
     IonThruster,
-    F1,
+    Rhino,
     RD0105T,
     SRBLong,
     RT5,
@@ -29,5 +29,12 @@ enum Model {
     RD170,
     RD0120,
     Gamma2,
-    Gamma8
+    Gamma8,
+    
+    // SSTU
+    AJ10_137,
+    AJ10_190,
+    F1,
+    F1B,
+    // /SSTU
 }

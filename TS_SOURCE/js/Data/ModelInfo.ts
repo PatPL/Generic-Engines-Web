@@ -40,12 +40,12 @@ class ModelInfo {
             PlumePositionOffset: -0.09,
             NodeStackTop: 0.33,
             NodeStackBottom: -0.324,
-            ModelPath: "GenericEngines/models/SXT/AJ-10/model",
+            ModelPath: "GenericEngines/models/SXT/AJ10/model",
             ModelFiles: [
-                "files/models/SXT/AJ-10/model.mu",
-                "files/models/SXT/AJ-10/fairing.dds",
-                "files/models/SXT/AJ-10/model000.dds",
-                "files/models/SXT/AJ-10/model001.dds"
+                "files/models/SXT/AJ10/model.mu",
+                "files/models/SXT/AJ10/fairing.dds",
+                "files/models/SXT/AJ10/model000.dds",
+                "files/models/SXT/AJ10/model001.dds"
             ],
             TextureDefinitions: `
                 texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
@@ -54,7 +54,7 @@ class ModelInfo {
             `,
             ThrustTransformName: "thrustTransform",
             GimbalTransformName: "thrustTransform",
-            ModelName: "AJ-10-142",
+            ModelName: "AJ10-142",
             ModelType: EngineGroupType.IRL,
             HiddenMuObjects: [
                 "Cylinder_002"
@@ -179,7 +179,7 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/IonThruster.png",
             get ImageLabel(): string { return this.ModelName }
-        }, { //Model.F1
+        }, { //Model.Rhino
             OriginalHeight: 4.48,
             OriginalBellWidth: 1.802,
             OriginalBaseWidth: 3.78,
@@ -205,7 +205,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/F1.png",
+            ImageSource: "img/modelPreviews/Rhino.png",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD0105T
             OriginalHeight: 0.727,
@@ -921,6 +921,114 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Gamma8.png",
+            get ImageLabel(): string { return this.ModelName }
+        }, { //Model.AJ10_137
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: 1.66,
+            OriginalBaseWidth: 0.87,
+            PlumeSizeMultiplier: 1.45,
+            PlumePositionOffset: -0.5,
+            NodeStackTop: 0.02,
+            NodeStackBottom: -2.44,
+            ModelPath: "GenericEngines/models/SSTU/AJ10-137/SC-ENG-AJ10-137",
+            ModelFiles: [
+                "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137.mu",
+                "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137-DIFF.dds",
+                "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137-GLOW.dds",
+                "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137-NRM.dds"
+            ],
+            TextureDefinitions: "",
+            ThrustTransformName: "AJ10-137-ThrustTransform",
+            GimbalTransformName: "AJ10-137-Bell",
+            ModelName: "AJ10-137",
+            ModelType: EngineGroupType.IRL,
+            HiddenMuObjects: [],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/AJ10-137.png",
+            get ImageLabel(): string { return this.ModelName }
+        }, { //Model.AJ10_190
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: 0.707,
+            OriginalBaseWidth: 0.366,
+            PlumeSizeMultiplier: 0.61,
+            PlumePositionOffset: -0.23,
+            NodeStackTop: -0.001,
+            NodeStackBottom: -1.25,
+            ModelPath: "GenericEngines/models/SSTU/AJ10-190/SC-ENG-AJ10-190",
+            ModelFiles: [
+                "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190.mu",
+                "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190-DIFF.dds",
+                "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190-GLOW.dds",
+                "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190-NRM.dds"
+            ],
+            TextureDefinitions: "",
+            ThrustTransformName: "AJ10-190-ThrustTransform",
+            GimbalTransformName: "AJ10-190-GimbalYRing",
+            ModelName: "AJ10-190",
+            ModelType: EngineGroupType.IRL,
+            HiddenMuObjects: [],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/AJ10-190.png",
+            get ImageLabel(): string { return this.ModelName }
+        }, { //Model.F1
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: 2.446,
+            OriginalBaseWidth: 2.017,
+            PlumeSizeMultiplier: 2.1,
+            PlumePositionOffset: -0.7,
+            NodeStackTop: -0.01,
+            NodeStackBottom: -4.1,
+            ModelPath: "GenericEngines/models/SSTU/F1/SC-ENG-F1",
+            ModelFiles: [
+                "files/models/SSTU/F1/SC-ENG-F1.mu",
+                "files/models/SSTU/F1/SC-ENG-F1-DIFF.dds",
+                "files/models/SSTU/F1/SC-ENG-F1-GLOW.dds",
+                "files/models/SSTU/F1/SC-ENG-F1-NRM.dds"
+            ],
+            TextureDefinitions: "",
+            ThrustTransformName: "F1-ThrustTransform",
+            GimbalTransformName: "F1-Bell",
+            ModelName: "F-1",
+            ModelType: EngineGroupType.IRL,
+            HiddenMuObjects: [],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/F1.png",
+            get ImageLabel(): string { return this.ModelName }
+        }, { //Model.F1B
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: 2.165,
+            OriginalBaseWidth: 2.007,
+            PlumeSizeMultiplier: 1.86,
+            PlumePositionOffset: -0.6,
+            NodeStackTop: -0.0075,
+            NodeStackBottom: -3.25,
+            ModelPath: "GenericEngines/models/SSTU/F1/SC-ENG-F1B",
+            ModelFiles: [
+                "files/models/SSTU/F1B/SC-ENG-F1B.mu",
+                "files/models/SSTU/F1B/SC-ENG-F1B-DIFF.dds",
+                "files/models/SSTU/F1B/SC-ENG-F1B-GLOW.dds",
+                "files/models/SSTU/F1B/SC-ENG-F1B-NRM.dds"
+            ],
+            TextureDefinitions: "",
+            ThrustTransformName: "F1B-ThrustTransform",
+            GimbalTransformName: "F1B-Bell",
+            ModelName: "F-1B",
+            ModelType: EngineGroupType.IRL,
+            HiddenMuObjects: [],
+            CanAttachOnModel: false,
+            OriginalTankVolume: 0,
+            RadialAttachment: false,
+            RadialAttachmentPoint: 0,
+            ImageSource: "img/modelPreviews/F1B.png",
             get ImageLabel(): string { return this.ModelName }
         }
     ];

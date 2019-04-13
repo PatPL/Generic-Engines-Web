@@ -520,7 +520,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.2";
+Version.CurrentVersion = "Web.0.8.3 Prerelease";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -1430,12 +1430,12 @@ ModelInfo.models = [
         PlumePositionOffset: -0.09,
         NodeStackTop: 0.33,
         NodeStackBottom: -0.324,
-        ModelPath: "GenericEngines/models/SXT/AJ-10/model",
+        ModelPath: "GenericEngines/models/SXT/AJ10/model",
         ModelFiles: [
-            "files/models/SXT/AJ-10/model.mu",
-            "files/models/SXT/AJ-10/fairing.dds",
-            "files/models/SXT/AJ-10/model000.dds",
-            "files/models/SXT/AJ-10/model001.dds"
+            "files/models/SXT/AJ10/model.mu",
+            "files/models/SXT/AJ10/fairing.dds",
+            "files/models/SXT/AJ10/model000.dds",
+            "files/models/SXT/AJ10/model001.dds"
         ],
         TextureDefinitions: `
                 texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
@@ -1444,7 +1444,7 @@ ModelInfo.models = [
             `,
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "AJ-10-142",
+        ModelName: "AJ10-142",
         ModelType: EngineGroupType.IRL,
         HiddenMuObjects: [
             "Cylinder_002"
@@ -1595,7 +1595,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/F1.png",
+        ImageSource: "img/modelPreviews/Rhino.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.727,
@@ -2310,6 +2310,114 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Gamma8.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.66,
+        OriginalBaseWidth: 0.87,
+        PlumeSizeMultiplier: 1.45,
+        PlumePositionOffset: -0.5,
+        NodeStackTop: 0.02,
+        NodeStackBottom: -2.44,
+        ModelPath: "GenericEngines/models/SSTU/AJ10-137/SC-ENG-AJ10-137",
+        ModelFiles: [
+            "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137.mu",
+            "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137-DIFF.dds",
+            "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137-GLOW.dds",
+            "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "AJ10-137-ThrustTransform",
+        GimbalTransformName: "AJ10-137-Bell",
+        ModelName: "AJ10-137",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/AJ10-137.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.707,
+        OriginalBaseWidth: 0.366,
+        PlumeSizeMultiplier: 0.61,
+        PlumePositionOffset: -0.23,
+        NodeStackTop: -0.001,
+        NodeStackBottom: -1.25,
+        ModelPath: "GenericEngines/models/SSTU/AJ10-190/SC-ENG-AJ10-190",
+        ModelFiles: [
+            "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190.mu",
+            "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190-DIFF.dds",
+            "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190-GLOW.dds",
+            "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "AJ10-190-ThrustTransform",
+        GimbalTransformName: "AJ10-190-GimbalYRing",
+        ModelName: "AJ10-190",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/AJ10-190.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 2.446,
+        OriginalBaseWidth: 2.017,
+        PlumeSizeMultiplier: 2.1,
+        PlumePositionOffset: -0.7,
+        NodeStackTop: -0.01,
+        NodeStackBottom: -4.1,
+        ModelPath: "GenericEngines/models/SSTU/F1/SC-ENG-F1",
+        ModelFiles: [
+            "files/models/SSTU/F1/SC-ENG-F1.mu",
+            "files/models/SSTU/F1/SC-ENG-F1-DIFF.dds",
+            "files/models/SSTU/F1/SC-ENG-F1-GLOW.dds",
+            "files/models/SSTU/F1/SC-ENG-F1-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "F1-ThrustTransform",
+        GimbalTransformName: "F1-Bell",
+        ModelName: "F-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/F1.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 2.165,
+        OriginalBaseWidth: 2.007,
+        PlumeSizeMultiplier: 1.86,
+        PlumePositionOffset: -0.6,
+        NodeStackTop: -0.0075,
+        NodeStackBottom: -3.25,
+        ModelPath: "GenericEngines/models/SSTU/F1/SC-ENG-F1B",
+        ModelFiles: [
+            "files/models/SSTU/F1B/SC-ENG-F1B.mu",
+            "files/models/SSTU/F1B/SC-ENG-F1B-DIFF.dds",
+            "files/models/SSTU/F1B/SC-ENG-F1B-GLOW.dds",
+            "files/models/SSTU/F1B/SC-ENG-F1B-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "F1B-ThrustTransform",
+        GimbalTransformName: "F1B-Bell",
+        ModelName: "F-1B",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/F1B.png",
         get ImageLabel() { return this.ModelName; }
     }
 ];
@@ -3709,7 +3817,7 @@ class Engine {
         `;
     }
     GetHiddenObjectsConfig() {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
         let output = "";
         modelInfo.HiddenMuObjects.forEach(m => {
             output += `
@@ -3725,7 +3833,7 @@ class Engine {
         return output;
     }
     GetModelConfig() {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
         let heightScale = this.Height / modelInfo.OriginalHeight;
         let widthScale = this.Width / heightScale / (this.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
         let attachmentNode = (modelInfo.RadialAttachment ?
@@ -3813,7 +3921,7 @@ class Engine {
         `;
     }
     GetTankSizeEstimate() {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
         let output = modelInfo.OriginalTankVolume;
         output *= (Math.pow((this.GetBaseWidth() / modelInfo.OriginalBaseWidth), 2));
         output *= this.Height / modelInfo.OriginalHeight;
@@ -3900,7 +4008,7 @@ class Engine {
             this.GimbalPY == defaultConfig.GimbalPY);
     }
     GetGimbalConfig() {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
         if (this.AdvancedGimbal) {
             return `
                 MODULE
@@ -3979,7 +4087,7 @@ class Engine {
             return this.Width;
         }
         else {
-            let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+            let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
             return this.Width * modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
         }
     }
@@ -4306,7 +4414,7 @@ var Model;
     Model[Model["Thruster"] = 3] = "Thruster";
     Model[Model["Aestus"] = 4] = "Aestus";
     Model[Model["IonThruster"] = 5] = "IonThruster";
-    Model[Model["F1"] = 6] = "F1";
+    Model[Model["Rhino"] = 6] = "Rhino";
     Model[Model["RD0105T"] = 7] = "RD0105T";
     Model[Model["SRBLong"] = 8] = "SRBLong";
     Model[Model["RT5"] = 9] = "RT5";
@@ -4331,6 +4439,10 @@ var Model;
     Model[Model["RD0120"] = 28] = "RD0120";
     Model[Model["Gamma2"] = 29] = "Gamma2";
     Model[Model["Gamma8"] = 30] = "Gamma8";
+    Model[Model["AJ10_137"] = 31] = "AJ10_137";
+    Model[Model["AJ10_190"] = 32] = "AJ10_190";
+    Model[Model["F1"] = 33] = "F1";
+    Model[Model["F1B"] = 34] = "F1B";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {
@@ -4803,7 +4915,7 @@ class Exporter {
         return output;
     }
     static RegularEngineConfig(engine, allEngines) {
-        let modelInfo = ModelInfo.GetModelInfo(engine.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
         return `
             PART
             {
@@ -4845,7 +4957,7 @@ class Exporter {
                 MODULE
                 {
                     name = ModuleEngines
-                    thrustVectorTransformName = thrustTransform
+                    thrustVectorTransformName = ${modelInfo.ThrustTransformName}
                     exhaustDamage = True
                     allowShutdown = ${engine.EngineVariant != EngineType.Solid}
                     useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
@@ -4880,7 +4992,7 @@ class Exporter {
                     fxMax = 0.5
                     maxDistance = 30
                     falloff = 1.7
-                    thrustTransformName = thrustTransform
+                    thrustTransformName = ${modelInfo.ThrustTransformName}
                 }
             }
 

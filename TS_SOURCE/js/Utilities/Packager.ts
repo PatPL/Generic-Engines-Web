@@ -27,6 +27,7 @@ class Packager {
         let exportBoxContainer = document.getElementById ("export-box-container")!;
         let exportStatusElement = document.getElementById ("export-status")!;
         let toDownload: number;
+        let latestData: Uint8Array | null = null;
         exportBoxContainer.innerHTML = "";
         
         let RequestRound = 0;
@@ -38,8 +39,11 @@ class Packager {
         document.getElementById ("export-abort")!.onclick = () => {
             fetchAborter.abort ();
             RequestRound++;
-            callback (null);
+            if (this.IsWorking) {
+                callback (null);
+            }
             this.IsWorking = false;
+            latestData = null;
             this.StatusWindowElement.style.display = "none";
         }
         
@@ -77,11 +81,19 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString ();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files`;
+                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (Might take over a minute)`;
                 let thisRequest = ++RequestRound;
+                let zipStart = new Date ().getTime ();
                 FileIO.ZipBlobs ("GenericEngines", blobs, zipData => {
+                    console.log (`Zipped in ${(new Date ().getTime () - zipStart).toLocaleString ("us").replace (/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
-                        exportStatusElement.innerHTML = "Done";
+                        latestData = zipData;
+                        exportStatusElement.innerHTML = "Done. <button>Redownload finished zip</button>";
+                        exportStatusElement.querySelector ("button")!.onclick = () => {
+                            if (latestData) {
+                                callback (latestData);
+                            }
+                        }
                         this.IsWorking = false;
                         callback (zipData);
                     }

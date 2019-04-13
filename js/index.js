@@ -520,7 +520,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.2";
+Version.CurrentVersion = "Web.0.8.3";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -1430,12 +1430,12 @@ ModelInfo.models = [
         PlumePositionOffset: -0.09,
         NodeStackTop: 0.33,
         NodeStackBottom: -0.324,
-        ModelPath: "GenericEngines/models/SXT/AJ-10/model",
+        ModelPath: "GenericEngines/models/SXT/AJ10/model",
         ModelFiles: [
-            "files/models/SXT/AJ-10/model.mu",
-            "files/models/SXT/AJ-10/fairing.dds",
-            "files/models/SXT/AJ-10/model000.dds",
-            "files/models/SXT/AJ-10/model001.dds"
+            "files/models/SXT/AJ10/model.mu",
+            "files/models/SXT/AJ10/fairing.dds",
+            "files/models/SXT/AJ10/model000.dds",
+            "files/models/SXT/AJ10/model001.dds"
         ],
         TextureDefinitions: `
                 texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
@@ -1444,7 +1444,7 @@ ModelInfo.models = [
             `,
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "AJ-10-142",
+        ModelName: "AJ10-142",
         ModelType: EngineGroupType.IRL,
         HiddenMuObjects: [
             "Cylinder_002"
@@ -1595,7 +1595,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/F1.png",
+        ImageSource: "img/modelPreviews/Rhino.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.727,
@@ -2311,6 +2311,760 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Gamma8.png",
         get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.66,
+        OriginalBaseWidth: 0.87,
+        PlumeSizeMultiplier: 1.45,
+        PlumePositionOffset: -0.5,
+        NodeStackTop: 0.02,
+        NodeStackBottom: -2.44,
+        ModelPath: "GenericEngines/models/SSTU/AJ10-137/SC-ENG-AJ10-137",
+        ModelFiles: [
+            "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137.mu",
+            "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137-DIFF.dds",
+            "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137-GLOW.dds",
+            "files/models/SSTU/AJ10-137/SC-ENG-AJ10-137-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "AJ10-137-ThrustTransform",
+        GimbalTransformName: "AJ10-137-Bell",
+        ModelName: "AJ10-137",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/AJ10_137.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.707,
+        OriginalBaseWidth: 0.366,
+        PlumeSizeMultiplier: 0.61,
+        PlumePositionOffset: -0.23,
+        NodeStackTop: -0.001,
+        NodeStackBottom: -1.25,
+        ModelPath: "GenericEngines/models/SSTU/AJ10-190/SC-ENG-AJ10-190",
+        ModelFiles: [
+            "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190.mu",
+            "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190-DIFF.dds",
+            "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190-GLOW.dds",
+            "files/models/SSTU/AJ10-190/SC-ENG-AJ10-190-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "AJ10-190-ThrustTransform",
+        GimbalTransformName: "AJ10-190-GimbalYRing",
+        ModelName: "AJ10-190",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/AJ10_190.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 2.446,
+        OriginalBaseWidth: 2.017,
+        PlumeSizeMultiplier: 2.1,
+        PlumePositionOffset: -0.7,
+        NodeStackTop: -0.01,
+        NodeStackBottom: -4.1,
+        ModelPath: "GenericEngines/models/SSTU/F1/SC-ENG-F1",
+        ModelFiles: [
+            "files/models/SSTU/F1/SC-ENG-F1.mu",
+            "files/models/SSTU/F1/SC-ENG-F1-DIFF.dds",
+            "files/models/SSTU/F1/SC-ENG-F1-GLOW.dds",
+            "files/models/SSTU/F1/SC-ENG-F1-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "F1-ThrustTransform",
+        GimbalTransformName: "F1-Bell",
+        ModelName: "F-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/F1.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 2.165,
+        OriginalBaseWidth: 2.007,
+        PlumeSizeMultiplier: 1.86,
+        PlumePositionOffset: -0.6,
+        NodeStackTop: -0.0075,
+        NodeStackBottom: -3.25,
+        ModelPath: "GenericEngines/models/SSTU/F1B/SC-ENG-F1B",
+        ModelFiles: [
+            "files/models/SSTU/F1B/SC-ENG-F1B.mu",
+            "files/models/SSTU/F1B/SC-ENG-F1B-DIFF.dds",
+            "files/models/SSTU/F1B/SC-ENG-F1B-GLOW.dds",
+            "files/models/SSTU/F1B/SC-ENG-F1B-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "F1B-ThrustTransform",
+        GimbalTransformName: "F1B-Bell",
+        ModelName: "F-1B",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/F1B.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.757,
+        OriginalBaseWidth: 0.97,
+        PlumeSizeMultiplier: 0.66,
+        PlumePositionOffset: -0.3,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -1.68,
+        ModelPath: "GenericEngines/models/SSTU/H-1/SC-ENG-H-1",
+        ModelFiles: [
+            "files/models/SSTU/H-1/SC-ENG-H-1.mu",
+            "files/models/SSTU/H-1/SC-ENG-H-1-DIFF.dds",
+            "files/models/SSTU/H-1/SC-ENG-H-1-GLOW.dds",
+            "files/models/SSTU/H-1/SC-ENG-H-1-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "H-1-ThrustTransform",
+        GimbalTransformName: "H-1-Bell",
+        ModelName: "H-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/H1.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.332,
+        OriginalBaseWidth: 0.841,
+        PlumeSizeMultiplier: 1.2,
+        PlumePositionOffset: -0.42,
+        NodeStackTop: -0.01,
+        NodeStackBottom: -2.1,
+        ModelPath: "GenericEngines/models/SSTU/J-2/SC-ENG-J-2",
+        ModelFiles: [
+            "files/models/SSTU/J-2/SC-ENG-J-2.mu",
+            "files/models/SSTU/J-2/SC-ENG-J-2-DIFF.dds",
+            "files/models/SSTU/J-2/SC-ENG-J-2-GLOW.dds",
+            "files/models/SSTU/J-2/SC-ENG-J-2-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "J-2-ThrustTransform",
+        GimbalTransformName: "J-2-Bell",
+        ModelName: "J-2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/J2.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.943,
+        OriginalBaseWidth: 1.575,
+        PlumeSizeMultiplier: 1.75,
+        PlumePositionOffset: -0.7,
+        NodeStackTop: -0.02,
+        NodeStackBottom: -3.22,
+        ModelPath: "GenericEngines/models/SSTU/J-2X/SC-ENG-J-2X",
+        ModelFiles: [
+            "files/models/SSTU/J-2X/SC-ENG-J-2X.mu",
+            "files/models/SSTU/J-2X/SC-ENG-J-2X-DIFF.dds",
+            "files/models/SSTU/J-2X/SC-ENG-J-2X-GLOW.dds",
+            "files/models/SSTU/J-2X/SC-ENG-J-2X-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "J-2X-ThrustTransform",
+        GimbalTransformName: "J-2X-Bell",
+        ModelName: "J-2X",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/J2X.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.512,
+        OriginalBaseWidth: 0.303,
+        PlumeSizeMultiplier: 0.43,
+        PlumePositionOffset: -0.15,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -0.86,
+        ModelPath: "GenericEngines/models/SSTU/LM/SC-ENG-LMAE",
+        ModelFiles: [
+            "files/models/SSTU/LM/SC-ENG-LMAE.mu",
+            "files/models/SSTU/LM/SC-ENG-LM-DIFF.dds",
+            "files/models/SSTU/LM/SC-ENG-LM-GLOW.dds",
+            "files/models/SSTU/LM/SC-ENG-LM-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "LMAE-ThrustTransform",
+        GimbalTransformName: "LMAE-ThrustTransform",
+        ModelName: "Lunar Module Ascent Engine",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LMAE.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.904,
+        OriginalBaseWidth: 0.612,
+        PlumeSizeMultiplier: 0.8,
+        PlumePositionOffset: -0.3,
+        NodeStackTop: -0.01,
+        NodeStackBottom: -1.5,
+        ModelPath: "GenericEngines/models/SSTU/LM/SC-ENG-LMDE",
+        ModelFiles: [
+            "files/models/SSTU/LM/SC-ENG-LMDE.mu",
+            "files/models/SSTU/LM/SC-ENG-LM-DIFF.dds",
+            "files/models/SSTU/LM/SC-ENG-LM-GLOW.dds",
+            "files/models/SSTU/LM/SC-ENG-LM-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "LMDE-ThrustTransform",
+        GimbalTransformName: "LMDE-GimbalFrame",
+        ModelName: "Lunar Module Descent Engine",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LMDE.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.412,
+        OriginalBaseWidth: 0.838,
+        PlumeSizeMultiplier: 0.35,
+        PlumePositionOffset: -0.12,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -1.18,
+        ModelPath: "GenericEngines/models/SSTU/LR-81/SC-ENG-LR-81-8048",
+        ModelFiles: [
+            "files/models/SSTU/LR-81/SC-ENG-LR-81-8048.mu",
+            "files/models/SSTU/LR-81/SC-ENG-LR-81-DIFF.dds",
+            "files/models/SSTU/LR-81/SC-ENG-LR-81-GLOW.dds",
+            "files/models/SSTU/LR-81/SC-ENG-LR-81-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "LR-81-8048-ThrustTransform",
+        GimbalTransformName: "LR-81-8048-Gimbal",
+        ModelName: "Bell 8048",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Bell8048.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.611,
+        OriginalBaseWidth: 0.838,
+        PlumeSizeMultiplier: 0.53,
+        PlumePositionOffset: -0.22,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -1.46,
+        ModelPath: "GenericEngines/models/SSTU/LR-81/SC-ENG-LR-81-8096",
+        ModelFiles: [
+            "files/models/SSTU/LR-81/SC-ENG-LR-81-8096.mu",
+            "files/models/SSTU/LR-81/SC-ENG-LR-81-DIFF.dds",
+            "files/models/SSTU/LR-81/SC-ENG-LR-81-GLOW.dds",
+            "files/models/SSTU/LR-81/SC-ENG-LR-81-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "LR-81-8096-ThrustTransform",
+        GimbalTransformName: "LR-81-8096-Gimbal",
+        ModelName: "Bell 8096",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Bell8096.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.597,
+        OriginalBaseWidth: 0.74,
+        PlumeSizeMultiplier: 0.53,
+        PlumePositionOffset: -0.18,
+        NodeStackTop: -0.015,
+        NodeStackBottom: -1.3,
+        ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1A",
+        ModelFiles: [
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-1A.mu",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-DIFF.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-GLOW.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "Merlin-1A-ThrustTransform",
+        GimbalTransformName: "Merlin-1A-Bell",
+        ModelName: "Merlin 1A",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Merlin1A.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.599,
+        OriginalBaseWidth: 0.73,
+        PlumeSizeMultiplier: 0.54,
+        PlumePositionOffset: -0.18,
+        NodeStackTop: -0.015,
+        NodeStackBottom: -1.39,
+        ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1B",
+        ModelFiles: [
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-1B.mu",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-DIFF.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-GLOW.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "Merlin-1B-ThrustTransform",
+        GimbalTransformName: "Merlin-1B-Bell",
+        ModelName: "Merlin 1B",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Merlin1B.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.599,
+        OriginalBaseWidth: 0.73,
+        PlumeSizeMultiplier: 1.4,
+        PlumePositionOffset: -0.66,
+        NodeStackTop: -0.015,
+        NodeStackBottom: -2.87,
+        ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1BV",
+        ModelFiles: [
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-1BV.mu",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-DIFF.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-GLOW.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "Merlin-1BV-ThrustTransform",
+        GimbalTransformName: "Merlin-1BV-Bell",
+        ModelName: "Merlin 1B Vacuum",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Merlin1BV.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.601,
+        OriginalBaseWidth: 0.73,
+        PlumeSizeMultiplier: 0.53,
+        PlumePositionOffset: -0.2,
+        NodeStackTop: -0.015,
+        NodeStackBottom: -1.39,
+        ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1D",
+        ModelFiles: [
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-1D.mu",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-DIFF.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-GLOW.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "Merlin-1D-ThrustTransform",
+        GimbalTransformName: "Merlin-1D-Bell",
+        ModelName: "Merlin 1D",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Merlin1D.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.601,
+        OriginalBaseWidth: 0.73,
+        PlumeSizeMultiplier: 1.4,
+        PlumePositionOffset: -0.5,
+        NodeStackTop: -0.015,
+        NodeStackBottom: -2.88,
+        ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1DV",
+        ModelFiles: [
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-1DV.mu",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-DIFF.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-GLOW.dds",
+            "files/models/SSTU/Merlin-1/SC-ENG-Merlin-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "Merlin-1DV-ThrustTransform",
+        GimbalTransformName: "Merlin-1DV-Bell",
+        ModelName: "Merlin 1D Vacuum",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Merlin1DV.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.471,
+        OriginalBaseWidth: 1.235,
+        PlumeSizeMultiplier: 0.42,
+        PlumePositionOffset: -0.145,
+        NodeStackTop: -0.0075,
+        NodeStackBottom: -1.78,
+        ModelPath: "GenericEngines/models/SSTU/RD-107/SC-ENG-RD-107X",
+        ModelFiles: [
+            "files/models/SSTU/RD-107/SC-ENG-RD-107X.mu",
+            "files/models/SSTU/RD-107/SC-ENG-RD-107-DIFF.dds",
+            "files/models/SSTU/RD-107/SC-ENG-RD-107-GLOW.dds",
+            "files/models/SSTU/RD-107/SC-ENG-RD-107-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RD-107X-ThrustTransform",
+        GimbalTransformName: "RD-107X-ThrustTransform",
+        ModelName: "RD-107",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD107.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.964,
+        OriginalBaseWidth: 2.49,
+        PlumeSizeMultiplier: 0.85,
+        PlumePositionOffset: -0.3,
+        NodeStackTop: -0.01,
+        NodeStackBottom: -2.41,
+        ModelPath: "GenericEngines/models/SSTU/RD-180/SC-ENG-RD-171",
+        ModelFiles: [
+            "files/models/SSTU/RD-180/SC-ENG-RD-171.mu",
+            "files/models/SSTU/RD-180/SC-ENG-RD-180-DIFF.dds",
+            "files/models/SSTU/RD-180/SC-ENG-RD-180-GLOW.dds",
+            "files/models/SSTU/RD-180/SC-ENG-RD-180-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RD-171-ThrustTransform",
+        GimbalTransformName: "RD-171-GimbalRing",
+        ModelName: "RD-171",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD171.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.963,
+        OriginalBaseWidth: 2.237,
+        PlumeSizeMultiplier: 0.85,
+        PlumePositionOffset: -0.3,
+        NodeStackTop: -0.001,
+        NodeStackBottom: -2.41,
+        ModelPath: "GenericEngines/models/SSTU/RD-180/SC-ENG-RD-180",
+        ModelFiles: [
+            "files/models/SSTU/RD-180/SC-ENG-RD-180.mu",
+            "files/models/SSTU/RD-180/SC-ENG-RD-180-DIFF.dds",
+            "files/models/SSTU/RD-180/SC-ENG-RD-180-GLOW.dds",
+            "files/models/SSTU/RD-180/SC-ENG-RD-180-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RD-180-ThrustTransform",
+        GimbalTransformName: "RD-180-GimbalRing",
+        ModelName: "RD-180",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD180.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.964,
+        OriginalBaseWidth: 1.67,
+        PlumeSizeMultiplier: 0.85,
+        PlumePositionOffset: -0.27,
+        NodeStackTop: -0.001,
+        NodeStackBottom: -2.41,
+        ModelPath: "GenericEngines/models/SSTU/RD-180/SC-ENG-RD-181",
+        ModelFiles: [
+            "files/models/SSTU/RD-180/SC-ENG-RD-181.mu",
+            "files/models/SSTU/RD-180/SC-ENG-RD-180-DIFF.dds",
+            "files/models/SSTU/RD-180/SC-ENG-RD-180-GLOW.dds",
+            "files/models/SSTU/RD-180/SC-ENG-RD-180-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RD-181-ThrustTransform",
+        GimbalTransformName: "RD-181-GimbalRing",
+        ModelName: "RD-181",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD181.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.671,
+        OriginalBaseWidth: 0.568,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: -0.145,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -1.14,
+        ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10A-3",
+        ModelFiles: [
+            "files/models/SSTU/RL10/SC-ENG-RL10A-3.mu",
+            "files/models/SSTU/RL10/SC-ENG-RL10-DIFF.dds",
+            "files/models/SSTU/RL10/SC-ENG-RL10-GLOW.dds",
+            "files/models/SSTU/RL10/SC-ENG-RL10-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RL10A-3-ThrustTransform",
+        GimbalTransformName: "RL10A-3-Bell",
+        ModelName: "RL10A-3",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RL10A3.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.798,
+        OriginalBaseWidth: 0.568,
+        PlumeSizeMultiplier: 0.71,
+        PlumePositionOffset: -0.27,
+        NodeStackTop: -0.01,
+        NodeStackBottom: -1.49,
+        ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10A-4",
+        ModelFiles: [
+            "files/models/SSTU/RL10/SC-ENG-RL10A-4.mu",
+            "files/models/SSTU/RL10/SC-ENG-RL10-DIFF.dds",
+            "files/models/SSTU/RL10/SC-ENG-RL10-GLOW.dds",
+            "files/models/SSTU/RL10/SC-ENG-RL10-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RL10A-4-ThrustTransform",
+        GimbalTransformName: "RL10A-4-Bell",
+        ModelName: "RL10A-4",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RL10A4.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.25,
+        OriginalBaseWidth: 0.568,
+        PlumeSizeMultiplier: 0.22,
+        PlumePositionOffset: -0.1,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -0.75,
+        ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10A-5",
+        ModelFiles: [
+            "files/models/SSTU/RL10/SC-ENG-RL10A-5.mu",
+            "files/models/SSTU/RL10/SC-ENG-RL10-DIFF.dds",
+            "files/models/SSTU/RL10/SC-ENG-RL10-GLOW.dds",
+            "files/models/SSTU/RL10/SC-ENG-RL10-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RL10A-5-ThrustTransform",
+        GimbalTransformName: "RL10A-5-Bell",
+        ModelName: "RL10A-5",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RL10A5.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.27,
+        OriginalBaseWidth: 0.568,
+        PlumeSizeMultiplier: 1.13,
+        PlumePositionOffset: -0.5,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -2.56,
+        ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10B-2",
+        ModelFiles: [
+            "files/models/SSTU/RL10/SC-ENG-RL10B-2.mu",
+            "files/models/SSTU/RL10/SC-ENG-RL10-DIFF.dds",
+            "files/models/SSTU/RL10/SC-ENG-RL10-GLOW.dds",
+            "files/models/SSTU/RL10/SC-ENG-RL10-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RL10B-2-ThrustTransform",
+        GimbalTransformName: "RL10B-2-Bell",
+        ModelName: "RL10B-2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RL10B2.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.569,
+        OriginalBaseWidth: 1.373,
+        PlumeSizeMultiplier: 1.4,
+        PlumePositionOffset: -0.5,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -2.7,
+        ModelPath: "GenericEngines/models/SSTU/RS-25/SC-ENG-RS-25",
+        ModelFiles: [
+            "files/models/SSTU/RS-25/SC-ENG-RS-25.mu",
+            "files/models/SSTU/RS-25/SC-ENG-RS-25-DIFF.dds",
+            "files/models/SSTU/RS-25/SC-ENG-RS-25-GLOW.dds",
+            "files/models/SSTU/RS-25/SC-ENG-RS-25-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RS-25-ThrustTransform",
+        GimbalTransformName: "RS-25-Bell",
+        ModelName: "RS-25",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RS25_2.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.61,
+        OriginalBaseWidth: 2.272,
+        PlumeSizeMultiplier: 1.43,
+        PlumePositionOffset: -0.6,
+        NodeStackTop: -0.01,
+        NodeStackBottom: -3.6,
+        ModelPath: "GenericEngines/models/SSTU/RS-68/SC-ENG-RS-68",
+        ModelFiles: [
+            "files/models/SSTU/RS-68/SC-ENG-RS-68.mu",
+            "files/models/SSTU/RS-68/SC-ENG-RS-68-DIFF.dds",
+            "files/models/SSTU/RS-68/SC-ENG-RS-68-GLOW.dds",
+            "files/models/SSTU/RS-68/SC-ENG-RS-68-NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "RS-68-ThrustTransform",
+        GimbalTransformName: "RS-68-Bell",
+        ModelName: "RS-68",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RS68.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.128,
+        OriginalBaseWidth: 0.09,
+        PlumeSizeMultiplier: 0.11,
+        PlumePositionOffset: 0.03,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -0.365,
+        ModelPath: "GenericEngines/models/SSTU/SuperDraco/SC-ENG-SuperDraco",
+        ModelFiles: [
+            "files/models/SSTU/SuperDraco/SC-ENG-SuperDraco.mu",
+            "files/models/SSTU/SuperDraco/SC-ENG-SuperDraco-DIFF.dds",
+            "files/models/SSTU/SuperDraco/SC-ENG-SuperDraco-GLOW.png"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "SuperDraco-ThrustTransform",
+        GimbalTransformName: "SuperDraco-ThrustTransform",
+        ModelName: "SuperDraco",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/SuperDraco.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.321,
+        OriginalBaseWidth: 0.09,
+        PlumeSizeMultiplier: 0.29,
+        PlumePositionOffset: 0.2,
+        NodeStackTop: -0.005,
+        NodeStackBottom: -0.615,
+        ModelPath: "GenericEngines/models/SSTU/SuperDraco/SC-ENG-SuperDraco-L",
+        ModelFiles: [
+            "files/models/SSTU/SuperDraco/SC-ENG-SuperDraco-L.mu",
+            "files/models/SSTU/SuperDraco/SC-ENG-SuperDraco-DIFF.dds",
+            "files/models/SSTU/SuperDraco/SC-ENG-SuperDraco-GLOW.png"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "SuperDraco-L-ThrustTransform",
+        GimbalTransformName: "SuperDraco-L-ThrustTransform",
+        ModelName: "SuperDraco Vacuum",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/SuperDracoV.png",
+        get ImageLabel() { return this.ModelName; }
     }
 ];
 ModelInfo.Dropdown = ModelInfo.BuildDropdown();
@@ -2932,13 +3686,13 @@ class Engine {
                     tmp.style.padding = "0";
                     let grid = document.createElement("div");
                     grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "62px auto 2px";
+                    grid.style.gridTemplateColumns = "62px auto 2px 24px 2px";
                     grid.style.gridTemplateRows = "24px 24px 2px 24px";
                     grid.style.gridTemplateAreas = `
-                    "a a z"
-                    "b c z"
-                    "x x x"
-                    "e f y"
+                    "a a a a z"
+                    "b c c c z"
+                    "x x x x x"
+                    "e f q g y"
                 `;
                     grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: a;"></div>
@@ -2946,6 +3700,7 @@ class Engine {
                     <div style="grid-area: c;"><input style="width: calc(100%);"></div>
                     <div class="content-cell-content" style="grid-area: e;">Height</div>
                     <div style="grid-area: f;"><input style="width: calc(100%);"></div>
+                    <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="img/button/aspectRatio.png"></div>
                 `;
                     let checkboxLabel = document.createElement("span");
                     let checkbox = document.createElement("input");
@@ -2958,6 +3713,11 @@ class Engine {
                     });
                     grid.children[0].appendChild(checkbox);
                     grid.children[0].appendChild(checkboxLabel);
+                    grid.querySelector("img").addEventListener("click", () => {
+                        let inputs = grid.querySelectorAll("input");
+                        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
+                        inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false);
+                    });
                     tmp.appendChild(grid);
                     return tmp;
                 }, ApplyValueToEditElement: (e) => {
@@ -3709,7 +4469,7 @@ class Engine {
         `;
     }
     GetHiddenObjectsConfig() {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
         let output = "";
         modelInfo.HiddenMuObjects.forEach(m => {
             output += `
@@ -3725,7 +4485,7 @@ class Engine {
         return output;
     }
     GetModelConfig() {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
         let heightScale = this.Height / modelInfo.OriginalHeight;
         let widthScale = this.Width / heightScale / (this.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
         let attachmentNode = (modelInfo.RadialAttachment ?
@@ -3813,7 +4573,7 @@ class Engine {
         `;
     }
     GetTankSizeEstimate() {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
         let output = modelInfo.OriginalTankVolume;
         output *= (Math.pow((this.GetBaseWidth() / modelInfo.OriginalBaseWidth), 2));
         output *= this.Height / modelInfo.OriginalHeight;
@@ -3900,7 +4660,7 @@ class Engine {
             this.GimbalPY == defaultConfig.GimbalPY);
     }
     GetGimbalConfig() {
-        let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
         if (this.AdvancedGimbal) {
             return `
                 MODULE
@@ -3979,7 +4739,7 @@ class Engine {
             return this.Width;
         }
         else {
-            let modelInfo = ModelInfo.GetModelInfo(this.ModelID);
+            let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
             return this.Width * modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
         }
     }
@@ -4306,7 +5066,7 @@ var Model;
     Model[Model["Thruster"] = 3] = "Thruster";
     Model[Model["Aestus"] = 4] = "Aestus";
     Model[Model["IonThruster"] = 5] = "IonThruster";
-    Model[Model["F1"] = 6] = "F1";
+    Model[Model["Rhino"] = 6] = "Rhino";
     Model[Model["RD0105T"] = 7] = "RD0105T";
     Model[Model["SRBLong"] = 8] = "SRBLong";
     Model[Model["RT5"] = 9] = "RT5";
@@ -4331,6 +5091,34 @@ var Model;
     Model[Model["RD0120"] = 28] = "RD0120";
     Model[Model["Gamma2"] = 29] = "Gamma2";
     Model[Model["Gamma8"] = 30] = "Gamma8";
+    Model[Model["AJ10_137"] = 31] = "AJ10_137";
+    Model[Model["AJ10_190"] = 32] = "AJ10_190";
+    Model[Model["F1"] = 33] = "F1";
+    Model[Model["F1B"] = 34] = "F1B";
+    Model[Model["H1"] = 35] = "H1";
+    Model[Model["J2"] = 36] = "J2";
+    Model[Model["J2X"] = 37] = "J2X";
+    Model[Model["LMAE"] = 38] = "LMAE";
+    Model[Model["LMDE"] = 39] = "LMDE";
+    Model[Model["Bell8048"] = 40] = "Bell8048";
+    Model[Model["Bell8096"] = 41] = "Bell8096";
+    Model[Model["Merlin1A"] = 42] = "Merlin1A";
+    Model[Model["Merlin1B"] = 43] = "Merlin1B";
+    Model[Model["Merlin1BV"] = 44] = "Merlin1BV";
+    Model[Model["Merlin1D"] = 45] = "Merlin1D";
+    Model[Model["Merlin1DV"] = 46] = "Merlin1DV";
+    Model[Model["RD107"] = 47] = "RD107";
+    Model[Model["RD171"] = 48] = "RD171";
+    Model[Model["RD180"] = 49] = "RD180";
+    Model[Model["RD181"] = 50] = "RD181";
+    Model[Model["RL10A3"] = 51] = "RL10A3";
+    Model[Model["RL10A4"] = 52] = "RL10A4";
+    Model[Model["RL10A5"] = 53] = "RL10A5";
+    Model[Model["RL10B2"] = 54] = "RL10B2";
+    Model[Model["RS25_2"] = 55] = "RS25_2";
+    Model[Model["RS68"] = 56] = "RS68";
+    Model[Model["SuperDraco"] = 57] = "SuperDraco";
+    Model[Model["SuperDracoV"] = 58] = "SuperDracoV";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {
@@ -4734,6 +5522,62 @@ class DebugLists {
             newEngine.UseBaseWidth = true;
             newEngine.Width = 2;
             newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
+            newEngine.Gimbal = 15;
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            newEngine.PlumeID = Plume.Hypergolic_Lower;
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
+        MainEngineTable.RebuildTable();
+    }
+    static AppendListForModelTest() {
+        let toAppend = [];
+        let modelCount = Object.getOwnPropertyNames(Model).length / 2;
+        let newEngine;
+        let modelInfo;
+        for (let i = 0; i < modelCount; ++i) {
+            newEngine = new Engine();
+            modelInfo = ModelInfo.GetModelInfo(i);
+            newEngine.Active = true;
+            newEngine.ID = `MODEL-${("0000" + i).slice(-4)}-1`;
+            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model check 1 - ${modelInfo.ModelName}`;
+            newEngine.ModelID = i;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = 2;
+            newEngine.Height = 2;
+            newEngine.Gimbal = 15;
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            newEngine.PlumeID = Plume.Hypergolic_Lower;
+            toAppend.push(newEngine);
+            newEngine = new Engine();
+            modelInfo = ModelInfo.GetModelInfo(i);
+            newEngine.Active = true;
+            newEngine.ID = `MODEL-${("0000" + i).slice(-4)}-2`;
+            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model check 2 - ${modelInfo.ModelName}`;
+            newEngine.ModelID = i;
+            newEngine.UseBaseWidth = false;
+            newEngine.Width = 2;
+            newEngine.Height = 2;
+            newEngine.Gimbal = 15;
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            newEngine.PlumeID = Plume.Kerolox_Vernier;
+            toAppend.push(newEngine);
+            newEngine = new Engine();
+            modelInfo = ModelInfo.GetModelInfo(i);
+            newEngine.Active = true;
+            newEngine.ID = `MODEL-${("0000" + i).slice(-4)}-3`;
+            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model check 3 - ${modelInfo.ModelName}`;
+            newEngine.ModelID = i;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = 2;
+            newEngine.Height = 6;
+            newEngine.Gimbal = 15;
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            newEngine.PlumeID = Plume.Solid_Lower;
             toAppend.push(newEngine);
         }
         MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
@@ -4803,7 +5647,7 @@ class Exporter {
         return output;
     }
     static RegularEngineConfig(engine, allEngines) {
-        let modelInfo = ModelInfo.GetModelInfo(engine.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
         return `
             PART
             {
@@ -4845,7 +5689,7 @@ class Exporter {
                 MODULE
                 {
                     name = ModuleEngines
-                    thrustVectorTransformName = thrustTransform
+                    thrustVectorTransformName = ${modelInfo.ThrustTransformName}
                     exhaustDamage = True
                     allowShutdown = ${engine.EngineVariant != EngineType.Solid}
                     useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
@@ -4880,7 +5724,7 @@ class Exporter {
                     fxMax = 0.5
                     maxDistance = 30
                     falloff = 1.7
-                    thrustTransformName = thrustTransform
+                    thrustTransformName = ${modelInfo.ThrustTransformName}
                 }
             }
 
@@ -5144,6 +5988,7 @@ class Packager {
         let exportBoxContainer = document.getElementById("export-box-container");
         let exportStatusElement = document.getElementById("export-status");
         let toDownload;
+        let latestData = null;
         exportBoxContainer.innerHTML = "";
         let RequestRound = 0;
         let fetchAborter = new AbortController();
@@ -5153,8 +5998,11 @@ class Packager {
         document.getElementById("export-abort").onclick = () => {
             fetchAborter.abort();
             RequestRound++;
-            callback(null);
+            if (this.IsWorking) {
+                callback(null);
+            }
             this.IsWorking = false;
+            latestData = null;
             this.StatusWindowElement.style.display = "none";
         };
         let blobs = {};
@@ -5180,11 +6028,19 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files`;
+                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (Might take over a minute)`;
                 let thisRequest = ++RequestRound;
+                let zipStart = new Date().getTime();
                 FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
+                    console.log(`Zipped in ${(new Date().getTime() - zipStart).toLocaleString("us").replace(/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
-                        exportStatusElement.innerHTML = "Done";
+                        latestData = zipData;
+                        exportStatusElement.innerHTML = "Done. <button>Redownload finished zip</button>";
+                        exportStatusElement.querySelector("button").onclick = () => {
+                            if (latestData) {
+                                callback(latestData);
+                            }
+                        };
                         this.IsWorking = false;
                         callback(zipData);
                     }

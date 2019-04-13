@@ -58,7 +58,7 @@ class Exporter {
     }
     
     private static RegularEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
-        let modelInfo = ModelInfo.GetModelInfo (engine.ModelID);
+        let modelInfo = ModelInfo.GetModelInfo (engine.GetModelID ());
         return `
             PART
             {
@@ -100,7 +100,7 @@ class Exporter {
                 MODULE
                 {
                     name = ModuleEngines
-                    thrustVectorTransformName = thrustTransform
+                    thrustVectorTransformName = ${modelInfo.ThrustTransformName}
                     exhaustDamage = True
                     allowShutdown = ${engine.EngineVariant != EngineType.Solid}
                     useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
@@ -135,7 +135,7 @@ class Exporter {
                     fxMax = 0.5
                     maxDistance = 30
                     falloff = 1.7
-                    thrustTransformName = thrustTransform
+                    thrustTransformName = ${modelInfo.ThrustTransformName}
                 }
             }
 

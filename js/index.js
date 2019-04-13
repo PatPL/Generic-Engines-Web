@@ -5982,6 +5982,7 @@ class Packager {
         let exportBoxContainer = document.getElementById("export-box-container");
         let exportStatusElement = document.getElementById("export-status");
         let toDownload;
+        let latestData = null;
         exportBoxContainer.innerHTML = "";
         let RequestRound = 0;
         let fetchAborter = new AbortController();
@@ -5991,8 +5992,11 @@ class Packager {
         document.getElementById("export-abort").onclick = () => {
             fetchAborter.abort();
             RequestRound++;
-            callback(null);
+            if (this.IsWorking) {
+                callback(null);
+            }
             this.IsWorking = false;
+            latestData = null;
             this.StatusWindowElement.style.display = "none";
         };
         let blobs = {};
@@ -6024,7 +6028,13 @@ class Packager {
                 FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
                     console.log(`Zipped in ${(new Date().getTime() - zipStart).toLocaleString("us").replace(/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
-                        exportStatusElement.innerHTML = "Done";
+                        latestData = zipData;
+                        exportStatusElement.innerHTML = "Done. <button>Redownload finished zip</button>";
+                        exportStatusElement.querySelector("button").onclick = () => {
+                            if (latestData) {
+                                callback(latestData);
+                            }
+                        };
                         this.IsWorking = false;
                         callback(zipData);
                     }

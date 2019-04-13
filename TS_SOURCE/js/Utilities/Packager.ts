@@ -77,9 +77,11 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString ();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files`;
+                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (Might take over a minute)`;
                 let thisRequest = ++RequestRound;
+                let zipStart = new Date ().getTime ();
                 FileIO.ZipBlobs ("GenericEngines", blobs, zipData => {
+                    console.log (`Zipped in ${(new Date ().getTime () - zipStart).toLocaleString ("us").replace (/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
                         exportStatusElement.innerHTML = "Done";
                         this.IsWorking = false;

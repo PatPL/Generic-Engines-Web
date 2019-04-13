@@ -947,7 +947,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/AJ10-137.png",
+            ImageSource: "img/modelPreviews/AJ10_137.png",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.AJ10_190
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -974,7 +974,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/AJ10-190.png",
+            ImageSource: "img/modelPreviews/AJ10_190.png",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.F1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },

@@ -203,6 +203,7 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-download-list")!.addEventListener ("click", DownloadListButton_Click);
     document.getElementById ("option-button-cache-list")!.addEventListener ("click", CacheListButton_Click);
     document.getElementById ("option-button-clipboard-list")!.addEventListener ("click", ClipboardListButton_Click);
+    document.getElementById ("option-button-clipboard-selection")!.addEventListener ("click", ClipboardSelectionButton_Click);
     
     document.getElementById ("option-button-open-upload-list")!.addEventListener ("click", OpenUploadButton_Click);
     document.getElementById ("option-button-append-upload-list")!.addEventListener ("click", AppendUploadButton_Click);
@@ -215,6 +216,20 @@ addEventListener ("DOMContentLoaded", () => {
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
     MainEngineTable.RebuildTable ();
     
+});
+
+window.addEventListener ("keydown", e => {
+    // Copy selected engines (Ctrl + C)
+    if (e.ctrlKey && e.key == "c") {
+        ClipboardSelectionButton_Click ();
+    }
+    
+    // Paste engines from clipboard (Ctrl + V)
+    // Due to security reasons, you can't read clipboard using JS. User has to paste the value.
+    // Real shortcut is therefore (Ctrl + V + V + Enter)
+    if (e.ctrlKey && e.key == "v") {
+        AppendClipboardButton_Click ();
+    }
 });
 
 function NewButton_Click () {
@@ -388,6 +403,34 @@ function ClipboardListButton_Click () {
         FullscreenWindows["save-box"].style.display = "none";
     } else {
         Notifier.Warn ("There was an error. Engine list was NOT copied to clipboard");
+    }
+}
+
+function ClipboardSelectionButton_Click () {
+    if (MainEngineTable.SelectedRows.length <= 0) {
+        Notifier.Warn ("No engine was selected. Select some engines and try again");
+        return;
+    }
+    
+    let Engines: Engine[] = [];
+    
+    MainEngineTable.SelectedRows.forEach (index => {
+        Engines.push (MainEngineTable.Rows[index][1]);
+    });
+    
+    console.log (Engines);
+    
+    let data = Serializer.SerializeMany (Engines);
+    
+    let b64: string = BitConverter.ByteArrayToBase64 (data);
+    
+    let success = FileIO.ToClipboard (b64);
+    
+    if (success) {
+        Notifier.Info ("Selected engines have been copied to clipboard");
+        FullscreenWindows["save-box"].style.display = "none";
+    } else {
+        Notifier.Warn ("There was an error. Selected engines were NOT copied to clipboard");
     }
 }
 

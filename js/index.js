@@ -3095,6 +3095,321 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SuperDracoV.png",
         get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.824,
+        OriginalBaseWidth: 0.824,
+        PlumeSizeMultiplier: 0.72,
+        PlumePositionOffset: 0,
+        NodeStackTop: 1.082,
+        NodeStackBottom: -0.46,
+        ModelPath: "GenericEngines/models/FRE/FRE1/FRE-1",
+        ModelFiles: [
+            "files/models/FRE/FRE-1/FRE-1.mu",
+            "files/models/FRE/FRE-1/FRE-1Texture_Compiled.dds",
+            "files/models/FRE/FRE-1/FRE-1TextureEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "FRE-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/FRE1.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.38,
+        OriginalBaseWidth: 1.824,
+        PlumeSizeMultiplier: 0.33,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.59,
+        NodeStackBottom: -0.7,
+        ModelPath: "GenericEngines/models/FRE/FRE-2/FRE-2",
+        ModelFiles: [
+            "files/models/FRE/FRE-2/FRE-2.mu",
+            "files/models/FRE/FRE-2/FRE-2Texture_Compiled.dds",
+            "files/models/FRE/FRE-2/FRE-2TextureEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "FRE-2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/FRE2.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.517,
+        OriginalBaseWidth: 0.72,
+        PlumeSizeMultiplier: 1.35,
+        PlumePositionOffset: 0.6,
+        NodeStackTop: 1.52,
+        NodeStackBottom: -1.2,
+        ModelPath: "GenericEngines/models/FRE/LE-5/LE-5",
+        ModelFiles: [
+            "files/models/FRE/LE-5/LE-5.mu",
+            "files/models/FRE/LE-5/LE-5Bump_NRM.dds",
+            "files/models/FRE/LE-5/LE-5Emissive.dds",
+            "files/models/FRE/LE-5/LE-5Texture_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LE-5",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LE5.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 2.12,
+        OriginalBaseWidth: 1.164,
+        PlumeSizeMultiplier: 1.85,
+        PlumePositionOffset: 0.3,
+        NodeStackTop: 2.1,
+        NodeStackBottom: -1.3,
+        ModelPath: "GenericEngines/models/FRE/LE-7/LE-7",
+        ModelFiles: [
+            "files/models/FRE/LE-7/LE-7.mu",
+            "files/models/FRE/LE-7/LE-7Bump_NRM.dds",
+            "files/models/FRE/LE-7/LE-7Emissive.dds",
+            "files/models/FRE/LE-7/LE-7Texture_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LE-7",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LE7.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.55,
+        OriginalBaseWidth: 0.6,
+        PlumeSizeMultiplier: 0.48,
+        PlumePositionOffset: 0.11,
+        NodeStackTop: 0.625,
+        NodeStackBottom: -0.4,
+        ModelPath: "GenericEngines/models/FRE/RD-843/RD-843",
+        ModelFiles: [
+            "files/models/FRE/RD-843/RD-843.mu",
+            "files/models/FRE/RD-843/TextureRD-843_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "RD-843",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD843.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.322,
+        OriginalBaseWidth: 0.506,
+        PlumeSizeMultiplier: 0.28,
+        PlumePositionOffset: 0.14,
+        NodeStackTop: 0.348,
+        NodeStackBottom: -0.405,
+        ModelPath: "GenericEngines/models/FRE/Rutherford/Rutherford",
+        ModelFiles: [
+            "files/models/FRE/Rutherford/Rutherford.mu",
+            "files/models/FRE/Rutherford/RutherfordEmissive.dds",
+            "files/models/FRE/Rutherford/RutherfordMountTexture_Compiled.dds",
+            "files/models/FRE/Rutherford/RutherfordNozzleTexture_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "Rutherford",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Rutherford.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.679,
+        OriginalBaseWidth: 0.506,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: 0.57,
+        NodeStackTop: 0.348,
+        NodeStackBottom: -1.015,
+        ModelPath: "GenericEngines/models/FRE/Rutherford/RutherfordVac",
+        ModelFiles: [
+            "files/models/FRE/Rutherford/RutherfordVac.mu",
+            "files/models/FRE/Rutherford/RutherfordVacEmissive.dds",
+            "files/models/FRE/Rutherford/RutherfordMountTexture_Compiled.dds",
+            "files/models/FRE/Rutherford/RutherfordVacNozzleTexture_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "Rutherford Vacuum",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Rutherford.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 2.326,
+        OriginalBaseWidth: 2.999,
+        PlumeSizeMultiplier: 2,
+        PlumePositionOffset: 0.88,
+        NodeStackTop: 5.33,
+        NodeStackBottom: -6.40,
+        ModelPath: "GenericEngines/models/FRE/VegaSRM/P80",
+        ModelFiles: [
+            "files/models/FRE/VegaSRM/P80.mu",
+            "files/models/FRE/VegaSRM/TextureP80_Compiled.dds",
+            "files/models/FRE/VegaSRM/VegaEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "P80",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 54649,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 1.5,
+        ImageSource: "img/modelPreviews/P80.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.036,
+        OriginalBaseWidth: 1.9,
+        PlumeSizeMultiplier: 0.9,
+        PlumePositionOffset: 0.32,
+        NodeStackTop: 1.7,
+        NodeStackBottom: -1.8,
+        ModelPath: "GenericEngines/models/FRE/VegaSRM/Zefiro9",
+        ModelFiles: [
+            "files/models/FRE/VegaSRM/Zefiro9.mu",
+            "files/models/FRE/VegaSRM/TextureZefiro9_Compiled.dds",
+            "files/models/FRE/VegaSRM/VegaEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Zefiro 9",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 4940,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.95,
+        ImageSource: "img/modelPreviews/Zefiro9.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.449,
+        OriginalBaseWidth: 1.9,
+        PlumeSizeMultiplier: 1.3,
+        PlumePositionOffset: 0.64,
+        NodeStackTop: 3.4,
+        NodeStackBottom: -4.18,
+        ModelPath: "GenericEngines/models/FRE/VegaSRM/Zefiro23",
+        ModelFiles: [
+            "files/models/FRE/VegaSRM/Zefiro23.mu",
+            "files/models/FRE/VegaSRM/TextureZefiro23_Compiled.dds",
+            "files/models/FRE/VegaSRM/VegaEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Zefiro 23",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 12267,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.95,
+        ImageSource: "img/modelPreviews/Zefiro23.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.944,
+        OriginalBaseWidth: 0.947,
+        PlumeSizeMultiplier: 0.8,
+        PlumePositionOffset: 1.55,
+        NodeStackTop: 1.6,
+        NodeStackBottom: -1.03,
+        ModelPath: "GenericEngines/models/FRE/Viking/VikingLower",
+        ModelFiles: [
+            "files/models/FRE/Viking/VikingLower.mu",
+            "files/models/FRE/Viking/TextureVikingLower_Compiled.dds",
+            "files/models/FRE/Viking/VikingLowerEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "Viking",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Viking.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.8,
+        OriginalBaseWidth: 0.947,
+        PlumeSizeMultiplier: 1.55,
+        PlumePositionOffset: 0.9,
+        NodeStackTop: 1.59,
+        NodeStackBottom: -2.04,
+        ModelPath: "GenericEngines/models/FRE/VikingVac/VikingUpper",
+        ModelFiles: [
+            "files/models/FRE/VikingVac/VikingUpper.mu",
+            "files/models/FRE/VikingVac/VikingUpperEmissive.dds",
+            "files/models/FRE/VikingVac/TextureVikingUpper_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "Viking Vacuum",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/VikingVac.png",
+        get ImageLabel() { return this.ModelName; }
     }
 ];
 ModelInfo.Dropdown = ModelInfo.BuildDropdown();
@@ -5730,6 +6045,18 @@ var Model;
     Model[Model["RS68"] = 56] = "RS68";
     Model[Model["SuperDraco"] = 57] = "SuperDraco";
     Model[Model["SuperDracoV"] = 58] = "SuperDracoV";
+    Model[Model["FRE1"] = 59] = "FRE1";
+    Model[Model["FRE2"] = 60] = "FRE2";
+    Model[Model["LE5"] = 61] = "LE5";
+    Model[Model["LE7"] = 62] = "LE7";
+    Model[Model["RD843"] = 63] = "RD843";
+    Model[Model["Rutherford"] = 64] = "Rutherford";
+    Model[Model["RutherfordVac"] = 65] = "RutherfordVac";
+    Model[Model["P80"] = 66] = "P80";
+    Model[Model["Zefiro9"] = 67] = "Zefiro9";
+    Model[Model["Zefiro23"] = 68] = "Zefiro23";
+    Model[Model["Viking"] = 69] = "Viking";
+    Model[Model["VikingVac"] = 70] = "VikingVac";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {

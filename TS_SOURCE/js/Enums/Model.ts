@@ -61,4 +61,19 @@ enum Model {
     SuperDraco,
     SuperDracoV,
     // /SSTU
+    
+    // FRE
+    FRE1,
+    FRE2,
+    LE5,
+    LE7,
+    RD843,
+    Rutherford,
+    RutherfordVac,
+    P80,
+    Zefiro9,
+    Zefiro23,
+    Viking, // VikingEarly is VikingLower with cone bell. They look almost the same, so I'm choosing the VikingLower
+    VikingVac,
+    // /FRE
 }

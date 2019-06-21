@@ -182,7 +182,8 @@ addEventListener ("DOMContentLoaded", () => {
         if (isNaN (x)) {
             break;
         }
-        TechNodeAutocomplete.innerHTML += `<option>${TechNode[x]}</option>`;
+        
+        TechNodeAutocomplete.innerHTML += `<option>${TechNodeNames.get (x)}</option>`;
     }
     document.body.appendChild (TechNodeAutocomplete);
     

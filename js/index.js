@@ -520,7 +520,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.3";
+Version.CurrentVersion = "Web.0.8.4 Dev";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -777,7 +777,7 @@ addEventListener("DOMContentLoaded", () => {
         if (isNaN(x)) {
             break;
         }
-        TechNodeAutocomplete.innerHTML += `<option>${TechNode[x]}</option>`;
+        TechNodeAutocomplete.innerHTML += `<option>${TechNodeNames.get(x)}</option>`;
     }
     document.body.appendChild(TechNodeAutocomplete);
     document.getElementById("option-button-new").addEventListener("click", NewButton_Click);
@@ -3283,6 +3283,583 @@ PlumeInfo.plumes = [
     }
 ];
 PlumeInfo.Dropdown = PlumeInfo.BuildDropdown();
+var TechNode;
+(function (TechNode) {
+    TechNode[TechNode["start"] = 0] = "start";
+    TechNode[TechNode["supersonicDev"] = 1] = "supersonicDev";
+    TechNode[TechNode["supersonicFlightRP0"] = 2] = "supersonicFlightRP0";
+    TechNode[TechNode["matureSupersonic"] = 3] = "matureSupersonic";
+    TechNode[TechNode["highSpeedFlight"] = 4] = "highSpeedFlight";
+    TechNode[TechNode["advancedJetEngines"] = 5] = "advancedJetEngines";
+    TechNode[TechNode["matureTurbofans"] = 6] = "matureTurbofans";
+    TechNode[TechNode["refinedTurbofans"] = 7] = "refinedTurbofans";
+    TechNode[TechNode["scramjetEngines"] = 8] = "scramjetEngines";
+    TechNode[TechNode["experimentalAircraft"] = 9] = "experimentalAircraft";
+    TechNode[TechNode["colonization2051Flight"] = 10] = "colonization2051Flight";
+    TechNode[TechNode["colonization2100Flight"] = 11] = "colonization2100Flight";
+    TechNode[TechNode["colonization2150Flight"] = 12] = "colonization2150Flight";
+    TechNode[TechNode["hypersonicFlightRP0"] = 13] = "hypersonicFlightRP0";
+    TechNode[TechNode["prototypeSpaceplanes"] = 14] = "prototypeSpaceplanes";
+    TechNode[TechNode["effectiveSpaceplanes"] = 15] = "effectiveSpaceplanes";
+    TechNode[TechNode["spaceShuttles"] = 16] = "spaceShuttles";
+    TechNode[TechNode["improvedSpaceplanes"] = 17] = "improvedSpaceplanes";
+    TechNode[TechNode["advancedSpaceplanes"] = 18] = "advancedSpaceplanes";
+    TechNode[TechNode["highTechSpaceplanes"] = 19] = "highTechSpaceplanes";
+    TechNode[TechNode["experimentalSpaceplanes"] = 20] = "experimentalSpaceplanes";
+    TechNode[TechNode["sstoSpaceplanes"] = 21] = "sstoSpaceplanes";
+    TechNode[TechNode["colonization2100Spaceplanes"] = 22] = "colonization2100Spaceplanes";
+    TechNode[TechNode["colonization2150Spaceplanes"] = 23] = "colonization2150Spaceplanes";
+    TechNode[TechNode["basicCapsules"] = 24] = "basicCapsules";
+    TechNode[TechNode["secondGenCapsules"] = 25] = "secondGenCapsules";
+    TechNode[TechNode["matureCapsules"] = 26] = "matureCapsules";
+    TechNode[TechNode["improvedCapsules"] = 27] = "improvedCapsules";
+    TechNode[TechNode["advancedCapsules"] = 28] = "advancedCapsules";
+    TechNode[TechNode["modernCapsules"] = 29] = "modernCapsules";
+    TechNode[TechNode["capsulesNF"] = 30] = "capsulesNF";
+    TechNode[TechNode["highTechCapsules"] = 31] = "highTechCapsules";
+    TechNode[TechNode["colonization2100Command"] = 32] = "colonization2100Command";
+    TechNode[TechNode["colonization2150Command"] = 33] = "colonization2150Command";
+    TechNode[TechNode["spaceStationPrototypes"] = 34] = "spaceStationPrototypes";
+    TechNode[TechNode["spaceStationDev"] = 35] = "spaceStationDev";
+    TechNode[TechNode["earlySpaceStations"] = 36] = "earlySpaceStations";
+    TechNode[TechNode["modularSpaceStations"] = 37] = "modularSpaceStations";
+    TechNode[TechNode["largeScaleOrbitalCon"] = 38] = "largeScaleOrbitalCon";
+    TechNode[TechNode["improvedOrbitalConstruction"] = 39] = "improvedOrbitalConstruction";
+    TechNode[TechNode["inflatableHabitats"] = 40] = "inflatableHabitats";
+    TechNode[TechNode["improvedHabitats"] = 41] = "improvedHabitats";
+    TechNode[TechNode["advancedHabitats"] = 42] = "advancedHabitats";
+    TechNode[TechNode["largeScaleHabitats"] = 43] = "largeScaleHabitats";
+    TechNode[TechNode["colonization2100SpaceStations"] = 44] = "colonization2100SpaceStations";
+    TechNode[TechNode["colonization2150SpaceStations"] = 45] = "colonization2150SpaceStations";
+    TechNode[TechNode["earlyFlightControl"] = 46] = "earlyFlightControl";
+    TechNode[TechNode["stabilityRP0"] = 47] = "stabilityRP0";
+    TechNode[TechNode["earlyDocking"] = 48] = "earlyDocking";
+    TechNode[TechNode["improvedFlightControl"] = 49] = "improvedFlightControl";
+    TechNode[TechNode["advancedFlightControl"] = 50] = "advancedFlightControl";
+    TechNode[TechNode["dockingCrewTransfer"] = 51] = "dockingCrewTransfer";
+    TechNode[TechNode["spaceStationControl"] = 52] = "spaceStationControl";
+    TechNode[TechNode["largeSpaceplaneControl"] = 53] = "largeSpaceplaneControl";
+    TechNode[TechNode["standardDockingPorts"] = 54] = "standardDockingPorts";
+    TechNode[TechNode["largeStationControl"] = 55] = "largeStationControl";
+    TechNode[TechNode["largeDockingPorts"] = 56] = "largeDockingPorts";
+    TechNode[TechNode["gridFins"] = 57] = "gridFins";
+    TechNode[TechNode["flightControlNF"] = 58] = "flightControlNF";
+    TechNode[TechNode["colonization2051Control"] = 59] = "colonization2051Control";
+    TechNode[TechNode["colonization2100Control"] = 60] = "colonization2100Control";
+    TechNode[TechNode["colonization2150Control"] = 61] = "colonization2150Control";
+    TechNode[TechNode["entryDescentLanding"] = 62] = "entryDescentLanding";
+    TechNode[TechNode["humanRatedEDL"] = 63] = "humanRatedEDL";
+    TechNode[TechNode["earlyLanding"] = 64] = "earlyLanding";
+    TechNode[TechNode["lunarRatedHeatshields"] = 65] = "lunarRatedHeatshields";
+    TechNode[TechNode["lunarLanding"] = 66] = "lunarLanding";
+    TechNode[TechNode["improvedLandingEngines"] = 67] = "improvedLandingEngines";
+    TechNode[TechNode["advancedUncrewedLanding"] = 68] = "advancedUncrewedLanding";
+    TechNode[TechNode["interplanetaryRovers"] = 69] = "interplanetaryRovers";
+    TechNode[TechNode["largeRoverDesigns"] = 70] = "largeRoverDesigns";
+    TechNode[TechNode["reusability"] = 71] = "reusability";
+    TechNode[TechNode["advancedLanding"] = 72] = "advancedLanding";
+    TechNode[TechNode["SIAD"] = 73] = "SIAD";
+    TechNode[TechNode["HIAD"] = 74] = "HIAD";
+    TechNode[TechNode["colonization2051EDL"] = 75] = "colonization2051EDL";
+    TechNode[TechNode["colonization2100EDL"] = 76] = "colonization2100EDL";
+    TechNode[TechNode["colonization2150EDL"] = 77] = "colonization2150EDL";
+    TechNode[TechNode["prototypeHydrolox"] = 78] = "prototypeHydrolox";
+    TechNode[TechNode["earlyHydrolox"] = 79] = "earlyHydrolox";
+    TechNode[TechNode["improvedHydrolox"] = 80] = "improvedHydrolox";
+    TechNode[TechNode["largeHydrolox"] = 81] = "largeHydrolox";
+    TechNode[TechNode["hydrolox1968"] = 82] = "hydrolox1968";
+    TechNode[TechNode["hydrolox1972"] = 83] = "hydrolox1972";
+    TechNode[TechNode["hydrolox1976"] = 84] = "hydrolox1976";
+    TechNode[TechNode["hydrolox1981"] = 85] = "hydrolox1981";
+    TechNode[TechNode["hydrolox1986"] = 86] = "hydrolox1986";
+    TechNode[TechNode["hydrolox1992"] = 87] = "hydrolox1992";
+    TechNode[TechNode["hydrolox1998"] = 88] = "hydrolox1998";
+    TechNode[TechNode["hydrolox2009"] = 89] = "hydrolox2009";
+    TechNode[TechNode["hydroloxNF"] = 90] = "hydroloxNF";
+    TechNode[TechNode["colonization2051Hydrolox"] = 91] = "colonization2051Hydrolox";
+    TechNode[TechNode["colonization2100Hydrolox"] = 92] = "colonization2100Hydrolox";
+    TechNode[TechNode["colonization2150Hydrolox"] = 93] = "colonization2150Hydrolox";
+    TechNode[TechNode["rocketryTesting"] = 94] = "rocketryTesting";
+    TechNode[TechNode["earlyRocketry"] = 95] = "earlyRocketry";
+    TechNode[TechNode["basicRocketryRP0"] = 96] = "basicRocketryRP0";
+    TechNode[TechNode["orbitalRocketry1956"] = 97] = "orbitalRocketry1956";
+    TechNode[TechNode["orbitalRocketry1958"] = 98] = "orbitalRocketry1958";
+    TechNode[TechNode["orbitalRocketry1959"] = 99] = "orbitalRocketry1959";
+    TechNode[TechNode["orbitalRocketry1960"] = 100] = "orbitalRocketry1960";
+    TechNode[TechNode["orbitalRocketry1961"] = 101] = "orbitalRocketry1961";
+    TechNode[TechNode["orbitalRocketry1962"] = 102] = "orbitalRocketry1962";
+    TechNode[TechNode["orbitalRocketry1963"] = 103] = "orbitalRocketry1963";
+    TechNode[TechNode["orbitalRocketry1964"] = 104] = "orbitalRocketry1964";
+    TechNode[TechNode["orbitalRocketry1965"] = 105] = "orbitalRocketry1965";
+    TechNode[TechNode["orbitalRocketry1966"] = 106] = "orbitalRocketry1966";
+    TechNode[TechNode["orbitalRocketry1967"] = 107] = "orbitalRocketry1967";
+    TechNode[TechNode["orbitalRocketry1970"] = 108] = "orbitalRocketry1970";
+    TechNode[TechNode["orbitalRocketry1972"] = 109] = "orbitalRocketry1972";
+    TechNode[TechNode["orbitalRocketry1976"] = 110] = "orbitalRocketry1976";
+    TechNode[TechNode["orbitalRocketry1981"] = 111] = "orbitalRocketry1981";
+    TechNode[TechNode["orbitalRocketry1986"] = 112] = "orbitalRocketry1986";
+    TechNode[TechNode["orbitalRocketry1992"] = 113] = "orbitalRocketry1992";
+    TechNode[TechNode["orbitalRocketry1998"] = 114] = "orbitalRocketry1998";
+    TechNode[TechNode["orbitalRocketry2004"] = 115] = "orbitalRocketry2004";
+    TechNode[TechNode["orbitalRocketry2009"] = 116] = "orbitalRocketry2009";
+    TechNode[TechNode["orbitalRocketry2014"] = 117] = "orbitalRocketry2014";
+    TechNode[TechNode["orbitalRocketryNF"] = 118] = "orbitalRocketryNF";
+    TechNode[TechNode["colonization2051Orbital"] = 119] = "colonization2051Orbital";
+    TechNode[TechNode["colonization2100Orbital"] = 120] = "colonization2100Orbital";
+    TechNode[TechNode["colonization2150Orbital"] = 121] = "colonization2150Orbital";
+    TechNode[TechNode["firstStagedCombustion"] = 122] = "firstStagedCombustion";
+    TechNode[TechNode["stagedCombustion1964"] = 123] = "stagedCombustion1964";
+    TechNode[TechNode["stagedCombustion1966"] = 124] = "stagedCombustion1966";
+    TechNode[TechNode["stagedCombustion1967"] = 125] = "stagedCombustion1967";
+    TechNode[TechNode["stagedCombustion1969"] = 126] = "stagedCombustion1969";
+    TechNode[TechNode["stagedCombustion1970"] = 127] = "stagedCombustion1970";
+    TechNode[TechNode["stagedCombustion1972"] = 128] = "stagedCombustion1972";
+    TechNode[TechNode["stagedCombustion1981"] = 129] = "stagedCombustion1981";
+    TechNode[TechNode["stagedCombustion1986"] = 130] = "stagedCombustion1986";
+    TechNode[TechNode["stagedCombustion1992"] = 131] = "stagedCombustion1992";
+    TechNode[TechNode["stagedCombustion1998"] = 132] = "stagedCombustion1998";
+    TechNode[TechNode["stagedCombustion2004"] = 133] = "stagedCombustion2004";
+    TechNode[TechNode["stagedCombustion2009"] = 134] = "stagedCombustion2009";
+    TechNode[TechNode["stagedCombustion2014"] = 135] = "stagedCombustion2014";
+    TechNode[TechNode["stagedCombustionNF"] = 136] = "stagedCombustionNF";
+    TechNode[TechNode["colonization2051Staged"] = 137] = "colonization2051Staged";
+    TechNode[TechNode["colonization2100Staged"] = 138] = "colonization2100Staged";
+    TechNode[TechNode["colonization2150Staged"] = 139] = "colonization2150Staged";
+    TechNode[TechNode["earlySolids"] = 140] = "earlySolids";
+    TechNode[TechNode["solids1956"] = 141] = "solids1956";
+    TechNode[TechNode["solids1958"] = 142] = "solids1958";
+    TechNode[TechNode["solids1959"] = 143] = "solids1959";
+    TechNode[TechNode["solids1962"] = 144] = "solids1962";
+    TechNode[TechNode["solids1964"] = 145] = "solids1964";
+    TechNode[TechNode["solids1966"] = 146] = "solids1966";
+    TechNode[TechNode["solids1967"] = 147] = "solids1967";
+    TechNode[TechNode["solids1969"] = 148] = "solids1969";
+    TechNode[TechNode["solids1972"] = 149] = "solids1972";
+    TechNode[TechNode["solids1976"] = 150] = "solids1976";
+    TechNode[TechNode["solids1981"] = 151] = "solids1981";
+    TechNode[TechNode["solids1986"] = 152] = "solids1986";
+    TechNode[TechNode["solids1992"] = 153] = "solids1992";
+    TechNode[TechNode["solids1998"] = 154] = "solids1998";
+    TechNode[TechNode["solids2009"] = 155] = "solids2009";
+    TechNode[TechNode["solidsNF"] = 156] = "solidsNF";
+    TechNode[TechNode["colonization2051Solid"] = 157] = "colonization2051Solid";
+    TechNode[TechNode["colonization2100Solid"] = 158] = "colonization2100Solid";
+    TechNode[TechNode["colonization2150Solid"] = 159] = "colonization2150Solid";
+    TechNode[TechNode["earlyElecPropulsion"] = 160] = "earlyElecPropulsion";
+    TechNode[TechNode["basicElecPropulsion"] = 161] = "basicElecPropulsion";
+    TechNode[TechNode["improvedElecPropulsion"] = 162] = "improvedElecPropulsion";
+    TechNode[TechNode["advancedElecPropulsion"] = 163] = "advancedElecPropulsion";
+    TechNode[TechNode["colonization2051ElecProp"] = 164] = "colonization2051ElecProp";
+    TechNode[TechNode["colonization2100ElecProp"] = 165] = "colonization2100ElecProp";
+    TechNode[TechNode["colonization2150ElecProp"] = 166] = "colonization2150ElecProp";
+    TechNode[TechNode["prototypeNuclearPropulsion"] = 167] = "prototypeNuclearPropulsion";
+    TechNode[TechNode["earlyNuclearPropulsion"] = 168] = "earlyNuclearPropulsion";
+    TechNode[TechNode["basicNuclearPropulsion"] = 169] = "basicNuclearPropulsion";
+    TechNode[TechNode["improvedNuclearPropulsion"] = 170] = "improvedNuclearPropulsion";
+    TechNode[TechNode["advancedNuclearPropulsion"] = 171] = "advancedNuclearPropulsion";
+    TechNode[TechNode["efficientNuclearPropulsion"] = 172] = "efficientNuclearPropulsion";
+    TechNode[TechNode["nuclearPropulsionNF"] = 173] = "nuclearPropulsionNF";
+    TechNode[TechNode["nuclearPropulsionNF2"] = 174] = "nuclearPropulsionNF2";
+    TechNode[TechNode["colonization2051NuclearProp"] = 175] = "colonization2051NuclearProp";
+    TechNode[TechNode["colonization2100NuclearProp"] = 176] = "colonization2100NuclearProp";
+    TechNode[TechNode["colonization2150NuclearProp"] = 177] = "colonization2150NuclearProp";
+    TechNode[TechNode["crewSurvivability"] = 178] = "crewSurvivability";
+    TechNode[TechNode["earlyLifeSupport"] = 179] = "earlyLifeSupport";
+    TechNode[TechNode["lifeSupportISRU"] = 180] = "lifeSupportISRU";
+    TechNode[TechNode["basicLifeSupport"] = 181] = "basicLifeSupport";
+    TechNode[TechNode["improvedLifeSupport"] = 182] = "improvedLifeSupport";
+    TechNode[TechNode["longTermLifeSupport"] = 183] = "longTermLifeSupport";
+    TechNode[TechNode["advancedLifeSupport"] = 184] = "advancedLifeSupport";
+    TechNode[TechNode["efficientLifeSupport"] = 185] = "efficientLifeSupport";
+    TechNode[TechNode["lifeSupportNF"] = 186] = "lifeSupportNF";
+    TechNode[TechNode["colonization2051LifeSupport"] = 187] = "colonization2051LifeSupport";
+    TechNode[TechNode["colonization2100LifeSupport"] = 188] = "colonization2100LifeSupport";
+    TechNode[TechNode["colonization2150LifeSupport"] = 189] = "colonization2150LifeSupport";
+    TechNode[TechNode["postWarMaterialsScience"] = 190] = "postWarMaterialsScience";
+    TechNode[TechNode["earlyMaterialsScience"] = 191] = "earlyMaterialsScience";
+    TechNode[TechNode["materialsScienceSatellite"] = 192] = "materialsScienceSatellite";
+    TechNode[TechNode["materialsScienceHuman"] = 193] = "materialsScienceHuman";
+    TechNode[TechNode["materialsScienceAdvCapsules"] = 194] = "materialsScienceAdvCapsules";
+    TechNode[TechNode["materialsScienceLunar"] = 195] = "materialsScienceLunar";
+    TechNode[TechNode["materialsScienceSpaceStation"] = 196] = "materialsScienceSpaceStation";
+    TechNode[TechNode["materialsScienceSpaceplanes"] = 197] = "materialsScienceSpaceplanes";
+    TechNode[TechNode["materialsScienceLongTerm"] = 198] = "materialsScienceLongTerm";
+    TechNode[TechNode["materialsScienceInternational"] = 199] = "materialsScienceInternational";
+    TechNode[TechNode["materialsScienceCommercial"] = 200] = "materialsScienceCommercial";
+    TechNode[TechNode["materialsScienceNF"] = 201] = "materialsScienceNF";
+    TechNode[TechNode["materialsScienceColonization"] = 202] = "materialsScienceColonization";
+    TechNode[TechNode["electronicsSatellite"] = 203] = "electronicsSatellite";
+    TechNode[TechNode["electronicsHuman"] = 204] = "electronicsHuman";
+    TechNode[TechNode["electronicsAdvCapsules"] = 205] = "electronicsAdvCapsules";
+    TechNode[TechNode["electronicsLunar"] = 206] = "electronicsLunar";
+    TechNode[TechNode["electronicsSpaceStation"] = 207] = "electronicsSpaceStation";
+    TechNode[TechNode["electronicsSpaceplanes"] = 208] = "electronicsSpaceplanes";
+    TechNode[TechNode["electronicsLongTerm"] = 209] = "electronicsLongTerm";
+    TechNode[TechNode["electronicsInternational"] = 210] = "electronicsInternational";
+    TechNode[TechNode["electronicsCommercial"] = 211] = "electronicsCommercial";
+    TechNode[TechNode["electronicsNF"] = 212] = "electronicsNF";
+    TechNode[TechNode["electronicsColonization"] = 213] = "electronicsColonization";
+    TechNode[TechNode["firstRTG"] = 214] = "firstRTG";
+    TechNode[TechNode["earlyRTG"] = 215] = "earlyRTG";
+    TechNode[TechNode["nuclearFissionReactors"] = 216] = "nuclearFissionReactors";
+    TechNode[TechNode["improvedRTG"] = 217] = "improvedRTG";
+    TechNode[TechNode["multihundredWattRTG"] = 218] = "multihundredWattRTG";
+    TechNode[TechNode["gphsRTG"] = 219] = "gphsRTG";
+    TechNode[TechNode["improvedNuclearPower"] = 220] = "improvedNuclearPower";
+    TechNode[TechNode["advancedNuclearPower"] = 221] = "advancedNuclearPower";
+    TechNode[TechNode["modernNuclearPower"] = 222] = "modernNuclearPower";
+    TechNode[TechNode["nuclearPowerNF"] = 223] = "nuclearPowerNF";
+    TechNode[TechNode["colonization2051NuclearPower"] = 224] = "colonization2051NuclearPower";
+    TechNode[TechNode["colonization2100NuclearPower"] = 225] = "colonization2100NuclearPower";
+    TechNode[TechNode["colonization2150NuclearPower"] = 226] = "colonization2150NuclearPower";
+    TechNode[TechNode["primitiveSolarPanels"] = 227] = "primitiveSolarPanels";
+    TechNode[TechNode["earlyPower"] = 228] = "earlyPower";
+    TechNode[TechNode["basicPower"] = 229] = "basicPower";
+    TechNode[TechNode["improvedPower"] = 230] = "improvedPower";
+    TechNode[TechNode["lunarRatedPower"] = 231] = "lunarRatedPower";
+    TechNode[TechNode["spaceStationSolarPanels"] = 232] = "spaceStationSolarPanels";
+    TechNode[TechNode["maturePower"] = 233] = "maturePower";
+    TechNode[TechNode["largeScaleSolarArrays"] = 234] = "largeScaleSolarArrays";
+    TechNode[TechNode["advancedPower"] = 235] = "advancedPower";
+    TechNode[TechNode["modernPower"] = 236] = "modernPower";
+    TechNode[TechNode["powerNF"] = 237] = "powerNF";
+    TechNode[TechNode["colonization2051Power"] = 238] = "colonization2051Power";
+    TechNode[TechNode["colonization2100Power"] = 239] = "colonization2100Power";
+    TechNode[TechNode["colonization2150Power"] = 240] = "colonization2150Power";
+    TechNode[TechNode["lunarRangeComms"] = 241] = "lunarRangeComms";
+    TechNode[TechNode["interplanetaryComms"] = 242] = "interplanetaryComms";
+    TechNode[TechNode["improvedComms"] = 243] = "improvedComms";
+    TechNode[TechNode["advancedComms"] = 244] = "advancedComms";
+    TechNode[TechNode["deepSpaceComms"] = 245] = "deepSpaceComms";
+    TechNode[TechNode["largeScaleComms"] = 246] = "largeScaleComms";
+    TechNode[TechNode["massiveScaleComms"] = 247] = "massiveScaleComms";
+    TechNode[TechNode["efficientComms"] = 248] = "efficientComms";
+    TechNode[TechNode["modernComms"] = 249] = "modernComms";
+    TechNode[TechNode["commsNF"] = 250] = "commsNF";
+    TechNode[TechNode["colonization2051Comms"] = 251] = "colonization2051Comms";
+    TechNode[TechNode["colonization2100Comms"] = 252] = "colonization2100Comms";
+    TechNode[TechNode["colonization2150Comms"] = 253] = "colonization2150Comms";
+    TechNode[TechNode["postWarAvionics"] = 254] = "postWarAvionics";
+    TechNode[TechNode["avionicsPrototypes"] = 255] = "avionicsPrototypes";
+    TechNode[TechNode["earlyAvionics"] = 256] = "earlyAvionics";
+    TechNode[TechNode["basicAvionics"] = 257] = "basicAvionics";
+    TechNode[TechNode["interplanetaryProbes"] = 258] = "interplanetaryProbes";
+    TechNode[TechNode["improvedAvionics"] = 259] = "improvedAvionics";
+    TechNode[TechNode["matureAvionics"] = 260] = "matureAvionics";
+    TechNode[TechNode["largeScaleAvionics"] = 261] = "largeScaleAvionics";
+    TechNode[TechNode["advancedAvionics"] = 262] = "advancedAvionics";
+    TechNode[TechNode["nextGenAvionics"] = 263] = "nextGenAvionics";
+    TechNode[TechNode["longTermAvionics"] = 264] = "longTermAvionics";
+    TechNode[TechNode["internationalAvionics"] = 265] = "internationalAvionics";
+    TechNode[TechNode["modernAvionics"] = 266] = "modernAvionics";
+    TechNode[TechNode["avionicsNF"] = 267] = "avionicsNF";
+    TechNode[TechNode["colonization2051Avionics"] = 268] = "colonization2051Avionics";
+    TechNode[TechNode["colonization2100Avionics"] = 269] = "colonization2100Avionics";
+    TechNode[TechNode["colonization2150Avionics"] = 270] = "colonization2150Avionics";
+    TechNode[TechNode["earlyScience"] = 271] = "earlyScience";
+    TechNode[TechNode["scienceSatellite"] = 272] = "scienceSatellite";
+    TechNode[TechNode["scienceHuman"] = 273] = "scienceHuman";
+    TechNode[TechNode["scienceAdvCapsules"] = 274] = "scienceAdvCapsules";
+    TechNode[TechNode["scienceLunar"] = 275] = "scienceLunar";
+    TechNode[TechNode["surfaceScience"] = 276] = "surfaceScience";
+    TechNode[TechNode["deepSpaceScience"] = 277] = "deepSpaceScience";
+    TechNode[TechNode["scienceExploration"] = 278] = "scienceExploration";
+    TechNode[TechNode["sampleReturnScience"] = 279] = "sampleReturnScience";
+    TechNode[TechNode["advancedScience"] = 280] = "advancedScience";
+    TechNode[TechNode["advancedSurfaceScience"] = 281] = "advancedSurfaceScience";
+    TechNode[TechNode["scienceNF"] = 282] = "scienceNF";
+    TechNode[TechNode["colonization2051Science"] = 283] = "colonization2051Science";
+    TechNode[TechNode["colonization2100Science"] = 284] = "colonization2100Science";
+    TechNode[TechNode["colonization2150Science"] = 285] = "colonization2150Science";
+})(TechNode || (TechNode = {}));
+const TechNodeNames = new Map([
+    [TechNode.start, "Start"],
+    [TechNode.supersonicDev, "Supersonic Plane Development"],
+    [TechNode.supersonicFlightRP0, "Supersonic Flight"],
+    [TechNode.matureSupersonic, "Mature Supersonic Flight"],
+    [TechNode.highSpeedFlight, "High Speed Flight"],
+    [TechNode.advancedJetEngines, "Advanced Jet Engines"],
+    [TechNode.matureTurbofans, "Mature Turbofans"],
+    [TechNode.refinedTurbofans, "Refined Turbofans"],
+    [TechNode.scramjetEngines, "Scramjet Engines"],
+    [TechNode.experimentalAircraft, "Experimental Aircraft Engines"],
+    [TechNode.colonization2051Flight, "2051-2099 Regular Flight"],
+    [TechNode.colonization2100Flight, "2100-2149 Regular Flight"],
+    [TechNode.colonization2150Flight, "2150+ Regular Flight"],
+    [TechNode.hypersonicFlightRP0, "Hypersonic Flight"],
+    [TechNode.prototypeSpaceplanes, "Prototype Spaceplaces"],
+    [TechNode.effectiveSpaceplanes, "Effective Spaceplanes"],
+    [TechNode.spaceShuttles, "Space Shuttles"],
+    [TechNode.improvedSpaceplanes, "Improved Spaceplanes"],
+    [TechNode.advancedSpaceplanes, "Advanced Spaceplanes"],
+    [TechNode.highTechSpaceplanes, "High-Tech Spaceplanes"],
+    [TechNode.experimentalSpaceplanes, "Experimental Spaceplanes"],
+    [TechNode.sstoSpaceplanes, "SSTO Spaceplanes"],
+    [TechNode.colonization2100Spaceplanes, "2100-2149 Spaceplanes"],
+    [TechNode.colonization2150Spaceplanes, "2150+ Spaceplanes"],
+    [TechNode.basicCapsules, "Basic Capsules"],
+    [TechNode.secondGenCapsules, "Second Generation Capsules"],
+    [TechNode.matureCapsules, "Mature Capsules"],
+    [TechNode.improvedCapsules, "Improved Capsules"],
+    [TechNode.advancedCapsules, "Advanced Capsules"],
+    [TechNode.modernCapsules, "Modern Capsules"],
+    [TechNode.capsulesNF, "Near Future Capsules"],
+    [TechNode.highTechCapsules, "High-Tech Capsules"],
+    [TechNode.colonization2100Command, "2100-2149 Command Modules"],
+    [TechNode.colonization2150Command, "2150+ Command Modules"],
+    [TechNode.spaceStationPrototypes, "Space Station Prototypes"],
+    [TechNode.spaceStationDev, "Space Station Development"],
+    [TechNode.earlySpaceStations, "Early Space Stations"],
+    [TechNode.modularSpaceStations, "Modular Space Stations"],
+    [TechNode.largeScaleOrbitalCon, "Large Scale Orbital Construction"],
+    [TechNode.improvedOrbitalConstruction, "Improved Orbital Construction"],
+    [TechNode.inflatableHabitats, "Inflatable Habitats"],
+    [TechNode.improvedHabitats, "Improved Habitats"],
+    [TechNode.advancedHabitats, "Advanced Habitats"],
+    [TechNode.largeScaleHabitats, "Large Scale Habitats"],
+    [TechNode.colonization2100SpaceStations, "2100-2149 Space Stations"],
+    [TechNode.colonization2150SpaceStations, "2150+ Space Stations"],
+    [TechNode.earlyFlightControl, "Early Flight Control"],
+    [TechNode.stabilityRP0, "Stability"],
+    [TechNode.earlyDocking, "Early Docking Procedures"],
+    [TechNode.improvedFlightControl, "Improved Flight Control"],
+    [TechNode.advancedFlightControl, "Advanced Flight Control"],
+    [TechNode.dockingCrewTransfer, "Docking and Crew Transfer"],
+    [TechNode.spaceStationControl, "Space Station Attitude Control"],
+    [TechNode.largeSpaceplaneControl, "Large Spaceplane Control"],
+    [TechNode.standardDockingPorts, "Standardized Docking Ports"],
+    [TechNode.largeStationControl, "Large Station Attitude Control"],
+    [TechNode.largeDockingPorts, "Large Docking Ports"],
+    [TechNode.gridFins, "Grid Fins"],
+    [TechNode.flightControlNF, "Near Future Flight Control"],
+    [TechNode.colonization2051Control, "2051-2099 Control"],
+    [TechNode.colonization2100Control, "2100-2149 Control"],
+    [TechNode.colonization2150Control, "2150+ Control"],
+    [TechNode.entryDescentLanding, "Entry, Descent and Landing"],
+    [TechNode.humanRatedEDL, "Human Rated EDL"],
+    [TechNode.earlyLanding, "Early Landing"],
+    [TechNode.lunarRatedHeatshields, "Lunar Rated Heatshields"],
+    [TechNode.lunarLanding, "Lunar Landing"],
+    [TechNode.improvedLandingEngines, "Improved Landing Engines"],
+    [TechNode.advancedUncrewedLanding, "Advanced Uncrewed Landing"],
+    [TechNode.interplanetaryRovers, "Interplanetary Rovers"],
+    [TechNode.largeRoverDesigns, "Large Rover Designs"],
+    [TechNode.reusability, "Reusability"],
+    [TechNode.advancedLanding, "Advanced Landing"],
+    [TechNode.SIAD, "Supersonic Inflatable Aerodynamic Decelerator"],
+    [TechNode.HIAD, "Hypersonic Inflatable Aerodynamic Decelerator"],
+    [TechNode.colonization2051EDL, "2051-2099 EDL"],
+    [TechNode.colonization2100EDL, "2100-2149 EDL"],
+    [TechNode.colonization2150EDL, "2150+ EDL"],
+    [TechNode.prototypeHydrolox, "Prototype Hydrolox Engines"],
+    [TechNode.earlyHydrolox, "Early Hydrolox Engines"],
+    [TechNode.improvedHydrolox, "Improved Hydrolox Engines"],
+    [TechNode.largeHydrolox, "Large Hydrolox Engines"],
+    [TechNode.hydrolox1968, "1968 Hydrolox Engines"],
+    [TechNode.hydrolox1972, "1972-1975 Hydrolox Engines"],
+    [TechNode.hydrolox1976, "1976-1980 Hydrolox Engines"],
+    [TechNode.hydrolox1981, "1981-1985 Hydrolox Engines"],
+    [TechNode.hydrolox1986, "1986-1991 Hydrolox Engines"],
+    [TechNode.hydrolox1992, "1992-1997 Hydrolox Engines"],
+    [TechNode.hydrolox1998, "1998-2008 Hydrolox Engines"],
+    [TechNode.hydrolox2009, "2009-2018 Hydrolox Engines"],
+    [TechNode.hydroloxNF, "Near Future Hydrolox Engines"],
+    [TechNode.colonization2051Hydrolox, "2051-2099 Hydrolox Engines"],
+    [TechNode.colonization2100Hydrolox, "2100-2149  Hydrolox Engines"],
+    [TechNode.colonization2150Hydrolox, "2150+  Hydrolox Engines"],
+    [TechNode.rocketryTesting, "Post-War Rocketry Testing"],
+    [TechNode.earlyRocketry, "Early Rocketry"],
+    [TechNode.basicRocketryRP0, "Basic Rocketry"],
+    [TechNode.orbitalRocketry1956, "1956-1957 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1958, "1958 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1959, "1959 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1960, "1960 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1961, "1961 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1962, "1962 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1963, "1963 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1964, "1964 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1965, "1965 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1966, "1966 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1967, "1967-1968 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1970, "1970-1971 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1972, "1972-1975 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1976, "1976-1980 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1981, "1981-1985 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1986, "1986-1991 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1992, "1992-1997 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1998, "1998-2003 Orbital Rocketry"],
+    [TechNode.orbitalRocketry2004, "2004-2008 Orbital Rocketry"],
+    [TechNode.orbitalRocketry2009, "2009-2013 Orbital Rocketry"],
+    [TechNode.orbitalRocketry2014, "2014-2018 Orbital Rocketry"],
+    [TechNode.orbitalRocketryNF, "Near Future Orbital Rocketry"],
+    [TechNode.colonization2051Orbital, "2051-2099 Orbital Rocketry"],
+    [TechNode.colonization2100Orbital, "2100-2149  Orbital Rocketry"],
+    [TechNode.colonization2150Orbital, "2150+  Orbital Rocketry"],
+    [TechNode.firstStagedCombustion, "First Staged Combustion Engines"],
+    [TechNode.stagedCombustion1964, "1964 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1966, "1966 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1967, "1967-1968 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1969, "1969 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1970, "1970-1971 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1972, "1972-1980 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1981, "1981-1985 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1986, "1986-1991 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1992, "1992-1997 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1998, "1998-2003 Staged Combustion Engines"],
+    [TechNode.stagedCombustion2004, "2004-2008 Staged Combustion Engines"],
+    [TechNode.stagedCombustion2009, "2009-2013 Staged Combustion Engines"],
+    [TechNode.stagedCombustion2014, "2014-2018 Staged Combustion Engines"],
+    [TechNode.stagedCombustionNF, "Near Future Staged Combustion Engines"],
+    [TechNode.colonization2051Staged, "2051-2099 Staged Combustion"],
+    [TechNode.colonization2100Staged, "2100-2149  Staged Combustion"],
+    [TechNode.colonization2150Staged, "2150+  Staged Combustion"],
+    [TechNode.earlySolids, "Early Solid Rocket Engines"],
+    [TechNode.solids1956, "1956-1957 Solid Rocket Engines"],
+    [TechNode.solids1958, "1958 Solid Rocket Engines"],
+    [TechNode.solids1959, "1959-1960 Solid Rocket Engines"],
+    [TechNode.solids1962, "1962-1963 Solid Rocket Engines"],
+    [TechNode.solids1964, "1964-1965 Solid Rocket Engines"],
+    [TechNode.solids1966, "1966 Solid Rocket Engines"],
+    [TechNode.solids1967, "1967-1968 Solid Rocket Engines"],
+    [TechNode.solids1969, "1969-1971 Solid Rocket Engines"],
+    [TechNode.solids1972, "1972-1975 Solid Rocket Engines"],
+    [TechNode.solids1976, "1976-1980 Solid Rocket Engines"],
+    [TechNode.solids1981, "1981-1985 Solid Rocket Engines"],
+    [TechNode.solids1986, "1986-1991 Solid Rocket Engines"],
+    [TechNode.solids1992, "1992-1997 Solid Rocket Engines"],
+    [TechNode.solids1998, "1998-2008 Solid Rocket Engines"],
+    [TechNode.solids2009, "2009-2018 Solid Rocket Engines"],
+    [TechNode.solidsNF, "Near Future Solid Rocket Engines"],
+    [TechNode.colonization2051Solid, "2051-2099 Solids"],
+    [TechNode.colonization2100Solid, "2100-2149 Solids"],
+    [TechNode.colonization2150Solid, "2150+ Solids"],
+    [TechNode.earlyElecPropulsion, "Early Electric Propulsion"],
+    [TechNode.basicElecPropulsion, "Basic Electric Propulsion"],
+    [TechNode.improvedElecPropulsion, "Improved Electric Propulsion"],
+    [TechNode.advancedElecPropulsion, "Advanced Electric Propulsion"],
+    [TechNode.colonization2051ElecProp, "2051-2099 Electric Propulsion"],
+    [TechNode.colonization2100ElecProp, "2100-2149 Electric Propulsion"],
+    [TechNode.colonization2150ElecProp, "2150+ Electric Propulsion"],
+    [TechNode.prototypeNuclearPropulsion, "Prototype Nuclear Propulsion"],
+    [TechNode.earlyNuclearPropulsion, "Early Nuclear Propulsion"],
+    [TechNode.basicNuclearPropulsion, "Basic Nuclear Propulsion"],
+    [TechNode.improvedNuclearPropulsion, "Improved Nuclear Propulsion"],
+    [TechNode.advancedNuclearPropulsion, "Advanced Nuclear Propulsion"],
+    [TechNode.efficientNuclearPropulsion, "Efficient Nuclear Propulsion"],
+    [TechNode.nuclearPropulsionNF, "Near Future Nuclear Propulsion"],
+    [TechNode.nuclearPropulsionNF2, "Advanced Near Future Nuclear Propulsion"],
+    [TechNode.colonization2051NuclearProp, "2051-2099 Nuclear Propulsion"],
+    [TechNode.colonization2100NuclearProp, "2100-2149 Nuclear Propulsion"],
+    [TechNode.colonization2150NuclearProp, "2150+ Nuclear Propulsion"],
+    [TechNode.crewSurvivability, "Crew Survivability"],
+    [TechNode.earlyLifeSupport, "Early Life Support and ISRU"],
+    [TechNode.lifeSupportISRU, "Life Support and ISRU"],
+    [TechNode.basicLifeSupport, "Basic Life Support and ISRU"],
+    [TechNode.improvedLifeSupport, "Improved Life Support and ISRU"],
+    [TechNode.longTermLifeSupport, "Long-Life Support and ISRU"],
+    [TechNode.advancedLifeSupport, "Long-Term Life Support and ISRU"],
+    [TechNode.efficientLifeSupport, "Efficient Life Support and ISRU"],
+    [TechNode.lifeSupportNF, "Near Future Life Support and ISRU"],
+    [TechNode.colonization2051LifeSupport, "2051-2099 Life Support and ISRU"],
+    [TechNode.colonization2100LifeSupport, "2100-2149 Life Support and ISRU"],
+    [TechNode.colonization2150LifeSupport, "2150+ Life Support and ISRU"],
+    [TechNode.postWarMaterialsScience, "Post-War Materials Science"],
+    [TechNode.earlyMaterialsScience, "Early Materials Science"],
+    [TechNode.materialsScienceSatellite, "Satellite Era Materials Science"],
+    [TechNode.materialsScienceHuman, "Early Human Spaceflight Materials Science"],
+    [TechNode.materialsScienceAdvCapsules, "Advanced Capsules Era Materials Science"],
+    [TechNode.materialsScienceLunar, "Lunar Exploration Era Materials Science"],
+    [TechNode.materialsScienceSpaceStation, "Space Station Era Materials Science"],
+    [TechNode.materialsScienceSpaceplanes, "Spaceplanes Era Materials Science"],
+    [TechNode.materialsScienceLongTerm, "Long-Term Space Habitation Era Materials Science"],
+    [TechNode.materialsScienceInternational, "International Cooperation Era Materials Science"],
+    [TechNode.materialsScienceCommercial, "Commercial Spaceflight Era Materials Science"],
+    [TechNode.materialsScienceNF, "Near Future Era Materials Science"],
+    [TechNode.materialsScienceColonization, "Colonization Era Materials Science"],
+    [TechNode.electronicsSatellite, "Satellite Era Electronics Research"],
+    [TechNode.electronicsHuman, "Early Human Spaceflight Electronics Research"],
+    [TechNode.electronicsAdvCapsules, "Advanced Capsules Era Electronics Research"],
+    [TechNode.electronicsLunar, "Lunar Exploration Era Electronics Research"],
+    [TechNode.electronicsSpaceStation, "Space Station Era Electronics Research"],
+    [TechNode.electronicsSpaceplanes, "Spaceplanes Era Electronics Research"],
+    [TechNode.electronicsLongTerm, "Long-Term Space Habitation Era Electronics Research"],
+    [TechNode.electronicsInternational, "International Cooperation Era Electronics Research"],
+    [TechNode.electronicsCommercial, "Commercial Spaceflight Era Electronics Research"],
+    [TechNode.electronicsNF, "Near Future Era Electronics Research"],
+    [TechNode.electronicsColonization, "Colonization Era Electronics Research"],
+    [TechNode.firstRTG, "First RTG's"],
+    [TechNode.earlyRTG, "Early RTG's"],
+    [TechNode.nuclearFissionReactors, "Small Nuclear Fission Reactors"],
+    [TechNode.improvedRTG, "Improved RTG's"],
+    [TechNode.multihundredWattRTG, "Multihundred-Watt RTG's"],
+    [TechNode.gphsRTG, "GPHS-RTG's"],
+    [TechNode.improvedNuclearPower, "Improved Nuclear Power Generation"],
+    [TechNode.advancedNuclearPower, "Advanced Nuclear Power Generation"],
+    [TechNode.modernNuclearPower, "Modern Nuclear Power Generation"],
+    [TechNode.nuclearPowerNF, "Near Future Nuclear Power Generation"],
+    [TechNode.colonization2051NuclearPower, "2051-2099 Nuclear Power"],
+    [TechNode.colonization2100NuclearPower, "2100-2149 Nuclear Power"],
+    [TechNode.colonization2150NuclearPower, "2150+ Nuclear Power"],
+    [TechNode.primitiveSolarPanels, "Primitive Solar Panels"],
+    [TechNode.earlyPower, "Early Power Generation and Storage"],
+    [TechNode.basicPower, "Basic Power Generation and Storage"],
+    [TechNode.improvedPower, "Improved Power Generation and Storage"],
+    [TechNode.lunarRatedPower, "Lunar Rated Power Generation"],
+    [TechNode.spaceStationSolarPanels, "Space Station Solar Panels"],
+    [TechNode.maturePower, "Mature Power Generation and Storage"],
+    [TechNode.largeScaleSolarArrays, "Large Scale Solar Arrays"],
+    [TechNode.advancedPower, "Advanced Power Generation and Storage"],
+    [TechNode.modernPower, "Modern Power Generation and Storage"],
+    [TechNode.powerNF, "Near Future Power Generation and Storage"],
+    [TechNode.colonization2051Power, "2051-2099 Power Generation and Storage"],
+    [TechNode.colonization2100Power, "2100-2149 Power Generation and Storage"],
+    [TechNode.colonization2150Power, "2150+ Power Generation and Storage"],
+    [TechNode.lunarRangeComms, "Lunar Range Communications"],
+    [TechNode.interplanetaryComms, "Interplanetary Communications"],
+    [TechNode.improvedComms, "Improved Communications"],
+    [TechNode.advancedComms, "Advanced Communications"],
+    [TechNode.deepSpaceComms, "Deep Space Communications"],
+    [TechNode.largeScaleComms, "Large Scale Communications"],
+    [TechNode.massiveScaleComms, "Massive Scale Communications"],
+    [TechNode.efficientComms, "Efficient Communications"],
+    [TechNode.modernComms, "Modern Communications"],
+    [TechNode.commsNF, "Near Future Communications"],
+    [TechNode.colonization2051Comms, "2051-2099 Communications"],
+    [TechNode.colonization2100Comms, "2100-2149 Communications"],
+    [TechNode.colonization2150Comms, "2150+ Communications"],
+    [TechNode.postWarAvionics, "Post-War Avionics"],
+    [TechNode.avionicsPrototypes, "Avionics Prototypes"],
+    [TechNode.earlyAvionics, "Early Avionics and Probes"],
+    [TechNode.basicAvionics, "Basic Avionics and Probes"],
+    [TechNode.interplanetaryProbes, "Interplanetary Probes"],
+    [TechNode.improvedAvionics, "Improved Avionics"],
+    [TechNode.matureAvionics, "Mature Avionics and Probes"],
+    [TechNode.largeScaleAvionics, "Large Scale Avionics"],
+    [TechNode.advancedAvionics, "Advanced Avionics and Probes"],
+    [TechNode.nextGenAvionics, "Next Generation Avionics and Probes"],
+    [TechNode.longTermAvionics, "Long-Term Space Habitation Era Avionics and Probes"],
+    [TechNode.internationalAvionics, "International Era Avionics and Probes"],
+    [TechNode.modernAvionics, "Modern Avionics and Probes"],
+    [TechNode.avionicsNF, "Near Future Avionics and Probes"],
+    [TechNode.colonization2051Avionics, "2051-2099 Avionics and Probes"],
+    [TechNode.colonization2100Avionics, "2100-2149 Avionics and Probes"],
+    [TechNode.colonization2150Avionics, "2150+ Avionics and Probes"],
+    [TechNode.earlyScience, "Early Science"],
+    [TechNode.scienceSatellite, "Satellite Era Science"],
+    [TechNode.scienceHuman, "Early Human Spaceflight Era Science"],
+    [TechNode.scienceAdvCapsules, "Interplanetary Era Science"],
+    [TechNode.scienceLunar, "Lunar Exploration Era Science"],
+    [TechNode.surfaceScience, "Surface Science"],
+    [TechNode.deepSpaceScience, "Deep Space Science Experiments"],
+    [TechNode.scienceExploration, "Exploration Era Science"],
+    [TechNode.sampleReturnScience, "Sample Return Science Experiments"],
+    [TechNode.advancedScience, "Advanced Science Experiments"],
+    [TechNode.advancedSurfaceScience, "Advanced Surface Experiments"],
+    [TechNode.scienceNF, "Near Future Science"],
+    [TechNode.colonization2051Science, "2051-2099 Science"],
+    [TechNode.colonization2100Science, "2100-2149 Science"],
+    [TechNode.colonization2150Science, "2150+ Science"],
+]);
 document.addEventListener("DOMContentLoaded", () => {
     BrowserCacheDialog.DialogBoxElement = document.getElementById("cache-box");
     document.querySelector("#cache-box > div.fullscreen-grayout").addEventListener("click", () => {
@@ -3546,17 +4123,21 @@ class Engine {
                 }
             }, TechUnlockNode: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = TechNode[this.TechUnlockNode];
+                    e.innerHTML = TechNodeNames.get(this.TechUnlockNode);
                 }, GetEditElement: () => {
                     let tmp = document.createElement("input");
                     tmp.classList.add("content-cell-content");
                     tmp.setAttribute("list", "techNodeItems");
                     return tmp;
                 }, ApplyValueToEditElement: (e) => {
-                    e.value = TechNode[this.TechUnlockNode];
+                    e.value = TechNodeNames.get(this.TechUnlockNode);
                 }, ApplyChangesToValue: (e) => {
-                    let value = parseInt(TechNode[e.value]);
-                    value = isNaN(value) ? 0 : value;
+                    let value = 0;
+                    TechNodeNames.forEach((name, node) => {
+                        if (e.value.trim() == name) {
+                            value = node;
+                        }
+                    });
                     this.TechUnlockNode = value;
                 }
             }, EngineVariant: {
@@ -5151,295 +5732,6 @@ var Plume;
     Plume[Plume["Turbofan"] = 26] = "Turbofan";
     Plume[Plume["Turbojet"] = 27] = "Turbojet";
 })(Plume || (Plume = {}));
-var TechNode;
-(function (TechNode) {
-    TechNode[TechNode["start"] = 0] = "start";
-    TechNode[TechNode["supersonicDev"] = 1] = "supersonicDev";
-    TechNode[TechNode["supersonicFlightRP0"] = 2] = "supersonicFlightRP0";
-    TechNode[TechNode["matureSupersonic"] = 3] = "matureSupersonic";
-    TechNode[TechNode["highSpeedFlight"] = 4] = "highSpeedFlight";
-    TechNode[TechNode["advancedJetEngines"] = 5] = "advancedJetEngines";
-    TechNode[TechNode["matureTurbofans"] = 6] = "matureTurbofans";
-    TechNode[TechNode["refinedTurbofans"] = 7] = "refinedTurbofans";
-    TechNode[TechNode["scramjetEngines"] = 8] = "scramjetEngines";
-    TechNode[TechNode["experimentalAircraft"] = 9] = "experimentalAircraft";
-    TechNode[TechNode["colonization2051Flight"] = 10] = "colonization2051Flight";
-    TechNode[TechNode["colonization2100Flight"] = 11] = "colonization2100Flight";
-    TechNode[TechNode["colonization2150Flight"] = 12] = "colonization2150Flight";
-    TechNode[TechNode["hypersonicFlightRP0"] = 13] = "hypersonicFlightRP0";
-    TechNode[TechNode["prototypeSpaceplanes"] = 14] = "prototypeSpaceplanes";
-    TechNode[TechNode["effectiveSpaceplanes"] = 15] = "effectiveSpaceplanes";
-    TechNode[TechNode["spaceShuttles"] = 16] = "spaceShuttles";
-    TechNode[TechNode["improvedSpaceplanes"] = 17] = "improvedSpaceplanes";
-    TechNode[TechNode["advancedSpaceplanes"] = 18] = "advancedSpaceplanes";
-    TechNode[TechNode["highTechSpaceplanes"] = 19] = "highTechSpaceplanes";
-    TechNode[TechNode["experimentalSpaceplanes"] = 20] = "experimentalSpaceplanes";
-    TechNode[TechNode["sstoSpaceplanes"] = 21] = "sstoSpaceplanes";
-    TechNode[TechNode["colonization2100Spaceplanes"] = 22] = "colonization2100Spaceplanes";
-    TechNode[TechNode["colonization2150Spaceplanes"] = 23] = "colonization2150Spaceplanes";
-    TechNode[TechNode["basicCapsules"] = 24] = "basicCapsules";
-    TechNode[TechNode["secondGenCapsules"] = 25] = "secondGenCapsules";
-    TechNode[TechNode["matureCapsules"] = 26] = "matureCapsules";
-    TechNode[TechNode["improvedCapsules"] = 27] = "improvedCapsules";
-    TechNode[TechNode["advancedCapsules"] = 28] = "advancedCapsules";
-    TechNode[TechNode["modernCapsules"] = 29] = "modernCapsules";
-    TechNode[TechNode["capsulesNF"] = 30] = "capsulesNF";
-    TechNode[TechNode["highTechCapsules"] = 31] = "highTechCapsules";
-    TechNode[TechNode["colonization2100Command"] = 32] = "colonization2100Command";
-    TechNode[TechNode["colonization2150Command"] = 33] = "colonization2150Command";
-    TechNode[TechNode["spaceStationPrototypes"] = 34] = "spaceStationPrototypes";
-    TechNode[TechNode["spaceStationDev"] = 35] = "spaceStationDev";
-    TechNode[TechNode["earlySpaceStations"] = 36] = "earlySpaceStations";
-    TechNode[TechNode["modularSpaceStations"] = 37] = "modularSpaceStations";
-    TechNode[TechNode["largeScaleOrbitalCon"] = 38] = "largeScaleOrbitalCon";
-    TechNode[TechNode["improvedOrbitalConstruction"] = 39] = "improvedOrbitalConstruction";
-    TechNode[TechNode["inflatableHabitats"] = 40] = "inflatableHabitats";
-    TechNode[TechNode["improvedHabitats"] = 41] = "improvedHabitats";
-    TechNode[TechNode["advancedHabitats"] = 42] = "advancedHabitats";
-    TechNode[TechNode["largeScaleHabitats"] = 43] = "largeScaleHabitats";
-    TechNode[TechNode["colonization2100SpaceStations"] = 44] = "colonization2100SpaceStations";
-    TechNode[TechNode["colonization2150SpaceStations"] = 45] = "colonization2150SpaceStations";
-    TechNode[TechNode["earlyFlightControl"] = 46] = "earlyFlightControl";
-    TechNode[TechNode["stabilityRP0"] = 47] = "stabilityRP0";
-    TechNode[TechNode["earlyDocking"] = 48] = "earlyDocking";
-    TechNode[TechNode["improvedFlightControl"] = 49] = "improvedFlightControl";
-    TechNode[TechNode["advancedFlightControl"] = 50] = "advancedFlightControl";
-    TechNode[TechNode["dockingCrewTransfer"] = 51] = "dockingCrewTransfer";
-    TechNode[TechNode["spaceStationControl"] = 52] = "spaceStationControl";
-    TechNode[TechNode["largeSpaceplaneControl"] = 53] = "largeSpaceplaneControl";
-    TechNode[TechNode["standardDockingPorts"] = 54] = "standardDockingPorts";
-    TechNode[TechNode["largeStationControl"] = 55] = "largeStationControl";
-    TechNode[TechNode["largeDockingPorts"] = 56] = "largeDockingPorts";
-    TechNode[TechNode["gridFins"] = 57] = "gridFins";
-    TechNode[TechNode["flightControlNF"] = 58] = "flightControlNF";
-    TechNode[TechNode["colonization2051Control"] = 59] = "colonization2051Control";
-    TechNode[TechNode["colonization2100Control"] = 60] = "colonization2100Control";
-    TechNode[TechNode["colonization2150Control"] = 61] = "colonization2150Control";
-    TechNode[TechNode["entryDescentLanding"] = 62] = "entryDescentLanding";
-    TechNode[TechNode["humanRatedEDL"] = 63] = "humanRatedEDL";
-    TechNode[TechNode["earlyLanding"] = 64] = "earlyLanding";
-    TechNode[TechNode["lunarRatedHeatshields"] = 65] = "lunarRatedHeatshields";
-    TechNode[TechNode["lunarLanding"] = 66] = "lunarLanding";
-    TechNode[TechNode["improvedLandingEngines"] = 67] = "improvedLandingEngines";
-    TechNode[TechNode["advancedUncrewedLanding"] = 68] = "advancedUncrewedLanding";
-    TechNode[TechNode["interplanetaryRovers"] = 69] = "interplanetaryRovers";
-    TechNode[TechNode["largeRoverDesigns"] = 70] = "largeRoverDesigns";
-    TechNode[TechNode["reusability"] = 71] = "reusability";
-    TechNode[TechNode["advancedLanding"] = 72] = "advancedLanding";
-    TechNode[TechNode["SIAD"] = 73] = "SIAD";
-    TechNode[TechNode["HIAD"] = 74] = "HIAD";
-    TechNode[TechNode["colonization2051EDL"] = 75] = "colonization2051EDL";
-    TechNode[TechNode["colonization2100EDL"] = 76] = "colonization2100EDL";
-    TechNode[TechNode["colonization2150EDL"] = 77] = "colonization2150EDL";
-    TechNode[TechNode["prototypeHydrolox"] = 78] = "prototypeHydrolox";
-    TechNode[TechNode["earlyHydrolox"] = 79] = "earlyHydrolox";
-    TechNode[TechNode["improvedHydrolox"] = 80] = "improvedHydrolox";
-    TechNode[TechNode["largeHydrolox"] = 81] = "largeHydrolox";
-    TechNode[TechNode["hydrolox1968"] = 82] = "hydrolox1968";
-    TechNode[TechNode["hydrolox1972"] = 83] = "hydrolox1972";
-    TechNode[TechNode["hydrolox1976"] = 84] = "hydrolox1976";
-    TechNode[TechNode["hydrolox1981"] = 85] = "hydrolox1981";
-    TechNode[TechNode["hydrolox1986"] = 86] = "hydrolox1986";
-    TechNode[TechNode["hydrolox1992"] = 87] = "hydrolox1992";
-    TechNode[TechNode["hydrolox1998"] = 88] = "hydrolox1998";
-    TechNode[TechNode["hydrolox2009"] = 89] = "hydrolox2009";
-    TechNode[TechNode["hydroloxNF"] = 90] = "hydroloxNF";
-    TechNode[TechNode["colonization2051Hydrolox"] = 91] = "colonization2051Hydrolox";
-    TechNode[TechNode["colonization2100Hydrolox"] = 92] = "colonization2100Hydrolox";
-    TechNode[TechNode["colonization2150Hydrolox"] = 93] = "colonization2150Hydrolox";
-    TechNode[TechNode["rocketryTesting"] = 94] = "rocketryTesting";
-    TechNode[TechNode["earlyRocketry"] = 95] = "earlyRocketry";
-    TechNode[TechNode["basicRocketryRP0"] = 96] = "basicRocketryRP0";
-    TechNode[TechNode["orbitalRocketry1956"] = 97] = "orbitalRocketry1956";
-    TechNode[TechNode["orbitalRocketry1958"] = 98] = "orbitalRocketry1958";
-    TechNode[TechNode["orbitalRocketry1959"] = 99] = "orbitalRocketry1959";
-    TechNode[TechNode["orbitalRocketry1960"] = 100] = "orbitalRocketry1960";
-    TechNode[TechNode["orbitalRocketry1961"] = 101] = "orbitalRocketry1961";
-    TechNode[TechNode["orbitalRocketry1962"] = 102] = "orbitalRocketry1962";
-    TechNode[TechNode["orbitalRocketry1963"] = 103] = "orbitalRocketry1963";
-    TechNode[TechNode["orbitalRocketry1964"] = 104] = "orbitalRocketry1964";
-    TechNode[TechNode["orbitalRocketry1965"] = 105] = "orbitalRocketry1965";
-    TechNode[TechNode["orbitalRocketry1966"] = 106] = "orbitalRocketry1966";
-    TechNode[TechNode["orbitalRocketry1967"] = 107] = "orbitalRocketry1967";
-    TechNode[TechNode["orbitalRocketry1970"] = 108] = "orbitalRocketry1970";
-    TechNode[TechNode["orbitalRocketry1972"] = 109] = "orbitalRocketry1972";
-    TechNode[TechNode["orbitalRocketry1976"] = 110] = "orbitalRocketry1976";
-    TechNode[TechNode["orbitalRocketry1981"] = 111] = "orbitalRocketry1981";
-    TechNode[TechNode["orbitalRocketry1986"] = 112] = "orbitalRocketry1986";
-    TechNode[TechNode["orbitalRocketry1992"] = 113] = "orbitalRocketry1992";
-    TechNode[TechNode["orbitalRocketry1998"] = 114] = "orbitalRocketry1998";
-    TechNode[TechNode["orbitalRocketry2004"] = 115] = "orbitalRocketry2004";
-    TechNode[TechNode["orbitalRocketry2009"] = 116] = "orbitalRocketry2009";
-    TechNode[TechNode["orbitalRocketry2014"] = 117] = "orbitalRocketry2014";
-    TechNode[TechNode["orbitalRocketryNF"] = 118] = "orbitalRocketryNF";
-    TechNode[TechNode["colonization2051Orbital"] = 119] = "colonization2051Orbital";
-    TechNode[TechNode["colonization2100Orbital"] = 120] = "colonization2100Orbital";
-    TechNode[TechNode["colonization2150Orbital"] = 121] = "colonization2150Orbital";
-    TechNode[TechNode["firstStagedCombustion"] = 122] = "firstStagedCombustion";
-    TechNode[TechNode["stagedCombustion1964"] = 123] = "stagedCombustion1964";
-    TechNode[TechNode["stagedCombustion1966"] = 124] = "stagedCombustion1966";
-    TechNode[TechNode["stagedCombustion1967"] = 125] = "stagedCombustion1967";
-    TechNode[TechNode["stagedCombustion1969"] = 126] = "stagedCombustion1969";
-    TechNode[TechNode["stagedCombustion1970"] = 127] = "stagedCombustion1970";
-    TechNode[TechNode["stagedCombustion1972"] = 128] = "stagedCombustion1972";
-    TechNode[TechNode["stagedCombustion1981"] = 129] = "stagedCombustion1981";
-    TechNode[TechNode["stagedCombustion1986"] = 130] = "stagedCombustion1986";
-    TechNode[TechNode["stagedCombustion1992"] = 131] = "stagedCombustion1992";
-    TechNode[TechNode["stagedCombustion1998"] = 132] = "stagedCombustion1998";
-    TechNode[TechNode["stagedCombustion2004"] = 133] = "stagedCombustion2004";
-    TechNode[TechNode["stagedCombustion2009"] = 134] = "stagedCombustion2009";
-    TechNode[TechNode["stagedCombustion2014"] = 135] = "stagedCombustion2014";
-    TechNode[TechNode["stagedCombustionNF"] = 136] = "stagedCombustionNF";
-    TechNode[TechNode["colonization2051Staged"] = 137] = "colonization2051Staged";
-    TechNode[TechNode["colonization2100Staged"] = 138] = "colonization2100Staged";
-    TechNode[TechNode["colonization2150Staged"] = 139] = "colonization2150Staged";
-    TechNode[TechNode["earlySolids"] = 140] = "earlySolids";
-    TechNode[TechNode["solids1956"] = 141] = "solids1956";
-    TechNode[TechNode["solids1958"] = 142] = "solids1958";
-    TechNode[TechNode["solids1959"] = 143] = "solids1959";
-    TechNode[TechNode["solids1962"] = 144] = "solids1962";
-    TechNode[TechNode["solids1964"] = 145] = "solids1964";
-    TechNode[TechNode["solids1966"] = 146] = "solids1966";
-    TechNode[TechNode["solids1967"] = 147] = "solids1967";
-    TechNode[TechNode["solids1969"] = 148] = "solids1969";
-    TechNode[TechNode["solids1972"] = 149] = "solids1972";
-    TechNode[TechNode["solids1976"] = 150] = "solids1976";
-    TechNode[TechNode["solids1981"] = 151] = "solids1981";
-    TechNode[TechNode["solids1986"] = 152] = "solids1986";
-    TechNode[TechNode["solids1992"] = 153] = "solids1992";
-    TechNode[TechNode["solids1998"] = 154] = "solids1998";
-    TechNode[TechNode["solids2009"] = 155] = "solids2009";
-    TechNode[TechNode["solidsNF"] = 156] = "solidsNF";
-    TechNode[TechNode["colonization2051Solid"] = 157] = "colonization2051Solid";
-    TechNode[TechNode["colonization2100Solid"] = 158] = "colonization2100Solid";
-    TechNode[TechNode["colonization2150Solid"] = 159] = "colonization2150Solid";
-    TechNode[TechNode["earlyElecPropulsion"] = 160] = "earlyElecPropulsion";
-    TechNode[TechNode["basicElecPropulsion"] = 161] = "basicElecPropulsion";
-    TechNode[TechNode["improvedElecPropulsion"] = 162] = "improvedElecPropulsion";
-    TechNode[TechNode["advancedElecPropulsion"] = 163] = "advancedElecPropulsion";
-    TechNode[TechNode["colonization2051ElecProp"] = 164] = "colonization2051ElecProp";
-    TechNode[TechNode["colonization2100ElecProp"] = 165] = "colonization2100ElecProp";
-    TechNode[TechNode["colonization2150ElecProp"] = 166] = "colonization2150ElecProp";
-    TechNode[TechNode["prototypeNuclearPropulsion"] = 167] = "prototypeNuclearPropulsion";
-    TechNode[TechNode["earlyNuclearPropulsion"] = 168] = "earlyNuclearPropulsion";
-    TechNode[TechNode["basicNuclearPropulsion"] = 169] = "basicNuclearPropulsion";
-    TechNode[TechNode["improvedNuclearPropulsion"] = 170] = "improvedNuclearPropulsion";
-    TechNode[TechNode["advancedNuclearPropulsion"] = 171] = "advancedNuclearPropulsion";
-    TechNode[TechNode["efficientNuclearPropulsion"] = 172] = "efficientNuclearPropulsion";
-    TechNode[TechNode["nuclearPropulsionNF"] = 173] = "nuclearPropulsionNF";
-    TechNode[TechNode["nuclearPropulsionNF2"] = 174] = "nuclearPropulsionNF2";
-    TechNode[TechNode["colonization2051NuclearProp"] = 175] = "colonization2051NuclearProp";
-    TechNode[TechNode["colonization2100NuclearProp"] = 176] = "colonization2100NuclearProp";
-    TechNode[TechNode["colonization2150NuclearProp"] = 177] = "colonization2150NuclearProp";
-    TechNode[TechNode["crewSurvivability"] = 178] = "crewSurvivability";
-    TechNode[TechNode["earlyLifeSupport"] = 179] = "earlyLifeSupport";
-    TechNode[TechNode["lifeSupportISRU"] = 180] = "lifeSupportISRU";
-    TechNode[TechNode["basicLifeSupport"] = 181] = "basicLifeSupport";
-    TechNode[TechNode["improvedLifeSupport"] = 182] = "improvedLifeSupport";
-    TechNode[TechNode["longTermLifeSupport"] = 183] = "longTermLifeSupport";
-    TechNode[TechNode["advancedLifeSupport"] = 184] = "advancedLifeSupport";
-    TechNode[TechNode["efficientLifeSupport"] = 185] = "efficientLifeSupport";
-    TechNode[TechNode["lifeSupportNF"] = 186] = "lifeSupportNF";
-    TechNode[TechNode["colonization2051LifeSupport"] = 187] = "colonization2051LifeSupport";
-    TechNode[TechNode["colonization2100LifeSupport"] = 188] = "colonization2100LifeSupport";
-    TechNode[TechNode["colonization2150LifeSupport"] = 189] = "colonization2150LifeSupport";
-    TechNode[TechNode["postWarMaterialsScience"] = 190] = "postWarMaterialsScience";
-    TechNode[TechNode["earlyMaterialsScience"] = 191] = "earlyMaterialsScience";
-    TechNode[TechNode["materialsScienceSatellite"] = 192] = "materialsScienceSatellite";
-    TechNode[TechNode["materialsScienceHuman"] = 193] = "materialsScienceHuman";
-    TechNode[TechNode["materialsScienceAdvCapsules"] = 194] = "materialsScienceAdvCapsules";
-    TechNode[TechNode["materialsScienceLunar"] = 195] = "materialsScienceLunar";
-    TechNode[TechNode["materialsScienceSpaceStation"] = 196] = "materialsScienceSpaceStation";
-    TechNode[TechNode["materialsScienceSpaceplanes"] = 197] = "materialsScienceSpaceplanes";
-    TechNode[TechNode["materialsScienceLongTerm"] = 198] = "materialsScienceLongTerm";
-    TechNode[TechNode["materialsScienceInternational"] = 199] = "materialsScienceInternational";
-    TechNode[TechNode["materialsScienceCommercial"] = 200] = "materialsScienceCommercial";
-    TechNode[TechNode["materialsScienceNF"] = 201] = "materialsScienceNF";
-    TechNode[TechNode["materialsScienceColonization"] = 202] = "materialsScienceColonization";
-    TechNode[TechNode["electronicsSatellite"] = 203] = "electronicsSatellite";
-    TechNode[TechNode["electronicsHuman"] = 204] = "electronicsHuman";
-    TechNode[TechNode["electronicsAdvCapsules"] = 205] = "electronicsAdvCapsules";
-    TechNode[TechNode["electronicsLunar"] = 206] = "electronicsLunar";
-    TechNode[TechNode["electronicsSpaceStation"] = 207] = "electronicsSpaceStation";
-    TechNode[TechNode["electronicsSpaceplanes"] = 208] = "electronicsSpaceplanes";
-    TechNode[TechNode["electronicsLongTerm"] = 209] = "electronicsLongTerm";
-    TechNode[TechNode["electronicsInternational"] = 210] = "electronicsInternational";
-    TechNode[TechNode["electronicsCommercial"] = 211] = "electronicsCommercial";
-    TechNode[TechNode["electronicsNF"] = 212] = "electronicsNF";
-    TechNode[TechNode["electronicsColonization"] = 213] = "electronicsColonization";
-    TechNode[TechNode["firstRTG"] = 214] = "firstRTG";
-    TechNode[TechNode["earlyRTG"] = 215] = "earlyRTG";
-    TechNode[TechNode["nuclearFissionReactors"] = 216] = "nuclearFissionReactors";
-    TechNode[TechNode["improvedRTG"] = 217] = "improvedRTG";
-    TechNode[TechNode["multihundredWattRTG"] = 218] = "multihundredWattRTG";
-    TechNode[TechNode["gphsRTG"] = 219] = "gphsRTG";
-    TechNode[TechNode["improvedNuclearPower"] = 220] = "improvedNuclearPower";
-    TechNode[TechNode["advancedNuclearPower"] = 221] = "advancedNuclearPower";
-    TechNode[TechNode["modernNuclearPower"] = 222] = "modernNuclearPower";
-    TechNode[TechNode["nuclearPowerNF"] = 223] = "nuclearPowerNF";
-    TechNode[TechNode["colonization2051NuclearPower"] = 224] = "colonization2051NuclearPower";
-    TechNode[TechNode["colonization2100NuclearPower"] = 225] = "colonization2100NuclearPower";
-    TechNode[TechNode["colonization2150NuclearPower"] = 226] = "colonization2150NuclearPower";
-    TechNode[TechNode["primitiveSolarPanels"] = 227] = "primitiveSolarPanels";
-    TechNode[TechNode["earlyPower"] = 228] = "earlyPower";
-    TechNode[TechNode["basicPower"] = 229] = "basicPower";
-    TechNode[TechNode["improvedPower"] = 230] = "improvedPower";
-    TechNode[TechNode["lunarRatedPower"] = 231] = "lunarRatedPower";
-    TechNode[TechNode["spaceStationSolarPanels"] = 232] = "spaceStationSolarPanels";
-    TechNode[TechNode["maturePower"] = 233] = "maturePower";
-    TechNode[TechNode["largeScaleSolarArrays"] = 234] = "largeScaleSolarArrays";
-    TechNode[TechNode["advancedPower"] = 235] = "advancedPower";
-    TechNode[TechNode["modernPower"] = 236] = "modernPower";
-    TechNode[TechNode["powerNF"] = 237] = "powerNF";
-    TechNode[TechNode["colonization2051Power"] = 238] = "colonization2051Power";
-    TechNode[TechNode["colonization2100Power"] = 239] = "colonization2100Power";
-    TechNode[TechNode["colonization2150Power"] = 240] = "colonization2150Power";
-    TechNode[TechNode["lunarRangeComms"] = 241] = "lunarRangeComms";
-    TechNode[TechNode["interplanetaryComms"] = 242] = "interplanetaryComms";
-    TechNode[TechNode["improvedComms"] = 243] = "improvedComms";
-    TechNode[TechNode["advancedComms"] = 244] = "advancedComms";
-    TechNode[TechNode["deepSpaceComms"] = 245] = "deepSpaceComms";
-    TechNode[TechNode["largeScaleComms"] = 246] = "largeScaleComms";
-    TechNode[TechNode["massiveScaleComms"] = 247] = "massiveScaleComms";
-    TechNode[TechNode["efficientComms"] = 248] = "efficientComms";
-    TechNode[TechNode["modernComms"] = 249] = "modernComms";
-    TechNode[TechNode["commsNF"] = 250] = "commsNF";
-    TechNode[TechNode["colonization2051Comms"] = 251] = "colonization2051Comms";
-    TechNode[TechNode["colonization2100Comms"] = 252] = "colonization2100Comms";
-    TechNode[TechNode["colonization2150Comms"] = 253] = "colonization2150Comms";
-    TechNode[TechNode["postWarAvionics"] = 254] = "postWarAvionics";
-    TechNode[TechNode["avionicsPrototypes"] = 255] = "avionicsPrototypes";
-    TechNode[TechNode["earlyAvionics"] = 256] = "earlyAvionics";
-    TechNode[TechNode["basicAvionics"] = 257] = "basicAvionics";
-    TechNode[TechNode["interplanetaryProbes"] = 258] = "interplanetaryProbes";
-    TechNode[TechNode["improvedAvionics"] = 259] = "improvedAvionics";
-    TechNode[TechNode["matureAvionics"] = 260] = "matureAvionics";
-    TechNode[TechNode["largeScaleAvionics"] = 261] = "largeScaleAvionics";
-    TechNode[TechNode["advancedAvionics"] = 262] = "advancedAvionics";
-    TechNode[TechNode["nextGenAvionics"] = 263] = "nextGenAvionics";
-    TechNode[TechNode["longTermAvionics"] = 264] = "longTermAvionics";
-    TechNode[TechNode["internationalAvionics"] = 265] = "internationalAvionics";
-    TechNode[TechNode["modernAvionics"] = 266] = "modernAvionics";
-    TechNode[TechNode["avionicsNF"] = 267] = "avionicsNF";
-    TechNode[TechNode["colonization2051Avionics"] = 268] = "colonization2051Avionics";
-    TechNode[TechNode["colonization2100Avionics"] = 269] = "colonization2100Avionics";
-    TechNode[TechNode["colonization2150Avionics"] = 270] = "colonization2150Avionics";
-    TechNode[TechNode["earlyScience"] = 271] = "earlyScience";
-    TechNode[TechNode["scienceSatellite"] = 272] = "scienceSatellite";
-    TechNode[TechNode["scienceHuman"] = 273] = "scienceHuman";
-    TechNode[TechNode["scienceAdvCapsules"] = 274] = "scienceAdvCapsules";
-    TechNode[TechNode["scienceLunar"] = 275] = "scienceLunar";
-    TechNode[TechNode["surfaceScience"] = 276] = "surfaceScience";
-    TechNode[TechNode["deepSpaceScience"] = 277] = "deepSpaceScience";
-    TechNode[TechNode["scienceExploration"] = 278] = "scienceExploration";
-    TechNode[TechNode["sampleReturnScience"] = 279] = "sampleReturnScience";
-    TechNode[TechNode["advancedScience"] = 280] = "advancedScience";
-    TechNode[TechNode["advancedSurfaceScience"] = 281] = "advancedSurfaceScience";
-    TechNode[TechNode["scienceNF"] = 282] = "scienceNF";
-    TechNode[TechNode["colonization2051Science"] = 283] = "colonization2051Science";
-    TechNode[TechNode["colonization2100Science"] = 284] = "colonization2100Science";
-    TechNode[TechNode["colonization2150Science"] = 285] = "colonization2150Science";
-})(TechNode || (TechNode = {}));
 class AllTankDefinition {
     static Get() {
         let definitions = "";

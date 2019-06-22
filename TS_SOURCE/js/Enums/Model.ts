@@ -76,4 +76,24 @@ enum Model {
     Viking, // VikingEarly is VikingLower with cone bell. They look almost the same, so I'm choosing the VikingLower
     VikingVac,
     // /FRE
+    
+    // BDB
+    ApolloSPSBlockII,
+    ApolloSPSBlockIII,
+    ApolloSPSBlockV,
+    LMAE_BDB,
+    LMDE_BDB,
+    LR89,
+    LR101,
+    LR105,
+    RD180_BDB,
+    RL10,
+    RL10A41,
+    RL10B2_BDB,
+    GEM40,
+    AJ10_BDB,
+    Rita,
+    Rubis,
+    Topaze
+    // /BDB
 }

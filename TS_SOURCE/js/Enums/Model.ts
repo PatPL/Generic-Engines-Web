@@ -94,6 +94,16 @@ enum Model {
     AJ10_BDB,
     Rita,
     Rubis,
-    Topaze
+    Topaze,
+    Able,
+    Ablestar,
+    Navaho,
+    Thor,
+    Vanguard,
+    E1,
+    Sargent,
+    Juno6K,
+    Juno45K,
+    S3D,
     // /BDB
 }

@@ -3888,10 +3888,476 @@ ModelInfo.models = [
             "fairing"
         ],
         CanAttachOnModel: true,
-        OriginalTankVolume: ,
+        OriginalTankVolume: 432,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.3115,
         ImageSource: "img/modelPreviews/Topaze.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.346,
+        OriginalBaseWidth: 0.337,
+        PlumeSizeMultiplier: 0.3,
+        PlumePositionOffset: 0.18,
+        NodeStackTop: 0.5,
+        NodeStackBottom: -0.29,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_ableEngine",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_ableEngine.mu",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_Emissive.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Able",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Able.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.470,
+        OriginalBaseWidth: 0.585,
+        PlumeSizeMultiplier: 0.42,
+        PlumePositionOffset: 0.265,
+        NodeStackTop: 0.666,
+        NodeStackBottom: -0.425,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_ablestarEngine",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_ablestarEngine.mu",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_Emissive.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Ablestar",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Ablestar.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.269,
+        OriginalBaseWidth: 0.81,
+        PlumeSizeMultiplier: 0.235,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.52,
+        NodeStackBottom: -0.535,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_navaho_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_navaho_Tweaked.mu",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_NRM.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines.dds",
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine_NRM.dds",
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbal",
+        ModelName: "Navaho",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Navaho.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.885,
+        OriginalBaseWidth: 1.499,
+        PlumeSizeMultiplier: 0.78,
+        PlumePositionOffset: 0.58,
+        NodeStackTop: 0.125,
+        NodeStackBottom: -2.13,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_thorEngine",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine.mu",
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine_NRM.dds",
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Thor",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Thor.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.284,
+        OriginalBaseWidth: 0.605,
+        PlumeSizeMultiplier: 0.25,
+        PlumePositionOffset: 0.62,
+        NodeStackTop: 0.37,
+        NodeStackBottom: -0.87,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_vanguardEngine",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_vanguardEngine.mu",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_Emissive.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Vanguard",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Vanguard.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.975,
+        OriginalBaseWidth: 1.061,
+        PlumeSizeMultiplier: 0.86,
+        PlumePositionOffset: -0.15,
+        NodeStackTop: 1.2,
+        NodeStackBottom: -0.86,
+        ModelPath: "GenericEngines/models/BDB/Engines/bluedog_E1",
+        ModelFiles: [
+            "files/models/BDB/Engines/bluedog_E1.mu",
+            "files/models/BDB/Engines/bluedog_E1.dds",
+            "files/models/BDB/Engines/bluedog_E1_Emit.dds",
+            "files/models/BDB/Engines/bluedog_E1_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "E-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/E1.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.106,
+        OriginalBaseWidth: 0.12,
+        PlumeSizeMultiplier: 0.9,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.3,
+        NodeStackBottom: -0.52,
+        ModelPath: "GenericEngines/models/BDB/Explorer/bluedog_Sargent_1x.mu",
+        ModelFiles: [
+            "files/models/BDB/Explorer/bluedog_Sargent_1x.mu",
+            "files/models/BDB/Explorer/bluedog_JunoProbes.dds",
+            "files/models/BDB/Explorer/bluedog_JunoProbes_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Sargent",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 4.3,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.06,
+        ImageSource: "img/modelPreviews/Sargent.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.376,
+        OriginalBaseWidth: 0.898,
+        PlumeSizeMultiplier: 0.32,
+        PlumePositionOffset: 0.48,
+        NodeStackTop: 0.013,
+        NodeStackBottom: -1.09,
+        ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine6K",
+        ModelFiles: [
+            "files/models/BDB/Juno/bluedog_Juno_Engine6K.mu",
+            "files/models/BDB/Juno/bluedog_JunoEngines.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Juno 6K",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Juno6K.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.495,
+        OriginalBaseWidth: 0.87,
+        PlumeSizeMultiplier: 0.42,
+        PlumePositionOffset: 0.56,
+        NodeStackTop: 0.014,
+        NodeStackBottom: -1.19,
+        ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine45K",
+        ModelFiles: [
+            "files/models/BDB/Juno/bluedog_Juno_Engine45K.mu",
+            "files/models/BDB/Juno/bluedog_JunoEngines.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Juno 45K",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Juno45K.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.745,
+        OriginalBaseWidth: 0.93,
+        PlumeSizeMultiplier: 0.66,
+        PlumePositionOffset: 0.92,
+        NodeStackTop: 0.074,
+        NodeStackBottom: -1.466,
+        ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_EngineS3D",
+        ModelFiles: [
+            "files/models/BDB/Juno/bluedog_Juno_EngineS3D.mu",
+            "files/models/BDB/Juno/bluedog_JunoEngines.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "S3D",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/S3D.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.96,
+        OriginalBaseWidth: 2.036,
+        PlumeSizeMultiplier: 1.68,
+        PlumePositionOffset: 0,
+        NodeStackTop: 1.13,
+        NodeStackBottom: -2,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_F1",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_F1.mu",
+            "files/models/BDB/Saturn/bluedog_F1.dds",
+            "files/models/BDB/Saturn/bluedog_F1_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "F-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/F1_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.589,
+        OriginalBaseWidth: 0.535,
+        PlumeSizeMultiplier: 0.53,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.59,
+        NodeStackBottom: -0.76,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_H1C_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_H1C_Tweaked.mu",
+            "files/models/BDB/Saturn/bluedog_H1.dds",
+            "files/models/BDB/Saturn/bluedog_H1_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "H-1C",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/H1C.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.588,
+        OriginalBaseWidth: 0.536,
+        PlumeSizeMultiplier: 0.52,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.593,
+        NodeStackBottom: -0.765,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_H1D_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_H1D_Tweaked.mu",
+            "files/models/BDB/Saturn/bluedog_H1.dds",
+            "files/models/BDB/Saturn/bluedog_H1_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "Gimbal",
+        ModelName: "H-1D",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/H1D.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.147,
+        OriginalBaseWidth: 0.85,
+        PlumeSizeMultiplier: 1,
+        PlumePositionOffset: -0.13,
+        NodeStackTop: 0.737,
+        NodeStackBottom: -0.93,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_J2.mu",
+            "files/models/BDB/Saturn/bluedog_J2.dds",
+            "files/models/BDB/Saturn/bluedog_J2_NRM.dds",
+            "files/models/BDB/Saturn/bluedog_saturn4B.dds",
+            "files/models/BDB/Saturn/bluedog_saturn4B_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "J-2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/J2_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.248,
+        OriginalBaseWidth: 1.248,
+        PlumeSizeMultiplier: 1.3,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.06,
+        NodeStackBottom: -0.365,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2_Toroidal",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_J2_Toroidal.mu",
+            "files/models/BDB/Saturn/bluedog_J2.dds",
+            "files/models/BDB/Saturn/bluedog_J2_NRM.dds",
+            "files/models/BDB/Saturn/bluedog_J2_Variants.dds",
+            "files/models/BDB/Saturn/bluedog_J2_Variants_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "J-2T",
+        ModelType: EngineGroupType.AlternativeHistory,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/J2T.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.904,
+        OriginalBaseWidth: 0.852,
+        PlumeSizeMultiplier: 0.8,
+        PlumePositionOffset: -0.39,
+        NodeStackTop: 0.7,
+        NodeStackBottom: -0.64,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2sl",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_J2sl.mu",
+            "files/models/BDB/Saturn/bluedog_saturn4B.dds",
+            "files/models/BDB/Saturn/bluedog_saturn4B_NRM.dds",
+            "files/models/BDB/Saturn/bluedog_J2.dds",
+            "files/models/BDB/Saturn/bluedog_J2_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "J-2SL",
+        ModelType: EngineGroupType.AlternativeHistory,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/J2SL.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 3.914,
+        OriginalBaseWidth: 3.83,
+        PlumeSizeMultiplier: 3.4,
+        PlumePositionOffset: -0.6,
+        NodeStackTop: 9.56,
+        NodeStackBottom: -11.59,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_saturn_AJ260_LongFlared.mu",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_saturn_AJ260_LongFlared.mu",
+            "files/models/BDB/Saturn/bluedog_saturn_AJ260.dds",
+            "files/models/BDB/Saturn/bluedog_saturn_AJ260_Emit.dds",
+            "files/models/BDB/Saturn/bluedog_saturn_AJ260_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "AJ-260",
+        ModelType: EngineGroupType.AlternativeHistory,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 134500,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 1.915,
+        ImageSource: "img/modelPreviews/AJ260.png",
         get ImageLabel() { return this.ModelName; }
     }
 ];
@@ -6557,6 +7023,23 @@ var Model;
     Model[Model["Rita"] = 85] = "Rita";
     Model[Model["Rubis"] = 86] = "Rubis";
     Model[Model["Topaze"] = 87] = "Topaze";
+    Model[Model["Able"] = 88] = "Able";
+    Model[Model["Ablestar"] = 89] = "Ablestar";
+    Model[Model["Navaho"] = 90] = "Navaho";
+    Model[Model["Thor"] = 91] = "Thor";
+    Model[Model["Vanguard"] = 92] = "Vanguard";
+    Model[Model["E1"] = 93] = "E1";
+    Model[Model["Sargent"] = 94] = "Sargent";
+    Model[Model["Juno6K"] = 95] = "Juno6K";
+    Model[Model["Juno45K"] = 96] = "Juno45K";
+    Model[Model["S3D"] = 97] = "S3D";
+    Model[Model["F1_BDB"] = 98] = "F1_BDB";
+    Model[Model["H1C"] = 99] = "H1C";
+    Model[Model["H1D"] = 100] = "H1D";
+    Model[Model["J2_BDB"] = 101] = "J2_BDB";
+    Model[Model["J2T"] = 102] = "J2T";
+    Model[Model["J2SL"] = 103] = "J2SL";
+    Model[Model["AJ260"] = 104] = "AJ260";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {

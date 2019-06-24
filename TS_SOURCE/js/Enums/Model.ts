@@ -105,5 +105,12 @@ enum Model {
     Juno6K,
     Juno45K,
     S3D,
+    F1_BDB,
+    H1C,
+    H1D,
+    J2_BDB,
+    J2T,
+    J2SL,
+    AJ260
     // /BDB
 }

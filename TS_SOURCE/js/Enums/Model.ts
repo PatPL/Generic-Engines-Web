@@ -111,6 +111,13 @@ enum Model {
     J2_BDB,
     J2T,
     J2SL,
-    AJ260
+    AJ260,
+    LR87,
+    LR87S,
+    LR91_BDB,
+    Soltan,
+    UA1205,
+    UA1207,
+    Transtage
     // /BDB
 }

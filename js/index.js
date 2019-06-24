@@ -4359,6 +4359,188 @@ ModelInfo.models = [
         RadialAttachmentPoint: 1.915,
         ImageSource: "img/modelPreviews/AJ260.png",
         get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.708,
+        OriginalBaseWidth: 1.873,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: 0.61,
+        NodeStackTop: 0.46,
+        NodeStackBottom: -1.6,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_LR87_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_LR87_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_TitanEngines.dds",
+            "files/models/BDB/Titan/bluedog_TitanEngines_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "LR87",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.692,
+        OriginalBaseWidth: 0.734,
+        PlumeSizeMultiplier: 0.61,
+        PlumePositionOffset: 0.58,
+        NodeStackTop: 0.17,
+        NodeStackBottom: -1.05,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_LR87S_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_LR87S_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_TitanEngines.dds",
+            "files/models/BDB/Titan/bluedog_TitanEngines_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "LR87 Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87S.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.854,
+        OriginalBaseWidth: 1.35,
+        PlumeSizeMultiplier: 0.75,
+        PlumePositionOffset: 0.65,
+        NodeStackTop: -0.06,
+        NodeStackBottom: -1.38,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_LR91_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_LR91_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_TitanEngines.dds",
+            "files/models/BDB/Titan/bluedog_TitanEngines_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "LR91",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR91_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.497,
+        OriginalBaseWidth: 1.497,
+        PlumeSizeMultiplier: 1.3,
+        PlumePositionOffset: -0.15,
+        NodeStackTop: 6.95,
+        NodeStackBottom: -4.59,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Soltan_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_Soltan_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_TitanSRBs.dds",
+            "files/models/BDB/Titan/bluedog_TitanSRBs_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Soltan",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 12500,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.75,
+        ImageSource: "img/modelPreviews/Soltan.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.9,
+        OriginalBaseWidth: 1.87,
+        PlumeSizeMultiplier: 1.65,
+        PlumePositionOffset: -0.08,
+        NodeStackTop: 8.1,
+        NodeStackBottom: -6.25,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Titan_SRB5segStack",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_Titan_SRB5segStack.mu",
+            "files/models/BDB/Titan/bluedog_TitanSRBs.dds",
+            "files/models/BDB/Titan/bluedog_TitanSRBs_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "UA1205",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 22600,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.935,
+        ImageSource: "img/modelPreviews/UA1205.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.9,
+        OriginalBaseWidth: 1.87,
+        PlumeSizeMultiplier: 1.65,
+        PlumePositionOffset: -0.08,
+        NodeStackTop: 11.85,
+        NodeStackBottom: -6.25,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Titan_SRB7segStack",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_Titan_SRB7segStack.mu",
+            "files/models/BDB/Titan/bluedog_TitanSRBs.dds",
+            "files/models/BDB/Titan/bluedog_TitanSRBs_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "UA1207",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 28900,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.935,
+        ImageSource: "img/modelPreviews/UA1207.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.742,
+        OriginalBaseWidth: 1.87,
+        PlumeSizeMultiplier: 0.65,
+        PlumePositionOffset: 0.41,
+        NodeStackTop: 0.025,
+        NodeStackBottom: -1.66,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Transtage_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_Transtage_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_Transtage.dds",
+            "files/models/BDB/Titan/bluedog_Transtage_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Transtage",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 1200,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Transtage.png",
+        get ImageLabel() { return this.ModelName; }
     }
 ];
 ModelInfo.Dropdown = ModelInfo.BuildDropdown();
@@ -7040,6 +7222,13 @@ var Model;
     Model[Model["J2T"] = 102] = "J2T";
     Model[Model["J2SL"] = 103] = "J2SL";
     Model[Model["AJ260"] = 104] = "AJ260";
+    Model[Model["LR87"] = 105] = "LR87";
+    Model[Model["LR87S"] = 106] = "LR87S";
+    Model[Model["LR91_BDB"] = 107] = "LR91_BDB";
+    Model[Model["Soltan"] = 108] = "Soltan";
+    Model[Model["UA1205"] = 109] = "UA1205";
+    Model[Model["UA1207"] = 110] = "UA1207";
+    Model[Model["Transtage"] = 111] = "Transtage";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {

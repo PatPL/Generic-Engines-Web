@@ -5788,7 +5788,7 @@ class Engine {
                     grid.querySelector("img").addEventListener("click", () => {
                         let inputs = grid.querySelectorAll("input");
                         let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
-                        inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false);
+                        inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false, 3);
                     });
                     tmp.appendChild(grid);
                     return tmp;
@@ -7358,6 +7358,9 @@ class DebugLists {
             newEngine.UseBaseWidth = true;
             newEngine.Width = 2;
             newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
+            let trimmed = newEngine.Height.toFixed(3);
+            let numberString = newEngine.Height.toString().length >= trimmed.length ? trimmed : newEngine.Height.toString();
+            newEngine.Height = parseFloat(numberString);
             newEngine.Gimbal = 15;
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;

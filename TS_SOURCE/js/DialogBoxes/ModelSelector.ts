@@ -9,12 +9,33 @@ document.addEventListener ("DOMContentLoaded", () => {
     let container = ModelSelector.DialogBoxElement.querySelector ("#model-selector-content")!;
     container.innerHTML = "";
     
+    let models: [Model, IModelInfo][] = [];
+    
+    // Get every model in the array to sort by name
     for (let i in Model) {
         if (isNaN (parseInt (i))) {
             break;
         }
         
-        let modelInfo = ModelInfo.GetModelInfo (parseInt (i));
+        let id = parseInt (i);
+        
+        models.push ([id, ModelInfo.GetModelInfo (id)]);
+        
+    }
+    
+    //Sort
+    models.sort ((a, b) => {
+        if (a[1].ModelName > b[1].ModelName) {
+            return 1;
+        } else if (a[1].ModelName < b[1].ModelName) {
+            return -1;
+        } else {
+            return 0;
+        }
+    })
+    
+    //Serve
+    models.forEach (([id, modelInfo]) => {
         let newElement = document.createElement ("div");
         newElement.innerHTML = `
             <img class="option-button" src="${modelInfo.ImageSource}"><br>
@@ -22,12 +43,11 @@ document.addEventListener ("DOMContentLoaded", () => {
         `;
         
         newElement.querySelector ("img")!.addEventListener ("click", () => {
-            ModelSelector.FinishTransaction (parseInt (i));
+            ModelSelector.FinishTransaction (id);
         });
         
         container.appendChild (newElement);
-        
-    }
+    });
     
 });
 

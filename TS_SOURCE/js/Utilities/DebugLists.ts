@@ -88,4 +88,35 @@ class DebugLists {
         MainEngineTable.RebuildTable ();
     }
     
+    public static AppendListForTankTest () {
+        let toAppend: Engine[] = [];
+        let modelCount = Object.getOwnPropertyNames (Model).length / 2;
+        
+        for (let i = 0; i < modelCount; ++i) {
+            let modelInfo = ModelInfo.GetModelInfo (i);
+            if (modelInfo.OriginalTankVolume == 0) {
+                continue;
+            }
+            
+            let newEngine = new Engine ();
+            
+            newEngine.Active = true;
+            newEngine.ID = `TANKTEST-${("0000" + i).slice(-4)}`;
+            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Tank volume test - ${modelInfo.ModelName}`;
+            newEngine.ModelID = i;
+            
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = 4;
+            newEngine.Height = 4;
+            
+            newEngine.UseTanks = true;
+            newEngine.TanksVolume = newEngine.GetTankSizeEstimate ();
+            
+            toAppend.push (newEngine);
+        }
+        
+        MainEngineTable.Items = MainEngineTable.Items.concat (toAppend);
+        MainEngineTable.RebuildTable ();
+    }
+    
 }

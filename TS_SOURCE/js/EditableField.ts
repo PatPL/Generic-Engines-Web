@@ -202,6 +202,8 @@ class EditableField {
             output = tmp;
         }
         
+        output.classList.add ("content-cell-edit");
+        
         return output;
     }
     

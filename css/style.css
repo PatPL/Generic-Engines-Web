@@ -405,6 +405,10 @@ span.checkbox-label {
     white-space: pre;
 }
 
+.content-cell-edit {
+    white-space: normal;
+}
+
 input.content-cell-content {
     padding-left: 3px;
 }

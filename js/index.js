@@ -147,6 +147,7 @@ class EditableField {
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
+        output.classList.add("content-cell-edit");
         return output;
     }
     ApplyValueToDisplayElement() {
@@ -520,7 +521,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.4 Dev";
+Version.CurrentVersion = "Web.0.8.4";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -3102,9 +3103,9 @@ ModelInfo.models = [
         OriginalBaseWidth: 0.824,
         PlumeSizeMultiplier: 0.72,
         PlumePositionOffset: 0,
-        NodeStackTop: 1.082,
-        NodeStackBottom: -0.46,
-        ModelPath: "GenericEngines/models/FRE/FRE1/FRE-1",
+        NodeStackTop: 1,
+        NodeStackBottom: -0.533,
+        ModelPath: "GenericEngines/models/FRE/FRE-1/FRE-1",
         ModelFiles: [
             "files/models/FRE/FRE-1/FRE-1.mu",
             "files/models/FRE/FRE-1/FRE-1Texture_Compiled.dds",
@@ -3204,12 +3205,12 @@ ModelInfo.models = [
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
-        OriginalBellWidth: 0.55,
-        OriginalBaseWidth: 0.6,
-        PlumeSizeMultiplier: 0.48,
-        PlumePositionOffset: 0.11,
-        NodeStackTop: 0.625,
-        NodeStackBottom: -0.4,
+        OriginalBellWidth: 0.276,
+        OriginalBaseWidth: 0.3,
+        PlumeSizeMultiplier: 0.23,
+        PlumePositionOffset: 0.042,
+        NodeStackTop: 0.316,
+        NodeStackBottom: -0.198,
         ModelPath: "GenericEngines/models/FRE/RD-843/RD-843",
         ModelFiles: [
             "files/models/FRE/RD-843/RD-843.mu",
@@ -3730,7 +3731,7 @@ ModelInfo.models = [
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.905,
-        OriginalBaseWidth: 0.351,
+        OriginalBaseWidth: 0.64,
         PlumeSizeMultiplier: 0.8,
         PlumePositionOffset: 0,
         NodeStackTop: 0.33,
@@ -3778,7 +3779,7 @@ ModelInfo.models = [
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "gimbalTransform",
         ModelName: "GEM 40",
-        ModelType: EngineGroupType.IRL,
+        ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         CanAttachOnModel: true,
         OriginalTankVolume: 1337,
@@ -3831,7 +3832,7 @@ ModelInfo.models = [
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
         ModelName: "P4 Rita",
-        ModelType: EngineGroupType.IRL,
+        ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         CanAttachOnModel: true,
         OriginalTankVolume: 1395,
@@ -3857,7 +3858,7 @@ ModelInfo.models = [
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
         ModelName: "Rubis",
-        ModelType: EngineGroupType.IRL,
+        ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         CanAttachOnModel: true,
         OriginalTankVolume: 130,
@@ -3883,7 +3884,7 @@ ModelInfo.models = [
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "gimbalTransform",
         ModelName: "Topaze",
-        ModelType: EngineGroupType.IRL,
+        ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [
             "fairing"
         ],
@@ -4065,11 +4066,11 @@ ModelInfo.models = [
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.106,
         OriginalBaseWidth: 0.12,
-        PlumeSizeMultiplier: 0.9,
+        PlumeSizeMultiplier: 0.095,
         PlumePositionOffset: 0,
         NodeStackTop: 0.3,
         NodeStackBottom: -0.52,
-        ModelPath: "GenericEngines/models/BDB/Explorer/bluedog_Sargent_1x.mu",
+        ModelPath: "GenericEngines/models/BDB/Explorer/bluedog_Sargent_1x",
         ModelFiles: [
             "files/models/BDB/Explorer/bluedog_Sargent_1x.mu",
             "files/models/BDB/Explorer/bluedog_JunoProbes.dds",
@@ -4079,7 +4080,7 @@ ModelInfo.models = [
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
         ModelName: "Sargent",
-        ModelType: EngineGroupType.IRL,
+        ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [
             "fairing"
         ],
@@ -4340,7 +4341,7 @@ ModelInfo.models = [
         PlumePositionOffset: -0.6,
         NodeStackTop: 9.56,
         NodeStackBottom: -11.59,
-        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_saturn_AJ260_LongFlared.mu",
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_saturn_AJ260_LongFlared",
         ModelFiles: [
             "files/models/BDB/Saturn/bluedog_saturn_AJ260_LongFlared.mu",
             "files/models/BDB/Saturn/bluedog_saturn_AJ260.dds",
@@ -4351,7 +4352,7 @@ ModelInfo.models = [
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "gimbalTransform",
         ModelName: "AJ-260",
-        ModelType: EngineGroupType.AlternativeHistory,
+        ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         CanAttachOnModel: true,
         OriginalTankVolume: 134500,
@@ -4455,7 +4456,7 @@ ModelInfo.models = [
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
         ModelName: "Soltan",
-        ModelType: EngineGroupType.IRL,
+        ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         CanAttachOnModel: true,
         OriginalTankVolume: 12500,
@@ -4481,7 +4482,7 @@ ModelInfo.models = [
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
         ModelName: "UA1205",
-        ModelType: EngineGroupType.IRL,
+        ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         CanAttachOnModel: true,
         OriginalTankVolume: 22600,
@@ -4507,7 +4508,7 @@ ModelInfo.models = [
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
         ModelName: "UA1207",
-        ModelType: EngineGroupType.IRL,
+        ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         CanAttachOnModel: true,
         OriginalTankVolume: 28900,
@@ -7417,6 +7418,29 @@ class DebugLists {
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
             newEngine.PlumeID = Plume.Solid_Lower;
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
+        MainEngineTable.RebuildTable();
+    }
+    static AppendListForTankTest() {
+        let toAppend = [];
+        let modelCount = Object.getOwnPropertyNames(Model).length / 2;
+        for (let i = 0; i < modelCount; ++i) {
+            let modelInfo = ModelInfo.GetModelInfo(i);
+            if (modelInfo.OriginalTankVolume == 0) {
+                continue;
+            }
+            let newEngine = new Engine();
+            newEngine.Active = true;
+            newEngine.ID = `TANKTEST-${("0000" + i).slice(-4)}`;
+            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Tank volume test - ${modelInfo.ModelName}`;
+            newEngine.ModelID = i;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = 4;
+            newEngine.Height = 4;
+            newEngine.UseTanks = true;
+            newEngine.TanksVolume = newEngine.GetTankSizeEstimate();
             toAppend.push(newEngine);
         }
         MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);

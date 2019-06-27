@@ -199,19 +199,21 @@ class Engine {
             }
         }, TechUnlockNode: {
             ApplyValueToDisplayElement: (e) => {
-                e.innerHTML = TechNode[this.TechUnlockNode];
+                e.innerHTML = TechNodeNames.get (this.TechUnlockNode)!;
             }, GetEditElement: () => {
                 let tmp = document.createElement ("input");
                 tmp.classList.add ("content-cell-content");
                 tmp.setAttribute ("list", "techNodeItems"); //tmp.list is readonly because reasons, apparently
                 return tmp;
             }, ApplyValueToEditElement: (e) => {
-                (e as HTMLInputElement).value = TechNode[this.TechUnlockNode];
+                (e as HTMLInputElement).value = TechNodeNames.get (this.TechUnlockNode)!;
             }, ApplyChangesToValue: (e) => {
-                //@ts-ignore kurwa wiem co robie
-                let value = parseInt (TechNode[(e as HTMLInputElement).value]);
-                
-                value = isNaN (value) ? 0 : value;
+                let value: number = 0;
+                TechNodeNames.forEach ((name, node) => {
+                    if ((e as HTMLInputElement).value.trim () == name) {
+                        value = node;
+                    }
+                });
                 
                 this.TechUnlockNode = value;
             }
@@ -409,7 +411,8 @@ class Engine {
                     inputs[2].value = Unit.Display (
                         Unit.Parse (inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth),
                         "m",
-                        false
+                        false,
+                        3
                     );
                 });
                 

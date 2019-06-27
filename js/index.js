@@ -147,6 +147,7 @@ class EditableField {
             tmp.classList.add("content-cell-content");
             output = tmp;
         }
+        output.classList.add("content-cell-edit");
         return output;
     }
     ApplyValueToDisplayElement() {
@@ -520,7 +521,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.3";
+Version.CurrentVersion = "Web.0.8.4";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -777,7 +778,7 @@ addEventListener("DOMContentLoaded", () => {
         if (isNaN(x)) {
             break;
         }
-        TechNodeAutocomplete.innerHTML += `<option>${TechNode[x]}</option>`;
+        TechNodeAutocomplete.innerHTML += `<option>${TechNodeNames.get(x)}</option>`;
     }
     document.body.appendChild(TechNodeAutocomplete);
     document.getElementById("option-button-new").addEventListener("click", NewButton_Click);
@@ -794,6 +795,7 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-download-list").addEventListener("click", DownloadListButton_Click);
     document.getElementById("option-button-cache-list").addEventListener("click", CacheListButton_Click);
     document.getElementById("option-button-clipboard-list").addEventListener("click", ClipboardListButton_Click);
+    document.getElementById("option-button-clipboard-selection").addEventListener("click", ClipboardSelectionButton_Click);
     document.getElementById("option-button-open-upload-list").addEventListener("click", OpenUploadButton_Click);
     document.getElementById("option-button-append-upload-list").addEventListener("click", AppendUploadButton_Click);
     document.getElementById("option-button-open-cache-list").addEventListener("click", OpenCacheButton_Click);
@@ -940,6 +942,27 @@ function ClipboardListButton_Click() {
     }
     else {
         Notifier.Warn("There was an error. Engine list was NOT copied to clipboard");
+    }
+}
+function ClipboardSelectionButton_Click() {
+    if (MainEngineTable.SelectedRows.length <= 0) {
+        Notifier.Warn("No engine was selected. Select some engines and try again");
+        return;
+    }
+    let Engines = [];
+    MainEngineTable.SelectedRows.forEach(index => {
+        Engines.push(MainEngineTable.Rows[index][1]);
+    });
+    console.log(Engines);
+    let data = Serializer.SerializeMany(Engines);
+    let b64 = BitConverter.ByteArrayToBase64(data);
+    let success = FileIO.ToClipboard(b64);
+    if (success) {
+        Notifier.Info("Selected engines have been copied to clipboard");
+        FullscreenWindows["save-box"].style.display = "none";
+    }
+    else {
+        Notifier.Warn("There was an error. Selected engines were NOT copied to clipboard");
     }
 }
 function CacheButton_Click() {
@@ -1372,6 +1395,7 @@ var EngineGroupType;
     EngineGroupType["Fake"] = "Fictional Engine";
     EngineGroupType["Ion"] = "Ion Thruster";
     EngineGroupType["SRB"] = "SRB";
+    EngineGroupType["AlternativeHistory"] = "Alternative History";
 })(EngineGroupType || (EngineGroupType = {}));
 class ModelInfo {
     static GetModelInfo(id) {
@@ -1413,7 +1437,7 @@ ModelInfo.models = [
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "LR-91-AJ-5",
+        ModelName: "LR91-5",
         ModelType: EngineGroupType.IRL,
         HiddenMuObjects: [],
         CanAttachOnModel: false,
@@ -3065,6 +3089,1769 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SuperDracoV.png",
         get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.824,
+        OriginalBaseWidth: 0.824,
+        PlumeSizeMultiplier: 0.72,
+        PlumePositionOffset: 0,
+        NodeStackTop: 1,
+        NodeStackBottom: -0.533,
+        ModelPath: "GenericEngines/models/FRE/FRE-1/FRE-1",
+        ModelFiles: [
+            "files/models/FRE/FRE-1/FRE-1.mu",
+            "files/models/FRE/FRE-1/FRE-1Texture_Compiled.dds",
+            "files/models/FRE/FRE-1/FRE-1TextureEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "FRE-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/FRE1.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.38,
+        OriginalBaseWidth: 1.824,
+        PlumeSizeMultiplier: 0.33,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.59,
+        NodeStackBottom: -0.7,
+        ModelPath: "GenericEngines/models/FRE/FRE-2/FRE-2",
+        ModelFiles: [
+            "files/models/FRE/FRE-2/FRE-2.mu",
+            "files/models/FRE/FRE-2/FRE-2Texture_Compiled.dds",
+            "files/models/FRE/FRE-2/FRE-2TextureEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "FRE-2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/FRE2.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.517,
+        OriginalBaseWidth: 0.72,
+        PlumeSizeMultiplier: 1.35,
+        PlumePositionOffset: 0.6,
+        NodeStackTop: 1.52,
+        NodeStackBottom: -1.2,
+        ModelPath: "GenericEngines/models/FRE/LE-5/LE-5",
+        ModelFiles: [
+            "files/models/FRE/LE-5/LE-5.mu",
+            "files/models/FRE/LE-5/LE-5Bump_NRM.dds",
+            "files/models/FRE/LE-5/LE-5Emissive.dds",
+            "files/models/FRE/LE-5/LE-5Texture_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LE-5",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LE5.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 2.12,
+        OriginalBaseWidth: 1.164,
+        PlumeSizeMultiplier: 1.85,
+        PlumePositionOffset: 0.3,
+        NodeStackTop: 2.1,
+        NodeStackBottom: -1.3,
+        ModelPath: "GenericEngines/models/FRE/LE-7/LE-7",
+        ModelFiles: [
+            "files/models/FRE/LE-7/LE-7.mu",
+            "files/models/FRE/LE-7/LE-7Bump_NRM.dds",
+            "files/models/FRE/LE-7/LE-7Emissive.dds",
+            "files/models/FRE/LE-7/LE-7Texture_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LE-7",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LE7.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.276,
+        OriginalBaseWidth: 0.3,
+        PlumeSizeMultiplier: 0.23,
+        PlumePositionOffset: 0.042,
+        NodeStackTop: 0.316,
+        NodeStackBottom: -0.198,
+        ModelPath: "GenericEngines/models/FRE/RD-843/RD-843",
+        ModelFiles: [
+            "files/models/FRE/RD-843/RD-843.mu",
+            "files/models/FRE/RD-843/TextureRD-843_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "RD-843",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD843.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.322,
+        OriginalBaseWidth: 0.506,
+        PlumeSizeMultiplier: 0.28,
+        PlumePositionOffset: 0.14,
+        NodeStackTop: 0.348,
+        NodeStackBottom: -0.405,
+        ModelPath: "GenericEngines/models/FRE/Rutherford/Rutherford",
+        ModelFiles: [
+            "files/models/FRE/Rutherford/Rutherford.mu",
+            "files/models/FRE/Rutherford/RutherfordEmissive.dds",
+            "files/models/FRE/Rutherford/RutherfordMountTexture_Compiled.dds",
+            "files/models/FRE/Rutherford/RutherfordNozzleTexture_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "Rutherford",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Rutherford.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.679,
+        OriginalBaseWidth: 0.506,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: 0.57,
+        NodeStackTop: 0.348,
+        NodeStackBottom: -1.015,
+        ModelPath: "GenericEngines/models/FRE/Rutherford/RutherfordVac",
+        ModelFiles: [
+            "files/models/FRE/Rutherford/RutherfordVac.mu",
+            "files/models/FRE/Rutherford/RutherfordVacEmissive.dds",
+            "files/models/FRE/Rutherford/RutherfordMountTexture_Compiled.dds",
+            "files/models/FRE/Rutherford/RutherfordVacNozzleTexture_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "Rutherford Vacuum",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RutherfordVac.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 2.326,
+        OriginalBaseWidth: 2.999,
+        PlumeSizeMultiplier: 2,
+        PlumePositionOffset: 0.88,
+        NodeStackTop: 5.33,
+        NodeStackBottom: -6.40,
+        ModelPath: "GenericEngines/models/FRE/VegaSRM/P80",
+        ModelFiles: [
+            "files/models/FRE/VegaSRM/P80.mu",
+            "files/models/FRE/VegaSRM/TextureP80_Compiled.dds",
+            "files/models/FRE/VegaSRM/VegaEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "P80",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 54649,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 1.5,
+        ImageSource: "img/modelPreviews/P80.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.036,
+        OriginalBaseWidth: 1.9,
+        PlumeSizeMultiplier: 0.9,
+        PlumePositionOffset: 0.32,
+        NodeStackTop: 1.7,
+        NodeStackBottom: -1.8,
+        ModelPath: "GenericEngines/models/FRE/VegaSRM/Zefiro9",
+        ModelFiles: [
+            "files/models/FRE/VegaSRM/Zefiro9.mu",
+            "files/models/FRE/VegaSRM/TextureZefiro9_Compiled.dds",
+            "files/models/FRE/VegaSRM/VegaEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Zefiro 9",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 4940,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.95,
+        ImageSource: "img/modelPreviews/Zefiro9.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.449,
+        OriginalBaseWidth: 1.9,
+        PlumeSizeMultiplier: 1.3,
+        PlumePositionOffset: 0.64,
+        NodeStackTop: 3.4,
+        NodeStackBottom: -4.18,
+        ModelPath: "GenericEngines/models/FRE/VegaSRM/Zefiro23",
+        ModelFiles: [
+            "files/models/FRE/VegaSRM/Zefiro23.mu",
+            "files/models/FRE/VegaSRM/TextureZefiro23_Compiled.dds",
+            "files/models/FRE/VegaSRM/VegaEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Zefiro 23",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 12267,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.95,
+        ImageSource: "img/modelPreviews/Zefiro23.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.944,
+        OriginalBaseWidth: 0.947,
+        PlumeSizeMultiplier: 0.8,
+        PlumePositionOffset: 1.55,
+        NodeStackTop: 1.6,
+        NodeStackBottom: -1.03,
+        ModelPath: "GenericEngines/models/FRE/Viking/VikingLower",
+        ModelFiles: [
+            "files/models/FRE/Viking/VikingLower.mu",
+            "files/models/FRE/Viking/TextureVikingLower_Compiled.dds",
+            "files/models/FRE/Viking/VikingLowerEmissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "Viking",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Viking.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.8,
+        OriginalBaseWidth: 0.947,
+        PlumeSizeMultiplier: 1.55,
+        PlumePositionOffset: 0.9,
+        NodeStackTop: 1.59,
+        NodeStackBottom: -2.04,
+        ModelPath: "GenericEngines/models/FRE/VikingVac/VikingUpper",
+        ModelFiles: [
+            "files/models/FRE/VikingVac/VikingUpper.mu",
+            "files/models/FRE/VikingVac/VikingUpperEmissive.dds",
+            "files/models/FRE/VikingVac/TextureVikingUpper_Compiled.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "Viking Vacuum",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/VikingVac.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.639,
+        OriginalBaseWidth: 2.5,
+        PlumeSizeMultiplier: 1.4,
+        PlumePositionOffset: 1.08,
+        NodeStackTop: 0.03,
+        NodeStackBottom: -1.91,
+        ModelPath: "GenericEngines/models/BDB/Apollo/bluedog_Apollo_Block2_ServiceEngine",
+        ModelFiles: [
+            "files/models/BDB/Apollo/bluedog_Apollo_Block2_ServiceEngine.mu",
+            "files/models/BDB/Apollo/bluedog_Apollo_Service.dds",
+            "files/models/BDB/Apollo/bluedog_Apollo_Service_Emit.dds",
+            "files/models/BDB/Apollo/bluedog_Apollo_Service_NRM.dds",
+            "files/models/BDB/Apollo/bluedog_StructuralTop.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Apollo Service Propulsion System Block II",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/ApolloSPSBlockII.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.578,
+        OriginalBaseWidth: 2.5,
+        PlumeSizeMultiplier: 0.5,
+        PlumePositionOffset: 0.24,
+        NodeStackTop: 0.03,
+        NodeStackBottom: -0.844,
+        ModelPath: "GenericEngines/models/BDB/Apollo/bluedog_Apollo_Block3_ServiceEngine",
+        ModelFiles: [
+            "files/models/BDB/Apollo/bluedog_Apollo_Block3_ServiceEngine.mu",
+            "files/models/BDB/Apollo/bluedog_LEM.dds",
+            "files/models/BDB/Apollo/bluedog_LEM_Emit.dds",
+            "files/models/BDB/Apollo/bluedog_LEM_NRM.dds",
+            "files/models/BDB/Apollo/bluedog_Apollo_Service.dds",
+            "files/models/BDB/Apollo/bluedog_Apollo_Service_NRM.dds",
+            "files/models/BDB/Apollo/bluedog_StructuralTop.dds",
+            "files/models/BDB/Apollo/bluedog_StructuralTop_NRM.dds",
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Apollo Service Propulsion System Block III",
+        ModelType: EngineGroupType.AlternativeHistory,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/ApolloSPSBlockIII.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.81,
+        OriginalBaseWidth: 2.5,
+        PlumeSizeMultiplier: 0.7,
+        PlumePositionOffset: 0.46,
+        NodeStackTop: 0.02,
+        NodeStackBottom: -1.06,
+        ModelPath: "GenericEngines/models/BDB/Apollo/bluedog_Apollo_Block5_ServiceEngine",
+        ModelFiles: [
+            "files/models/BDB/Apollo/bluedog_Apollo_Block5_ServiceEngine.mu",
+            "files/models/BDB/Apollo/bluedog_LEM.dds",
+            "files/models/BDB/Apollo/bluedog_LEM_NRM.dds",
+            "files/models/BDB/Apollo/bluedog_Apollo_Service.dds",
+            "files/models/BDB/Apollo/bluedog_Apollo_Service_NRM.dds",
+            "files/models/BDB/Apollo/bluedog_Apollo_ExtraParts1.dds",
+            "files/models/BDB/Apollo/bluedog_Apollo_ExtraParts1_NRM.dds",
+            "files/models/BDB/Apollo/bluedog_StructuralTop.dds",
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Apollo Service Propulsion System Block V",
+        ModelType: EngineGroupType.AlternativeHistory,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/ApolloSPSBlockV.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.531,
+        OriginalBaseWidth: 0.373,
+        PlumeSizeMultiplier: 0.45,
+        PlumePositionOffset: -0.03,
+        NodeStackTop: 0.28,
+        NodeStackBottom: -0.58,
+        ModelPath: "GenericEngines/models/BDB/Apollo/bluedog_LEM_Ascent_Engine",
+        ModelFiles: [
+            "files/models/BDB/Apollo/bluedog_LEM_Ascent_Engine.mu",
+            "files/models/BDB/Apollo/bluedog_LEM.dds",
+            "files/models/BDB/Apollo/bluedog_LEM_NRM.dds",
+            "files/models/BDB/Apollo/bluedog_LEM_Emit.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Lunar Module Ascent Engine",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LMAE_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.811,
+        OriginalBaseWidth: 0.391,
+        PlumeSizeMultiplier: 0.7,
+        PlumePositionOffset: 0.52,
+        NodeStackTop: 0.138,
+        NodeStackBottom: -0.99,
+        ModelPath: "GenericEngines/models/BDB/Apollo/bluedog_LEM_Descent_Engine",
+        ModelFiles: [
+            "files/models/BDB/Apollo/bluedog_LEM_Descent_Engine.mu",
+            "files/models/BDB/Apollo/bluedog_LEM.dds",
+            "files/models/BDB/Apollo/bluedog_LEM_NRM.dds",
+            "files/models/BDB/Apollo/bluedog_LEM_Emit.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Lunar Module Descent Engine",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LMDE_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.723,
+        OriginalBaseWidth: 0.66,
+        PlumeSizeMultiplier: 0.62,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.33,
+        NodeStackBottom: -1.02,
+        ModelPath: "GenericEngines/models/BDB/Atlas/bluedog_Atlas_LR89",
+        ModelFiles: [
+            "files/models/BDB/Atlas/bluedog_Atlas_LR89.mu",
+            "files/models/BDB/Atlas/bluedog_Atlas_Engines.dds",
+            "files/models/BDB/Atlas/bluedog_Atlas_Engines_NRM.dds",
+            "files/models/BDB/Atlas/bluedog_Atlas_Engines_Emissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR89",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR89.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.111,
+        OriginalBaseWidth: 0.25,
+        PlumeSizeMultiplier: 0.095,
+        PlumePositionOffset: 0.028,
+        NodeStackTop: 0.075,
+        NodeStackBottom: -0.505,
+        ModelPath: "GenericEngines/models/BDB/Atlas/bluedog_Atlas_LR101_Inline",
+        ModelFiles: [
+            "files/models/BDB/Atlas/bluedog_Atlas_LR101_Inline.mu",
+            "files/models/BDB/Atlas/bluedog_Atlas_Engines.dds",
+            "files/models/BDB/Atlas/bluedog_Atlas_Engines_NRM.dds",
+            "files/models/BDB/Atlas/bluedog_Atlas_Engines_Emissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "YawGimbal",
+        ModelName: "LR101",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR101.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.73,
+        OriginalBaseWidth: 0.66,
+        PlumeSizeMultiplier: 0.64,
+        PlumePositionOffset: -0.07,
+        NodeStackTop: 0.774,
+        NodeStackBottom: -0.774,
+        ModelPath: "GenericEngines/models/BDB/Atlas/bluedog_Atlas_LR105",
+        ModelFiles: [
+            "files/models/BDB/Atlas/bluedog_Atlas_LR105.mu",
+            "files/models/BDB/Atlas/bluedog_Atlas_Engines.dds",
+            "files/models/BDB/Atlas/bluedog_Atlas_Engines_NRM.dds",
+            "files/models/BDB/Atlas/bluedog_Atlas_Engines_Emissive.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR105",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR105.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.819,
+        OriginalBaseWidth: 1.6,
+        PlumeSizeMultiplier: 0.71,
+        PlumePositionOffset: -0.32,
+        NodeStackTop: 0.4,
+        NodeStackBottom: -1.65,
+        ModelPath: "GenericEngines/models/BDB/AtlasV/bluedog_AtlasV_RD180_Naked",
+        ModelFiles: [
+            "files/models/BDB/AtlasV/bluedog_AtlasV_RD180_Naked.mu",
+            "files/models/BDB/AtlasV/bluedog_RD180.dds",
+            "files/models/BDB/AtlasV/bluedog_RD180_emit.dds",
+            "files/models/BDB/AtlasV/bluedog_RD180_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "pitchGimbalTransform",
+        ModelName: "RD-180",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RD180_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.641,
+        OriginalBaseWidth: 0.352,
+        PlumeSizeMultiplier: 0.57,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.326,
+        NodeStackBottom: -0.81,
+        ModelPath: "GenericEngines/models/BDB/Centaur/bluedog_Centaur_RL10_Shroudless",
+        ModelFiles: [
+            "files/models/BDB/Centaur/bluedog_Centaur_RL10_Shroudless.mu",
+            "files/models/BDB/Centaur/bluedog_RL10.dds",
+            "files/models/BDB/Centaur/bluedog_RL10_Emit.dds",
+            "files/models/BDB/Centaur/bluedog_RL10_NRM.dds",
+            "files/models/BDB/Centaur/bluedog_Centaur.dds",
+            "files/models/BDB/Centaur/bluedog_Centaur_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "RL10",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RL10.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.73,
+        OriginalBaseWidth: 0.352,
+        PlumeSizeMultiplier: 0.64,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.332,
+        NodeStackBottom: -1.18,
+        ModelPath: "GenericEngines/models/BDB/Centaur/bluedog_Centaur_RL10A41_Shroudless_Extended",
+        ModelFiles: [
+            "files/models/BDB/Centaur/bluedog_Centaur_RL10A41_Shroudless_Extended.mu",
+            "files/models/BDB/Centaur/bluedog_RL10.dds",
+            "files/models/BDB/Centaur/bluedog_RL10_Emit.dds",
+            "files/models/BDB/Centaur/bluedog_RL10_NRM.dds",
+            "files/models/BDB/Centaur/bluedog_Centaur.dds",
+            "files/models/BDB/Centaur/bluedog_Centaur_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "RL10A-4-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RL10A41.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.905,
+        OriginalBaseWidth: 0.64,
+        PlumeSizeMultiplier: 0.8,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.33,
+        NodeStackBottom: -1.75,
+        ModelPath: "GenericEngines/models/BDB/Centaur/bluedog_Centaur_RL10B2_Shroudless_Extended",
+        ModelFiles: [
+            "files/models/BDB/Centaur/bluedog_Centaur_RL10B2_Shroudless_Extended.mu",
+            "files/models/BDB/Centaur/bluedog_RL10.dds",
+            "files/models/BDB/Centaur/bluedog_RL10_Emit.dds",
+            "files/models/BDB/Centaur/bluedog_RL10_NRM.dds",
+            "files/models/BDB/Centaur/bluedog_Centaur.dds",
+            "files/models/BDB/Centaur/bluedog_Centaur_NRM.dds",
+            "files/models/BDB/Centaur/bluedog_Centaur_NozzleExtension.dds",
+            "files/models/BDB/Centaur/bluedog_Centaur_NozzleExtension_Emit.dds",
+            "files/models/BDB/Centaur/bluedog_Centaur_NozzleExtension_Nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "RL10B-2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/RL10B2_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.508,
+        OriginalBaseWidth: 0.625,
+        PlumeSizeMultiplier: 0.42,
+        PlumePositionOffset: -0.08,
+        NodeStackTop: 3.055,
+        NodeStackBottom: -3.8,
+        ModelPath: "GenericEngines/models/BDB/Delta/bluedog_Delta_GEM40_Inline",
+        ModelFiles: [
+            "files/models/BDB/Delta/bluedog_Delta_GEM40_Inline.mu",
+            "files/models/BDB/Delta/bluedog_Delta2_Engines.dds",
+            "files/models/BDB/Delta/bluedog_Delta2_Engines_Emit.dds",
+            "files/models/BDB/Delta/bluedog_Delta2_Engines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "GEM 40",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 1337,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.3125,
+        ImageSource: "img/modelPreviews/GEM40.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.813,
+        OriginalBaseWidth: 0.54,
+        PlumeSizeMultiplier: 0.73,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.033,
+        NodeStackBottom: -1.21,
+        ModelPath: "GenericEngines/models/BDB/Delta/bluedog_DeltaK_AJ10_Shroudless",
+        ModelFiles: [
+            "files/models/BDB/Delta/bluedog_DeltaK_AJ10_Shroudless.mu",
+            "files/models/BDB/Delta/bluedog_DeltaK.dds",
+            "files/models/BDB/Delta/bluedog_DeltaK_Emit.dds",
+            "files/models/BDB/Delta/bluedog_DeltaK_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform1",
+        ModelName: "AJ10",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/AJ10_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.865,
+        OriginalBaseWidth: 1.377,
+        PlumeSizeMultiplier: 0.76,
+        PlumePositionOffset: 0.55,
+        NodeStackTop: 0.88,
+        NodeStackBottom: -1.29,
+        ModelPath: "GenericEngines/models/BDB/Diamant/bluedog_Diamant_Rita_Shroudless_ColliderTweaked",
+        ModelFiles: [
+            "files/models/BDB/Diamant/bluedog_Diamant_Rita_Shroudless_ColliderTweaked.mu",
+            "files/models/BDB/Diamant/bluedog_DiamantEngines.dds",
+            "files/models/BDB/Diamant/bluedog_DiamantEngines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "P4 Rita",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 1395,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.6885,
+        ImageSource: "img/modelPreviews/Rita.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.498,
+        OriginalBaseWidth: 0.591,
+        PlumeSizeMultiplier: 0.43,
+        PlumePositionOffset: 0.186,
+        NodeStackTop: 0.485,
+        NodeStackBottom: -0.725,
+        ModelPath: "GenericEngines/models/BDB/Diamant/bluedog_Diamant_Rubis_Shroudless_ColliderTweaked",
+        ModelFiles: [
+            "files/models/BDB/Diamant/bluedog_Diamant_Rubis_Shroudless_ColliderTweaked.mu",
+            "files/models/BDB/Diamant/bluedog_DiamantEngines.dds",
+            "files/models/BDB/Diamant/bluedog_DiamantEngines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Rubis",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 130,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.2955,
+        ImageSource: "img/modelPreviews/Rubis.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.219,
+        OriginalBaseWidth: 0.623,
+        PlumeSizeMultiplier: 0.19,
+        PlumePositionOffset: 0,
+        NodeStackTop: 1.275,
+        NodeStackBottom: -1.452,
+        ModelPath: "GenericEngines/models/BDB/Diamant/bluedog_Diamant_Topaze_Shroudless_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Diamant/bluedog_Diamant_Topaze_Shroudless_Tweaked.mu",
+            "files/models/BDB/Diamant/bluedog_DiamantEngines.dds",
+            "files/models/BDB/Diamant/bluedog_DiamantEngines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "Topaze",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 432,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.3115,
+        ImageSource: "img/modelPreviews/Topaze.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.346,
+        OriginalBaseWidth: 0.337,
+        PlumeSizeMultiplier: 0.3,
+        PlumePositionOffset: 0.18,
+        NodeStackTop: 0.5,
+        NodeStackBottom: -0.29,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_ableEngine",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_ableEngine.mu",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_Emissive.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Able",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Able.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.470,
+        OriginalBaseWidth: 0.585,
+        PlumeSizeMultiplier: 0.42,
+        PlumePositionOffset: 0.265,
+        NodeStackTop: 0.666,
+        NodeStackBottom: -0.425,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_ablestarEngine",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_ablestarEngine.mu",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_Emissive.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Ablestar",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Ablestar.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.269,
+        OriginalBaseWidth: 0.81,
+        PlumeSizeMultiplier: 0.235,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.52,
+        NodeStackBottom: -0.535,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_navaho_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_navaho_Tweaked.mu",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_NRM.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines.dds",
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine_NRM.dds",
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbal",
+        ModelName: "Navaho",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Navaho.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.885,
+        OriginalBaseWidth: 1.499,
+        PlumeSizeMultiplier: 0.78,
+        PlumePositionOffset: 0.58,
+        NodeStackTop: 0.125,
+        NodeStackBottom: -2.13,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_thorEngine",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine.mu",
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine_NRM.dds",
+            "files/models/BDB/EarlyRockets/bluedog_thorEngine.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Thor",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Thor.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.284,
+        OriginalBaseWidth: 0.605,
+        PlumeSizeMultiplier: 0.25,
+        PlumePositionOffset: 0.62,
+        NodeStackTop: 0.37,
+        NodeStackBottom: -0.87,
+        ModelPath: "GenericEngines/models/BDB/EarlyRockets/bluedog_vanguardEngine",
+        ModelFiles: [
+            "files/models/BDB/EarlyRockets/bluedog_vanguardEngine.mu",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_Emissive.dds",
+            "files/models/BDB/EarlyRockets/bluedog_earlyEngines_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Vanguard",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Vanguard.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.975,
+        OriginalBaseWidth: 1.061,
+        PlumeSizeMultiplier: 0.86,
+        PlumePositionOffset: -0.15,
+        NodeStackTop: 1.2,
+        NodeStackBottom: -0.86,
+        ModelPath: "GenericEngines/models/BDB/Engines/bluedog_E1",
+        ModelFiles: [
+            "files/models/BDB/Engines/bluedog_E1.mu",
+            "files/models/BDB/Engines/bluedog_E1.dds",
+            "files/models/BDB/Engines/bluedog_E1_Emit.dds",
+            "files/models/BDB/Engines/bluedog_E1_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "E-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/E1.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.106,
+        OriginalBaseWidth: 0.12,
+        PlumeSizeMultiplier: 0.095,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.3,
+        NodeStackBottom: -0.52,
+        ModelPath: "GenericEngines/models/BDB/Explorer/bluedog_Sargent_1x",
+        ModelFiles: [
+            "files/models/BDB/Explorer/bluedog_Sargent_1x.mu",
+            "files/models/BDB/Explorer/bluedog_JunoProbes.dds",
+            "files/models/BDB/Explorer/bluedog_JunoProbes_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Sargent",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 4.3,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.06,
+        ImageSource: "img/modelPreviews/Sargent.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.376,
+        OriginalBaseWidth: 0.898,
+        PlumeSizeMultiplier: 0.32,
+        PlumePositionOffset: 0.48,
+        NodeStackTop: 0.013,
+        NodeStackBottom: -1.09,
+        ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine6K",
+        ModelFiles: [
+            "files/models/BDB/Juno/bluedog_Juno_Engine6K.mu",
+            "files/models/BDB/Juno/bluedog_JunoEngines.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Juno 6K",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Juno6K.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.495,
+        OriginalBaseWidth: 0.87,
+        PlumeSizeMultiplier: 0.42,
+        PlumePositionOffset: 0.56,
+        NodeStackTop: 0.014,
+        NodeStackBottom: -1.19,
+        ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine45K",
+        ModelFiles: [
+            "files/models/BDB/Juno/bluedog_Juno_Engine45K.mu",
+            "files/models/BDB/Juno/bluedog_JunoEngines.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Juno 45K",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Juno45K.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.745,
+        OriginalBaseWidth: 0.93,
+        PlumeSizeMultiplier: 0.66,
+        PlumePositionOffset: 0.92,
+        NodeStackTop: 0.074,
+        NodeStackBottom: -1.466,
+        ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_EngineS3D",
+        ModelFiles: [
+            "files/models/BDB/Juno/bluedog_Juno_EngineS3D.mu",
+            "files/models/BDB/Juno/bluedog_JunoEngines.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "S3D",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [
+            "fairing"
+        ],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/S3D.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.96,
+        OriginalBaseWidth: 2.036,
+        PlumeSizeMultiplier: 1.68,
+        PlumePositionOffset: 0,
+        NodeStackTop: 1.13,
+        NodeStackBottom: -2,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_F1",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_F1.mu",
+            "files/models/BDB/Saturn/bluedog_F1.dds",
+            "files/models/BDB/Saturn/bluedog_F1_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "F-1",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/F1_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.589,
+        OriginalBaseWidth: 0.535,
+        PlumeSizeMultiplier: 0.53,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.59,
+        NodeStackBottom: -0.76,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_H1C_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_H1C_Tweaked.mu",
+            "files/models/BDB/Saturn/bluedog_H1.dds",
+            "files/models/BDB/Saturn/bluedog_H1_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "H-1C",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/H1C.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.588,
+        OriginalBaseWidth: 0.536,
+        PlumeSizeMultiplier: 0.52,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.593,
+        NodeStackBottom: -0.765,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_H1D_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_H1D_Tweaked.mu",
+            "files/models/BDB/Saturn/bluedog_H1.dds",
+            "files/models/BDB/Saturn/bluedog_H1_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "Gimbal",
+        ModelName: "H-1D",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/H1D.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.147,
+        OriginalBaseWidth: 0.85,
+        PlumeSizeMultiplier: 1,
+        PlumePositionOffset: -0.13,
+        NodeStackTop: 0.737,
+        NodeStackBottom: -0.93,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_J2.mu",
+            "files/models/BDB/Saturn/bluedog_J2.dds",
+            "files/models/BDB/Saturn/bluedog_J2_NRM.dds",
+            "files/models/BDB/Saturn/bluedog_saturn4B.dds",
+            "files/models/BDB/Saturn/bluedog_saturn4B_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "J-2",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/J2_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.248,
+        OriginalBaseWidth: 1.248,
+        PlumeSizeMultiplier: 1.3,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.06,
+        NodeStackBottom: -0.365,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2_Toroidal",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_J2_Toroidal.mu",
+            "files/models/BDB/Saturn/bluedog_J2.dds",
+            "files/models/BDB/Saturn/bluedog_J2_NRM.dds",
+            "files/models/BDB/Saturn/bluedog_J2_Variants.dds",
+            "files/models/BDB/Saturn/bluedog_J2_Variants_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "J-2T",
+        ModelType: EngineGroupType.AlternativeHistory,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/J2T.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.904,
+        OriginalBaseWidth: 0.852,
+        PlumeSizeMultiplier: 0.8,
+        PlumePositionOffset: -0.39,
+        NodeStackTop: 0.7,
+        NodeStackBottom: -0.64,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2sl",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_J2sl.mu",
+            "files/models/BDB/Saturn/bluedog_saturn4B.dds",
+            "files/models/BDB/Saturn/bluedog_saturn4B_NRM.dds",
+            "files/models/BDB/Saturn/bluedog_J2.dds",
+            "files/models/BDB/Saturn/bluedog_J2_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "J-2SL",
+        ModelType: EngineGroupType.AlternativeHistory,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/J2SL.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 3.914,
+        OriginalBaseWidth: 3.83,
+        PlumeSizeMultiplier: 3.4,
+        PlumePositionOffset: -0.6,
+        NodeStackTop: 9.56,
+        NodeStackBottom: -11.59,
+        ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_saturn_AJ260_LongFlared",
+        ModelFiles: [
+            "files/models/BDB/Saturn/bluedog_saturn_AJ260_LongFlared.mu",
+            "files/models/BDB/Saturn/bluedog_saturn_AJ260.dds",
+            "files/models/BDB/Saturn/bluedog_saturn_AJ260_Emit.dds",
+            "files/models/BDB/Saturn/bluedog_saturn_AJ260_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "AJ-260",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 134500,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 1.915,
+        ImageSource: "img/modelPreviews/AJ260.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.708,
+        OriginalBaseWidth: 1.873,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: 0.61,
+        NodeStackTop: 0.46,
+        NodeStackBottom: -1.6,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_LR87_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_LR87_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_TitanEngines.dds",
+            "files/models/BDB/Titan/bluedog_TitanEngines_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "LR87",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.692,
+        OriginalBaseWidth: 0.734,
+        PlumeSizeMultiplier: 0.61,
+        PlumePositionOffset: 0.58,
+        NodeStackTop: 0.17,
+        NodeStackBottom: -1.05,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_LR87S_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_LR87S_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_TitanEngines.dds",
+            "files/models/BDB/Titan/bluedog_TitanEngines_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "LR87 Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87S.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.854,
+        OriginalBaseWidth: 1.35,
+        PlumeSizeMultiplier: 0.75,
+        PlumePositionOffset: 0.65,
+        NodeStackTop: -0.06,
+        NodeStackBottom: -1.38,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_LR91_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_LR91_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_TitanEngines.dds",
+            "files/models/BDB/Titan/bluedog_TitanEngines_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "LR91",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR91_BDB.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.497,
+        OriginalBaseWidth: 1.497,
+        PlumeSizeMultiplier: 1.3,
+        PlumePositionOffset: -0.15,
+        NodeStackTop: 6.95,
+        NodeStackBottom: -4.59,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Soltan_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_Soltan_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_TitanSRBs.dds",
+            "files/models/BDB/Titan/bluedog_TitanSRBs_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Soltan",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 12500,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.75,
+        ImageSource: "img/modelPreviews/Soltan.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.9,
+        OriginalBaseWidth: 1.87,
+        PlumeSizeMultiplier: 1.65,
+        PlumePositionOffset: -0.08,
+        NodeStackTop: 8.1,
+        NodeStackBottom: -6.25,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Titan_SRB5segStack",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_Titan_SRB5segStack.mu",
+            "files/models/BDB/Titan/bluedog_TitanSRBs.dds",
+            "files/models/BDB/Titan/bluedog_TitanSRBs_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "UA1205",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 22600,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.935,
+        ImageSource: "img/modelPreviews/UA1205.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.9,
+        OriginalBaseWidth: 1.87,
+        PlumeSizeMultiplier: 1.65,
+        PlumePositionOffset: -0.08,
+        NodeStackTop: 11.85,
+        NodeStackBottom: -6.25,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Titan_SRB7segStack",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_Titan_SRB7segStack.mu",
+            "files/models/BDB/Titan/bluedog_TitanSRBs.dds",
+            "files/models/BDB/Titan/bluedog_TitanSRBs_nrm.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "UA1207",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 28900,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.935,
+        ImageSource: "img/modelPreviews/UA1207.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.742,
+        OriginalBaseWidth: 1.87,
+        PlumeSizeMultiplier: 0.65,
+        PlumePositionOffset: 0.41,
+        NodeStackTop: 0.025,
+        NodeStackBottom: -1.66,
+        ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Transtage_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/Titan/bluedog_Transtage_Tweaked.mu",
+            "files/models/BDB/Titan/bluedog_Transtage.dds",
+            "files/models/BDB/Titan/bluedog_Transtage_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "Transtage",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 1200,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/Transtage.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.677,
+        OriginalBaseWidth: 1.884,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.83,
+        NodeStackBottom: -1.02,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_5_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_5_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-5",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_5.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.735,
+        OriginalBaseWidth: 1.882,
+        PlumeSizeMultiplier: 0.65,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.49,
+        NodeStackBottom: -1.674,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.733,
+        OriginalBaseWidth: 0.78,
+        PlumeSizeMultiplier: 0.66,
+        PlumePositionOffset: 0.63,
+        NodeStackTop: 0.722,
+        NodeStackBottom: -1.07,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11S_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11S_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11 Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11S.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.918,
+        OriginalBaseWidth: 0.78,
+        PlumeSizeMultiplier: 0.83,
+        PlumePositionOffset: 0.88,
+        NodeStackTop: 0.722,
+        NodeStackBottom: -1.377,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11SV_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11SV_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11 Vacuum Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11SV.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.67,
+        OriginalBaseWidth: 0.78,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.722,
+        NodeStackBottom: -0.762,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11SH_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11SH_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11 Hydrolox Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11SH.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.977,
+        OriginalBaseWidth: 0.78,
+        PlumeSizeMultiplier: 0.88,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.722,
+        NodeStackBottom: -1.792,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11SHV_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11SHV_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11 Vacuum Hydrolox Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11SHV.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.95,
+        OriginalBaseWidth: 0.79,
+        PlumeSizeMultiplier: 0.85,
+        PlumePositionOffset: -0.1,
+        NodeStackTop: 0.603,
+        NodeStackBottom: -0.923,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR91_5_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR91_5_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR91-5",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR91_5.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.934,
+        OriginalBaseWidth: 0.79,
+        PlumeSizeMultiplier: 0.84,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.603,
+        NodeStackBottom: -1.021,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR91_11_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR91_11_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR91-11",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR91_11.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.9,
+        OriginalBaseWidth: 1.874,
+        PlumeSizeMultiplier: 1.7,
+        PlumePositionOffset: 0,
+        NodeStackTop: 13.176,
+        NodeStackBottom: -4.986,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_SRMU_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_SRMU_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds",
+            "files/models/BDB/TitanRemake/bluedog_SRMU.dds",
+            "files/models/BDB/TitanRemake/bluedog_SRMU_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_SRMU_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_White.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "SRMU",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 32250,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.937,
+        ImageSource: "img/modelPreviews/SRMU.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.75,
+        OriginalBaseWidth: 1.874,
+        PlumeSizeMultiplier: 1.57,
+        PlumePositionOffset: 0.81,
+        NodeStackTop: 8.79,
+        NodeStackBottom: -5,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_UA1205_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_UA1205_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Striped.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "UA1205",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 23400,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.937,
+        ImageSource: "img/modelPreviews/UA1205_NEW.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.75,
+        OriginalBaseWidth: 1.874,
+        PlumeSizeMultiplier: 1.57,
+        PlumePositionOffset: 0.81,
+        NodeStackTop: 13.19,
+        NodeStackBottom: -5,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_UA1207_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_UA1207_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_White.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Striped.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "UA1207",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 32500,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.937,
+        ImageSource: "img/modelPreviews/UA1207_NEW.png",
+        get ImageLabel() { return this.ModelName; }
     }
 ];
 ModelInfo.Dropdown = ModelInfo.BuildDropdown();
@@ -3283,6 +5070,583 @@ PlumeInfo.plumes = [
     }
 ];
 PlumeInfo.Dropdown = PlumeInfo.BuildDropdown();
+var TechNode;
+(function (TechNode) {
+    TechNode[TechNode["start"] = 0] = "start";
+    TechNode[TechNode["supersonicDev"] = 1] = "supersonicDev";
+    TechNode[TechNode["supersonicFlightRP0"] = 2] = "supersonicFlightRP0";
+    TechNode[TechNode["matureSupersonic"] = 3] = "matureSupersonic";
+    TechNode[TechNode["highSpeedFlight"] = 4] = "highSpeedFlight";
+    TechNode[TechNode["advancedJetEngines"] = 5] = "advancedJetEngines";
+    TechNode[TechNode["matureTurbofans"] = 6] = "matureTurbofans";
+    TechNode[TechNode["refinedTurbofans"] = 7] = "refinedTurbofans";
+    TechNode[TechNode["scramjetEngines"] = 8] = "scramjetEngines";
+    TechNode[TechNode["experimentalAircraft"] = 9] = "experimentalAircraft";
+    TechNode[TechNode["colonization2051Flight"] = 10] = "colonization2051Flight";
+    TechNode[TechNode["colonization2100Flight"] = 11] = "colonization2100Flight";
+    TechNode[TechNode["colonization2150Flight"] = 12] = "colonization2150Flight";
+    TechNode[TechNode["hypersonicFlightRP0"] = 13] = "hypersonicFlightRP0";
+    TechNode[TechNode["prototypeSpaceplanes"] = 14] = "prototypeSpaceplanes";
+    TechNode[TechNode["effectiveSpaceplanes"] = 15] = "effectiveSpaceplanes";
+    TechNode[TechNode["spaceShuttles"] = 16] = "spaceShuttles";
+    TechNode[TechNode["improvedSpaceplanes"] = 17] = "improvedSpaceplanes";
+    TechNode[TechNode["advancedSpaceplanes"] = 18] = "advancedSpaceplanes";
+    TechNode[TechNode["highTechSpaceplanes"] = 19] = "highTechSpaceplanes";
+    TechNode[TechNode["experimentalSpaceplanes"] = 20] = "experimentalSpaceplanes";
+    TechNode[TechNode["sstoSpaceplanes"] = 21] = "sstoSpaceplanes";
+    TechNode[TechNode["colonization2100Spaceplanes"] = 22] = "colonization2100Spaceplanes";
+    TechNode[TechNode["colonization2150Spaceplanes"] = 23] = "colonization2150Spaceplanes";
+    TechNode[TechNode["basicCapsules"] = 24] = "basicCapsules";
+    TechNode[TechNode["secondGenCapsules"] = 25] = "secondGenCapsules";
+    TechNode[TechNode["matureCapsules"] = 26] = "matureCapsules";
+    TechNode[TechNode["improvedCapsules"] = 27] = "improvedCapsules";
+    TechNode[TechNode["advancedCapsules"] = 28] = "advancedCapsules";
+    TechNode[TechNode["modernCapsules"] = 29] = "modernCapsules";
+    TechNode[TechNode["capsulesNF"] = 30] = "capsulesNF";
+    TechNode[TechNode["highTechCapsules"] = 31] = "highTechCapsules";
+    TechNode[TechNode["colonization2100Command"] = 32] = "colonization2100Command";
+    TechNode[TechNode["colonization2150Command"] = 33] = "colonization2150Command";
+    TechNode[TechNode["spaceStationPrototypes"] = 34] = "spaceStationPrototypes";
+    TechNode[TechNode["spaceStationDev"] = 35] = "spaceStationDev";
+    TechNode[TechNode["earlySpaceStations"] = 36] = "earlySpaceStations";
+    TechNode[TechNode["modularSpaceStations"] = 37] = "modularSpaceStations";
+    TechNode[TechNode["largeScaleOrbitalCon"] = 38] = "largeScaleOrbitalCon";
+    TechNode[TechNode["improvedOrbitalConstruction"] = 39] = "improvedOrbitalConstruction";
+    TechNode[TechNode["inflatableHabitats"] = 40] = "inflatableHabitats";
+    TechNode[TechNode["improvedHabitats"] = 41] = "improvedHabitats";
+    TechNode[TechNode["advancedHabitats"] = 42] = "advancedHabitats";
+    TechNode[TechNode["largeScaleHabitats"] = 43] = "largeScaleHabitats";
+    TechNode[TechNode["colonization2100SpaceStations"] = 44] = "colonization2100SpaceStations";
+    TechNode[TechNode["colonization2150SpaceStations"] = 45] = "colonization2150SpaceStations";
+    TechNode[TechNode["earlyFlightControl"] = 46] = "earlyFlightControl";
+    TechNode[TechNode["stabilityRP0"] = 47] = "stabilityRP0";
+    TechNode[TechNode["earlyDocking"] = 48] = "earlyDocking";
+    TechNode[TechNode["improvedFlightControl"] = 49] = "improvedFlightControl";
+    TechNode[TechNode["advancedFlightControl"] = 50] = "advancedFlightControl";
+    TechNode[TechNode["dockingCrewTransfer"] = 51] = "dockingCrewTransfer";
+    TechNode[TechNode["spaceStationControl"] = 52] = "spaceStationControl";
+    TechNode[TechNode["largeSpaceplaneControl"] = 53] = "largeSpaceplaneControl";
+    TechNode[TechNode["standardDockingPorts"] = 54] = "standardDockingPorts";
+    TechNode[TechNode["largeStationControl"] = 55] = "largeStationControl";
+    TechNode[TechNode["largeDockingPorts"] = 56] = "largeDockingPorts";
+    TechNode[TechNode["gridFins"] = 57] = "gridFins";
+    TechNode[TechNode["flightControlNF"] = 58] = "flightControlNF";
+    TechNode[TechNode["colonization2051Control"] = 59] = "colonization2051Control";
+    TechNode[TechNode["colonization2100Control"] = 60] = "colonization2100Control";
+    TechNode[TechNode["colonization2150Control"] = 61] = "colonization2150Control";
+    TechNode[TechNode["entryDescentLanding"] = 62] = "entryDescentLanding";
+    TechNode[TechNode["humanRatedEDL"] = 63] = "humanRatedEDL";
+    TechNode[TechNode["earlyLanding"] = 64] = "earlyLanding";
+    TechNode[TechNode["lunarRatedHeatshields"] = 65] = "lunarRatedHeatshields";
+    TechNode[TechNode["lunarLanding"] = 66] = "lunarLanding";
+    TechNode[TechNode["improvedLandingEngines"] = 67] = "improvedLandingEngines";
+    TechNode[TechNode["advancedUncrewedLanding"] = 68] = "advancedUncrewedLanding";
+    TechNode[TechNode["interplanetaryRovers"] = 69] = "interplanetaryRovers";
+    TechNode[TechNode["largeRoverDesigns"] = 70] = "largeRoverDesigns";
+    TechNode[TechNode["reusability"] = 71] = "reusability";
+    TechNode[TechNode["advancedLanding"] = 72] = "advancedLanding";
+    TechNode[TechNode["SIAD"] = 73] = "SIAD";
+    TechNode[TechNode["HIAD"] = 74] = "HIAD";
+    TechNode[TechNode["colonization2051EDL"] = 75] = "colonization2051EDL";
+    TechNode[TechNode["colonization2100EDL"] = 76] = "colonization2100EDL";
+    TechNode[TechNode["colonization2150EDL"] = 77] = "colonization2150EDL";
+    TechNode[TechNode["prototypeHydrolox"] = 78] = "prototypeHydrolox";
+    TechNode[TechNode["earlyHydrolox"] = 79] = "earlyHydrolox";
+    TechNode[TechNode["improvedHydrolox"] = 80] = "improvedHydrolox";
+    TechNode[TechNode["largeHydrolox"] = 81] = "largeHydrolox";
+    TechNode[TechNode["hydrolox1968"] = 82] = "hydrolox1968";
+    TechNode[TechNode["hydrolox1972"] = 83] = "hydrolox1972";
+    TechNode[TechNode["hydrolox1976"] = 84] = "hydrolox1976";
+    TechNode[TechNode["hydrolox1981"] = 85] = "hydrolox1981";
+    TechNode[TechNode["hydrolox1986"] = 86] = "hydrolox1986";
+    TechNode[TechNode["hydrolox1992"] = 87] = "hydrolox1992";
+    TechNode[TechNode["hydrolox1998"] = 88] = "hydrolox1998";
+    TechNode[TechNode["hydrolox2009"] = 89] = "hydrolox2009";
+    TechNode[TechNode["hydroloxNF"] = 90] = "hydroloxNF";
+    TechNode[TechNode["colonization2051Hydrolox"] = 91] = "colonization2051Hydrolox";
+    TechNode[TechNode["colonization2100Hydrolox"] = 92] = "colonization2100Hydrolox";
+    TechNode[TechNode["colonization2150Hydrolox"] = 93] = "colonization2150Hydrolox";
+    TechNode[TechNode["rocketryTesting"] = 94] = "rocketryTesting";
+    TechNode[TechNode["earlyRocketry"] = 95] = "earlyRocketry";
+    TechNode[TechNode["basicRocketryRP0"] = 96] = "basicRocketryRP0";
+    TechNode[TechNode["orbitalRocketry1956"] = 97] = "orbitalRocketry1956";
+    TechNode[TechNode["orbitalRocketry1958"] = 98] = "orbitalRocketry1958";
+    TechNode[TechNode["orbitalRocketry1959"] = 99] = "orbitalRocketry1959";
+    TechNode[TechNode["orbitalRocketry1960"] = 100] = "orbitalRocketry1960";
+    TechNode[TechNode["orbitalRocketry1961"] = 101] = "orbitalRocketry1961";
+    TechNode[TechNode["orbitalRocketry1962"] = 102] = "orbitalRocketry1962";
+    TechNode[TechNode["orbitalRocketry1963"] = 103] = "orbitalRocketry1963";
+    TechNode[TechNode["orbitalRocketry1964"] = 104] = "orbitalRocketry1964";
+    TechNode[TechNode["orbitalRocketry1965"] = 105] = "orbitalRocketry1965";
+    TechNode[TechNode["orbitalRocketry1966"] = 106] = "orbitalRocketry1966";
+    TechNode[TechNode["orbitalRocketry1967"] = 107] = "orbitalRocketry1967";
+    TechNode[TechNode["orbitalRocketry1970"] = 108] = "orbitalRocketry1970";
+    TechNode[TechNode["orbitalRocketry1972"] = 109] = "orbitalRocketry1972";
+    TechNode[TechNode["orbitalRocketry1976"] = 110] = "orbitalRocketry1976";
+    TechNode[TechNode["orbitalRocketry1981"] = 111] = "orbitalRocketry1981";
+    TechNode[TechNode["orbitalRocketry1986"] = 112] = "orbitalRocketry1986";
+    TechNode[TechNode["orbitalRocketry1992"] = 113] = "orbitalRocketry1992";
+    TechNode[TechNode["orbitalRocketry1998"] = 114] = "orbitalRocketry1998";
+    TechNode[TechNode["orbitalRocketry2004"] = 115] = "orbitalRocketry2004";
+    TechNode[TechNode["orbitalRocketry2009"] = 116] = "orbitalRocketry2009";
+    TechNode[TechNode["orbitalRocketry2014"] = 117] = "orbitalRocketry2014";
+    TechNode[TechNode["orbitalRocketryNF"] = 118] = "orbitalRocketryNF";
+    TechNode[TechNode["colonization2051Orbital"] = 119] = "colonization2051Orbital";
+    TechNode[TechNode["colonization2100Orbital"] = 120] = "colonization2100Orbital";
+    TechNode[TechNode["colonization2150Orbital"] = 121] = "colonization2150Orbital";
+    TechNode[TechNode["firstStagedCombustion"] = 122] = "firstStagedCombustion";
+    TechNode[TechNode["stagedCombustion1964"] = 123] = "stagedCombustion1964";
+    TechNode[TechNode["stagedCombustion1966"] = 124] = "stagedCombustion1966";
+    TechNode[TechNode["stagedCombustion1967"] = 125] = "stagedCombustion1967";
+    TechNode[TechNode["stagedCombustion1969"] = 126] = "stagedCombustion1969";
+    TechNode[TechNode["stagedCombustion1970"] = 127] = "stagedCombustion1970";
+    TechNode[TechNode["stagedCombustion1972"] = 128] = "stagedCombustion1972";
+    TechNode[TechNode["stagedCombustion1981"] = 129] = "stagedCombustion1981";
+    TechNode[TechNode["stagedCombustion1986"] = 130] = "stagedCombustion1986";
+    TechNode[TechNode["stagedCombustion1992"] = 131] = "stagedCombustion1992";
+    TechNode[TechNode["stagedCombustion1998"] = 132] = "stagedCombustion1998";
+    TechNode[TechNode["stagedCombustion2004"] = 133] = "stagedCombustion2004";
+    TechNode[TechNode["stagedCombustion2009"] = 134] = "stagedCombustion2009";
+    TechNode[TechNode["stagedCombustion2014"] = 135] = "stagedCombustion2014";
+    TechNode[TechNode["stagedCombustionNF"] = 136] = "stagedCombustionNF";
+    TechNode[TechNode["colonization2051Staged"] = 137] = "colonization2051Staged";
+    TechNode[TechNode["colonization2100Staged"] = 138] = "colonization2100Staged";
+    TechNode[TechNode["colonization2150Staged"] = 139] = "colonization2150Staged";
+    TechNode[TechNode["earlySolids"] = 140] = "earlySolids";
+    TechNode[TechNode["solids1956"] = 141] = "solids1956";
+    TechNode[TechNode["solids1958"] = 142] = "solids1958";
+    TechNode[TechNode["solids1959"] = 143] = "solids1959";
+    TechNode[TechNode["solids1962"] = 144] = "solids1962";
+    TechNode[TechNode["solids1964"] = 145] = "solids1964";
+    TechNode[TechNode["solids1966"] = 146] = "solids1966";
+    TechNode[TechNode["solids1967"] = 147] = "solids1967";
+    TechNode[TechNode["solids1969"] = 148] = "solids1969";
+    TechNode[TechNode["solids1972"] = 149] = "solids1972";
+    TechNode[TechNode["solids1976"] = 150] = "solids1976";
+    TechNode[TechNode["solids1981"] = 151] = "solids1981";
+    TechNode[TechNode["solids1986"] = 152] = "solids1986";
+    TechNode[TechNode["solids1992"] = 153] = "solids1992";
+    TechNode[TechNode["solids1998"] = 154] = "solids1998";
+    TechNode[TechNode["solids2009"] = 155] = "solids2009";
+    TechNode[TechNode["solidsNF"] = 156] = "solidsNF";
+    TechNode[TechNode["colonization2051Solid"] = 157] = "colonization2051Solid";
+    TechNode[TechNode["colonization2100Solid"] = 158] = "colonization2100Solid";
+    TechNode[TechNode["colonization2150Solid"] = 159] = "colonization2150Solid";
+    TechNode[TechNode["earlyElecPropulsion"] = 160] = "earlyElecPropulsion";
+    TechNode[TechNode["basicElecPropulsion"] = 161] = "basicElecPropulsion";
+    TechNode[TechNode["improvedElecPropulsion"] = 162] = "improvedElecPropulsion";
+    TechNode[TechNode["advancedElecPropulsion"] = 163] = "advancedElecPropulsion";
+    TechNode[TechNode["colonization2051ElecProp"] = 164] = "colonization2051ElecProp";
+    TechNode[TechNode["colonization2100ElecProp"] = 165] = "colonization2100ElecProp";
+    TechNode[TechNode["colonization2150ElecProp"] = 166] = "colonization2150ElecProp";
+    TechNode[TechNode["prototypeNuclearPropulsion"] = 167] = "prototypeNuclearPropulsion";
+    TechNode[TechNode["earlyNuclearPropulsion"] = 168] = "earlyNuclearPropulsion";
+    TechNode[TechNode["basicNuclearPropulsion"] = 169] = "basicNuclearPropulsion";
+    TechNode[TechNode["improvedNuclearPropulsion"] = 170] = "improvedNuclearPropulsion";
+    TechNode[TechNode["advancedNuclearPropulsion"] = 171] = "advancedNuclearPropulsion";
+    TechNode[TechNode["efficientNuclearPropulsion"] = 172] = "efficientNuclearPropulsion";
+    TechNode[TechNode["nuclearPropulsionNF"] = 173] = "nuclearPropulsionNF";
+    TechNode[TechNode["nuclearPropulsionNF2"] = 174] = "nuclearPropulsionNF2";
+    TechNode[TechNode["colonization2051NuclearProp"] = 175] = "colonization2051NuclearProp";
+    TechNode[TechNode["colonization2100NuclearProp"] = 176] = "colonization2100NuclearProp";
+    TechNode[TechNode["colonization2150NuclearProp"] = 177] = "colonization2150NuclearProp";
+    TechNode[TechNode["crewSurvivability"] = 178] = "crewSurvivability";
+    TechNode[TechNode["earlyLifeSupport"] = 179] = "earlyLifeSupport";
+    TechNode[TechNode["lifeSupportISRU"] = 180] = "lifeSupportISRU";
+    TechNode[TechNode["basicLifeSupport"] = 181] = "basicLifeSupport";
+    TechNode[TechNode["improvedLifeSupport"] = 182] = "improvedLifeSupport";
+    TechNode[TechNode["longTermLifeSupport"] = 183] = "longTermLifeSupport";
+    TechNode[TechNode["advancedLifeSupport"] = 184] = "advancedLifeSupport";
+    TechNode[TechNode["efficientLifeSupport"] = 185] = "efficientLifeSupport";
+    TechNode[TechNode["lifeSupportNF"] = 186] = "lifeSupportNF";
+    TechNode[TechNode["colonization2051LifeSupport"] = 187] = "colonization2051LifeSupport";
+    TechNode[TechNode["colonization2100LifeSupport"] = 188] = "colonization2100LifeSupport";
+    TechNode[TechNode["colonization2150LifeSupport"] = 189] = "colonization2150LifeSupport";
+    TechNode[TechNode["postWarMaterialsScience"] = 190] = "postWarMaterialsScience";
+    TechNode[TechNode["earlyMaterialsScience"] = 191] = "earlyMaterialsScience";
+    TechNode[TechNode["materialsScienceSatellite"] = 192] = "materialsScienceSatellite";
+    TechNode[TechNode["materialsScienceHuman"] = 193] = "materialsScienceHuman";
+    TechNode[TechNode["materialsScienceAdvCapsules"] = 194] = "materialsScienceAdvCapsules";
+    TechNode[TechNode["materialsScienceLunar"] = 195] = "materialsScienceLunar";
+    TechNode[TechNode["materialsScienceSpaceStation"] = 196] = "materialsScienceSpaceStation";
+    TechNode[TechNode["materialsScienceSpaceplanes"] = 197] = "materialsScienceSpaceplanes";
+    TechNode[TechNode["materialsScienceLongTerm"] = 198] = "materialsScienceLongTerm";
+    TechNode[TechNode["materialsScienceInternational"] = 199] = "materialsScienceInternational";
+    TechNode[TechNode["materialsScienceCommercial"] = 200] = "materialsScienceCommercial";
+    TechNode[TechNode["materialsScienceNF"] = 201] = "materialsScienceNF";
+    TechNode[TechNode["materialsScienceColonization"] = 202] = "materialsScienceColonization";
+    TechNode[TechNode["electronicsSatellite"] = 203] = "electronicsSatellite";
+    TechNode[TechNode["electronicsHuman"] = 204] = "electronicsHuman";
+    TechNode[TechNode["electronicsAdvCapsules"] = 205] = "electronicsAdvCapsules";
+    TechNode[TechNode["electronicsLunar"] = 206] = "electronicsLunar";
+    TechNode[TechNode["electronicsSpaceStation"] = 207] = "electronicsSpaceStation";
+    TechNode[TechNode["electronicsSpaceplanes"] = 208] = "electronicsSpaceplanes";
+    TechNode[TechNode["electronicsLongTerm"] = 209] = "electronicsLongTerm";
+    TechNode[TechNode["electronicsInternational"] = 210] = "electronicsInternational";
+    TechNode[TechNode["electronicsCommercial"] = 211] = "electronicsCommercial";
+    TechNode[TechNode["electronicsNF"] = 212] = "electronicsNF";
+    TechNode[TechNode["electronicsColonization"] = 213] = "electronicsColonization";
+    TechNode[TechNode["firstRTG"] = 214] = "firstRTG";
+    TechNode[TechNode["earlyRTG"] = 215] = "earlyRTG";
+    TechNode[TechNode["nuclearFissionReactors"] = 216] = "nuclearFissionReactors";
+    TechNode[TechNode["improvedRTG"] = 217] = "improvedRTG";
+    TechNode[TechNode["multihundredWattRTG"] = 218] = "multihundredWattRTG";
+    TechNode[TechNode["gphsRTG"] = 219] = "gphsRTG";
+    TechNode[TechNode["improvedNuclearPower"] = 220] = "improvedNuclearPower";
+    TechNode[TechNode["advancedNuclearPower"] = 221] = "advancedNuclearPower";
+    TechNode[TechNode["modernNuclearPower"] = 222] = "modernNuclearPower";
+    TechNode[TechNode["nuclearPowerNF"] = 223] = "nuclearPowerNF";
+    TechNode[TechNode["colonization2051NuclearPower"] = 224] = "colonization2051NuclearPower";
+    TechNode[TechNode["colonization2100NuclearPower"] = 225] = "colonization2100NuclearPower";
+    TechNode[TechNode["colonization2150NuclearPower"] = 226] = "colonization2150NuclearPower";
+    TechNode[TechNode["primitiveSolarPanels"] = 227] = "primitiveSolarPanels";
+    TechNode[TechNode["earlyPower"] = 228] = "earlyPower";
+    TechNode[TechNode["basicPower"] = 229] = "basicPower";
+    TechNode[TechNode["improvedPower"] = 230] = "improvedPower";
+    TechNode[TechNode["lunarRatedPower"] = 231] = "lunarRatedPower";
+    TechNode[TechNode["spaceStationSolarPanels"] = 232] = "spaceStationSolarPanels";
+    TechNode[TechNode["maturePower"] = 233] = "maturePower";
+    TechNode[TechNode["largeScaleSolarArrays"] = 234] = "largeScaleSolarArrays";
+    TechNode[TechNode["advancedPower"] = 235] = "advancedPower";
+    TechNode[TechNode["modernPower"] = 236] = "modernPower";
+    TechNode[TechNode["powerNF"] = 237] = "powerNF";
+    TechNode[TechNode["colonization2051Power"] = 238] = "colonization2051Power";
+    TechNode[TechNode["colonization2100Power"] = 239] = "colonization2100Power";
+    TechNode[TechNode["colonization2150Power"] = 240] = "colonization2150Power";
+    TechNode[TechNode["lunarRangeComms"] = 241] = "lunarRangeComms";
+    TechNode[TechNode["interplanetaryComms"] = 242] = "interplanetaryComms";
+    TechNode[TechNode["improvedComms"] = 243] = "improvedComms";
+    TechNode[TechNode["advancedComms"] = 244] = "advancedComms";
+    TechNode[TechNode["deepSpaceComms"] = 245] = "deepSpaceComms";
+    TechNode[TechNode["largeScaleComms"] = 246] = "largeScaleComms";
+    TechNode[TechNode["massiveScaleComms"] = 247] = "massiveScaleComms";
+    TechNode[TechNode["efficientComms"] = 248] = "efficientComms";
+    TechNode[TechNode["modernComms"] = 249] = "modernComms";
+    TechNode[TechNode["commsNF"] = 250] = "commsNF";
+    TechNode[TechNode["colonization2051Comms"] = 251] = "colonization2051Comms";
+    TechNode[TechNode["colonization2100Comms"] = 252] = "colonization2100Comms";
+    TechNode[TechNode["colonization2150Comms"] = 253] = "colonization2150Comms";
+    TechNode[TechNode["postWarAvionics"] = 254] = "postWarAvionics";
+    TechNode[TechNode["avionicsPrototypes"] = 255] = "avionicsPrototypes";
+    TechNode[TechNode["earlyAvionics"] = 256] = "earlyAvionics";
+    TechNode[TechNode["basicAvionics"] = 257] = "basicAvionics";
+    TechNode[TechNode["interplanetaryProbes"] = 258] = "interplanetaryProbes";
+    TechNode[TechNode["improvedAvionics"] = 259] = "improvedAvionics";
+    TechNode[TechNode["matureAvionics"] = 260] = "matureAvionics";
+    TechNode[TechNode["largeScaleAvionics"] = 261] = "largeScaleAvionics";
+    TechNode[TechNode["advancedAvionics"] = 262] = "advancedAvionics";
+    TechNode[TechNode["nextGenAvionics"] = 263] = "nextGenAvionics";
+    TechNode[TechNode["longTermAvionics"] = 264] = "longTermAvionics";
+    TechNode[TechNode["internationalAvionics"] = 265] = "internationalAvionics";
+    TechNode[TechNode["modernAvionics"] = 266] = "modernAvionics";
+    TechNode[TechNode["avionicsNF"] = 267] = "avionicsNF";
+    TechNode[TechNode["colonization2051Avionics"] = 268] = "colonization2051Avionics";
+    TechNode[TechNode["colonization2100Avionics"] = 269] = "colonization2100Avionics";
+    TechNode[TechNode["colonization2150Avionics"] = 270] = "colonization2150Avionics";
+    TechNode[TechNode["earlyScience"] = 271] = "earlyScience";
+    TechNode[TechNode["scienceSatellite"] = 272] = "scienceSatellite";
+    TechNode[TechNode["scienceHuman"] = 273] = "scienceHuman";
+    TechNode[TechNode["scienceAdvCapsules"] = 274] = "scienceAdvCapsules";
+    TechNode[TechNode["scienceLunar"] = 275] = "scienceLunar";
+    TechNode[TechNode["surfaceScience"] = 276] = "surfaceScience";
+    TechNode[TechNode["deepSpaceScience"] = 277] = "deepSpaceScience";
+    TechNode[TechNode["scienceExploration"] = 278] = "scienceExploration";
+    TechNode[TechNode["sampleReturnScience"] = 279] = "sampleReturnScience";
+    TechNode[TechNode["advancedScience"] = 280] = "advancedScience";
+    TechNode[TechNode["advancedSurfaceScience"] = 281] = "advancedSurfaceScience";
+    TechNode[TechNode["scienceNF"] = 282] = "scienceNF";
+    TechNode[TechNode["colonization2051Science"] = 283] = "colonization2051Science";
+    TechNode[TechNode["colonization2100Science"] = 284] = "colonization2100Science";
+    TechNode[TechNode["colonization2150Science"] = 285] = "colonization2150Science";
+})(TechNode || (TechNode = {}));
+const TechNodeNames = new Map([
+    [TechNode.start, "Start"],
+    [TechNode.supersonicDev, "Supersonic Plane Development"],
+    [TechNode.supersonicFlightRP0, "Supersonic Flight"],
+    [TechNode.matureSupersonic, "Mature Supersonic Flight"],
+    [TechNode.highSpeedFlight, "High Speed Flight"],
+    [TechNode.advancedJetEngines, "Advanced Jet Engines"],
+    [TechNode.matureTurbofans, "Mature Turbofans"],
+    [TechNode.refinedTurbofans, "Refined Turbofans"],
+    [TechNode.scramjetEngines, "Scramjet Engines"],
+    [TechNode.experimentalAircraft, "Experimental Aircraft Engines"],
+    [TechNode.colonization2051Flight, "2051-2099 Regular Flight"],
+    [TechNode.colonization2100Flight, "2100-2149 Regular Flight"],
+    [TechNode.colonization2150Flight, "2150+ Regular Flight"],
+    [TechNode.hypersonicFlightRP0, "Hypersonic Flight"],
+    [TechNode.prototypeSpaceplanes, "Prototype Spaceplaces"],
+    [TechNode.effectiveSpaceplanes, "Effective Spaceplanes"],
+    [TechNode.spaceShuttles, "Space Shuttles"],
+    [TechNode.improvedSpaceplanes, "Improved Spaceplanes"],
+    [TechNode.advancedSpaceplanes, "Advanced Spaceplanes"],
+    [TechNode.highTechSpaceplanes, "High-Tech Spaceplanes"],
+    [TechNode.experimentalSpaceplanes, "Experimental Spaceplanes"],
+    [TechNode.sstoSpaceplanes, "SSTO Spaceplanes"],
+    [TechNode.colonization2100Spaceplanes, "2100-2149 Spaceplanes"],
+    [TechNode.colonization2150Spaceplanes, "2150+ Spaceplanes"],
+    [TechNode.basicCapsules, "Basic Capsules"],
+    [TechNode.secondGenCapsules, "Second Generation Capsules"],
+    [TechNode.matureCapsules, "Mature Capsules"],
+    [TechNode.improvedCapsules, "Improved Capsules"],
+    [TechNode.advancedCapsules, "Advanced Capsules"],
+    [TechNode.modernCapsules, "Modern Capsules"],
+    [TechNode.capsulesNF, "Near Future Capsules"],
+    [TechNode.highTechCapsules, "High-Tech Capsules"],
+    [TechNode.colonization2100Command, "2100-2149 Command Modules"],
+    [TechNode.colonization2150Command, "2150+ Command Modules"],
+    [TechNode.spaceStationPrototypes, "Space Station Prototypes"],
+    [TechNode.spaceStationDev, "Space Station Development"],
+    [TechNode.earlySpaceStations, "Early Space Stations"],
+    [TechNode.modularSpaceStations, "Modular Space Stations"],
+    [TechNode.largeScaleOrbitalCon, "Large Scale Orbital Construction"],
+    [TechNode.improvedOrbitalConstruction, "Improved Orbital Construction"],
+    [TechNode.inflatableHabitats, "Inflatable Habitats"],
+    [TechNode.improvedHabitats, "Improved Habitats"],
+    [TechNode.advancedHabitats, "Advanced Habitats"],
+    [TechNode.largeScaleHabitats, "Large Scale Habitats"],
+    [TechNode.colonization2100SpaceStations, "2100-2149 Space Stations"],
+    [TechNode.colonization2150SpaceStations, "2150+ Space Stations"],
+    [TechNode.earlyFlightControl, "Early Flight Control"],
+    [TechNode.stabilityRP0, "Stability"],
+    [TechNode.earlyDocking, "Early Docking Procedures"],
+    [TechNode.improvedFlightControl, "Improved Flight Control"],
+    [TechNode.advancedFlightControl, "Advanced Flight Control"],
+    [TechNode.dockingCrewTransfer, "Docking and Crew Transfer"],
+    [TechNode.spaceStationControl, "Space Station Attitude Control"],
+    [TechNode.largeSpaceplaneControl, "Large Spaceplane Control"],
+    [TechNode.standardDockingPorts, "Standardized Docking Ports"],
+    [TechNode.largeStationControl, "Large Station Attitude Control"],
+    [TechNode.largeDockingPorts, "Large Docking Ports"],
+    [TechNode.gridFins, "Grid Fins"],
+    [TechNode.flightControlNF, "Near Future Flight Control"],
+    [TechNode.colonization2051Control, "2051-2099 Control"],
+    [TechNode.colonization2100Control, "2100-2149 Control"],
+    [TechNode.colonization2150Control, "2150+ Control"],
+    [TechNode.entryDescentLanding, "Entry, Descent and Landing"],
+    [TechNode.humanRatedEDL, "Human Rated EDL"],
+    [TechNode.earlyLanding, "Early Landing"],
+    [TechNode.lunarRatedHeatshields, "Lunar Rated Heatshields"],
+    [TechNode.lunarLanding, "Lunar Landing"],
+    [TechNode.improvedLandingEngines, "Improved Landing Engines"],
+    [TechNode.advancedUncrewedLanding, "Advanced Uncrewed Landing"],
+    [TechNode.interplanetaryRovers, "Interplanetary Rovers"],
+    [TechNode.largeRoverDesigns, "Large Rover Designs"],
+    [TechNode.reusability, "Reusability"],
+    [TechNode.advancedLanding, "Advanced Landing"],
+    [TechNode.SIAD, "Supersonic Inflatable Aerodynamic Decelerator"],
+    [TechNode.HIAD, "Hypersonic Inflatable Aerodynamic Decelerator"],
+    [TechNode.colonization2051EDL, "2051-2099 EDL"],
+    [TechNode.colonization2100EDL, "2100-2149 EDL"],
+    [TechNode.colonization2150EDL, "2150+ EDL"],
+    [TechNode.prototypeHydrolox, "Prototype Hydrolox Engines"],
+    [TechNode.earlyHydrolox, "Early Hydrolox Engines"],
+    [TechNode.improvedHydrolox, "Improved Hydrolox Engines"],
+    [TechNode.largeHydrolox, "Large Hydrolox Engines"],
+    [TechNode.hydrolox1968, "1968 Hydrolox Engines"],
+    [TechNode.hydrolox1972, "1972-1975 Hydrolox Engines"],
+    [TechNode.hydrolox1976, "1976-1980 Hydrolox Engines"],
+    [TechNode.hydrolox1981, "1981-1985 Hydrolox Engines"],
+    [TechNode.hydrolox1986, "1986-1991 Hydrolox Engines"],
+    [TechNode.hydrolox1992, "1992-1997 Hydrolox Engines"],
+    [TechNode.hydrolox1998, "1998-2008 Hydrolox Engines"],
+    [TechNode.hydrolox2009, "2009-2018 Hydrolox Engines"],
+    [TechNode.hydroloxNF, "Near Future Hydrolox Engines"],
+    [TechNode.colonization2051Hydrolox, "2051-2099 Hydrolox Engines"],
+    [TechNode.colonization2100Hydrolox, "2100-2149  Hydrolox Engines"],
+    [TechNode.colonization2150Hydrolox, "2150+  Hydrolox Engines"],
+    [TechNode.rocketryTesting, "Post-War Rocketry Testing"],
+    [TechNode.earlyRocketry, "Early Rocketry"],
+    [TechNode.basicRocketryRP0, "Basic Rocketry"],
+    [TechNode.orbitalRocketry1956, "1956-1957 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1958, "1958 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1959, "1959 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1960, "1960 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1961, "1961 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1962, "1962 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1963, "1963 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1964, "1964 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1965, "1965 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1966, "1966 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1967, "1967-1968 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1970, "1970-1971 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1972, "1972-1975 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1976, "1976-1980 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1981, "1981-1985 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1986, "1986-1991 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1992, "1992-1997 Orbital Rocketry"],
+    [TechNode.orbitalRocketry1998, "1998-2003 Orbital Rocketry"],
+    [TechNode.orbitalRocketry2004, "2004-2008 Orbital Rocketry"],
+    [TechNode.orbitalRocketry2009, "2009-2013 Orbital Rocketry"],
+    [TechNode.orbitalRocketry2014, "2014-2018 Orbital Rocketry"],
+    [TechNode.orbitalRocketryNF, "Near Future Orbital Rocketry"],
+    [TechNode.colonization2051Orbital, "2051-2099 Orbital Rocketry"],
+    [TechNode.colonization2100Orbital, "2100-2149  Orbital Rocketry"],
+    [TechNode.colonization2150Orbital, "2150+  Orbital Rocketry"],
+    [TechNode.firstStagedCombustion, "First Staged Combustion Engines"],
+    [TechNode.stagedCombustion1964, "1964 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1966, "1966 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1967, "1967-1968 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1969, "1969 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1970, "1970-1971 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1972, "1972-1980 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1981, "1981-1985 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1986, "1986-1991 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1992, "1992-1997 Staged Combustion Engines"],
+    [TechNode.stagedCombustion1998, "1998-2003 Staged Combustion Engines"],
+    [TechNode.stagedCombustion2004, "2004-2008 Staged Combustion Engines"],
+    [TechNode.stagedCombustion2009, "2009-2013 Staged Combustion Engines"],
+    [TechNode.stagedCombustion2014, "2014-2018 Staged Combustion Engines"],
+    [TechNode.stagedCombustionNF, "Near Future Staged Combustion Engines"],
+    [TechNode.colonization2051Staged, "2051-2099 Staged Combustion"],
+    [TechNode.colonization2100Staged, "2100-2149  Staged Combustion"],
+    [TechNode.colonization2150Staged, "2150+  Staged Combustion"],
+    [TechNode.earlySolids, "Early Solid Rocket Engines"],
+    [TechNode.solids1956, "1956-1957 Solid Rocket Engines"],
+    [TechNode.solids1958, "1958 Solid Rocket Engines"],
+    [TechNode.solids1959, "1959-1960 Solid Rocket Engines"],
+    [TechNode.solids1962, "1962-1963 Solid Rocket Engines"],
+    [TechNode.solids1964, "1964-1965 Solid Rocket Engines"],
+    [TechNode.solids1966, "1966 Solid Rocket Engines"],
+    [TechNode.solids1967, "1967-1968 Solid Rocket Engines"],
+    [TechNode.solids1969, "1969-1971 Solid Rocket Engines"],
+    [TechNode.solids1972, "1972-1975 Solid Rocket Engines"],
+    [TechNode.solids1976, "1976-1980 Solid Rocket Engines"],
+    [TechNode.solids1981, "1981-1985 Solid Rocket Engines"],
+    [TechNode.solids1986, "1986-1991 Solid Rocket Engines"],
+    [TechNode.solids1992, "1992-1997 Solid Rocket Engines"],
+    [TechNode.solids1998, "1998-2008 Solid Rocket Engines"],
+    [TechNode.solids2009, "2009-2018 Solid Rocket Engines"],
+    [TechNode.solidsNF, "Near Future Solid Rocket Engines"],
+    [TechNode.colonization2051Solid, "2051-2099 Solids"],
+    [TechNode.colonization2100Solid, "2100-2149 Solids"],
+    [TechNode.colonization2150Solid, "2150+ Solids"],
+    [TechNode.earlyElecPropulsion, "Early Electric Propulsion"],
+    [TechNode.basicElecPropulsion, "Basic Electric Propulsion"],
+    [TechNode.improvedElecPropulsion, "Improved Electric Propulsion"],
+    [TechNode.advancedElecPropulsion, "Advanced Electric Propulsion"],
+    [TechNode.colonization2051ElecProp, "2051-2099 Electric Propulsion"],
+    [TechNode.colonization2100ElecProp, "2100-2149 Electric Propulsion"],
+    [TechNode.colonization2150ElecProp, "2150+ Electric Propulsion"],
+    [TechNode.prototypeNuclearPropulsion, "Prototype Nuclear Propulsion"],
+    [TechNode.earlyNuclearPropulsion, "Early Nuclear Propulsion"],
+    [TechNode.basicNuclearPropulsion, "Basic Nuclear Propulsion"],
+    [TechNode.improvedNuclearPropulsion, "Improved Nuclear Propulsion"],
+    [TechNode.advancedNuclearPropulsion, "Advanced Nuclear Propulsion"],
+    [TechNode.efficientNuclearPropulsion, "Efficient Nuclear Propulsion"],
+    [TechNode.nuclearPropulsionNF, "Near Future Nuclear Propulsion"],
+    [TechNode.nuclearPropulsionNF2, "Advanced Near Future Nuclear Propulsion"],
+    [TechNode.colonization2051NuclearProp, "2051-2099 Nuclear Propulsion"],
+    [TechNode.colonization2100NuclearProp, "2100-2149 Nuclear Propulsion"],
+    [TechNode.colonization2150NuclearProp, "2150+ Nuclear Propulsion"],
+    [TechNode.crewSurvivability, "Crew Survivability"],
+    [TechNode.earlyLifeSupport, "Early Life Support and ISRU"],
+    [TechNode.lifeSupportISRU, "Life Support and ISRU"],
+    [TechNode.basicLifeSupport, "Basic Life Support and ISRU"],
+    [TechNode.improvedLifeSupport, "Improved Life Support and ISRU"],
+    [TechNode.longTermLifeSupport, "Long-Life Support and ISRU"],
+    [TechNode.advancedLifeSupport, "Long-Term Life Support and ISRU"],
+    [TechNode.efficientLifeSupport, "Efficient Life Support and ISRU"],
+    [TechNode.lifeSupportNF, "Near Future Life Support and ISRU"],
+    [TechNode.colonization2051LifeSupport, "2051-2099 Life Support and ISRU"],
+    [TechNode.colonization2100LifeSupport, "2100-2149 Life Support and ISRU"],
+    [TechNode.colonization2150LifeSupport, "2150+ Life Support and ISRU"],
+    [TechNode.postWarMaterialsScience, "Post-War Materials Science"],
+    [TechNode.earlyMaterialsScience, "Early Materials Science"],
+    [TechNode.materialsScienceSatellite, "Satellite Era Materials Science"],
+    [TechNode.materialsScienceHuman, "Early Human Spaceflight Materials Science"],
+    [TechNode.materialsScienceAdvCapsules, "Advanced Capsules Era Materials Science"],
+    [TechNode.materialsScienceLunar, "Lunar Exploration Era Materials Science"],
+    [TechNode.materialsScienceSpaceStation, "Space Station Era Materials Science"],
+    [TechNode.materialsScienceSpaceplanes, "Spaceplanes Era Materials Science"],
+    [TechNode.materialsScienceLongTerm, "Long-Term Space Habitation Era Materials Science"],
+    [TechNode.materialsScienceInternational, "International Cooperation Era Materials Science"],
+    [TechNode.materialsScienceCommercial, "Commercial Spaceflight Era Materials Science"],
+    [TechNode.materialsScienceNF, "Near Future Era Materials Science"],
+    [TechNode.materialsScienceColonization, "Colonization Era Materials Science"],
+    [TechNode.electronicsSatellite, "Satellite Era Electronics Research"],
+    [TechNode.electronicsHuman, "Early Human Spaceflight Electronics Research"],
+    [TechNode.electronicsAdvCapsules, "Advanced Capsules Era Electronics Research"],
+    [TechNode.electronicsLunar, "Lunar Exploration Era Electronics Research"],
+    [TechNode.electronicsSpaceStation, "Space Station Era Electronics Research"],
+    [TechNode.electronicsSpaceplanes, "Spaceplanes Era Electronics Research"],
+    [TechNode.electronicsLongTerm, "Long-Term Space Habitation Era Electronics Research"],
+    [TechNode.electronicsInternational, "International Cooperation Era Electronics Research"],
+    [TechNode.electronicsCommercial, "Commercial Spaceflight Era Electronics Research"],
+    [TechNode.electronicsNF, "Near Future Era Electronics Research"],
+    [TechNode.electronicsColonization, "Colonization Era Electronics Research"],
+    [TechNode.firstRTG, "First RTG's"],
+    [TechNode.earlyRTG, "Early RTG's"],
+    [TechNode.nuclearFissionReactors, "Small Nuclear Fission Reactors"],
+    [TechNode.improvedRTG, "Improved RTG's"],
+    [TechNode.multihundredWattRTG, "Multihundred-Watt RTG's"],
+    [TechNode.gphsRTG, "GPHS-RTG's"],
+    [TechNode.improvedNuclearPower, "Improved Nuclear Power Generation"],
+    [TechNode.advancedNuclearPower, "Advanced Nuclear Power Generation"],
+    [TechNode.modernNuclearPower, "Modern Nuclear Power Generation"],
+    [TechNode.nuclearPowerNF, "Near Future Nuclear Power Generation"],
+    [TechNode.colonization2051NuclearPower, "2051-2099 Nuclear Power"],
+    [TechNode.colonization2100NuclearPower, "2100-2149 Nuclear Power"],
+    [TechNode.colonization2150NuclearPower, "2150+ Nuclear Power"],
+    [TechNode.primitiveSolarPanels, "Primitive Solar Panels"],
+    [TechNode.earlyPower, "Early Power Generation and Storage"],
+    [TechNode.basicPower, "Basic Power Generation and Storage"],
+    [TechNode.improvedPower, "Improved Power Generation and Storage"],
+    [TechNode.lunarRatedPower, "Lunar Rated Power Generation"],
+    [TechNode.spaceStationSolarPanels, "Space Station Solar Panels"],
+    [TechNode.maturePower, "Mature Power Generation and Storage"],
+    [TechNode.largeScaleSolarArrays, "Large Scale Solar Arrays"],
+    [TechNode.advancedPower, "Advanced Power Generation and Storage"],
+    [TechNode.modernPower, "Modern Power Generation and Storage"],
+    [TechNode.powerNF, "Near Future Power Generation and Storage"],
+    [TechNode.colonization2051Power, "2051-2099 Power Generation and Storage"],
+    [TechNode.colonization2100Power, "2100-2149 Power Generation and Storage"],
+    [TechNode.colonization2150Power, "2150+ Power Generation and Storage"],
+    [TechNode.lunarRangeComms, "Lunar Range Communications"],
+    [TechNode.interplanetaryComms, "Interplanetary Communications"],
+    [TechNode.improvedComms, "Improved Communications"],
+    [TechNode.advancedComms, "Advanced Communications"],
+    [TechNode.deepSpaceComms, "Deep Space Communications"],
+    [TechNode.largeScaleComms, "Large Scale Communications"],
+    [TechNode.massiveScaleComms, "Massive Scale Communications"],
+    [TechNode.efficientComms, "Efficient Communications"],
+    [TechNode.modernComms, "Modern Communications"],
+    [TechNode.commsNF, "Near Future Communications"],
+    [TechNode.colonization2051Comms, "2051-2099 Communications"],
+    [TechNode.colonization2100Comms, "2100-2149 Communications"],
+    [TechNode.colonization2150Comms, "2150+ Communications"],
+    [TechNode.postWarAvionics, "Post-War Avionics"],
+    [TechNode.avionicsPrototypes, "Avionics Prototypes"],
+    [TechNode.earlyAvionics, "Early Avionics and Probes"],
+    [TechNode.basicAvionics, "Basic Avionics and Probes"],
+    [TechNode.interplanetaryProbes, "Interplanetary Probes"],
+    [TechNode.improvedAvionics, "Improved Avionics"],
+    [TechNode.matureAvionics, "Mature Avionics and Probes"],
+    [TechNode.largeScaleAvionics, "Large Scale Avionics"],
+    [TechNode.advancedAvionics, "Advanced Avionics and Probes"],
+    [TechNode.nextGenAvionics, "Next Generation Avionics and Probes"],
+    [TechNode.longTermAvionics, "Long-Term Space Habitation Era Avionics and Probes"],
+    [TechNode.internationalAvionics, "International Era Avionics and Probes"],
+    [TechNode.modernAvionics, "Modern Avionics and Probes"],
+    [TechNode.avionicsNF, "Near Future Avionics and Probes"],
+    [TechNode.colonization2051Avionics, "2051-2099 Avionics and Probes"],
+    [TechNode.colonization2100Avionics, "2100-2149 Avionics and Probes"],
+    [TechNode.colonization2150Avionics, "2150+ Avionics and Probes"],
+    [TechNode.earlyScience, "Early Science"],
+    [TechNode.scienceSatellite, "Satellite Era Science"],
+    [TechNode.scienceHuman, "Early Human Spaceflight Era Science"],
+    [TechNode.scienceAdvCapsules, "Interplanetary Era Science"],
+    [TechNode.scienceLunar, "Lunar Exploration Era Science"],
+    [TechNode.surfaceScience, "Surface Science"],
+    [TechNode.deepSpaceScience, "Deep Space Science Experiments"],
+    [TechNode.scienceExploration, "Exploration Era Science"],
+    [TechNode.sampleReturnScience, "Sample Return Science Experiments"],
+    [TechNode.advancedScience, "Advanced Science Experiments"],
+    [TechNode.advancedSurfaceScience, "Advanced Surface Experiments"],
+    [TechNode.scienceNF, "Near Future Science"],
+    [TechNode.colonization2051Science, "2051-2099 Science"],
+    [TechNode.colonization2100Science, "2100-2149 Science"],
+    [TechNode.colonization2150Science, "2150+ Science"],
+]);
 document.addEventListener("DOMContentLoaded", () => {
     BrowserCacheDialog.DialogBoxElement = document.getElementById("cache-box");
     document.querySelector("#cache-box > div.fullscreen-grayout").addEventListener("click", () => {
@@ -3410,21 +5774,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     let container = ModelSelector.DialogBoxElement.querySelector("#model-selector-content");
     container.innerHTML = "";
+    let models = [];
     for (let i in Model) {
         if (isNaN(parseInt(i))) {
             break;
         }
-        let modelInfo = ModelInfo.GetModelInfo(parseInt(i));
+        let id = parseInt(i);
+        models.push([id, ModelInfo.GetModelInfo(id)]);
+    }
+    models.sort((a, b) => {
+        if (a[1].ModelName > b[1].ModelName) {
+            return 1;
+        }
+        else if (a[1].ModelName < b[1].ModelName) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    });
+    models.forEach(([id, modelInfo]) => {
         let newElement = document.createElement("div");
         newElement.innerHTML = `
             <img class="option-button" src="${modelInfo.ImageSource}"><br>
             ${modelInfo.ImageLabel}
         `;
         newElement.querySelector("img").addEventListener("click", () => {
-            ModelSelector.FinishTransaction(parseInt(i));
+            ModelSelector.FinishTransaction(id);
         });
         container.appendChild(newElement);
-    }
+    });
 });
 class ModelSelector {
     static SetTransaction(transaction) {
@@ -3546,17 +5925,21 @@ class Engine {
                 }
             }, TechUnlockNode: {
                 ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = TechNode[this.TechUnlockNode];
+                    e.innerHTML = TechNodeNames.get(this.TechUnlockNode);
                 }, GetEditElement: () => {
                     let tmp = document.createElement("input");
                     tmp.classList.add("content-cell-content");
                     tmp.setAttribute("list", "techNodeItems");
                     return tmp;
                 }, ApplyValueToEditElement: (e) => {
-                    e.value = TechNode[this.TechUnlockNode];
+                    e.value = TechNodeNames.get(this.TechUnlockNode);
                 }, ApplyChangesToValue: (e) => {
-                    let value = parseInt(TechNode[e.value]);
-                    value = isNaN(value) ? 0 : value;
+                    let value = 0;
+                    TechNodeNames.forEach((name, node) => {
+                        if (e.value.trim() == name) {
+                            value = node;
+                        }
+                    });
                     this.TechUnlockNode = value;
                 }
             }, EngineVariant: {
@@ -3716,7 +6099,7 @@ class Engine {
                     grid.querySelector("img").addEventListener("click", () => {
                         let inputs = grid.querySelectorAll("input");
                         let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
-                        inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false);
+                        inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false, 3);
                     });
                     tmp.appendChild(grid);
                     return tmp;
@@ -5119,6 +7502,70 @@ var Model;
     Model[Model["RS68"] = 56] = "RS68";
     Model[Model["SuperDraco"] = 57] = "SuperDraco";
     Model[Model["SuperDracoV"] = 58] = "SuperDracoV";
+    Model[Model["FRE1"] = 59] = "FRE1";
+    Model[Model["FRE2"] = 60] = "FRE2";
+    Model[Model["LE5"] = 61] = "LE5";
+    Model[Model["LE7"] = 62] = "LE7";
+    Model[Model["RD843"] = 63] = "RD843";
+    Model[Model["Rutherford"] = 64] = "Rutherford";
+    Model[Model["RutherfordVac"] = 65] = "RutherfordVac";
+    Model[Model["P80"] = 66] = "P80";
+    Model[Model["Zefiro9"] = 67] = "Zefiro9";
+    Model[Model["Zefiro23"] = 68] = "Zefiro23";
+    Model[Model["Viking"] = 69] = "Viking";
+    Model[Model["VikingVac"] = 70] = "VikingVac";
+    Model[Model["ApolloSPSBlockII"] = 71] = "ApolloSPSBlockII";
+    Model[Model["ApolloSPSBlockIII"] = 72] = "ApolloSPSBlockIII";
+    Model[Model["ApolloSPSBlockV"] = 73] = "ApolloSPSBlockV";
+    Model[Model["LMAE_BDB"] = 74] = "LMAE_BDB";
+    Model[Model["LMDE_BDB"] = 75] = "LMDE_BDB";
+    Model[Model["LR89"] = 76] = "LR89";
+    Model[Model["LR101"] = 77] = "LR101";
+    Model[Model["LR105"] = 78] = "LR105";
+    Model[Model["RD180_BDB"] = 79] = "RD180_BDB";
+    Model[Model["RL10"] = 80] = "RL10";
+    Model[Model["RL10A41"] = 81] = "RL10A41";
+    Model[Model["RL10B2_BDB"] = 82] = "RL10B2_BDB";
+    Model[Model["GEM40"] = 83] = "GEM40";
+    Model[Model["AJ10_BDB"] = 84] = "AJ10_BDB";
+    Model[Model["Rita"] = 85] = "Rita";
+    Model[Model["Rubis"] = 86] = "Rubis";
+    Model[Model["Topaze"] = 87] = "Topaze";
+    Model[Model["Able"] = 88] = "Able";
+    Model[Model["Ablestar"] = 89] = "Ablestar";
+    Model[Model["Navaho"] = 90] = "Navaho";
+    Model[Model["Thor"] = 91] = "Thor";
+    Model[Model["Vanguard"] = 92] = "Vanguard";
+    Model[Model["E1"] = 93] = "E1";
+    Model[Model["Sargent"] = 94] = "Sargent";
+    Model[Model["Juno6K"] = 95] = "Juno6K";
+    Model[Model["Juno45K"] = 96] = "Juno45K";
+    Model[Model["S3D"] = 97] = "S3D";
+    Model[Model["F1_BDB"] = 98] = "F1_BDB";
+    Model[Model["H1C"] = 99] = "H1C";
+    Model[Model["H1D"] = 100] = "H1D";
+    Model[Model["J2_BDB"] = 101] = "J2_BDB";
+    Model[Model["J2T"] = 102] = "J2T";
+    Model[Model["J2SL"] = 103] = "J2SL";
+    Model[Model["AJ260"] = 104] = "AJ260";
+    Model[Model["LR87"] = 105] = "LR87";
+    Model[Model["LR87S"] = 106] = "LR87S";
+    Model[Model["LR91_BDB"] = 107] = "LR91_BDB";
+    Model[Model["Soltan"] = 108] = "Soltan";
+    Model[Model["UA1205"] = 109] = "UA1205";
+    Model[Model["UA1207"] = 110] = "UA1207";
+    Model[Model["Transtage"] = 111] = "Transtage";
+    Model[Model["LR87_5"] = 112] = "LR87_5";
+    Model[Model["LR87_11"] = 113] = "LR87_11";
+    Model[Model["LR87_11S"] = 114] = "LR87_11S";
+    Model[Model["LR87_11SV"] = 115] = "LR87_11SV";
+    Model[Model["LR87_11SH"] = 116] = "LR87_11SH";
+    Model[Model["LR87_11SHV"] = 117] = "LR87_11SHV";
+    Model[Model["LR91_5"] = 118] = "LR91_5";
+    Model[Model["LR91_11"] = 119] = "LR91_11";
+    Model[Model["SRMU"] = 120] = "SRMU";
+    Model[Model["UA1205_NEW"] = 121] = "UA1205_NEW";
+    Model[Model["UA1207_NEW"] = 122] = "UA1207_NEW";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {
@@ -5151,295 +7598,6 @@ var Plume;
     Plume[Plume["Turbofan"] = 26] = "Turbofan";
     Plume[Plume["Turbojet"] = 27] = "Turbojet";
 })(Plume || (Plume = {}));
-var TechNode;
-(function (TechNode) {
-    TechNode[TechNode["start"] = 0] = "start";
-    TechNode[TechNode["supersonicDev"] = 1] = "supersonicDev";
-    TechNode[TechNode["supersonicFlightRP0"] = 2] = "supersonicFlightRP0";
-    TechNode[TechNode["matureSupersonic"] = 3] = "matureSupersonic";
-    TechNode[TechNode["highSpeedFlight"] = 4] = "highSpeedFlight";
-    TechNode[TechNode["advancedJetEngines"] = 5] = "advancedJetEngines";
-    TechNode[TechNode["matureTurbofans"] = 6] = "matureTurbofans";
-    TechNode[TechNode["refinedTurbofans"] = 7] = "refinedTurbofans";
-    TechNode[TechNode["scramjetEngines"] = 8] = "scramjetEngines";
-    TechNode[TechNode["experimentalAircraft"] = 9] = "experimentalAircraft";
-    TechNode[TechNode["colonization2051Flight"] = 10] = "colonization2051Flight";
-    TechNode[TechNode["colonization2100Flight"] = 11] = "colonization2100Flight";
-    TechNode[TechNode["colonization2150Flight"] = 12] = "colonization2150Flight";
-    TechNode[TechNode["hypersonicFlightRP0"] = 13] = "hypersonicFlightRP0";
-    TechNode[TechNode["prototypeSpaceplanes"] = 14] = "prototypeSpaceplanes";
-    TechNode[TechNode["effectiveSpaceplanes"] = 15] = "effectiveSpaceplanes";
-    TechNode[TechNode["spaceShuttles"] = 16] = "spaceShuttles";
-    TechNode[TechNode["improvedSpaceplanes"] = 17] = "improvedSpaceplanes";
-    TechNode[TechNode["advancedSpaceplanes"] = 18] = "advancedSpaceplanes";
-    TechNode[TechNode["highTechSpaceplanes"] = 19] = "highTechSpaceplanes";
-    TechNode[TechNode["experimentalSpaceplanes"] = 20] = "experimentalSpaceplanes";
-    TechNode[TechNode["sstoSpaceplanes"] = 21] = "sstoSpaceplanes";
-    TechNode[TechNode["colonization2100Spaceplanes"] = 22] = "colonization2100Spaceplanes";
-    TechNode[TechNode["colonization2150Spaceplanes"] = 23] = "colonization2150Spaceplanes";
-    TechNode[TechNode["basicCapsules"] = 24] = "basicCapsules";
-    TechNode[TechNode["secondGenCapsules"] = 25] = "secondGenCapsules";
-    TechNode[TechNode["matureCapsules"] = 26] = "matureCapsules";
-    TechNode[TechNode["improvedCapsules"] = 27] = "improvedCapsules";
-    TechNode[TechNode["advancedCapsules"] = 28] = "advancedCapsules";
-    TechNode[TechNode["modernCapsules"] = 29] = "modernCapsules";
-    TechNode[TechNode["capsulesNF"] = 30] = "capsulesNF";
-    TechNode[TechNode["highTechCapsules"] = 31] = "highTechCapsules";
-    TechNode[TechNode["colonization2100Command"] = 32] = "colonization2100Command";
-    TechNode[TechNode["colonization2150Command"] = 33] = "colonization2150Command";
-    TechNode[TechNode["spaceStationPrototypes"] = 34] = "spaceStationPrototypes";
-    TechNode[TechNode["spaceStationDev"] = 35] = "spaceStationDev";
-    TechNode[TechNode["earlySpaceStations"] = 36] = "earlySpaceStations";
-    TechNode[TechNode["modularSpaceStations"] = 37] = "modularSpaceStations";
-    TechNode[TechNode["largeScaleOrbitalCon"] = 38] = "largeScaleOrbitalCon";
-    TechNode[TechNode["improvedOrbitalConstruction"] = 39] = "improvedOrbitalConstruction";
-    TechNode[TechNode["inflatableHabitats"] = 40] = "inflatableHabitats";
-    TechNode[TechNode["improvedHabitats"] = 41] = "improvedHabitats";
-    TechNode[TechNode["advancedHabitats"] = 42] = "advancedHabitats";
-    TechNode[TechNode["largeScaleHabitats"] = 43] = "largeScaleHabitats";
-    TechNode[TechNode["colonization2100SpaceStations"] = 44] = "colonization2100SpaceStations";
-    TechNode[TechNode["colonization2150SpaceStations"] = 45] = "colonization2150SpaceStations";
-    TechNode[TechNode["earlyFlightControl"] = 46] = "earlyFlightControl";
-    TechNode[TechNode["stabilityRP0"] = 47] = "stabilityRP0";
-    TechNode[TechNode["earlyDocking"] = 48] = "earlyDocking";
-    TechNode[TechNode["improvedFlightControl"] = 49] = "improvedFlightControl";
-    TechNode[TechNode["advancedFlightControl"] = 50] = "advancedFlightControl";
-    TechNode[TechNode["dockingCrewTransfer"] = 51] = "dockingCrewTransfer";
-    TechNode[TechNode["spaceStationControl"] = 52] = "spaceStationControl";
-    TechNode[TechNode["largeSpaceplaneControl"] = 53] = "largeSpaceplaneControl";
-    TechNode[TechNode["standardDockingPorts"] = 54] = "standardDockingPorts";
-    TechNode[TechNode["largeStationControl"] = 55] = "largeStationControl";
-    TechNode[TechNode["largeDockingPorts"] = 56] = "largeDockingPorts";
-    TechNode[TechNode["gridFins"] = 57] = "gridFins";
-    TechNode[TechNode["flightControlNF"] = 58] = "flightControlNF";
-    TechNode[TechNode["colonization2051Control"] = 59] = "colonization2051Control";
-    TechNode[TechNode["colonization2100Control"] = 60] = "colonization2100Control";
-    TechNode[TechNode["colonization2150Control"] = 61] = "colonization2150Control";
-    TechNode[TechNode["entryDescentLanding"] = 62] = "entryDescentLanding";
-    TechNode[TechNode["humanRatedEDL"] = 63] = "humanRatedEDL";
-    TechNode[TechNode["earlyLanding"] = 64] = "earlyLanding";
-    TechNode[TechNode["lunarRatedHeatshields"] = 65] = "lunarRatedHeatshields";
-    TechNode[TechNode["lunarLanding"] = 66] = "lunarLanding";
-    TechNode[TechNode["improvedLandingEngines"] = 67] = "improvedLandingEngines";
-    TechNode[TechNode["advancedUncrewedLanding"] = 68] = "advancedUncrewedLanding";
-    TechNode[TechNode["interplanetaryRovers"] = 69] = "interplanetaryRovers";
-    TechNode[TechNode["largeRoverDesigns"] = 70] = "largeRoverDesigns";
-    TechNode[TechNode["reusability"] = 71] = "reusability";
-    TechNode[TechNode["advancedLanding"] = 72] = "advancedLanding";
-    TechNode[TechNode["SIAD"] = 73] = "SIAD";
-    TechNode[TechNode["HIAD"] = 74] = "HIAD";
-    TechNode[TechNode["colonization2051EDL"] = 75] = "colonization2051EDL";
-    TechNode[TechNode["colonization2100EDL"] = 76] = "colonization2100EDL";
-    TechNode[TechNode["colonization2150EDL"] = 77] = "colonization2150EDL";
-    TechNode[TechNode["prototypeHydrolox"] = 78] = "prototypeHydrolox";
-    TechNode[TechNode["earlyHydrolox"] = 79] = "earlyHydrolox";
-    TechNode[TechNode["improvedHydrolox"] = 80] = "improvedHydrolox";
-    TechNode[TechNode["largeHydrolox"] = 81] = "largeHydrolox";
-    TechNode[TechNode["hydrolox1968"] = 82] = "hydrolox1968";
-    TechNode[TechNode["hydrolox1972"] = 83] = "hydrolox1972";
-    TechNode[TechNode["hydrolox1976"] = 84] = "hydrolox1976";
-    TechNode[TechNode["hydrolox1981"] = 85] = "hydrolox1981";
-    TechNode[TechNode["hydrolox1986"] = 86] = "hydrolox1986";
-    TechNode[TechNode["hydrolox1992"] = 87] = "hydrolox1992";
-    TechNode[TechNode["hydrolox1998"] = 88] = "hydrolox1998";
-    TechNode[TechNode["hydrolox2009"] = 89] = "hydrolox2009";
-    TechNode[TechNode["hydroloxNF"] = 90] = "hydroloxNF";
-    TechNode[TechNode["colonization2051Hydrolox"] = 91] = "colonization2051Hydrolox";
-    TechNode[TechNode["colonization2100Hydrolox"] = 92] = "colonization2100Hydrolox";
-    TechNode[TechNode["colonization2150Hydrolox"] = 93] = "colonization2150Hydrolox";
-    TechNode[TechNode["rocketryTesting"] = 94] = "rocketryTesting";
-    TechNode[TechNode["earlyRocketry"] = 95] = "earlyRocketry";
-    TechNode[TechNode["basicRocketryRP0"] = 96] = "basicRocketryRP0";
-    TechNode[TechNode["orbitalRocketry1956"] = 97] = "orbitalRocketry1956";
-    TechNode[TechNode["orbitalRocketry1958"] = 98] = "orbitalRocketry1958";
-    TechNode[TechNode["orbitalRocketry1959"] = 99] = "orbitalRocketry1959";
-    TechNode[TechNode["orbitalRocketry1960"] = 100] = "orbitalRocketry1960";
-    TechNode[TechNode["orbitalRocketry1961"] = 101] = "orbitalRocketry1961";
-    TechNode[TechNode["orbitalRocketry1962"] = 102] = "orbitalRocketry1962";
-    TechNode[TechNode["orbitalRocketry1963"] = 103] = "orbitalRocketry1963";
-    TechNode[TechNode["orbitalRocketry1964"] = 104] = "orbitalRocketry1964";
-    TechNode[TechNode["orbitalRocketry1965"] = 105] = "orbitalRocketry1965";
-    TechNode[TechNode["orbitalRocketry1966"] = 106] = "orbitalRocketry1966";
-    TechNode[TechNode["orbitalRocketry1967"] = 107] = "orbitalRocketry1967";
-    TechNode[TechNode["orbitalRocketry1970"] = 108] = "orbitalRocketry1970";
-    TechNode[TechNode["orbitalRocketry1972"] = 109] = "orbitalRocketry1972";
-    TechNode[TechNode["orbitalRocketry1976"] = 110] = "orbitalRocketry1976";
-    TechNode[TechNode["orbitalRocketry1981"] = 111] = "orbitalRocketry1981";
-    TechNode[TechNode["orbitalRocketry1986"] = 112] = "orbitalRocketry1986";
-    TechNode[TechNode["orbitalRocketry1992"] = 113] = "orbitalRocketry1992";
-    TechNode[TechNode["orbitalRocketry1998"] = 114] = "orbitalRocketry1998";
-    TechNode[TechNode["orbitalRocketry2004"] = 115] = "orbitalRocketry2004";
-    TechNode[TechNode["orbitalRocketry2009"] = 116] = "orbitalRocketry2009";
-    TechNode[TechNode["orbitalRocketry2014"] = 117] = "orbitalRocketry2014";
-    TechNode[TechNode["orbitalRocketryNF"] = 118] = "orbitalRocketryNF";
-    TechNode[TechNode["colonization2051Orbital"] = 119] = "colonization2051Orbital";
-    TechNode[TechNode["colonization2100Orbital"] = 120] = "colonization2100Orbital";
-    TechNode[TechNode["colonization2150Orbital"] = 121] = "colonization2150Orbital";
-    TechNode[TechNode["firstStagedCombustion"] = 122] = "firstStagedCombustion";
-    TechNode[TechNode["stagedCombustion1964"] = 123] = "stagedCombustion1964";
-    TechNode[TechNode["stagedCombustion1966"] = 124] = "stagedCombustion1966";
-    TechNode[TechNode["stagedCombustion1967"] = 125] = "stagedCombustion1967";
-    TechNode[TechNode["stagedCombustion1969"] = 126] = "stagedCombustion1969";
-    TechNode[TechNode["stagedCombustion1970"] = 127] = "stagedCombustion1970";
-    TechNode[TechNode["stagedCombustion1972"] = 128] = "stagedCombustion1972";
-    TechNode[TechNode["stagedCombustion1981"] = 129] = "stagedCombustion1981";
-    TechNode[TechNode["stagedCombustion1986"] = 130] = "stagedCombustion1986";
-    TechNode[TechNode["stagedCombustion1992"] = 131] = "stagedCombustion1992";
-    TechNode[TechNode["stagedCombustion1998"] = 132] = "stagedCombustion1998";
-    TechNode[TechNode["stagedCombustion2004"] = 133] = "stagedCombustion2004";
-    TechNode[TechNode["stagedCombustion2009"] = 134] = "stagedCombustion2009";
-    TechNode[TechNode["stagedCombustion2014"] = 135] = "stagedCombustion2014";
-    TechNode[TechNode["stagedCombustionNF"] = 136] = "stagedCombustionNF";
-    TechNode[TechNode["colonization2051Staged"] = 137] = "colonization2051Staged";
-    TechNode[TechNode["colonization2100Staged"] = 138] = "colonization2100Staged";
-    TechNode[TechNode["colonization2150Staged"] = 139] = "colonization2150Staged";
-    TechNode[TechNode["earlySolids"] = 140] = "earlySolids";
-    TechNode[TechNode["solids1956"] = 141] = "solids1956";
-    TechNode[TechNode["solids1958"] = 142] = "solids1958";
-    TechNode[TechNode["solids1959"] = 143] = "solids1959";
-    TechNode[TechNode["solids1962"] = 144] = "solids1962";
-    TechNode[TechNode["solids1964"] = 145] = "solids1964";
-    TechNode[TechNode["solids1966"] = 146] = "solids1966";
-    TechNode[TechNode["solids1967"] = 147] = "solids1967";
-    TechNode[TechNode["solids1969"] = 148] = "solids1969";
-    TechNode[TechNode["solids1972"] = 149] = "solids1972";
-    TechNode[TechNode["solids1976"] = 150] = "solids1976";
-    TechNode[TechNode["solids1981"] = 151] = "solids1981";
-    TechNode[TechNode["solids1986"] = 152] = "solids1986";
-    TechNode[TechNode["solids1992"] = 153] = "solids1992";
-    TechNode[TechNode["solids1998"] = 154] = "solids1998";
-    TechNode[TechNode["solids2009"] = 155] = "solids2009";
-    TechNode[TechNode["solidsNF"] = 156] = "solidsNF";
-    TechNode[TechNode["colonization2051Solid"] = 157] = "colonization2051Solid";
-    TechNode[TechNode["colonization2100Solid"] = 158] = "colonization2100Solid";
-    TechNode[TechNode["colonization2150Solid"] = 159] = "colonization2150Solid";
-    TechNode[TechNode["earlyElecPropulsion"] = 160] = "earlyElecPropulsion";
-    TechNode[TechNode["basicElecPropulsion"] = 161] = "basicElecPropulsion";
-    TechNode[TechNode["improvedElecPropulsion"] = 162] = "improvedElecPropulsion";
-    TechNode[TechNode["advancedElecPropulsion"] = 163] = "advancedElecPropulsion";
-    TechNode[TechNode["colonization2051ElecProp"] = 164] = "colonization2051ElecProp";
-    TechNode[TechNode["colonization2100ElecProp"] = 165] = "colonization2100ElecProp";
-    TechNode[TechNode["colonization2150ElecProp"] = 166] = "colonization2150ElecProp";
-    TechNode[TechNode["prototypeNuclearPropulsion"] = 167] = "prototypeNuclearPropulsion";
-    TechNode[TechNode["earlyNuclearPropulsion"] = 168] = "earlyNuclearPropulsion";
-    TechNode[TechNode["basicNuclearPropulsion"] = 169] = "basicNuclearPropulsion";
-    TechNode[TechNode["improvedNuclearPropulsion"] = 170] = "improvedNuclearPropulsion";
-    TechNode[TechNode["advancedNuclearPropulsion"] = 171] = "advancedNuclearPropulsion";
-    TechNode[TechNode["efficientNuclearPropulsion"] = 172] = "efficientNuclearPropulsion";
-    TechNode[TechNode["nuclearPropulsionNF"] = 173] = "nuclearPropulsionNF";
-    TechNode[TechNode["nuclearPropulsionNF2"] = 174] = "nuclearPropulsionNF2";
-    TechNode[TechNode["colonization2051NuclearProp"] = 175] = "colonization2051NuclearProp";
-    TechNode[TechNode["colonization2100NuclearProp"] = 176] = "colonization2100NuclearProp";
-    TechNode[TechNode["colonization2150NuclearProp"] = 177] = "colonization2150NuclearProp";
-    TechNode[TechNode["crewSurvivability"] = 178] = "crewSurvivability";
-    TechNode[TechNode["earlyLifeSupport"] = 179] = "earlyLifeSupport";
-    TechNode[TechNode["lifeSupportISRU"] = 180] = "lifeSupportISRU";
-    TechNode[TechNode["basicLifeSupport"] = 181] = "basicLifeSupport";
-    TechNode[TechNode["improvedLifeSupport"] = 182] = "improvedLifeSupport";
-    TechNode[TechNode["longTermLifeSupport"] = 183] = "longTermLifeSupport";
-    TechNode[TechNode["advancedLifeSupport"] = 184] = "advancedLifeSupport";
-    TechNode[TechNode["efficientLifeSupport"] = 185] = "efficientLifeSupport";
-    TechNode[TechNode["lifeSupportNF"] = 186] = "lifeSupportNF";
-    TechNode[TechNode["colonization2051LifeSupport"] = 187] = "colonization2051LifeSupport";
-    TechNode[TechNode["colonization2100LifeSupport"] = 188] = "colonization2100LifeSupport";
-    TechNode[TechNode["colonization2150LifeSupport"] = 189] = "colonization2150LifeSupport";
-    TechNode[TechNode["postWarMaterialsScience"] = 190] = "postWarMaterialsScience";
-    TechNode[TechNode["earlyMaterialsScience"] = 191] = "earlyMaterialsScience";
-    TechNode[TechNode["materialsScienceSatellite"] = 192] = "materialsScienceSatellite";
-    TechNode[TechNode["materialsScienceHuman"] = 193] = "materialsScienceHuman";
-    TechNode[TechNode["materialsScienceAdvCapsules"] = 194] = "materialsScienceAdvCapsules";
-    TechNode[TechNode["materialsScienceLunar"] = 195] = "materialsScienceLunar";
-    TechNode[TechNode["materialsScienceSpaceStation"] = 196] = "materialsScienceSpaceStation";
-    TechNode[TechNode["materialsScienceSpaceplanes"] = 197] = "materialsScienceSpaceplanes";
-    TechNode[TechNode["materialsScienceLongTerm"] = 198] = "materialsScienceLongTerm";
-    TechNode[TechNode["materialsScienceInternational"] = 199] = "materialsScienceInternational";
-    TechNode[TechNode["materialsScienceCommercial"] = 200] = "materialsScienceCommercial";
-    TechNode[TechNode["materialsScienceNF"] = 201] = "materialsScienceNF";
-    TechNode[TechNode["materialsScienceColonization"] = 202] = "materialsScienceColonization";
-    TechNode[TechNode["electronicsSatellite"] = 203] = "electronicsSatellite";
-    TechNode[TechNode["electronicsHuman"] = 204] = "electronicsHuman";
-    TechNode[TechNode["electronicsAdvCapsules"] = 205] = "electronicsAdvCapsules";
-    TechNode[TechNode["electronicsLunar"] = 206] = "electronicsLunar";
-    TechNode[TechNode["electronicsSpaceStation"] = 207] = "electronicsSpaceStation";
-    TechNode[TechNode["electronicsSpaceplanes"] = 208] = "electronicsSpaceplanes";
-    TechNode[TechNode["electronicsLongTerm"] = 209] = "electronicsLongTerm";
-    TechNode[TechNode["electronicsInternational"] = 210] = "electronicsInternational";
-    TechNode[TechNode["electronicsCommercial"] = 211] = "electronicsCommercial";
-    TechNode[TechNode["electronicsNF"] = 212] = "electronicsNF";
-    TechNode[TechNode["electronicsColonization"] = 213] = "electronicsColonization";
-    TechNode[TechNode["firstRTG"] = 214] = "firstRTG";
-    TechNode[TechNode["earlyRTG"] = 215] = "earlyRTG";
-    TechNode[TechNode["nuclearFissionReactors"] = 216] = "nuclearFissionReactors";
-    TechNode[TechNode["improvedRTG"] = 217] = "improvedRTG";
-    TechNode[TechNode["multihundredWattRTG"] = 218] = "multihundredWattRTG";
-    TechNode[TechNode["gphsRTG"] = 219] = "gphsRTG";
-    TechNode[TechNode["improvedNuclearPower"] = 220] = "improvedNuclearPower";
-    TechNode[TechNode["advancedNuclearPower"] = 221] = "advancedNuclearPower";
-    TechNode[TechNode["modernNuclearPower"] = 222] = "modernNuclearPower";
-    TechNode[TechNode["nuclearPowerNF"] = 223] = "nuclearPowerNF";
-    TechNode[TechNode["colonization2051NuclearPower"] = 224] = "colonization2051NuclearPower";
-    TechNode[TechNode["colonization2100NuclearPower"] = 225] = "colonization2100NuclearPower";
-    TechNode[TechNode["colonization2150NuclearPower"] = 226] = "colonization2150NuclearPower";
-    TechNode[TechNode["primitiveSolarPanels"] = 227] = "primitiveSolarPanels";
-    TechNode[TechNode["earlyPower"] = 228] = "earlyPower";
-    TechNode[TechNode["basicPower"] = 229] = "basicPower";
-    TechNode[TechNode["improvedPower"] = 230] = "improvedPower";
-    TechNode[TechNode["lunarRatedPower"] = 231] = "lunarRatedPower";
-    TechNode[TechNode["spaceStationSolarPanels"] = 232] = "spaceStationSolarPanels";
-    TechNode[TechNode["maturePower"] = 233] = "maturePower";
-    TechNode[TechNode["largeScaleSolarArrays"] = 234] = "largeScaleSolarArrays";
-    TechNode[TechNode["advancedPower"] = 235] = "advancedPower";
-    TechNode[TechNode["modernPower"] = 236] = "modernPower";
-    TechNode[TechNode["powerNF"] = 237] = "powerNF";
-    TechNode[TechNode["colonization2051Power"] = 238] = "colonization2051Power";
-    TechNode[TechNode["colonization2100Power"] = 239] = "colonization2100Power";
-    TechNode[TechNode["colonization2150Power"] = 240] = "colonization2150Power";
-    TechNode[TechNode["lunarRangeComms"] = 241] = "lunarRangeComms";
-    TechNode[TechNode["interplanetaryComms"] = 242] = "interplanetaryComms";
-    TechNode[TechNode["improvedComms"] = 243] = "improvedComms";
-    TechNode[TechNode["advancedComms"] = 244] = "advancedComms";
-    TechNode[TechNode["deepSpaceComms"] = 245] = "deepSpaceComms";
-    TechNode[TechNode["largeScaleComms"] = 246] = "largeScaleComms";
-    TechNode[TechNode["massiveScaleComms"] = 247] = "massiveScaleComms";
-    TechNode[TechNode["efficientComms"] = 248] = "efficientComms";
-    TechNode[TechNode["modernComms"] = 249] = "modernComms";
-    TechNode[TechNode["commsNF"] = 250] = "commsNF";
-    TechNode[TechNode["colonization2051Comms"] = 251] = "colonization2051Comms";
-    TechNode[TechNode["colonization2100Comms"] = 252] = "colonization2100Comms";
-    TechNode[TechNode["colonization2150Comms"] = 253] = "colonization2150Comms";
-    TechNode[TechNode["postWarAvionics"] = 254] = "postWarAvionics";
-    TechNode[TechNode["avionicsPrototypes"] = 255] = "avionicsPrototypes";
-    TechNode[TechNode["earlyAvionics"] = 256] = "earlyAvionics";
-    TechNode[TechNode["basicAvionics"] = 257] = "basicAvionics";
-    TechNode[TechNode["interplanetaryProbes"] = 258] = "interplanetaryProbes";
-    TechNode[TechNode["improvedAvionics"] = 259] = "improvedAvionics";
-    TechNode[TechNode["matureAvionics"] = 260] = "matureAvionics";
-    TechNode[TechNode["largeScaleAvionics"] = 261] = "largeScaleAvionics";
-    TechNode[TechNode["advancedAvionics"] = 262] = "advancedAvionics";
-    TechNode[TechNode["nextGenAvionics"] = 263] = "nextGenAvionics";
-    TechNode[TechNode["longTermAvionics"] = 264] = "longTermAvionics";
-    TechNode[TechNode["internationalAvionics"] = 265] = "internationalAvionics";
-    TechNode[TechNode["modernAvionics"] = 266] = "modernAvionics";
-    TechNode[TechNode["avionicsNF"] = 267] = "avionicsNF";
-    TechNode[TechNode["colonization2051Avionics"] = 268] = "colonization2051Avionics";
-    TechNode[TechNode["colonization2100Avionics"] = 269] = "colonization2100Avionics";
-    TechNode[TechNode["colonization2150Avionics"] = 270] = "colonization2150Avionics";
-    TechNode[TechNode["earlyScience"] = 271] = "earlyScience";
-    TechNode[TechNode["scienceSatellite"] = 272] = "scienceSatellite";
-    TechNode[TechNode["scienceHuman"] = 273] = "scienceHuman";
-    TechNode[TechNode["scienceAdvCapsules"] = 274] = "scienceAdvCapsules";
-    TechNode[TechNode["scienceLunar"] = 275] = "scienceLunar";
-    TechNode[TechNode["surfaceScience"] = 276] = "surfaceScience";
-    TechNode[TechNode["deepSpaceScience"] = 277] = "deepSpaceScience";
-    TechNode[TechNode["scienceExploration"] = 278] = "scienceExploration";
-    TechNode[TechNode["sampleReturnScience"] = 279] = "sampleReturnScience";
-    TechNode[TechNode["advancedScience"] = 280] = "advancedScience";
-    TechNode[TechNode["advancedSurfaceScience"] = 281] = "advancedSurfaceScience";
-    TechNode[TechNode["scienceNF"] = 282] = "scienceNF";
-    TechNode[TechNode["colonization2051Science"] = 283] = "colonization2051Science";
-    TechNode[TechNode["colonization2100Science"] = 284] = "colonization2100Science";
-    TechNode[TechNode["colonization2150Science"] = 285] = "colonization2150Science";
-})(TechNode || (TechNode = {}));
 class AllTankDefinition {
     static Get() {
         let definitions = "";
@@ -5516,12 +7674,15 @@ class DebugLists {
             let newEngine = new Engine();
             let modelInfo = ModelInfo.GetModelInfo(i);
             newEngine.Active = true;
-            newEngine.ID = `PREVIEW-${("0000" + i).slice(-4)}`;
-            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model preview - ${modelInfo.ModelName}`;
+            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}`;
+            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Model preview - ${modelInfo.ModelName}`;
             newEngine.ModelID = i;
             newEngine.UseBaseWidth = true;
             newEngine.Width = 2;
             newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
+            let trimmed = newEngine.Height.toFixed(3);
+            let numberString = newEngine.Height.toString().length >= trimmed.length ? trimmed : newEngine.Height.toString();
+            newEngine.Height = parseFloat(numberString);
             newEngine.Gimbal = 15;
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
@@ -5578,6 +7739,29 @@ class DebugLists {
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
             newEngine.PlumeID = Plume.Solid_Lower;
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
+        MainEngineTable.RebuildTable();
+    }
+    static AppendListForTankTest() {
+        let toAppend = [];
+        let modelCount = Object.getOwnPropertyNames(Model).length / 2;
+        for (let i = 0; i < modelCount; ++i) {
+            let modelInfo = ModelInfo.GetModelInfo(i);
+            if (modelInfo.OriginalTankVolume == 0) {
+                continue;
+            }
+            let newEngine = new Engine();
+            newEngine.Active = true;
+            newEngine.ID = `TANKTEST-${("0000" + i).slice(-4)}`;
+            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Tank volume test - ${modelInfo.ModelName}`;
+            newEngine.ModelID = i;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = 4;
+            newEngine.Height = 4;
+            newEngine.UseTanks = true;
+            newEngine.TanksVolume = newEngine.GetTankSizeEstimate();
             toAppend.push(newEngine);
         }
         MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);

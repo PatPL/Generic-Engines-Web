@@ -1,0 +1,6 @@
+﻿Source: https://github.com/CobaltWolf/Bluedog-Design-Bureau
+Creators: https://github.com/CobaltWolf/Bluedog-Design-Bureau/graphs/contributors
+(Some models' colliders/nodes might be changed by me. The artwork was not modified)
+Original licence from https://github.com/CobaltWolf/Bluedog-Design-Bureau/commit/76f0ef53bf7f7008be50049f0b4fa2a05ec26aa2:
+
+Bluedog Design Bureau by Matthew (CobaltWolf) Mlodzienski is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.

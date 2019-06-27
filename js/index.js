@@ -1444,7 +1444,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR91.png",
+        ImageSource: "img/modelPreviews/LR91.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.654,
@@ -1477,7 +1477,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/AJ10.png",
+        ImageSource: "img/modelPreviews/AJ10.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.5,
@@ -1507,7 +1507,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RS25.png",
+        ImageSource: "img/modelPreviews/RS25.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.3055,
@@ -1533,7 +1533,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Thruster.png",
+        ImageSource: "img/modelPreviews/Thruster.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.393,
@@ -1562,7 +1562,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Aestus.png",
+        ImageSource: "img/modelPreviews/Aestus.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.3935,
@@ -1591,7 +1591,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/IonThruster.png",
+        ImageSource: "img/modelPreviews/IonThruster.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 4.48,
@@ -1619,7 +1619,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Rhino.png",
+        ImageSource: "img/modelPreviews/Rhino.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.727,
@@ -1649,7 +1649,7 @@ ModelInfo.models = [
         CanAttachOnModel: false,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD0105T.png",
+        ImageSource: "img/modelPreviews/RD0105T.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 8.018,
@@ -1677,7 +1677,7 @@ ModelInfo.models = [
         HiddenMuObjects: [
             "fairing"
         ],
-        ImageSource: "img/modelPreviews/SRBLong.png",
+        ImageSource: "img/modelPreviews/SRBLong.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.444,
@@ -1705,7 +1705,7 @@ ModelInfo.models = [
         HiddenMuObjects: [
             "fairing"
         ],
-        ImageSource: "img/modelPreviews/RT5.png",
+        ImageSource: "img/modelPreviews/RT5.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.5,
@@ -1731,7 +1731,7 @@ ModelInfo.models = [
         ModelName: "RT-2",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
-        ImageSource: "img/modelPreviews/RT2.png",
+        ImageSource: "img/modelPreviews/RT2.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 14.81,
@@ -1757,7 +1757,7 @@ ModelInfo.models = [
         ModelName: "S-1",
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
-        ImageSource: "img/modelPreviews/S1.png",
+        ImageSource: "img/modelPreviews/S1.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.633,
@@ -1786,7 +1786,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD0105.png",
+        ImageSource: "img/modelPreviews/RD0105.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.25,
@@ -1816,7 +1816,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/NERVA.png",
+        ImageSource: "img/modelPreviews/NERVA.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.574,
@@ -1845,7 +1845,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LVT30.png",
+        ImageSource: "img/modelPreviews/LVT30.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.643,
@@ -1875,7 +1875,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LVT45.png",
+        ImageSource: "img/modelPreviews/LVT45.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.615,
@@ -1904,7 +1904,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/P1057.png",
+        ImageSource: "img/modelPreviews/P1057.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.228,
@@ -1930,7 +1930,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/OMSL.png",
+        ImageSource: "img/modelPreviews/OMSL.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.584,
@@ -1959,7 +1959,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Poodle.png",
+        ImageSource: "img/modelPreviews/Poodle.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 1.868,
@@ -1987,7 +1987,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/BallNuke.png",
+        ImageSource: "img/modelPreviews/BallNuke.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 0.767,
@@ -2016,7 +2016,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/BallNukeS.png",
+        ImageSource: "img/modelPreviews/BallNukeS.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 3.514,
@@ -2044,7 +2044,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Skipper.png",
+        ImageSource: "img/modelPreviews/Skipper.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         OriginalHeight: 2.655,
@@ -2073,7 +2073,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/SkipperR.png",
+        ImageSource: "img/modelPreviews/SkipperR.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2108,7 +2108,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/NERVA2.png",
+        ImageSource: "img/modelPreviews/NERVA2.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2143,7 +2143,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/NERVAwide.png",
+        ImageSource: "img/modelPreviews/NERVAwide.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2172,7 +2172,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Pancake.png",
+        ImageSource: "img/modelPreviews/Pancake.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2204,7 +2204,7 @@ ModelInfo.models = [
         OriginalTankVolume: 607,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.625,
-        ImageSource: "img/modelPreviews/RT3.png",
+        ImageSource: "img/modelPreviews/RT3.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2235,7 +2235,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD170.png",
+        ImageSource: "img/modelPreviews/RD170.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2270,7 +2270,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD0120.png",
+        ImageSource: "img/modelPreviews/RD0120.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2304,7 +2304,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Gamma2.png",
+        ImageSource: "img/modelPreviews/Gamma2.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2333,7 +2333,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Gamma8.png",
+        ImageSource: "img/modelPreviews/Gamma8.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2360,7 +2360,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/AJ10_137.png",
+        ImageSource: "img/modelPreviews/AJ10_137.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2387,7 +2387,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/AJ10_190.png",
+        ImageSource: "img/modelPreviews/AJ10_190.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2414,7 +2414,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/F1.png",
+        ImageSource: "img/modelPreviews/F1.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2441,7 +2441,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/F1B.png",
+        ImageSource: "img/modelPreviews/F1B.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2468,7 +2468,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/H1.png",
+        ImageSource: "img/modelPreviews/H1.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2495,7 +2495,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/J2.png",
+        ImageSource: "img/modelPreviews/J2.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2522,7 +2522,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/J2X.png",
+        ImageSource: "img/modelPreviews/J2X.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2549,7 +2549,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LMAE.png",
+        ImageSource: "img/modelPreviews/LMAE.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2576,7 +2576,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LMDE.png",
+        ImageSource: "img/modelPreviews/LMDE.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2603,7 +2603,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Bell8048.png",
+        ImageSource: "img/modelPreviews/Bell8048.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2630,7 +2630,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Bell8096.png",
+        ImageSource: "img/modelPreviews/Bell8096.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2657,7 +2657,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Merlin1A.png",
+        ImageSource: "img/modelPreviews/Merlin1A.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2684,7 +2684,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Merlin1B.png",
+        ImageSource: "img/modelPreviews/Merlin1B.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2711,7 +2711,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Merlin1BV.png",
+        ImageSource: "img/modelPreviews/Merlin1BV.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2738,7 +2738,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Merlin1D.png",
+        ImageSource: "img/modelPreviews/Merlin1D.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2765,7 +2765,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Merlin1DV.png",
+        ImageSource: "img/modelPreviews/Merlin1DV.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2792,7 +2792,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD107.png",
+        ImageSource: "img/modelPreviews/RD107.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2819,7 +2819,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD171.png",
+        ImageSource: "img/modelPreviews/RD171.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2846,7 +2846,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD180.png",
+        ImageSource: "img/modelPreviews/RD180.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2873,7 +2873,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD181.png",
+        ImageSource: "img/modelPreviews/RD181.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2900,7 +2900,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RL10A3.png",
+        ImageSource: "img/modelPreviews/RL10A3.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2927,7 +2927,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RL10A4.png",
+        ImageSource: "img/modelPreviews/RL10A4.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2954,7 +2954,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RL10A5.png",
+        ImageSource: "img/modelPreviews/RL10A5.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2981,7 +2981,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RL10B2.png",
+        ImageSource: "img/modelPreviews/RL10B2.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3008,7 +3008,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RS25_2.png",
+        ImageSource: "img/modelPreviews/RS25_2.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3035,7 +3035,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RS68.png",
+        ImageSource: "img/modelPreviews/RS68.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3061,7 +3061,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/SuperDraco.png",
+        ImageSource: "img/modelPreviews/SuperDraco.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3087,7 +3087,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/SuperDracoV.png",
+        ImageSource: "img/modelPreviews/SuperDracoV.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3113,7 +3113,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/FRE1.png",
+        ImageSource: "img/modelPreviews/FRE1.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3139,7 +3139,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/FRE2.png",
+        ImageSource: "img/modelPreviews/FRE2.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3166,7 +3166,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LE5.png",
+        ImageSource: "img/modelPreviews/LE5.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3193,7 +3193,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LE7.png",
+        ImageSource: "img/modelPreviews/LE7.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3218,7 +3218,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD843.png",
+        ImageSource: "img/modelPreviews/RD843.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3245,7 +3245,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Rutherford.png",
+        ImageSource: "img/modelPreviews/Rutherford.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3272,7 +3272,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RutherfordVac.png",
+        ImageSource: "img/modelPreviews/RutherfordVac.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3298,7 +3298,7 @@ ModelInfo.models = [
         OriginalTankVolume: 54649,
         RadialAttachment: true,
         RadialAttachmentPoint: 1.5,
-        ImageSource: "img/modelPreviews/P80.png",
+        ImageSource: "img/modelPreviews/P80.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3324,7 +3324,7 @@ ModelInfo.models = [
         OriginalTankVolume: 4940,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.95,
-        ImageSource: "img/modelPreviews/Zefiro9.png",
+        ImageSource: "img/modelPreviews/Zefiro9.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3350,7 +3350,7 @@ ModelInfo.models = [
         OriginalTankVolume: 12267,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.95,
-        ImageSource: "img/modelPreviews/Zefiro23.png",
+        ImageSource: "img/modelPreviews/Zefiro23.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3376,7 +3376,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Viking.png",
+        ImageSource: "img/modelPreviews/Viking.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3402,7 +3402,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/VikingVac.png",
+        ImageSource: "img/modelPreviews/VikingVac.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3432,7 +3432,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/ApolloSPSBlockII.png",
+        ImageSource: "img/modelPreviews/ApolloSPSBlockII.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3465,7 +3465,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/ApolloSPSBlockIII.png",
+        ImageSource: "img/modelPreviews/ApolloSPSBlockIII.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3498,7 +3498,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/ApolloSPSBlockV.png",
+        ImageSource: "img/modelPreviews/ApolloSPSBlockV.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3525,7 +3525,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LMAE_BDB.png",
+        ImageSource: "img/modelPreviews/LMAE_BDB.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3552,7 +3552,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LMDE_BDB.png",
+        ImageSource: "img/modelPreviews/LMDE_BDB.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3579,7 +3579,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR89.png",
+        ImageSource: "img/modelPreviews/LR89.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3606,7 +3606,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR101.png",
+        ImageSource: "img/modelPreviews/LR101.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3633,7 +3633,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR105.png",
+        ImageSource: "img/modelPreviews/LR105.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3660,7 +3660,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RD180_BDB.png",
+        ImageSource: "img/modelPreviews/RD180_BDB.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3689,7 +3689,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RL10.png",
+        ImageSource: "img/modelPreviews/RL10.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3718,7 +3718,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RL10A41.png",
+        ImageSource: "img/modelPreviews/RL10A41.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3750,7 +3750,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/RL10B2_BDB.png",
+        ImageSource: "img/modelPreviews/RL10B2_BDB.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3777,7 +3777,7 @@ ModelInfo.models = [
         OriginalTankVolume: 1337,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.3125,
-        ImageSource: "img/modelPreviews/GEM40.png",
+        ImageSource: "img/modelPreviews/GEM40.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3804,7 +3804,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/AJ10_BDB.png",
+        ImageSource: "img/modelPreviews/AJ10_BDB.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3830,7 +3830,7 @@ ModelInfo.models = [
         OriginalTankVolume: 1395,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.6885,
-        ImageSource: "img/modelPreviews/Rita.png",
+        ImageSource: "img/modelPreviews/Rita.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3856,7 +3856,7 @@ ModelInfo.models = [
         OriginalTankVolume: 130,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.2955,
-        ImageSource: "img/modelPreviews/Rubis.png",
+        ImageSource: "img/modelPreviews/Rubis.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3884,7 +3884,7 @@ ModelInfo.models = [
         OriginalTankVolume: 432,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.3115,
-        ImageSource: "img/modelPreviews/Topaze.png",
+        ImageSource: "img/modelPreviews/Topaze.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3913,7 +3913,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Able.png",
+        ImageSource: "img/modelPreviews/Able.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3942,7 +3942,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Ablestar.png",
+        ImageSource: "img/modelPreviews/Ablestar.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3970,7 +3970,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Navaho.png",
+        ImageSource: "img/modelPreviews/Navaho.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3996,7 +3996,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Thor.png",
+        ImageSource: "img/modelPreviews/Thor.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4025,7 +4025,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Vanguard.png",
+        ImageSource: "img/modelPreviews/Vanguard.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4052,7 +4052,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/E1.png",
+        ImageSource: "img/modelPreviews/E1.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4080,7 +4080,7 @@ ModelInfo.models = [
         OriginalTankVolume: 4.3,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.06,
-        ImageSource: "img/modelPreviews/Sargent.png",
+        ImageSource: "img/modelPreviews/Sargent.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4107,7 +4107,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Juno6K.png",
+        ImageSource: "img/modelPreviews/Juno6K.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4134,7 +4134,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Juno45K.png",
+        ImageSource: "img/modelPreviews/Juno45K.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4161,7 +4161,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/S3D.png",
+        ImageSource: "img/modelPreviews/S3D.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4187,7 +4187,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/F1_BDB.png",
+        ImageSource: "img/modelPreviews/F1_BDB.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4213,7 +4213,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/H1C.png",
+        ImageSource: "img/modelPreviews/H1C.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4239,7 +4239,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/H1D.png",
+        ImageSource: "img/modelPreviews/H1D.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4267,7 +4267,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/J2_BDB.png",
+        ImageSource: "img/modelPreviews/J2_BDB.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4295,7 +4295,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/J2T.png",
+        ImageSource: "img/modelPreviews/J2T.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4323,7 +4323,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/J2SL.png",
+        ImageSource: "img/modelPreviews/J2SL.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4350,7 +4350,7 @@ ModelInfo.models = [
         OriginalTankVolume: 134500,
         RadialAttachment: true,
         RadialAttachmentPoint: 1.915,
-        ImageSource: "img/modelPreviews/AJ260.png",
+        ImageSource: "img/modelPreviews/AJ260.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4376,7 +4376,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR87.png",
+        ImageSource: "img/modelPreviews/LR87.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4402,7 +4402,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR87S.png",
+        ImageSource: "img/modelPreviews/LR87S.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4428,7 +4428,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR91_BDB.png",
+        ImageSource: "img/modelPreviews/LR91_BDB.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4454,7 +4454,7 @@ ModelInfo.models = [
         OriginalTankVolume: 12500,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.75,
-        ImageSource: "img/modelPreviews/Soltan.png",
+        ImageSource: "img/modelPreviews/Soltan.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4480,7 +4480,7 @@ ModelInfo.models = [
         OriginalTankVolume: 22600,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.935,
-        ImageSource: "img/modelPreviews/UA1205.png",
+        ImageSource: "img/modelPreviews/UA1205.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4506,7 +4506,7 @@ ModelInfo.models = [
         OriginalTankVolume: 28900,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.935,
-        ImageSource: "img/modelPreviews/UA1207.png",
+        ImageSource: "img/modelPreviews/UA1207.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4532,7 +4532,7 @@ ModelInfo.models = [
         OriginalTankVolume: 1200,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Transtage.png",
+        ImageSource: "img/modelPreviews/Transtage.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4560,7 +4560,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR87_5.png",
+        ImageSource: "img/modelPreviews/LR87_5.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4588,7 +4588,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR87_11.png",
+        ImageSource: "img/modelPreviews/LR87_11.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4616,7 +4616,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR87_11S.png",
+        ImageSource: "img/modelPreviews/LR87_11S.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4644,7 +4644,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR87_11SV.png",
+        ImageSource: "img/modelPreviews/LR87_11SV.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4672,7 +4672,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR87_11SH.png",
+        ImageSource: "img/modelPreviews/LR87_11SH.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4700,7 +4700,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR87_11SHV.png",
+        ImageSource: "img/modelPreviews/LR87_11SHV.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4728,7 +4728,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR91_5.png",
+        ImageSource: "img/modelPreviews/LR91_5.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4756,7 +4756,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/LR91_11.png",
+        ImageSource: "img/modelPreviews/LR91_11.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4788,7 +4788,7 @@ ModelInfo.models = [
         OriginalTankVolume: 32250,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.937,
-        ImageSource: "img/modelPreviews/SRMU.png",
+        ImageSource: "img/modelPreviews/SRMU.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4819,7 +4819,7 @@ ModelInfo.models = [
         OriginalTankVolume: 23400,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.937,
-        ImageSource: "img/modelPreviews/UA1205_NEW.png",
+        ImageSource: "img/modelPreviews/UA1205_NEW.webp",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4850,7 +4850,7 @@ ModelInfo.models = [
         OriginalTankVolume: 32500,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.937,
-        ImageSource: "img/modelPreviews/UA1207_NEW.png",
+        ImageSource: "img/modelPreviews/UA1207_NEW.webp",
         get ImageLabel() { return this.ModelName; }
     }
 ];

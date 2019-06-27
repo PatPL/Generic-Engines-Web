@@ -30,7 +30,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR91.png",
+            ImageSource: "img/modelPreviews/LR91.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.AJ10
             OriginalHeight: 0.654,
@@ -63,7 +63,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/AJ10.png",
+            ImageSource: "img/modelPreviews/AJ10.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RS25
             OriginalHeight: 1.5,
@@ -93,7 +93,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RS25.png",
+            ImageSource: "img/modelPreviews/RS25.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Thruster
             OriginalHeight: 0.3055,
@@ -119,7 +119,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Thruster.png",
+            ImageSource: "img/modelPreviews/Thruster.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Aestus
             OriginalHeight: 0.393,
@@ -148,7 +148,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Aestus.png",
+            ImageSource: "img/modelPreviews/Aestus.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.IonThruster
             OriginalHeight: 0.3935,
@@ -177,7 +177,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/IonThruster.png",
+            ImageSource: "img/modelPreviews/IonThruster.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Rhino
             OriginalHeight: 4.48,
@@ -205,7 +205,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Rhino.png",
+            ImageSource: "img/modelPreviews/Rhino.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD0105T
             OriginalHeight: 0.727,
@@ -235,7 +235,7 @@ class ModelInfo {
             CanAttachOnModel: false,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD0105T.png",
+            ImageSource: "img/modelPreviews/RD0105T.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.SRBLong
             OriginalHeight: 8.018,
@@ -263,7 +263,7 @@ class ModelInfo {
             HiddenMuObjects: [
                 "fairing"
             ],
-            ImageSource: "img/modelPreviews/SRBLong.png",
+            ImageSource: "img/modelPreviews/SRBLong.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RT5
             OriginalHeight: 1.444,
@@ -291,7 +291,7 @@ class ModelInfo {
             HiddenMuObjects: [
                 "fairing"
             ],
-            ImageSource: "img/modelPreviews/RT5.png",
+            ImageSource: "img/modelPreviews/RT5.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RT2
             OriginalHeight: 3.5,
@@ -317,7 +317,7 @@ class ModelInfo {
             ModelName: "RT-2",
             ModelType: EngineGroupType.SRB,
             HiddenMuObjects: [],
-            ImageSource: "img/modelPreviews/RT2.png",
+            ImageSource: "img/modelPreviews/RT2.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.S1
             OriginalHeight: 14.81,
@@ -343,7 +343,7 @@ class ModelInfo {
             ModelName: "S-1",
             ModelType: EngineGroupType.SRB,
             HiddenMuObjects: [],
-            ImageSource: "img/modelPreviews/S1.png",
+            ImageSource: "img/modelPreviews/S1.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD0105
             OriginalHeight: 0.633,
@@ -372,7 +372,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD0105.png",
+            ImageSource: "img/modelPreviews/RD0105.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.NERVA
             OriginalHeight: 3.25,
@@ -402,7 +402,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/NERVA.png",
+            ImageSource: "img/modelPreviews/NERVA.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LVT30
             OriginalHeight: 1.574,
@@ -431,7 +431,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LVT30.png",
+            ImageSource: "img/modelPreviews/LVT30.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LVT45
             OriginalHeight: 1.643,
@@ -461,7 +461,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LVT45.png",
+            ImageSource: "img/modelPreviews/LVT45.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.P1057
             OriginalHeight: 0.615,
@@ -490,7 +490,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/P1057.png",
+            ImageSource: "img/modelPreviews/P1057.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.OMSL
             OriginalHeight: 1.228,
@@ -516,7 +516,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/OMSL.png",
+            ImageSource: "img/modelPreviews/OMSL.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Poodle
             OriginalHeight: 1.584,
@@ -545,7 +545,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Poodle.png",
+            ImageSource: "img/modelPreviews/Poodle.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.BallNuke
             OriginalHeight: 1.868,
@@ -573,7 +573,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/BallNuke.png",
+            ImageSource: "img/modelPreviews/BallNuke.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.BallNukeS
             OriginalHeight: 0.767,
@@ -602,7 +602,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/BallNukeS.png",
+            ImageSource: "img/modelPreviews/BallNukeS.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Skipper
             OriginalHeight: 3.514,
@@ -630,7 +630,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Skipper.png",
+            ImageSource: "img/modelPreviews/Skipper.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.SkipperR
             OriginalHeight: 2.655,
@@ -659,7 +659,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/SkipperR.png",
+            ImageSource: "img/modelPreviews/SkipperR.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.NERVA2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -694,7 +694,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/NERVA2.png",
+            ImageSource: "img/modelPreviews/NERVA2.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.NERVAwide
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -729,7 +729,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/NERVAwide.png",
+            ImageSource: "img/modelPreviews/NERVAwide.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Pancake
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -758,7 +758,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Pancake.png",
+            ImageSource: "img/modelPreviews/Pancake.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RT3
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -791,7 +791,7 @@ class ModelInfo {
             OriginalTankVolume: 607,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.625,
-            ImageSource: "img/modelPreviews/RT3.png",
+            ImageSource: "img/modelPreviews/RT3.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD170
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -822,7 +822,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD170.png",
+            ImageSource: "img/modelPreviews/RD170.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD0120
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -857,7 +857,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD0120.png",
+            ImageSource: "img/modelPreviews/RD0120.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Gamma2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -891,7 +891,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Gamma2.png",
+            ImageSource: "img/modelPreviews/Gamma2.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Gamma8
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -920,7 +920,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Gamma8.png",
+            ImageSource: "img/modelPreviews/Gamma8.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.AJ10_137
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -947,7 +947,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/AJ10_137.png",
+            ImageSource: "img/modelPreviews/AJ10_137.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.AJ10_190
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -974,7 +974,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/AJ10_190.png",
+            ImageSource: "img/modelPreviews/AJ10_190.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.F1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1001,7 +1001,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/F1.png",
+            ImageSource: "img/modelPreviews/F1.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.F1B
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1028,7 +1028,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/F1B.png",
+            ImageSource: "img/modelPreviews/F1B.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.H1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1055,7 +1055,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/H1.png",
+            ImageSource: "img/modelPreviews/H1.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.J2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1082,7 +1082,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/J2.png",
+            ImageSource: "img/modelPreviews/J2.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.J2X
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1109,7 +1109,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/J2X.png",
+            ImageSource: "img/modelPreviews/J2X.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LMAE
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1136,7 +1136,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LMAE.png",
+            ImageSource: "img/modelPreviews/LMAE.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LMDE
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1163,7 +1163,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LMDE.png",
+            ImageSource: "img/modelPreviews/LMDE.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Bell8048
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1190,7 +1190,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Bell8048.png",
+            ImageSource: "img/modelPreviews/Bell8048.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Bell8096
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1217,7 +1217,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Bell8096.png",
+            ImageSource: "img/modelPreviews/Bell8096.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Merlin1A
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1244,7 +1244,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Merlin1A.png",
+            ImageSource: "img/modelPreviews/Merlin1A.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.MerlinB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1271,7 +1271,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Merlin1B.png",
+            ImageSource: "img/modelPreviews/Merlin1B.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Merlin1BV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1298,7 +1298,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Merlin1BV.png",
+            ImageSource: "img/modelPreviews/Merlin1BV.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Merlin1D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1325,7 +1325,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Merlin1D.png",
+            ImageSource: "img/modelPreviews/Merlin1D.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Merlin1DV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1352,7 +1352,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Merlin1DV.png",
+            ImageSource: "img/modelPreviews/Merlin1DV.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD107
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1379,7 +1379,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD107.png",
+            ImageSource: "img/modelPreviews/RD107.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD171
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1406,7 +1406,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD171.png",
+            ImageSource: "img/modelPreviews/RD171.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD180
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1433,7 +1433,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD180.png",
+            ImageSource: "img/modelPreviews/RD180.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD181
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1460,7 +1460,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD181.png",
+            ImageSource: "img/modelPreviews/RD181.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RL10A3
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1487,7 +1487,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RL10A3.png",
+            ImageSource: "img/modelPreviews/RL10A3.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RL10A4
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1514,7 +1514,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RL10A4.png",
+            ImageSource: "img/modelPreviews/RL10A4.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RL10A5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1541,7 +1541,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RL10A5.png",
+            ImageSource: "img/modelPreviews/RL10A5.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RL10B2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1568,7 +1568,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RL10B2.png",
+            ImageSource: "img/modelPreviews/RL10B2.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RS25_2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1595,7 +1595,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RS25_2.png",
+            ImageSource: "img/modelPreviews/RS25_2.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RS68
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1622,7 +1622,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RS68.png",
+            ImageSource: "img/modelPreviews/RS68.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.SuperDraco
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1648,7 +1648,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/SuperDraco.png",
+            ImageSource: "img/modelPreviews/SuperDraco.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.SuperDracoV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1674,7 +1674,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/SuperDracoV.png",
+            ImageSource: "img/modelPreviews/SuperDracoV.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.FRE1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1700,7 +1700,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/FRE1.png",
+            ImageSource: "img/modelPreviews/FRE1.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.FRE2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1726,7 +1726,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/FRE2.png",
+            ImageSource: "img/modelPreviews/FRE2.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LE5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1753,7 +1753,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LE5.png",
+            ImageSource: "img/modelPreviews/LE5.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LE7
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1780,7 +1780,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LE7.png",
+            ImageSource: "img/modelPreviews/LE7.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD843
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1805,7 +1805,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD843.png",
+            ImageSource: "img/modelPreviews/RD843.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Rutherford
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1832,7 +1832,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Rutherford.png",
+            ImageSource: "img/modelPreviews/Rutherford.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RutherfordVac
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1859,7 +1859,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RutherfordVac.png",
+            ImageSource: "img/modelPreviews/RutherfordVac.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.P80
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1885,7 +1885,7 @@ class ModelInfo {
             OriginalTankVolume: 54649,
             RadialAttachment: true,
             RadialAttachmentPoint: 1.5,
-            ImageSource: "img/modelPreviews/P80.png",
+            ImageSource: "img/modelPreviews/P80.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Zefiro9
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1911,7 +1911,7 @@ class ModelInfo {
             OriginalTankVolume: 4940,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.95,
-            ImageSource: "img/modelPreviews/Zefiro9.png",
+            ImageSource: "img/modelPreviews/Zefiro9.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Zefiro23
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1937,7 +1937,7 @@ class ModelInfo {
             OriginalTankVolume: 12267,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.95,
-            ImageSource: "img/modelPreviews/Zefiro23.png",
+            ImageSource: "img/modelPreviews/Zefiro23.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Viking
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1963,7 +1963,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Viking.png",
+            ImageSource: "img/modelPreviews/Viking.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.VikingVac
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1989,7 +1989,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/VikingVac.png",
+            ImageSource: "img/modelPreviews/VikingVac.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.ApolloSPSBlockII
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2019,7 +2019,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/ApolloSPSBlockII.png",
+            ImageSource: "img/modelPreviews/ApolloSPSBlockII.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.ApolloSPSBlockIII
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2052,7 +2052,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/ApolloSPSBlockIII.png",
+            ImageSource: "img/modelPreviews/ApolloSPSBlockIII.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.ApolloSPSBlockV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2085,7 +2085,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/ApolloSPSBlockV.png",
+            ImageSource: "img/modelPreviews/ApolloSPSBlockV.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LMAE_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2112,7 +2112,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LMAE_BDB.png",
+            ImageSource: "img/modelPreviews/LMAE_BDB.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LMDE_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2139,7 +2139,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LMDE_BDB.png",
+            ImageSource: "img/modelPreviews/LMDE_BDB.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR89
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2166,7 +2166,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR89.png",
+            ImageSource: "img/modelPreviews/LR89.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR101
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2196,7 +2196,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR101.png",
+            ImageSource: "img/modelPreviews/LR101.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR105
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2223,7 +2223,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR105.png",
+            ImageSource: "img/modelPreviews/LR105.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RD180_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2250,7 +2250,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RD180_BDB.png",
+            ImageSource: "img/modelPreviews/RD180_BDB.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RL10
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2279,7 +2279,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RL10.png",
+            ImageSource: "img/modelPreviews/RL10.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2308,7 +2308,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RL10A41.png",
+            ImageSource: "img/modelPreviews/RL10A41.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.RL10B2_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2340,7 +2340,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/RL10B2_BDB.png",
+            ImageSource: "img/modelPreviews/RL10B2_BDB.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.GEM40
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2367,7 +2367,7 @@ class ModelInfo {
             OriginalTankVolume: 1337,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.3125,
-            ImageSource: "img/modelPreviews/GEM40.png",
+            ImageSource: "img/modelPreviews/GEM40.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.AJ10_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2394,7 +2394,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/AJ10_BDB.png",
+            ImageSource: "img/modelPreviews/AJ10_BDB.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Rita
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2420,7 +2420,7 @@ class ModelInfo {
             OriginalTankVolume: 1395,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.6885,
-            ImageSource: "img/modelPreviews/Rita.png",
+            ImageSource: "img/modelPreviews/Rita.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Rubis
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2446,7 +2446,7 @@ class ModelInfo {
             OriginalTankVolume: 130,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.2955,
-            ImageSource: "img/modelPreviews/Rubis.png",
+            ImageSource: "img/modelPreviews/Rubis.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Topaze
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2474,7 +2474,7 @@ class ModelInfo {
             OriginalTankVolume: 432,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.3115,
-            ImageSource: "img/modelPreviews/Topaze.png",
+            ImageSource: "img/modelPreviews/Topaze.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Able
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2503,7 +2503,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Able.png",
+            ImageSource: "img/modelPreviews/Able.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Ablestar
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2532,7 +2532,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Ablestar.png",
+            ImageSource: "img/modelPreviews/Ablestar.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Navaho
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2560,7 +2560,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Navaho.png",
+            ImageSource: "img/modelPreviews/Navaho.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Thor
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2586,7 +2586,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Thor.png",
+            ImageSource: "img/modelPreviews/Thor.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Vanguard
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2615,7 +2615,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Vanguard.png",
+            ImageSource: "img/modelPreviews/Vanguard.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.E1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2642,7 +2642,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/E1.png",
+            ImageSource: "img/modelPreviews/E1.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Sargent
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2670,7 +2670,7 @@ class ModelInfo {
             OriginalTankVolume: 4.3,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.06,
-            ImageSource: "img/modelPreviews/Sargent.png",
+            ImageSource: "img/modelPreviews/Sargent.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Juno6K
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2697,7 +2697,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Juno6K.png",
+            ImageSource: "img/modelPreviews/Juno6K.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Juno45K
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2724,7 +2724,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Juno45K.png",
+            ImageSource: "img/modelPreviews/Juno45K.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.S3D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2751,7 +2751,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/S3D.png",
+            ImageSource: "img/modelPreviews/S3D.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.F1_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2777,7 +2777,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/F1_BDB.png",
+            ImageSource: "img/modelPreviews/F1_BDB.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.H1C
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2803,7 +2803,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/H1C.png",
+            ImageSource: "img/modelPreviews/H1C.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.H1D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2829,7 +2829,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/H1D.png",
+            ImageSource: "img/modelPreviews/H1D.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.J2_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2857,7 +2857,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/J2_BDB.png",
+            ImageSource: "img/modelPreviews/J2_BDB.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.J2T
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2885,7 +2885,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/J2T.png",
+            ImageSource: "img/modelPreviews/J2T.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.J2SL
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2913,7 +2913,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/J2SL.png",
+            ImageSource: "img/modelPreviews/J2SL.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.AJ260
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2940,7 +2940,7 @@ class ModelInfo {
             OriginalTankVolume: 134500,
             RadialAttachment: true,
             RadialAttachmentPoint: 1.915,
-            ImageSource: "img/modelPreviews/AJ260.png",
+            ImageSource: "img/modelPreviews/AJ260.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR87
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2966,7 +2966,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR87.png",
+            ImageSource: "img/modelPreviews/LR87.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR87S
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2992,7 +2992,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR87S.png",
+            ImageSource: "img/modelPreviews/LR87S.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR91_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3018,7 +3018,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR91_BDB.png",
+            ImageSource: "img/modelPreviews/LR91_BDB.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Soltan
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3044,7 +3044,7 @@ class ModelInfo {
             OriginalTankVolume: 12500,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.75,
-            ImageSource: "img/modelPreviews/Soltan.png",
+            ImageSource: "img/modelPreviews/Soltan.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.UA1205
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3070,7 +3070,7 @@ class ModelInfo {
             OriginalTankVolume: 22600,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.935,
-            ImageSource: "img/modelPreviews/UA1205.png",
+            ImageSource: "img/modelPreviews/UA1205.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.UA1207
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3096,7 +3096,7 @@ class ModelInfo {
             OriginalTankVolume: 28900,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.935,
-            ImageSource: "img/modelPreviews/UA1207.png",
+            ImageSource: "img/modelPreviews/UA1207.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.Transtage
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3122,7 +3122,7 @@ class ModelInfo {
             OriginalTankVolume: 1200, // Approximation. Are these even fuel tanks?
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/Transtage.png",
+            ImageSource: "img/modelPreviews/Transtage.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR87_5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3150,7 +3150,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR87_5.png",
+            ImageSource: "img/modelPreviews/LR87_5.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR87_11
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3178,7 +3178,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR87_11.png",
+            ImageSource: "img/modelPreviews/LR87_11.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR87_11S
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3206,7 +3206,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR87_11S.png",
+            ImageSource: "img/modelPreviews/LR87_11S.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR87_11SV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3234,7 +3234,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR87_11SV.png",
+            ImageSource: "img/modelPreviews/LR87_11SV.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR87_11SH
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3262,7 +3262,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR87_11SH.png",
+            ImageSource: "img/modelPreviews/LR87_11SH.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR87_11SHV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3290,7 +3290,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR87_11SHV.png",
+            ImageSource: "img/modelPreviews/LR87_11SHV.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR91_5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3318,7 +3318,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR91_5.png",
+            ImageSource: "img/modelPreviews/LR91_5.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.LR91_11
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3346,7 +3346,7 @@ class ModelInfo {
             OriginalTankVolume: 0,
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
-            ImageSource: "img/modelPreviews/LR91_11.png",
+            ImageSource: "img/modelPreviews/LR91_11.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.SRMU
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3378,7 +3378,7 @@ class ModelInfo {
             OriginalTankVolume: 32250,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.937,
-            ImageSource: "img/modelPreviews/SRMU.png",
+            ImageSource: "img/modelPreviews/SRMU.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.UA1205_NEW
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3409,7 +3409,7 @@ class ModelInfo {
             OriginalTankVolume: 23400,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.937,
-            ImageSource: "img/modelPreviews/UA1205_NEW.png",
+            ImageSource: "img/modelPreviews/UA1205_NEW.webp",
             get ImageLabel(): string { return this.ModelName }
         }, { //Model.UA1207_NEW
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3440,7 +3440,7 @@ class ModelInfo {
             OriginalTankVolume: 32500,
             RadialAttachment: true,
             RadialAttachmentPoint: 0.937,
-            ImageSource: "img/modelPreviews/UA1207_NEW.png",
+            ImageSource: "img/modelPreviews/UA1207_NEW.webp",
             get ImageLabel(): string { return this.ModelName }
         }
     ];
@@ -3496,7 +3496,7 @@ class ModelInfo {
     OriginalTankVolume: 0,
     RadialAttachment: false,
     RadialAttachmentPoint: 0,
-    ImageSource: "img/modelPreviews/.png",
+    ImageSource: "img/modelPreviews/.webp",
     get ImageLabel(): string { return this.ModelName }
 }
 */

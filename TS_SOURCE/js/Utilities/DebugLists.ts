@@ -8,8 +8,8 @@ class DebugLists {
             let newEngine = new Engine ();
             let modelInfo = ModelInfo.GetModelInfo (i);
             newEngine.Active = true;
-            newEngine.ID = `PREVIEW-${("0000" + i).slice(-4)}`;
-            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model preview - ${modelInfo.ModelName}`;
+            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}`;
+            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Model preview - ${modelInfo.ModelName}`;
             newEngine.ModelID = i;
             newEngine.UseBaseWidth = true;
             

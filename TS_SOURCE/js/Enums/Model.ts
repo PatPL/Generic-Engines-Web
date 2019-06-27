@@ -118,6 +118,17 @@ enum Model {
     Soltan,
     UA1205,
     UA1207,
-    Transtage
+    Transtage,
+    LR87_5,
+    LR87_11,
+    LR87_11S,
+    LR87_11SV,
+    LR87_11SH,
+    LR87_11SHV,
+    LR91_5,
+    LR91_11,
+    SRMU,
+    UA1205_NEW,
+    UA1207_NEW
     // /BDB
 }

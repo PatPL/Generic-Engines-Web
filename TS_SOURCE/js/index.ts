@@ -218,6 +218,8 @@ addEventListener ("DOMContentLoaded", () => {
     
 });
 
+/* Interferes with copy-pasting other values
+
 window.addEventListener ("keydown", e => {
     // Copy selected engines (Ctrl + C)
     if (e.ctrlKey && e.key == "c") {
@@ -231,6 +233,7 @@ window.addEventListener ("keydown", e => {
         AppendClipboardButton_Click ();
     }
 });
+*/
 
 function NewButton_Click () {
     if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to clear current list?")) {

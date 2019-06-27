@@ -806,14 +806,6 @@ addEventListener("DOMContentLoaded", () => {
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
     MainEngineTable.RebuildTable();
 });
-window.addEventListener("keydown", e => {
-    if (e.ctrlKey && e.key == "c") {
-        ClipboardSelectionButton_Click();
-    }
-    if (e.ctrlKey && e.key == "v") {
-        AppendClipboardButton_Click();
-    }
-});
 function NewButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to clear current list?")) {
         MainEngineTable.Items = [];
@@ -1445,7 +1437,7 @@ ModelInfo.models = [
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
-        ModelName: "LR91-AJ-5",
+        ModelName: "LR91-5",
         ModelType: EngineGroupType.IRL,
         HiddenMuObjects: [],
         CanAttachOnModel: false,
@@ -3280,7 +3272,7 @@ ModelInfo.models = [
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
-        ImageSource: "img/modelPreviews/Rutherford.png",
+        ImageSource: "img/modelPreviews/RutherfordVac.png",
         get ImageLabel() { return this.ModelName; }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4541,6 +4533,324 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Transtage.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.677,
+        OriginalBaseWidth: 1.884,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.83,
+        NodeStackBottom: -1.02,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_5_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_5_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-5",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_5.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.735,
+        OriginalBaseWidth: 1.882,
+        PlumeSizeMultiplier: 0.65,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.49,
+        NodeStackBottom: -1.674,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.733,
+        OriginalBaseWidth: 0.78,
+        PlumeSizeMultiplier: 0.66,
+        PlumePositionOffset: 0.63,
+        NodeStackTop: 0.722,
+        NodeStackBottom: -1.07,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11S_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11S_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11 Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11S.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.918,
+        OriginalBaseWidth: 0.78,
+        PlumeSizeMultiplier: 0.83,
+        PlumePositionOffset: 0.88,
+        NodeStackTop: 0.722,
+        NodeStackBottom: -1.377,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11SV_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11SV_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11 Vacuum Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11SV.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.67,
+        OriginalBaseWidth: 0.78,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.722,
+        NodeStackBottom: -0.762,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11SH_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11SH_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11 Hydrolox Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11SH.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.977,
+        OriginalBaseWidth: 0.78,
+        PlumeSizeMultiplier: 0.88,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.722,
+        NodeStackBottom: -1.792,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR87_11SHV_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR87_11SHV_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR87-11 Vacuum Hydrolox Single",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR87_11SHV.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.95,
+        OriginalBaseWidth: 0.79,
+        PlumeSizeMultiplier: 0.85,
+        PlumePositionOffset: -0.1,
+        NodeStackTop: 0.603,
+        NodeStackBottom: -0.923,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR91_5_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR91_5_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR91-5",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR91_5.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.934,
+        OriginalBaseWidth: 0.79,
+        PlumeSizeMultiplier: 0.84,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.603,
+        NodeStackBottom: -1.021,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_LR91_11_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_LR91_11_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanEngines_New_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "LR91-11",
+        ModelType: EngineGroupType.IRL,
+        HiddenMuObjects: [],
+        CanAttachOnModel: false,
+        OriginalTankVolume: 0,
+        RadialAttachment: false,
+        RadialAttachmentPoint: 0,
+        ImageSource: "img/modelPreviews/LR91_11.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.9,
+        OriginalBaseWidth: 1.874,
+        PlumeSizeMultiplier: 1.7,
+        PlumePositionOffset: 0,
+        NodeStackTop: 13.176,
+        NodeStackBottom: -4.986,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_SRMU_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_SRMU_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds",
+            "files/models/BDB/TitanRemake/bluedog_SRMU.dds",
+            "files/models/BDB/TitanRemake/bluedog_SRMU_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_SRMU_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_White.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_NRM.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
+        ModelName: "SRMU",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 32250,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.937,
+        ImageSource: "img/modelPreviews/SRMU.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.75,
+        OriginalBaseWidth: 1.874,
+        PlumeSizeMultiplier: 1.57,
+        PlumePositionOffset: 0.81,
+        NodeStackTop: 8.79,
+        NodeStackBottom: -5,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_UA1205_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_UA1205_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Striped.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "UA1205",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 23400,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.937,
+        ImageSource: "img/modelPreviews/UA1205_NEW.png",
+        get ImageLabel() { return this.ModelName; }
+    }, {
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.75,
+        OriginalBaseWidth: 1.874,
+        PlumeSizeMultiplier: 1.57,
+        PlumePositionOffset: 0.81,
+        NodeStackTop: 13.19,
+        NodeStackBottom: -5,
+        ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_UA1207_Tweaked",
+        ModelFiles: [
+            "files/models/BDB/TitanRemake/bluedog_UA1207_Tweaked.mu",
+            "files/models/BDB/TitanRemake/bluedog_Titan_innerGlow.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_Titan2_SecondStageTank_White.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_NRM.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Misc_Emit.dds",
+            "files/models/BDB/TitanRemake/bluedog_TitanSolids_Striped.dds"
+        ],
+        TextureDefinitions: "",
+        ThrustTransformName: "thrustTransform",
+        GimbalTransformName: "thrustTransform",
+        ModelName: "UA1207",
+        ModelType: EngineGroupType.SRB,
+        HiddenMuObjects: [],
+        CanAttachOnModel: true,
+        OriginalTankVolume: 32500,
+        RadialAttachment: true,
+        RadialAttachmentPoint: 0.937,
+        ImageSource: "img/modelPreviews/UA1207_NEW.png",
         get ImageLabel() { return this.ModelName; }
     }
 ];
@@ -7245,6 +7555,17 @@ var Model;
     Model[Model["UA1205"] = 109] = "UA1205";
     Model[Model["UA1207"] = 110] = "UA1207";
     Model[Model["Transtage"] = 111] = "Transtage";
+    Model[Model["LR87_5"] = 112] = "LR87_5";
+    Model[Model["LR87_11"] = 113] = "LR87_11";
+    Model[Model["LR87_11S"] = 114] = "LR87_11S";
+    Model[Model["LR87_11SV"] = 115] = "LR87_11SV";
+    Model[Model["LR87_11SH"] = 116] = "LR87_11SH";
+    Model[Model["LR87_11SHV"] = 117] = "LR87_11SHV";
+    Model[Model["LR91_5"] = 118] = "LR91_5";
+    Model[Model["LR91_11"] = 119] = "LR91_11";
+    Model[Model["SRMU"] = 120] = "SRMU";
+    Model[Model["UA1205_NEW"] = 121] = "UA1205_NEW";
+    Model[Model["UA1207_NEW"] = 122] = "UA1207_NEW";
 })(Model || (Model = {}));
 var Plume;
 (function (Plume) {
@@ -7353,8 +7674,8 @@ class DebugLists {
             let newEngine = new Engine();
             let modelInfo = ModelInfo.GetModelInfo(i);
             newEngine.Active = true;
-            newEngine.ID = `PREVIEW-${("0000" + i).slice(-4)}`;
-            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model preview - ${modelInfo.ModelName}`;
+            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}`;
+            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Model preview - ${modelInfo.ModelName}`;
             newEngine.ModelID = i;
             newEngine.UseBaseWidth = true;
             newEngine.Width = 2;

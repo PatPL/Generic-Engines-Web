@@ -1279,22 +1279,41 @@ class Engine {
         
         modelInfo = ModelInfo.GetModelInfo (engine.ModelID);
         
-        return `
-            @PART[GE-${engine.ID}]:FOR[RealPlume]:HAS[!PLUME[${plumeInfo.PlumeID}]]:NEEDS[SmokeScreen]
-            {
-                PLUME
+        if (plumeInfo.PlumeMod == "RealPlume") {
+            return `
+                @PART[GE-${engine.ID}]:FOR[RealPlume]:HAS[!PLUME[${plumeInfo.PlumeID}]]:NEEDS[SmokeScreen]
                 {
-                    name = ${plumeInfo.PlumeID}
-                    transformName = ${modelInfo.ThrustTransformName}
-                    localRotation = 0,0,0
-                    localPosition = 0,0,${(modelInfo.PlumePositionOffset + plumeInfo.PositionOffset + plumeInfo.FinalOffset)}
-                    fixedScale = ${(modelInfo.PlumeSizeMultiplier * plumeInfo.Scale * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth))}
-                    flareScale = 0
-                    energy = ${(Math.log (engine.Thrust + 5) / Math.log (10) / 3 * plumeInfo.EnergyMultiplier)}
-                    speed = ${Math.max ((Math.log (engine.VacIsp) / Math.log (2) / 1.5) - 4.5, 0.2)}
+                    PLUME
+                    {
+                        name = ${plumeInfo.PlumeID}
+                        transformName = ${modelInfo.ThrustTransformName}
+                        localRotation = 0,0,0
+                        localPosition = 0,0,${(modelInfo.PlumePositionOffset + plumeInfo.PositionOffset + plumeInfo.FinalOffset)}
+                        fixedScale = ${(modelInfo.PlumeSizeMultiplier * plumeInfo.Scale * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth))}
+                        flareScale = 0
+                        energy = ${(Math.log (engine.Thrust + 5) / Math.log (10) / 3 * plumeInfo.EnergyMultiplier)}
+                        speed = ${Math.max ((Math.log (engine.VacIsp) / Math.log (2) / 1.5) - 4.5, 0.2)}
+                    }
                 }
-            }
-        `;
+            `;
+        } else if (plumeInfo.PlumeMod == "GenericPlumes") {
+            return `
+                @PART[GE-${engine.ID}]:BEFORE[GenericPlume] {
+                    @MODULE[ModuleEngines*] {
+                        GENERIC_PLUME {
+                            name = ${ plumeInfo.PlumeID }
+                            bellWidth = ${ modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth) }
+                            verticalOffset = ${ modelInfo.PlumePositionOffset }
+                            volume = ${ this.Thrust / 100 + 0.2 }
+                            pitch = ${ Math.max (Math.min (Math.log10 (this.Thrust / 10 + 1) / 3, 2), 0.4) }
+                        }
+                    }
+                }
+            `;
+        } else {
+            console.warn (`This shouldn't ever happen. Unknown mod: ${ plumeInfo.PlumeMod }`);
+            return "";
+        }
     }
     
     public GetHiddenObjectsConfig (): string {
@@ -1766,7 +1785,7 @@ class Engine {
                 description = ${this.EngineDescription}
                 maxThrust = ${this.Thrust}
                 minThrust = ${this.Thrust * this.MinThrust / 100}
-                %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeID}
+                %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeEffectName}
                 heatProduction = 100
                 massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
                 %techRequired = ${TechNode[this.TechUnlockNode]}

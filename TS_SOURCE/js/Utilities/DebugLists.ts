@@ -1,6 +1,6 @@
 class DebugLists {
     
-    public static AppendListForPreviews () {
+    public static AppendListForModelPreviews () {
         let toAppend: Engine[] = [];
         let modelCount = Object.getOwnPropertyNames (Model).length / 2;
         
@@ -24,6 +24,33 @@ class DebugLists {
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
             newEngine.PlumeID = Plume.Hypergolic_Lower;
+            toAppend.push (newEngine);
+        }
+        
+        MainEngineTable.Items = MainEngineTable.Items.concat (toAppend);
+        MainEngineTable.RebuildTable ();
+    }
+    
+    public static AppendListForPlumePreviews () {
+        let toAppend: Engine[] = [];
+        let plumeCount = Object.getOwnPropertyNames (Plume).length / 2;
+        
+        for (let i = 0; i < plumeCount; ++i) {
+            let newEngine = new Engine ();
+            let plumeInfo = PlumeInfo.GetPlumeInfo (i);
+            newEngine.Active = true;
+            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUME`;
+            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Plume preview - ${plumeInfo.PlumeName}`;
+            newEngine.UseBaseWidth = true;
+            
+            newEngine.Width = Math.random () * 2 + 0.5;
+            newEngine.Height = Math.random () * 3 + 1;
+            newEngine.Gimbal = 15;
+            newEngine.Thrust = Math.pow (10, Math.random () * 4);
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            newEngine.ModelID = Math.floor (Math.random () * 9999) % (Object.getOwnPropertyNames (Model).length / 2);
+            newEngine.PlumeID = i;
             toAppend.push (newEngine);
         }
         

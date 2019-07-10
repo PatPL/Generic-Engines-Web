@@ -521,7 +521,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.4";
+Version.CurrentVersion = "Web.0.9.0 DEV";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -4877,196 +4877,591 @@ PlumeInfo.plumes = [
         Scale: 0.4,
         PositionOffset: -0.002,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Kerolox-Lower",
         PlumeName: "Kerolox Lower",
         Scale: 0.4,
         PositionOffset: -0.002,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Kerolox-Vernier",
         PlumeName: "Kerolox Vernier",
         Scale: 8.5,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 0.5
+        EnergyMultiplier: 0.5,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Cryogenic-UpperLower-125",
         PlumeName: "Cryogenic 1.25",
         Scale: 0.35,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Cryogenic-UpperLower-25",
         PlumeName: "Cryogenic 2.5",
         Scale: 0.6,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Cryogenic-UpperLower-375",
         PlumeName: "Cryogenic 3.75",
         Scale: 0.3,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Alcolox-Lower-A6",
         PlumeName: "Alcolox Lower (A6)",
         Scale: 0.6,
         PositionOffset: 0.032638,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ammonialox",
         PlumeName: "Ammonialox",
         Scale: 0.85,
         PositionOffset: 1.0319,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hydrogen-NTR",
         PlumeName: "Hydrogen NTR",
         Scale: 0.8,
         PositionOffset: -0.8,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hydrolox-Lower",
         PlumeName: "Hydrolox Lower",
         Scale: 0.7,
         PositionOffset: 1.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hydrolox-Upper",
         PlumeName: "Hydrolox Upper",
         Scale: 0.8,
         PositionOffset: 1.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hydynelox-A7",
         PlumeName: "Hydynelox (A7)",
         Scale: 0.7,
         PositionOffset: -0.854729,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-Lower",
         PlumeName: "Hypergolic Lower",
         Scale: 0.95,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-Upper",
         PlumeName: "Hypergolic Upper",
         Scale: 1.1,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-OMS-Red",
         PlumeName: "Hypergolic OMS (Red)",
         Scale: 1.7,
         PositionOffset: 0.514995,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-OMS-White",
         PlumeName: "Hypergolic OMS (White)",
         Scale: 1.8,
         PositionOffset: 0,
         FinalOffset: -0.04,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-Vernier",
         PlumeName: "Hypergolic Vernier",
         Scale: 4.0,
         PositionOffset: 1.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Argon-Gridded",
         PlumeName: "Ion Argon (Gridded)",
         Scale: 1.2,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Krypton-Gridded",
         PlumeName: "Ion Krypton (Gridded)",
         Scale: 1.5,
         PositionOffset: -0.854729,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Krypton-Hall",
         PlumeName: "Ion Krypton (Hall)",
         Scale: 1.5,
         PositionOffset: -0.015503,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Xenon-Gridded",
         PlumeName: "Ion Xenon (Gridded)",
         Scale: 1.0,
         PositionOffset: 1.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Xenon-Hall",
         PlumeName: "Ion Xenon (Hall)",
         Scale: 1.6,
         PositionOffset: -0.015503,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Solid-Lower",
         PlumeName: "Solid Lower",
         Scale: 0.3,
         PositionOffset: -0.002,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Solid-Upper",
         PlumeName: "Solid Upper",
         Scale: 0.3,
         PositionOffset: -0.002,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Solid-Sepmotor",
         PlumeName: "Solid Sepmotor",
         Scale: 3.0,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Solid-Vacuum",
         PlumeName: "Solid Vacuum",
         Scale: 1.44,
         PositionOffset: 0.35831,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Turbofan",
         PlumeName: "Turbofan",
         Scale: 1.2,
         PositionOffset: -0.41932,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Turbojet",
         PlumeName: "Turbojet",
         Scale: 1.2,
         PositionOffset: 1.0,
         FinalOffset: -0.6,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
+    }, {
+        PlumeID: "alcolox",
+        PlumeName: "Alcolox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/alcolox.mu",
+            "files/GenericPlumes/Presets/Flames/alcolox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "ammonialox",
+        PlumeName: "Ammonialox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/ammonialox.mu",
+            "files/GenericPlumes/Presets/Flames/ammonialox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "hydrogenNTR",
+        PlumeName: "Thermal rocket hydrogen exhaust",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/hydrogenNTR.mu",
+            "files/GenericPlumes/Presets/Flames/hydrogenNTR.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop3.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "hydrolox",
+        PlumeName: "Hydrolox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/hydrolox.mu",
+            "files/GenericPlumes/Presets/Flames/hydrolox.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "hydynelox",
+        PlumeName: "Hydynelox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/hydynelox.mu",
+            "files/GenericPlumes/Presets/Flames/hydynelox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "hypergolic",
+        PlumeName: "Hypergolic",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/hypergolic.mu",
+            "files/GenericPlumes/Presets/Flames/hypergolic.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "ionArgon",
+        PlumeName: "Ion Argon",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/ionArgon.mu",
+            "files/GenericPlumes/Presets/Flames/ionArgon.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop3.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "ionKrypton",
+        PlumeName: "Ion Krypton",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/ionKrypton.mu",
+            "files/GenericPlumes/Presets/Flames/ionKrypton.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop3.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "ionXenon",
+        PlumeName: "Ion Xenon",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/ionXenon.mu",
+            "files/GenericPlumes/Presets/Flames/ionXenon.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop3.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "kerolox",
+        PlumeName: "Kerolox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/kerolox.mu",
+            "files/GenericPlumes/Presets/Flames/kerolox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "methalox",
+        PlumeName: "Methalox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/methalox.mu",
+            "files/GenericPlumes/Presets/Flames/methalox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "omsRed",
+        PlumeName: "OMS Red",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/omsRed.mu",
+            "files/GenericPlumes/Presets/Flames/omsRed.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop2.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "omsWhite",
+        PlumeName: "OMS White",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/omsWhite.mu",
+            "files/GenericPlumes/Presets/Flames/omsWhite.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop2.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "solid",
+        PlumeName: "Solid",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/solid.mu",
+            "files/GenericPlumes/Presets/Flames/solid.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop4.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "turbopumpSmoke",
+        PlumeName: "Turbopump Smoke",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/turbopumpSmoke.mu",
+            "files/GenericPlumes/Presets/Flames/turbopumpSmoke.cfg",
+            "files/GenericPlumes/Assets/particleRough.png",
+            "files/GenericPlumes/Sounds/loop2.wav",
+        ],
+        ImageSource: "img/plumePreviews/.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
     }
 ];
 PlumeInfo.Dropdown = PlumeInfo.BuildDropdown();
@@ -6834,22 +7229,43 @@ class Engine {
             engine = this;
         }
         modelInfo = ModelInfo.GetModelInfo(engine.ModelID);
-        return `
-            @PART[GE-${engine.ID}]:FOR[RealPlume]:HAS[!PLUME[${plumeInfo.PlumeID}]]:NEEDS[SmokeScreen]
-            {
-                PLUME
+        if (plumeInfo.PlumeMod == "RealPlume") {
+            return `
+                @PART[GE-${engine.ID}]:FOR[RealPlume]:HAS[!PLUME[${plumeInfo.PlumeID}]]:NEEDS[SmokeScreen]
                 {
-                    name = ${plumeInfo.PlumeID}
-                    transformName = ${modelInfo.ThrustTransformName}
-                    localRotation = 0,0,0
-                    localPosition = 0,0,${(modelInfo.PlumePositionOffset + plumeInfo.PositionOffset + plumeInfo.FinalOffset)}
-                    fixedScale = ${(modelInfo.PlumeSizeMultiplier * plumeInfo.Scale * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth))}
-                    flareScale = 0
-                    energy = ${(Math.log(engine.Thrust + 5) / Math.log(10) / 3 * plumeInfo.EnergyMultiplier)}
-                    speed = ${Math.max((Math.log(engine.VacIsp) / Math.log(2) / 1.5) - 4.5, 0.2)}
+                    PLUME
+                    {
+                        name = ${plumeInfo.PlumeID}
+                        transformName = ${modelInfo.ThrustTransformName}
+                        localRotation = 0,0,0
+                        localPosition = 0,0,${(modelInfo.PlumePositionOffset + plumeInfo.PositionOffset + plumeInfo.FinalOffset)}
+                        fixedScale = ${(modelInfo.PlumeSizeMultiplier * plumeInfo.Scale * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth))}
+                        flareScale = 0
+                        energy = ${(Math.log(engine.Thrust + 5) / Math.log(10) / 3 * plumeInfo.EnergyMultiplier)}
+                        speed = ${Math.max((Math.log(engine.VacIsp) / Math.log(2) / 1.5) - 4.5, 0.2)}
+                    }
                 }
-            }
-        `;
+            `;
+        }
+        else if (plumeInfo.PlumeMod == "GenericPlumes") {
+            return `
+                @PART[GE-${engine.ID}]:BEFORE[GenericPlume] {
+                    @MODULE[ModuleEngines*] {
+                        GENERIC_PLUME {
+                            name = ${plumeInfo.PlumeID}
+                            bellWidth = ${modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth)}
+                            verticalOffset = ${modelInfo.PlumePositionOffset}
+                            volume = ${this.Thrust / 100 + 0.2}
+                            pitch = ${Math.max(Math.min(Math.log10(this.Thrust / 10 + 1) / 3, 2), 0.4)}
+                        }
+                    }
+                }
+            `;
+        }
+        else {
+            console.warn(`This shouldn't ever happen. Unknown mod: ${plumeInfo.PlumeMod}`);
+            return "";
+        }
     }
     GetHiddenObjectsConfig() {
         let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
@@ -7241,7 +7657,7 @@ class Engine {
                 description = ${this.EngineDescription}
                 maxThrust = ${this.Thrust}
                 minThrust = ${this.Thrust * this.MinThrust / 100}
-                %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeID}
+                %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeEffectName}
                 heatProduction = 100
                 massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
                 %techRequired = ${TechNode[this.TechUnlockNode]}
@@ -7597,6 +8013,21 @@ var Plume;
     Plume[Plume["Solid_Vacuum"] = 25] = "Solid_Vacuum";
     Plume[Plume["Turbofan"] = 26] = "Turbofan";
     Plume[Plume["Turbojet"] = 27] = "Turbojet";
+    Plume[Plume["GP_Alcolox"] = 28] = "GP_Alcolox";
+    Plume[Plume["GP_Ammonialox"] = 29] = "GP_Ammonialox";
+    Plume[Plume["GP_HydrogenNTR"] = 30] = "GP_HydrogenNTR";
+    Plume[Plume["GP_Hydrolox"] = 31] = "GP_Hydrolox";
+    Plume[Plume["GP_Hydynelox"] = 32] = "GP_Hydynelox";
+    Plume[Plume["GP_Hypergolic"] = 33] = "GP_Hypergolic";
+    Plume[Plume["GP_IonArgon"] = 34] = "GP_IonArgon";
+    Plume[Plume["GP_IonKrypton"] = 35] = "GP_IonKrypton";
+    Plume[Plume["GP_IonXenon"] = 36] = "GP_IonXenon";
+    Plume[Plume["GP_Kerolox"] = 37] = "GP_Kerolox";
+    Plume[Plume["GP_Methalox"] = 38] = "GP_Methalox";
+    Plume[Plume["GP_OmsRed"] = 39] = "GP_OmsRed";
+    Plume[Plume["GP_OmsWhite"] = 40] = "GP_OmsWhite";
+    Plume[Plume["GP_Solid"] = 41] = "GP_Solid";
+    Plume[Plume["GP_TurbopumpSmoke"] = 42] = "GP_TurbopumpSmoke";
 })(Plume || (Plume = {}));
 class AllTankDefinition {
     static Get() {
@@ -7667,7 +8098,7 @@ BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
 class DebugLists {
-    static AppendListForPreviews() {
+    static AppendListForModelPreviews() {
         let toAppend = [];
         let modelCount = Object.getOwnPropertyNames(Model).length / 2;
         for (let i = 0; i < modelCount; ++i) {
@@ -7687,6 +8118,29 @@ class DebugLists {
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
             newEngine.PlumeID = Plume.Hypergolic_Lower;
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
+        MainEngineTable.RebuildTable();
+    }
+    static AppendListForPlumePreviews() {
+        let toAppend = [];
+        let plumeCount = Object.getOwnPropertyNames(Plume).length / 2;
+        for (let i = 0; i < plumeCount; ++i) {
+            let newEngine = new Engine();
+            let plumeInfo = PlumeInfo.GetPlumeInfo(i);
+            newEngine.Active = true;
+            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUME`;
+            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Plume preview - ${plumeInfo.PlumeName}`;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = Math.random() * 2 + 0.5;
+            newEngine.Height = Math.random() * 3 + 1;
+            newEngine.Gimbal = 15;
+            newEngine.Thrust = Math.pow(10, Math.random() * 4);
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            newEngine.ModelID = Math.floor(Math.random() * 9999) % (Object.getOwnPropertyNames(Model).length / 2);
+            newEngine.PlumeID = i;
             toAppend.push(newEngine);
         }
         MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
@@ -7936,7 +8390,7 @@ class Exporter {
                     @maxThrust = ${engine.Thrust}
                     @heatProduction = 180
                     @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeID}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeEffectName}
 
                     ${engine.GetPropellantConfig()}
 
@@ -8191,15 +8645,21 @@ class Packager {
         };
         let blobs = {};
         let toFetch = [];
-        blobs[`${name}.cfg`] = Exporter.ConvertEngineListToConfig(engines);
-        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
-        toFetch.push(["files/PlumeScaleFixer.dll", "PlumeScaleFixer.dll"]);
+        blobs[`GenericEngines/${name}.cfg`] = Exporter.ConvertEngineListToConfig(engines);
+        blobs[`GenericEngines/GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
+        toFetch.push(["files/PlumeScaleFixer.dll", "GenericEngines/PlumeScaleFixer.dll"]);
         engines.forEach(e => {
             if (!e.Active) {
                 return;
             }
             let modelInfo = ModelInfo.GetModelInfo(e.GetModelID());
+            let plumeInfo = PlumeInfo.GetPlumeInfo(e.PlumeID);
             modelInfo.ModelFiles.forEach(f => {
+                if (!toFetch.some(x => x[0] == f)) {
+                    toFetch.push([f, f.replace(/^files\//, "GenericEngines/")]);
+                }
+            });
+            plumeInfo.PlumeFiles.forEach(f => {
                 if (!toFetch.some(x => x[0] == f)) {
                     toFetch.push([f, f.replace(/^files\//, "")]);
                 }
@@ -8215,7 +8675,7 @@ class Packager {
                 exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (Might take over a minute)`;
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date().getTime();
-                FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
+                FileIO.ZipBlobs("GameData", blobs, zipData => {
                     console.log(`Zipped in ${(new Date().getTime() - zipStart).toLocaleString("us").replace(/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
                         latestData = zipData;

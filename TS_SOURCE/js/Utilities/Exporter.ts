@@ -163,7 +163,7 @@ class Exporter {
                     @maxThrust = ${engine.Thrust}
                     @heatProduction = 180
                     @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeID}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeEffectName}
 
                     ${engine.GetPropellantConfig ()}
 

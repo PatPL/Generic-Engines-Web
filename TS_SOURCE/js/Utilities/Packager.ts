@@ -53,10 +53,10 @@ class Packager {
          */
         let toFetch: [string, string, HTMLElement?][] = [];
         
-        blobs[`${name}.cfg`] = Exporter.ConvertEngineListToConfig (engines);
-        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get ();
+        blobs[`GenericEngines/${name}.cfg`] = Exporter.ConvertEngineListToConfig (engines);
+        blobs[`GenericEngines/GEAllTankDefinition.cfg`] = AllTankDefinition.Get ();
         
-        toFetch.push (["files/PlumeScaleFixer.dll", "PlumeScaleFixer.dll"]);
+        toFetch.push (["files/PlumeScaleFixer.dll", "GenericEngines/PlumeScaleFixer.dll"]);
         
         engines.forEach (e => {
             if (!e.Active) {
@@ -64,13 +64,22 @@ class Packager {
             }
             
             let modelInfo = ModelInfo.GetModelInfo (e.GetModelID ());
+            let plumeInfo = PlumeInfo.GetPlumeInfo (e.PlumeID);
             
             modelInfo.ModelFiles.forEach (f => {
+                if (!toFetch.some (x => x[0] == f)) {
+                    //Add to the list if it's not on it already
+                    toFetch.push ([f, f.replace (/^files\//, "GenericEngines/")]);
+                }
+            });
+            
+            plumeInfo.PlumeFiles.forEach (f => {
                 if (!toFetch.some (x => x[0] == f)) {
                     //Add to the list if it's not on it already
                     toFetch.push ([f, f.replace (/^files\//, "")]);
                 }
             });
+            
         });
         
         downloadedFilesCountElement.innerHTML = "0";
@@ -84,7 +93,7 @@ class Packager {
                 exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (Might take over a minute)`;
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date ().getTime ();
-                FileIO.ZipBlobs ("GenericEngines", blobs, zipData => {
+                FileIO.ZipBlobs ("GameData", blobs, zipData => {
                     console.log (`Zipped in ${(new Date ().getTime () - zipStart).toLocaleString ("us").replace (/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
                         latestData = zipData;

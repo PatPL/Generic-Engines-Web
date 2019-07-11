@@ -1,0 +1,4 @@
+GenericPlumesPass0200 - Used in Generic Engines to assign GENERIC_PLUME nodes to ModuleEngines*
+GenericPlumesPass0300 - Used in defaultSettings.cfg to set missing key values in all GENERIC_PLUME nodes
+GenericPlumesPass0400 - Creates its effect in EFFECTS node and applies plume effects to ModuleEngines
+GenericPlumesPass0500 - Modular ignition effects / sounds once Module Manager can support variables in node types

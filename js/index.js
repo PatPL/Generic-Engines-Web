@@ -7249,7 +7249,7 @@ class Engine {
         }
         else if (plumeInfo.PlumeMod == "GenericPlumes") {
             return `
-                @PART[GE-${engine.ID}]:BEFORE[GenericPlume] {
+                @PART[GE-${engine.ID}]:BEFORE[GenericPlumes] {
                     @MODULE[ModuleEngines*] {
                         GENERIC_PLUME {
                             name = ${plumeInfo.PlumeID}

@@ -34,7 +34,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="fullscreen-box" id="model-selector" style="display: none;">
+	<div class="fullscreen-box modal-selector-root" id="model-selector" style="display: none;">
 		<div class="fullscreen-grayout"></div>
 		<div class="fullscreen-content">
 			<span>
@@ -43,11 +43,22 @@
 				<span style="font-size: 14px;"><a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/tree/master/files/models">Licences</a></span>
 			</span>
 			<!-- Populated on 'DOMContentLoaded' in 'ModelSelector.ts' -->
-			<div id="model-selector-content">
-				<div>
-					<img src=""><br>
-					Model name
-				</div>
+			<div id="model-selector-content" class="modal-selector">
+			</div>
+		</div>
+	</div>
+	<div class="fullscreen-box modal-selector-root" id="plume-selector" style="display: none;">
+		<div class="fullscreen-grayout"></div>
+		<div class="fullscreen-content">
+			<span>
+				Select a plume<br>
+				<span style="font-size: 14px;">
+					Due to how hard it is to cut a background out of a translucent object (plume), there might be some black shade left.<br>
+					To enhance your plume viewing experience, please imagine, that shades of black are actually varying levels of transparency<br>
+				</span>
+			</span>
+			<!-- Populated on 'DOMContentLoaded' in 'ModelSelector.ts' -->
+			<div id="plume-selector-content" class="modal-selector">
 			</div>
 		</div>
 	</div>

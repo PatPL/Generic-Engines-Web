@@ -14,7 +14,7 @@ document.addEventListener ("DOMContentLoaded", () => {
     container.innerHTML = "";
     
     let models: [Model, IModelInfo][] = [];
-    // Get every model in the array to sort by name
+    // Get every model in the array to sort later
     for (let i in Model) {
         if (isNaN (parseInt (i))) {
             break;

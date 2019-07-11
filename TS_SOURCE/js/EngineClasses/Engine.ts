@@ -1134,17 +1134,27 @@ class Engine {
                 
                 grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: a;">Model</div>
-                    <div style="grid-area: b;"><span class="clickable-text" value="999">Placeholder</span></div>
+                    <div style="grid-area: b;"><span class="clickable-text modelText" value="999">Placeholder</span></div>
                     <div class="content-cell-content" style="grid-area: c;">Plume</div>
-                    <div style="grid-area: d;">${PlumeInfo.Dropdown.outerHTML}</div>
+                    <div style="grid-area: d;"><span class="clickable-text plumeText" value="999">Placeholder</span></div>
                 `;
                 
-                let span = grid.querySelector ("span")!;
-                span.addEventListener ("click", () => {
+                let modelText = grid.querySelector (".modelText")!;
+                modelText.addEventListener ("click", () => {
                     ModelSelector.GetModel (m => {
                         if (m != null) {
-                            span.setAttribute ("value", m.toString ());
-                            span.innerHTML = ModelInfo.GetModelInfo (m).ModelName;
+                            modelText.setAttribute ("value", m.toString ());
+                            modelText.innerHTML = ModelInfo.GetModelInfo (m).ModelName;
+                        }
+                    });
+                });
+                
+                let plumeText = grid.querySelector (".plumeText")!;
+                plumeText.addEventListener ("click", () => {
+                    PlumeSelector.GetPlume (m => {
+                        if (m != null) {
+                            plumeText.setAttribute ("value", m.toString ());
+                            plumeText.innerHTML = PlumeInfo.GetPlumeInfo (m).PlumeName;
                         }
                     });
                 });
@@ -1160,22 +1170,25 @@ class Engine {
                 targetEngine = targetEngine != undefined ? targetEngine : this;
                 
                 let select = e.querySelector ("select")!;
-                let span = e.querySelector ("span")!;
+                let modelText = e.querySelector<HTMLSpanElement> (".modelText")!;
+                let plumeText = e.querySelector<HTMLSpanElement> (".plumeText")!;
                 
-                span.setAttribute ("value", targetEngine.ModelID.toString ());
-                span.innerHTML = ModelInfo.GetModelInfo (targetEngine.ModelID).ModelName;
-                select.value = this.PlumeID.toString ();
+                modelText.setAttribute ("value", targetEngine.ModelID.toString ());
+                modelText.innerHTML = ModelInfo.GetModelInfo (targetEngine.ModelID).ModelName;
                 
-                span.style.pointerEvents = (
+                plumeText.setAttribute ("value", targetEngine.PlumeID.toString ());
+                plumeText.innerHTML = PlumeInfo.GetPlumeInfo (targetEngine.PlumeID).PlumeName;
+                
+                modelText.style.pointerEvents = (
                     this.PolyType == PolymorphismType.MultiConfigSlave ||
                     this.PolyType == PolymorphismType.MultiModeSlave
                 ) ? "none" : "all";
             }, ApplyChangesToValue: (e: HTMLElement) => {
-                let select = e.querySelector ("select")!;
-                let span = e.querySelector ("span")!;
+                let modelText = e.querySelector (".modelText")!;
+                let plumeText = e.querySelector (".plumeText")!;
                 
-                this.ModelID = parseInt (span.getAttribute ("value")!);
-                this.PlumeID = parseInt (select.value);
+                this.ModelID = parseInt (modelText.getAttribute ("value")!);
+                this.PlumeID = parseInt (plumeText.getAttribute ("value")!);
             }
         }
     }

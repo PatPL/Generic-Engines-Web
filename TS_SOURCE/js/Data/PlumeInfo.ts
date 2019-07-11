@@ -13,7 +13,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Kerolox_Upper.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -25,7 +25,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Kerolox_Lower.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -37,7 +37,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 0.5,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Kerolox_Vernier.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -49,7 +49,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Cryogenic_125.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -61,7 +61,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Cryogenic_25.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -73,7 +73,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Cryogenic_375.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -85,7 +85,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Alcolox_Lower_A6.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -97,7 +97,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Ammonialox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -109,7 +109,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_HydrogenNTR.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -121,7 +121,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Hydrolox_Lower.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -133,7 +133,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Hydrolox_Upper.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -145,7 +145,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Hydynelox_A7.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -157,7 +157,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Hypergolic_Lower.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -169,7 +169,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Hypergolic_Upper.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -181,7 +181,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Hypergolic_OMS_Red.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -193,7 +193,7 @@ class PlumeInfo {
             FinalOffset: -0.04,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Hypergolic_OMS_White.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -205,7 +205,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Hypergolic_Vernier.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -217,7 +217,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Ion_Argon_Gridded.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -229,7 +229,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Ion_Krypton_Gridded.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -241,7 +241,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Ion_Krypton_Hall.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -253,7 +253,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Ion_Xenon_Gridded.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -265,7 +265,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Ion_Xenon_Hall.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -277,7 +277,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Solid_Lower.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -289,7 +289,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Solid_Upper.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -301,7 +301,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Solid_Sepmotor.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -313,7 +313,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Solid_Vacuum.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -325,7 +325,7 @@ class PlumeInfo {
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Turbofan.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -337,7 +337,7 @@ class PlumeInfo {
             FinalOffset: -0.6,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/RP_Turbojet.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "RealPlume",
             get PlumeEffectName (): string { return this.PlumeID }
@@ -354,7 +354,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particle.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop1.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Alcolox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -371,7 +371,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particle.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop1.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Ammonialox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -388,7 +388,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particleSolid.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop3.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Thermal_Rocket_Hydrogen_Exhaust.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -405,7 +405,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particleSolid.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop1.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Hydrolox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -422,7 +422,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particle.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop1.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Hydynelox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -439,7 +439,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particleSolid.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop1.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Hypergolic.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -456,7 +456,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particleSolid.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop3.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Ion_Argon.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -473,7 +473,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particleSolid.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop3.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Ion_Krypton.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -490,7 +490,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particleSolid.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop3.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Ion_Xenon.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -507,7 +507,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particle.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop1.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Kerolox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -524,7 +524,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particle.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop1.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Methalox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -541,7 +541,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particle.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop2.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_OMS_Red.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -558,7 +558,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particle.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop2.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_OMS_White.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -575,7 +575,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particle.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop4.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Solid.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
@@ -592,7 +592,7 @@ class PlumeInfo {
                 "files/GenericPlumes/Assets/particleRough.png", // Plume .png
                 "files/GenericPlumes/Sounds/loop2.wav", // Plume .wav
             ],
-            ImageSource: "img/plumePreviews/.webp",
+            ImageSource: "img/plumePreviews/GP_Turbopump_Smoke.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
             get PlumeEffectName (): string { return `${this.PlumeID}Flame` }

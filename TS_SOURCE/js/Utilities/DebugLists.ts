@@ -31,7 +31,7 @@ class DebugLists {
         MainEngineTable.RebuildTable ();
     }
     
-    public static AppendListForPlumePreviews () {
+    public static AppendListForPlumeTest () {
         let toAppend: Engine[] = [];
         let plumeCount = Object.getOwnPropertyNames (Plume).length / 2;
         
@@ -39,8 +39,8 @@ class DebugLists {
             let newEngine = new Engine ();
             let plumeInfo = PlumeInfo.GetPlumeInfo (i);
             newEngine.Active = true;
-            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUME`;
-            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Plume preview - ${plumeInfo.PlumeName}`;
+            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUMETEST`;
+            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Plume test - ${plumeInfo.PlumeName}`;
             newEngine.UseBaseWidth = true;
             
             newEngine.Width = Math.random () * 2 + 0.5;
@@ -50,6 +50,39 @@ class DebugLists {
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
             newEngine.ModelID = Math.floor (Math.random () * 9999) % (Object.getOwnPropertyNames (Model).length / 2);
+            newEngine.PlumeID = i;
+            toAppend.push (newEngine);
+        }
+        
+        MainEngineTable.Items = MainEngineTable.Items.concat (toAppend);
+        MainEngineTable.RebuildTable ();
+    }
+    
+    public static AppendListForPlumePreviews () {
+        let toAppend: Engine[] = [];
+        let plumeCount = Object.getOwnPropertyNames (Plume).length / 2;
+        
+        for (let i = 0; i < plumeCount; ++i) {
+            let newEngine = new Engine ();
+            let modelInfo = ModelInfo.GetModelInfo (Model.RS25_2);
+            let plumeInfo = PlumeInfo.GetPlumeInfo (i);
+            newEngine.Active = true;
+            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUME`;
+            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Plume preview - ${plumeInfo.PlumeName}`;
+            newEngine.UseBaseWidth = true;
+            
+            newEngine.Width = 2; //2m wide & keep correct width:height ratio to make the engine look good
+            // Trim to 3 closest decimal places (1mm)
+            newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
+            let trimmed = newEngine.Height.toFixed (3);
+            let numberString = newEngine.Height.toString ().length >= trimmed.length ? trimmed : newEngine.Height.toString ();
+            newEngine.Height = parseFloat (numberString);
+            
+            newEngine.Gimbal = 15;
+            newEngine.Thrust = Math.pow (10, Math.random () * 4);
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            newEngine.ModelID = Model.RS25_2;
             newEngine.PlumeID = i;
             toAppend.push (newEngine);
         }

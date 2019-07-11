@@ -6191,12 +6191,13 @@ document.addEventListener("DOMContentLoaded", () => {
     models.forEach(([id, modelInfo]) => {
         let newElement = document.createElement("div");
         newElement.innerHTML = `
-            <img class="option-button" src="${modelInfo.ImageSource}"><br>
-            ${modelInfo.ImageLabel}
+            <span>${modelInfo.ImageLabel}</span>
+            <div class="option-button"><img src="${modelInfo.ImageSource}"></div>
         `;
-        newElement.querySelector("img").addEventListener("click", () => {
+        newElement.querySelector("div").addEventListener("click", () => {
             ModelSelector.FinishTransaction(id);
         });
+        ImageOverflowPreview.Hook(newElement.querySelector("div"));
         container.appendChild(newElement);
     });
 });
@@ -7249,13 +7250,13 @@ class Engine {
         }
         else if (plumeInfo.PlumeMod == "GenericPlumes") {
             return `
-                @PART[GE-${engine.ID}]:BEFORE[GenericPlumes] {
+                @PART[GE-${engine.ID}]:FOR[GenericPlumesPass0200] {
                     @MODULE[ModuleEngines*] {
                         GENERIC_PLUME {
                             name = ${plumeInfo.PlumeID}
                             bellWidth = ${modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth)}
                             verticalOffset = ${modelInfo.PlumePositionOffset}
-                            volume = ${this.Thrust / 100 + 0.2}
+                            volume = ${this.Thrust / 100 + 1}
                             pitch = ${Math.max(Math.min(Math.log10(this.Thrust / 10 + 1) / 3, 2), 0.4)}
                         }
                     }
@@ -8605,6 +8606,29 @@ class FileIO {
         let evt = document.createEvent("MouseEvents");
         evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
         saveDialog.dispatchEvent(evt);
+    }
+}
+class ImageOverflowPreview {
+    static Hook(root) {
+        if (!root.firstChild) {
+            console.warn("Root has no child. Ignoring...");
+            return;
+        }
+        let child = root.firstChild;
+        child.style.position = "relative";
+        root.addEventListener("mousemove", e => {
+            if (child.clientHeight <= root.clientHeight && child.clientWidth <= root.clientWidth) {
+                return;
+            }
+            let xPercent = e.layerX / root.clientWidth;
+            let yPercent = e.layerY / root.clientHeight;
+            child.style.left = `-${(child.clientWidth - root.clientWidth) * xPercent}px`;
+            child.style.top = `-${(child.clientHeight - root.clientHeight) * yPercent}px`;
+        });
+        root.addEventListener("mouseleave", () => {
+            child.style.left = '0px';
+            child.style.top = '0px';
+        });
     }
 }
 class Input {

@@ -596,12 +596,15 @@ input.content-cell-content {
     margin: 8px -8px 8px -8px;
 }
 
+/* ModelSelector.ts */
+
 #model-selector {
     z-index: 9999;
 }
 
 #model-selector > div.fullscreen-content {
-    width: 1013px;
+    max-width: 1600px;
+    width: calc(100% - 10vh);
     height: 90vh;
     padding: 0;
     
@@ -614,33 +617,74 @@ input.content-cell-content {
 }
 
 #model-selector-content {
-    columns: 6;
-    column-gap: 0;
-    column-rule: 2px solid var(--darkBorder);
+    padding: 0;
 }
 
 #model-selector-content > div {
     box-sizing: border-box;
     
-    /* Don't break in columns */
-    -webkit-column-break-inside: avoid; /* Chrome, Safari */
-    page-break-inside: avoid;           /* Theoretically FF 20+ */
-    break-inside: avoid-column;         /* IE 11 */
-    display:table;                      /* Actually FF 20+ */
-    
     width: 100%;
-    height: auto;
+    height: 100px;
+    float: left;
     
-    border-top: 2px solid var(--darkBorder);
+    outline-color: var(--darkBorder);
+    outline-width: 2px;
+    outline-offset: -1px;
+    outline-style: solid;
     
-    padding: 8px;
+    margin: 0;
+    padding: 0;
     
-    font-size: 20px;
+    font-size: 16px;
+    
+    display: grid;
+    grid-template-columns: 100px auto;
+    grid-template-rows: 100px;
+    grid-template-areas: "div img";
 }
 
-#model-selector-content > div > img {
-    width: 100%;
+#model-selector-content > div > span {
+    grid-area: div;
+    border-right: 2px solid var(--grayBorder);
 }
+
+@media only screen and (max-width: 700px) {
+    #model-selector-content > div {
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 700px) and (max-width: 1100px) {
+    #model-selector-content > div {
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 1100px) and (max-width: 1500px) {
+    #model-selector-content > div {
+        width: 33.33333333%;
+    }
+}
+
+@media only screen and (min-width: 1500px) {
+    #model-selector-content > div {
+        width: 25%;
+    }
+}
+
+#model-selector-content > div > div {
+    grid-area: img;
+    width: 100%;
+    overflow: hidden;
+}
+
+#model-selector-content > div > div > img {
+    height: 100px;
+    float: left;
+    pointer-events: none; /* So that root div of the img will catch the event */
+}
+
+/**ModelSelector.ts**/
 
 #export-box > div.fullscreen-content {
     display: flex;

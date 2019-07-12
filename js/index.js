@@ -1445,7 +1445,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "HeatEmissiveAnimation"
+        ]
     }, {
         OriginalHeight: 0.654,
         OriginalBellWidth: 0.285,
@@ -1478,7 +1481,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "aj10"
+        ]
     }, {
         OriginalHeight: 1.5,
         OriginalBellWidth: 0.865,
@@ -1508,7 +1514,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RS25.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         OriginalHeight: 0.3055,
         OriginalBellWidth: 0.12,
@@ -1534,7 +1541,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Thruster.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         OriginalHeight: 0.393,
         OriginalBellWidth: 0.234,
@@ -1563,7 +1571,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Aestus.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "48-7SHeat"
+        ]
     }, {
         OriginalHeight: 0.3935,
         OriginalBellWidth: 0.459,
@@ -1592,7 +1603,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/IonThruster.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "colorAnimation"
+        ]
     }, {
         OriginalHeight: 4.48,
         OriginalBellWidth: 1.802,
@@ -1620,7 +1634,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Rhino.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "HeatAnimationAdvancedEngine"
+        ]
     }, {
         OriginalHeight: 0.727,
         OriginalBellWidth: 0.445,
@@ -1650,7 +1667,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD0105T.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "HeatAnimatioEmissiveLiquidEngine3"
+        ]
     }, {
         OriginalHeight: 8.018,
         OriginalBellWidth: 1.05265,
@@ -1678,7 +1698,8 @@ ModelInfo.models = [
             "fairing"
         ],
         ImageSource: "img/modelPreviews/SRBLong.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         OriginalHeight: 1.444,
         OriginalBellWidth: 0.773,
@@ -1706,7 +1727,10 @@ ModelInfo.models = [
             "fairing"
         ],
         ImageSource: "img/modelPreviews/RT5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "Flea"
+        ]
     }, {
         OriginalHeight: 3.5,
         OriginalBellWidth: 0.5945,
@@ -1732,7 +1756,10 @@ ModelInfo.models = [
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         ImageSource: "img/modelPreviews/RT2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "RT-2"
+        ]
     }, {
         OriginalHeight: 14.81,
         OriginalBellWidth: 1.043,
@@ -1758,7 +1785,10 @@ ModelInfo.models = [
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         ImageSource: "img/modelPreviews/S1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "HeatAnimationSRB"
+        ]
     }, {
         OriginalHeight: 0.633,
         OriginalBellWidth: 0.445,
@@ -1787,7 +1817,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD0105.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "HeatAnimatioEmissiveLiquidEngine3"
+        ]
     }, {
         OriginalHeight: 3.25,
         OriginalBellWidth: 0.996,
@@ -1817,7 +1850,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVA.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "overheat"
+        ]
     }, {
         OriginalHeight: 1.574,
         OriginalBellWidth: 0.653,
@@ -1846,7 +1882,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LVT30.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "LVT30"
+        ]
     }, {
         OriginalHeight: 1.643,
         OriginalBellWidth: 0.602,
@@ -1876,7 +1915,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LVT45.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "LV45Heat"
+        ]
     }, {
         OriginalHeight: 0.615,
         OriginalBellWidth: 0.226,
@@ -1905,7 +1947,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/P1057.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "105-7PHeat"
+        ]
     }, {
         OriginalHeight: 1.228,
         OriginalBellWidth: 0.773,
@@ -1931,7 +1976,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/OMSL.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         OriginalHeight: 1.584,
         OriginalBellWidth: 1.222,
@@ -1960,7 +2006,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Poodle.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "overheatService"
+        ]
     }, {
         OriginalHeight: 1.868,
         OriginalBellWidth: 0.886,
@@ -1988,7 +2037,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/BallNuke.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "ShortNTR"
+        ]
     }, {
         OriginalHeight: 0.767,
         OriginalBellWidth: 0.407,
@@ -2017,7 +2069,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/BallNukeS.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "PoodleHeat"
+        ]
     }, {
         OriginalHeight: 3.514,
         OriginalBellWidth: 1.6,
@@ -2045,7 +2100,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Skipper.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "Size2MedEngineBEmmissive"
+        ]
     }, {
         OriginalHeight: 2.655,
         OriginalBellWidth: 1.415,
@@ -2074,7 +2132,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SkipperR.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "ksp_l_midrangeEngine_anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.96,
@@ -2109,7 +2170,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVA2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "nerva"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.074,
@@ -2144,7 +2208,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVAwide.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "nerva"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.5,
@@ -2173,7 +2240,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Pancake.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "kopo4e"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.512,
@@ -2205,7 +2275,10 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.625,
         ImageSource: "img/modelPreviews/RT3.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "castoranim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.517,
@@ -2236,7 +2309,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD170.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "k170heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.671,
@@ -2271,7 +2347,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD0120.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "25midenganim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.143,
@@ -2305,7 +2384,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Gamma2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "blackadderheatanim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.142,
@@ -2334,7 +2416,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Gamma8.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "blackadderheatanim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.66,
@@ -2361,7 +2446,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10_137.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.707,
@@ -2388,7 +2474,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10_190.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.446,
@@ -2415,7 +2502,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/F1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.165,
@@ -2442,7 +2530,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/F1B.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.757,
@@ -2469,7 +2558,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/H1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.332,
@@ -2496,7 +2586,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.943,
@@ -2523,7 +2614,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2X.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.512,
@@ -2550,7 +2642,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMAE.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.904,
@@ -2577,7 +2670,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMDE.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.412,
@@ -2604,7 +2698,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Bell8048.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.611,
@@ -2631,7 +2726,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Bell8096.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.597,
@@ -2658,7 +2754,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1A.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.599,
@@ -2685,7 +2782,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1B.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.599,
@@ -2712,7 +2810,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1BV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.601,
@@ -2739,7 +2838,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1D.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.601,
@@ -2766,7 +2866,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1DV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.471,
@@ -2793,7 +2894,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD107.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.964,
@@ -2820,7 +2922,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD171.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.963,
@@ -2847,7 +2950,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD180.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.964,
@@ -2874,7 +2978,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD181.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.671,
@@ -2901,7 +3006,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A3.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.798,
@@ -2928,7 +3034,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A4.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.25,
@@ -2955,7 +3062,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.27,
@@ -2982,7 +3090,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10B2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.569,
@@ -3009,7 +3118,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RS25_2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.61,
@@ -3036,7 +3146,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RS68.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.128,
@@ -3062,7 +3173,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SuperDraco.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.321,
@@ -3088,7 +3200,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SuperDracoV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.824,
@@ -3114,7 +3227,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/FRE1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "FRE-1Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.38,
@@ -3140,7 +3256,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/FRE2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.517,
@@ -3167,7 +3284,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LE5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "LE-5Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.12,
@@ -3194,7 +3314,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LE7.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "LE-7Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.276,
@@ -3219,7 +3342,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD843.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.322,
@@ -3246,7 +3370,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Rutherford.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "RutherfordHeat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.679,
@@ -3273,7 +3400,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RutherfordVac.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "RutherfordHeat",
+            "RutherfordVacHeat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.326,
@@ -3299,7 +3430,10 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 1.5,
         ImageSource: "img/modelPreviews/P80.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "P80Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.036,
@@ -3325,7 +3459,10 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.95,
         ImageSource: "img/modelPreviews/Zefiro9.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "Zefiro9Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.449,
@@ -3351,7 +3488,10 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.95,
         ImageSource: "img/modelPreviews/Zefiro23.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "Zefiro23Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.944,
@@ -3377,7 +3517,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Viking.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "VikingHeat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.8,
@@ -3403,7 +3546,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/VikingVac.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "VikingHeat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.639,
@@ -3433,7 +3579,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/ApolloSPSBlockII.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "bluedog_ApolloBlock2Service_Emit"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.578,
@@ -3466,7 +3615,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/ApolloSPSBlockIII.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "LEM_spsA_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.81,
@@ -3499,7 +3651,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/ApolloSPSBlockV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.531,
@@ -3526,7 +3679,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMAE_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "LEM_Ascent_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.811,
@@ -3553,7 +3709,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMDE_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "LEM_Descent_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.723,
@@ -3580,7 +3739,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR89.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "LR89_Heat_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.111,
@@ -3607,7 +3769,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR101.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "LR101_Heat_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.73,
@@ -3634,7 +3799,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR105.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "bluedog_Atlas_LR105_Emit"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.819,
@@ -3661,7 +3829,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD180_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "RD180_Heat_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.641,
@@ -3690,7 +3861,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.73,
@@ -3719,7 +3891,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A41.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "RL10A41_Emit"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.905,
@@ -3751,7 +3926,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10B2_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "RL10B2_Emit"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.508,
@@ -3778,7 +3956,10 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.3125,
         ImageSource: "img/modelPreviews/GEM40.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "GEM60_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.813,
@@ -3805,7 +3986,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.865,
@@ -3831,7 +4013,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.6885,
         ImageSource: "img/modelPreviews/Rita.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.498,
@@ -3857,7 +4040,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.2955,
         ImageSource: "img/modelPreviews/Rubis.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.219,
@@ -3885,7 +4069,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.3115,
         ImageSource: "img/modelPreviews/Topaze.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.346,
@@ -3914,7 +4099,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Able.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "Able_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.470,
@@ -3943,7 +4131,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Ablestar.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "Able_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.269,
@@ -3971,7 +4162,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Navaho.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.885,
@@ -3997,7 +4189,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Thor.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.284,
@@ -4026,7 +4219,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Vanguard.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "Vanguard_Engine_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.975,
@@ -4053,7 +4249,10 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/E1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "E1_Heat_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.106,
@@ -4081,7 +4280,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.06,
         ImageSource: "img/modelPreviews/Sargent.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.376,
@@ -4108,7 +4308,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Juno6K.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.495,
@@ -4135,7 +4336,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Juno45K.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.745,
@@ -4162,7 +4364,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/S3D.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.96,
@@ -4188,7 +4391,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/F1_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.589,
@@ -4214,7 +4418,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/H1C.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.588,
@@ -4240,7 +4445,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/H1D.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.147,
@@ -4268,7 +4474,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.248,
@@ -4296,7 +4503,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2T.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.904,
@@ -4324,7 +4532,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2SL.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 3.914,
@@ -4351,7 +4560,10 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 1.915,
         ImageSource: "img/modelPreviews/AJ260.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: [
+            "AJ260_Vernier_Emit"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.708,
@@ -4377,7 +4589,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.692,
@@ -4403,7 +4616,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87S.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.854,
@@ -4429,7 +4643,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.497,
@@ -4455,7 +4670,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.75,
         ImageSource: "img/modelPreviews/Soltan.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.9,
@@ -4481,7 +4697,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.935,
         ImageSource: "img/modelPreviews/UA1205.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.9,
@@ -4507,7 +4724,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.935,
         ImageSource: "img/modelPreviews/UA1207.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.742,
@@ -4533,7 +4751,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Transtage.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.677,
@@ -4561,7 +4780,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.735,
@@ -4589,7 +4809,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.733,
@@ -4617,7 +4838,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11S.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.918,
@@ -4645,7 +4867,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11SV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.67,
@@ -4673,7 +4896,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11SH.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.977,
@@ -4701,7 +4925,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11SHV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.95,
@@ -4729,7 +4954,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91_5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.934,
@@ -4757,7 +4983,8 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91_11.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.9,
@@ -4789,7 +5016,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.937,
         ImageSource: "img/modelPreviews/SRMU.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.75,
@@ -4820,7 +5048,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.937,
         ImageSource: "img/modelPreviews/UA1205_NEW.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.75,
@@ -4851,7 +5080,8 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.937,
         ImageSource: "img/modelPreviews/UA1207_NEW.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        HeatAnimations: []
     }
 ];
 ModelInfo.Dropdown = ModelInfo.BuildDropdown();
@@ -7368,6 +7598,19 @@ class Engine {
         let attachmentNode = (modelInfo.RadialAttachment ?
             `node_attach = ${modelInfo.RadialAttachmentPoint * widthScale}, 0.0, 0.0, 1.0, 0.0, 0.0` :
             `node_attach = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0`);
+        let heatAnims = "";
+        modelInfo.HeatAnimations.forEach(clip => {
+            heatAnims += `
+                MODULE
+                {
+                    name = FXModuleAnimateThrottle
+                    animationName = ${clip}
+                    responseSpeed = 0.001
+                    dependOnEngineState = True
+                    dependOnThrottle = True
+                }
+            `;
+        });
         return `
             MODEL
             {
@@ -7383,6 +7626,8 @@ class Engine {
             node_stack_hide = 0.0, ${modelInfo.NodeStackBottom + 0.001}, 0.0, 0.0, 0.0, 1.0, 0
 
             ${attachmentNode}
+            
+            ${heatAnims}
         `;
     }
     IsTestFlightDefault() {
@@ -8195,7 +8440,8 @@ class DebugLists {
             newEngine.Gimbal = 15;
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
-            newEngine.PlumeID = Plume.Hypergolic_Lower;
+            let plumes = [Plume.GP_Alcolox, Plume.GP_Ammonialox, Plume.GP_Hydrolox, Plume.GP_Hydynelox, Plume.GP_Hypergolic, Plume.GP_Kerolox, Plume.GP_Methalox, Plume.GP_Solid];
+            newEngine.PlumeID = plumes[Math.floor(plumes.length * Math.random())];
             toAppend.push(newEngine);
         }
         MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
@@ -8455,11 +8701,11 @@ class Exporter {
                     ${engine.GetThrustCurveConfig()}
                     
                 }
-
+                
                 ${engine.GetGimbalConfig()}
-
+                
                 ${engine.GetAlternatorConfig()}
-
+                
                 MODULE
                 {
                     name = ModuleSurfaceFX

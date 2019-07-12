@@ -23,7 +23,8 @@ class DebugLists {
             newEngine.Gimbal = 15;
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
-            newEngine.PlumeID = Plume.Hypergolic_Lower;
+            let plumes = [Plume.GP_Alcolox, Plume.GP_Ammonialox, Plume.GP_Hydrolox, Plume.GP_Hydynelox, Plume.GP_Hypergolic, Plume.GP_Kerolox, Plume.GP_Methalox, Plume.GP_Solid];
+            newEngine.PlumeID = plumes[Math.floor (plumes.length * Math.random ())];
             toAppend.push (newEngine);
         }
         

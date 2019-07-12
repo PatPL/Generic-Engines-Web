@@ -1359,6 +1359,21 @@ class Engine {
             `node_attach = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0`
         );
         
+        // Heat animations
+        let heatAnims = "";
+        modelInfo.HeatAnimations.forEach (clip => {
+            heatAnims += `
+                MODULE
+                {
+                    name = FXModuleAnimateThrottle
+                    animationName = ${ clip }
+                    responseSpeed = 0.001
+                    dependOnEngineState = True
+                    dependOnThrottle = True
+                }
+            `;
+        });
+        
         return `
             MODEL
             {
@@ -1374,6 +1389,8 @@ class Engine {
             node_stack_hide = 0.0, ${modelInfo.NodeStackBottom + 0.001}, 0.0, 0.0, 0.0, 1.0, 0
 
             ${attachmentNode}
+            
+            ${heatAnims}
         `;
     }
     

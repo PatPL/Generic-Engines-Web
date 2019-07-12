@@ -123,11 +123,11 @@ class Exporter {
                     ${engine.GetThrustCurveConfig ()}
                     
                 }
-
+                
                 ${engine.GetGimbalConfig ()}
-
+                
                 ${engine.GetAlternatorConfig ()}
-
+                
                 MODULE
                 {
                     name = ModuleSurfaceFX

@@ -105,5 +105,11 @@ interface IModelInfo extends IImageSelectable {
      * Names of nodes that will be hidden in game
      */
     readonly HiddenMuObjects: string[];
+    /**
+     * Names of heat animation clips on the model.
+     * 
+     * Use this to get the clip names: https://patpl.github.io/muTS/animations.html
+     */
+    readonly HeatAnimations: string[];
     
 }

@@ -31,7 +31,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR91.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "HeatEmissiveAnimation"
+            ]
         }, { //Model.AJ10
             OriginalHeight: 0.654,
             OriginalBellWidth: 0.285,
@@ -64,7 +67,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/AJ10.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "aj10"
+            ]
         }, { //Model.RS25
             OriginalHeight: 1.5,
             OriginalBellWidth: 0.865,
@@ -94,7 +100,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RS25.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Thruster
             OriginalHeight: 0.3055,
             OriginalBellWidth: 0.12,
@@ -120,7 +127,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Thruster.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Aestus
             OriginalHeight: 0.393,
             OriginalBellWidth: 0.234,
@@ -149,7 +157,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Aestus.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "48-7SHeat"
+            ]
         }, { //Model.IonThruster
             OriginalHeight: 0.3935,
             OriginalBellWidth: 0.459,
@@ -178,7 +189,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/IonThruster.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "colorAnimation"
+            ]
         }, { //Model.Rhino
             OriginalHeight: 4.48,
             OriginalBellWidth: 1.802,
@@ -206,7 +220,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Rhino.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "HeatAnimationAdvancedEngine"
+            ]
         }, { //Model.RD0105T
             OriginalHeight: 0.727,
             OriginalBellWidth: 0.445,
@@ -236,7 +253,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD0105T.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "HeatAnimatioEmissiveLiquidEngine3"
+            ]
         }, { //Model.SRBLong
             OriginalHeight: 8.018,
             OriginalBellWidth: 1.05265,
@@ -264,7 +284,8 @@ class ModelInfo {
                 "fairing"
             ],
             ImageSource: "img/modelPreviews/SRBLong.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RT5
             OriginalHeight: 1.444,
             OriginalBellWidth: 0.773,
@@ -292,7 +313,10 @@ class ModelInfo {
                 "fairing"
             ],
             ImageSource: "img/modelPreviews/RT5.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "Flea"
+            ]
         }, { //Model.RT2
             OriginalHeight: 3.5,
             OriginalBellWidth: 0.5945,
@@ -318,7 +342,10 @@ class ModelInfo {
             ModelType: EngineGroupType.SRB,
             HiddenMuObjects: [],
             ImageSource: "img/modelPreviews/RT2.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "RT-2"
+            ]
         }, { //Model.S1
             OriginalHeight: 14.81,
             OriginalBellWidth: 1.043,
@@ -344,7 +371,10 @@ class ModelInfo {
             ModelType: EngineGroupType.SRB,
             HiddenMuObjects: [],
             ImageSource: "img/modelPreviews/S1.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "HeatAnimationSRB"
+            ]
         }, { //Model.RD0105
             OriginalHeight: 0.633,
             OriginalBellWidth: 0.445,
@@ -373,7 +403,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD0105.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "HeatAnimatioEmissiveLiquidEngine3"
+            ]
         }, { //Model.NERVA
             OriginalHeight: 3.25,
             OriginalBellWidth: 0.996,
@@ -403,7 +436,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/NERVA.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "overheat"
+            ]
         }, { //Model.LVT30
             OriginalHeight: 1.574,
             OriginalBellWidth: 0.653,
@@ -432,7 +468,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LVT30.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "LVT30"
+            ]
         }, { //Model.LVT45
             OriginalHeight: 1.643,
             OriginalBellWidth: 0.602,
@@ -462,7 +501,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LVT45.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "LV45Heat"
+            ]
         }, { //Model.P1057
             OriginalHeight: 0.615,
             OriginalBellWidth: 0.226,
@@ -491,7 +533,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/P1057.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "105-7PHeat"
+            ]
         }, { //Model.OMSL
             OriginalHeight: 1.228,
             OriginalBellWidth: 0.773,
@@ -517,7 +562,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/OMSL.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Poodle
             OriginalHeight: 1.584,
             OriginalBellWidth: 1.222,
@@ -546,7 +592,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Poodle.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "overheatService"
+            ]
         }, { //Model.BallNuke
             OriginalHeight: 1.868,
             OriginalBellWidth: 0.886,
@@ -574,7 +623,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/BallNuke.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "ShortNTR"
+            ]
         }, { //Model.BallNukeS
             OriginalHeight: 0.767,
             OriginalBellWidth: 0.407,
@@ -603,7 +655,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/BallNukeS.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "PoodleHeat"
+            ]
         }, { //Model.Skipper
             OriginalHeight: 3.514,
             OriginalBellWidth: 1.6,
@@ -631,7 +686,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Skipper.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "Size2MedEngineBEmmissive"
+            ]
         }, { //Model.SkipperR
             OriginalHeight: 2.655,
             OriginalBellWidth: 1.415,
@@ -660,7 +718,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/SkipperR.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "ksp_l_midrangeEngine_anim"
+            ]
         }, { //Model.NERVA2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.96,
@@ -695,7 +756,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/NERVA2.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "nerva"
+            ]
         }, { //Model.NERVAwide
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 2.074,
@@ -730,7 +794,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/NERVAwide.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "nerva"
+            ]
         }, { //Model.Pancake
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.5,
@@ -759,7 +826,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Pancake.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "kopo4e"
+            ]
         }, { //Model.RT3
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.512, // The nozzle on the model is not centered, this is an approximation
@@ -792,7 +862,10 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.625,
             ImageSource: "img/modelPreviews/RT3.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "castoranim"
+            ]
         }, { //Model.RD170
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.517,
@@ -823,7 +896,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD170.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "k170heat"
+            ]
         }, { //Model.RD0120
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.671,
@@ -858,7 +934,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD0120.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "25midenganim"
+            ]
         }, { //Model.Gamma2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.143,
@@ -892,7 +971,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Gamma2.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "blackadderheatanim"
+            ]
         }, { //Model.Gamma8
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.142,
@@ -921,7 +1003,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Gamma8.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "blackadderheatanim"
+            ]
         }, { //Model.AJ10_137
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.66,
@@ -948,7 +1033,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/AJ10_137.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.AJ10_190
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.707,
@@ -975,7 +1061,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/AJ10_190.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.F1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 2.446,
@@ -1002,7 +1089,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/F1.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.F1B
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 2.165,
@@ -1029,7 +1117,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/F1B.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.H1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.757,
@@ -1056,7 +1145,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/H1.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.J2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.332,
@@ -1083,7 +1173,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/J2.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.J2X
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.943,
@@ -1110,7 +1201,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/J2X.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LMAE
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.512,
@@ -1137,7 +1229,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LMAE.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LMDE
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.904,
@@ -1164,7 +1257,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LMDE.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Bell8048
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.412,
@@ -1191,7 +1285,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Bell8048.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Bell8096
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.611,
@@ -1218,7 +1313,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Bell8096.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Merlin1A
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.597,
@@ -1245,7 +1341,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1A.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.MerlinB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.599,
@@ -1272,7 +1369,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1B.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Merlin1BV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.599,
@@ -1299,7 +1397,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1BV.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Merlin1D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.601,
@@ -1326,7 +1425,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1D.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Merlin1DV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.601,
@@ -1353,7 +1453,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1DV.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RD107
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.471,
@@ -1380,7 +1481,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD107.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RD171
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.964,
@@ -1407,7 +1509,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD171.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RD180
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.963,
@@ -1434,7 +1537,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD180.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RD181
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.964,
@@ -1461,7 +1565,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD181.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RL10A3
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.671,
@@ -1488,7 +1593,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10A3.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RL10A4
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.798,
@@ -1515,7 +1621,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10A4.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RL10A5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.25,
@@ -1542,7 +1649,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10A5.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RL10B2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.27,
@@ -1569,7 +1677,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10B2.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RS25_2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.569,
@@ -1596,7 +1705,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RS25_2.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.RS68
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.61,
@@ -1623,7 +1733,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RS68.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.SuperDraco
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.128,
@@ -1649,7 +1760,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/SuperDraco.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.SuperDracoV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.321,
@@ -1675,7 +1787,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/SuperDracoV.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.FRE1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.824,
@@ -1701,7 +1814,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/FRE1.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "FRE-1Heat"
+            ]
         }, { //Model.FRE2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.38,
@@ -1727,7 +1843,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/FRE2.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LE5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.517,
@@ -1754,7 +1871,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LE5.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "LE-5Heat"
+            ]
         }, { //Model.LE7
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 2.12,
@@ -1781,7 +1901,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LE7.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "LE-7Heat"
+            ]
         }, { //Model.RD843
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.276,
@@ -1806,7 +1929,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD843.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Rutherford
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.322,
@@ -1833,7 +1957,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Rutherford.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "RutherfordHeat"
+            ]
         }, { //Model.RutherfordVac
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.679,
@@ -1860,7 +1987,11 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RutherfordVac.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "RutherfordHeat",
+                "RutherfordVacHeat"
+            ]
         }, { //Model.P80
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 2.326,
@@ -1886,7 +2017,10 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 1.5,
             ImageSource: "img/modelPreviews/P80.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "P80Heat"
+            ]
         }, { //Model.Zefiro9
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.036,
@@ -1912,7 +2046,10 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.95,
             ImageSource: "img/modelPreviews/Zefiro9.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "Zefiro9Heat"
+            ]
         }, { //Model.Zefiro23
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.449,
@@ -1938,7 +2075,10 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.95,
             ImageSource: "img/modelPreviews/Zefiro23.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "Zefiro23Heat"
+            ]
         }, { //Model.Viking
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.944,
@@ -1964,7 +2104,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Viking.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "VikingHeat"
+            ]
         }, { //Model.VikingVac
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.8,
@@ -1990,7 +2133,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/VikingVac.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "VikingHeat"
+            ]
         }, { //Model.ApolloSPSBlockII
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.639,
@@ -2020,7 +2166,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/ApolloSPSBlockII.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "bluedog_ApolloBlock2Service_Emit"
+            ]
         }, { //Model.ApolloSPSBlockIII
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.578,
@@ -2053,7 +2202,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/ApolloSPSBlockIII.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "LEM_spsA_Emit_Anim"
+            ]
         }, { //Model.ApolloSPSBlockV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.81,
@@ -2086,7 +2238,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/ApolloSPSBlockV.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LMAE_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.531,
@@ -2113,7 +2266,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LMAE_BDB.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "LEM_Ascent_Emit_Anim"
+            ]
         }, { //Model.LMDE_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.811,
@@ -2140,7 +2296,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LMDE_BDB.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "LEM_Descent_Emit_Anim"
+            ]
         }, { //Model.LR89
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.723,
@@ -2167,7 +2326,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR89.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "LR89_Heat_Anim"
+            ]
         }, { //Model.LR101
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.111,
@@ -2197,7 +2359,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR101.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "LR101_Heat_Anim"
+            ]
         }, { //Model.LR105
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.73,
@@ -2224,7 +2389,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR105.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "bluedog_Atlas_LR105_Emit"
+            ]
         }, { //Model.RD180_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.819,
@@ -2251,7 +2419,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD180_BDB.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "RD180_Heat_Anim"
+            ]
         }, { //Model.RL10
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.641,
@@ -2280,7 +2451,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.73,
@@ -2309,7 +2481,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10A41.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "RL10A41_Emit"
+            ]
         }, { //Model.RL10B2_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.905,
@@ -2341,7 +2516,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10B2_BDB.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "RL10B2_Emit"
+            ]
         }, { //Model.GEM40
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.508,
@@ -2368,7 +2546,10 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.3125,
             ImageSource: "img/modelPreviews/GEM40.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "GEM60_Emit_Anim"
+            ]
         }, { //Model.AJ10_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.813,
@@ -2395,7 +2576,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/AJ10_BDB.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Rita
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.865,
@@ -2421,7 +2603,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.6885,
             ImageSource: "img/modelPreviews/Rita.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Rubis
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.498,
@@ -2447,7 +2630,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.2955,
             ImageSource: "img/modelPreviews/Rubis.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Topaze
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.219,
@@ -2475,7 +2659,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.3115,
             ImageSource: "img/modelPreviews/Topaze.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Able
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.346,
@@ -2504,7 +2689,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Able.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "Able_Emit_Anim"
+            ]
         }, { //Model.Ablestar
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.470,
@@ -2533,7 +2721,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Ablestar.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "Able_Emit_Anim"
+            ]
         }, { //Model.Navaho
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.269,
@@ -2561,7 +2752,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Navaho.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Thor
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.885,
@@ -2587,7 +2779,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Thor.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Vanguard
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.284,
@@ -2616,7 +2809,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Vanguard.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "Vanguard_Engine_Anim"
+            ]
         }, { //Model.E1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.975,
@@ -2643,7 +2839,10 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/E1.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "E1_Heat_Anim"
+            ]
         }, { //Model.Sargent
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.106,
@@ -2671,7 +2870,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.06,
             ImageSource: "img/modelPreviews/Sargent.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Juno6K
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.376,
@@ -2698,7 +2898,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Juno6K.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Juno45K
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.495,
@@ -2725,7 +2926,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Juno45K.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.S3D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.745,
@@ -2752,7 +2954,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/S3D.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.F1_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.96,
@@ -2778,7 +2981,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/F1_BDB.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.H1C
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.589,
@@ -2804,7 +3008,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/H1C.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.H1D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.588,
@@ -2830,7 +3035,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/H1D.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.J2_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.147,
@@ -2858,7 +3064,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/J2_BDB.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.J2T
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.248, // It's an aerospike. What do I do?
@@ -2886,7 +3093,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/J2T.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.J2SL
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.904,
@@ -2914,7 +3122,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/J2SL.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.AJ260
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 3.914,
@@ -2941,7 +3150,10 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 1.915,
             ImageSource: "img/modelPreviews/AJ260.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: [
+                "AJ260_Vernier_Emit"
+            ]
         }, { //Model.LR87
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.708,
@@ -2967,7 +3179,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR87.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR87S
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.692,
@@ -2993,7 +3206,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR87S.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR91_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.854,
@@ -3019,7 +3233,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR91_BDB.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Soltan
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.497,
@@ -3045,7 +3260,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.75,
             ImageSource: "img/modelPreviews/Soltan.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.UA1205
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.9,
@@ -3071,7 +3287,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.935,
             ImageSource: "img/modelPreviews/UA1205.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.UA1207
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.9,
@@ -3097,7 +3314,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.935,
             ImageSource: "img/modelPreviews/UA1207.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.Transtage
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.742,
@@ -3123,7 +3341,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Transtage.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR87_5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.677,
@@ -3151,7 +3370,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR87_5.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR87_11
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.735,
@@ -3179,7 +3399,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR87_11.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR87_11S
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.733,
@@ -3207,7 +3428,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR87_11S.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR87_11SV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.918,
@@ -3235,7 +3457,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR87_11SV.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR87_11SH
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.67,
@@ -3263,7 +3486,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR87_11SH.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR87_11SHV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.977,
@@ -3291,7 +3515,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR87_11SHV.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR91_5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.95,
@@ -3319,7 +3544,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR91_5.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.LR91_11
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.934,
@@ -3347,7 +3573,8 @@ class ModelInfo {
             RadialAttachment: false,
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LR91_11.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.SRMU
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.9,
@@ -3379,7 +3606,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.937,
             ImageSource: "img/modelPreviews/SRMU.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.UA1205_NEW
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.75,
@@ -3410,7 +3638,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.937,
             ImageSource: "img/modelPreviews/UA1205_NEW.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }, { //Model.UA1207_NEW
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.75,
@@ -3441,7 +3670,8 @@ class ModelInfo {
             RadialAttachment: true,
             RadialAttachmentPoint: 0.937,
             ImageSource: "img/modelPreviews/UA1207_NEW.webp",
-            get ImageLabel(): string { return this.ModelName }
+            get ImageLabel(): string { return this.ModelName },
+            HeatAnimations: []
         }
     ];
     
@@ -3497,6 +3727,7 @@ class ModelInfo {
     RadialAttachment: false,
     RadialAttachmentPoint: 0,
     ImageSource: "img/modelPreviews/.webp",
-    get ImageLabel(): string { return this.ModelName }
+    get ImageLabel(): string { return this.ModelName },
+    HeatAnimations: []
 }
 */

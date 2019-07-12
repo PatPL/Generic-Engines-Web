@@ -106,6 +106,10 @@ interface IModelInfo extends IImageSelectable {
      */
     readonly HiddenMuObjects: string[];
     /**
+     * Array of [targetName, rotatorsName] in CONSTRAINLOOKFX elements in FXModuleLookAtConstraint
+     */
+    readonly LookatPairs: [string, string][];
+    /**
      * Names of heat animation clips on the model.
      * 
      * Use this to get the clip names: https://patpl.github.io/muTS/animations.html

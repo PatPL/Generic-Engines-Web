@@ -1446,6 +1446,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "HeatEmissiveAnimation"
         ]
@@ -1482,6 +1483,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["marker1", "susp1"],
+            ["marker2", "susp2"],
+            ["marker3", "susp3"],
+            ["marker4", "susp4"],
+        ],
         HeatAnimations: [
             "aj10"
         ]
@@ -1515,6 +1522,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RS25.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         OriginalHeight: 0.3055,
@@ -1542,6 +1550,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Thruster.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         OriginalHeight: 0.393,
@@ -1572,6 +1581,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Aestus.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
         HeatAnimations: [
             "48-7SHeat"
         ]
@@ -1604,6 +1623,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/IonThruster.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "colorAnimation"
         ]
@@ -1635,6 +1655,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Rhino.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["piston1", "Pistonbase1"],
+            ["Pistonbase1", "piston1"],
+            ["piston2", "Pistonbase2"],
+            ["Pistonbase2", "piston2"],
+            ["piston3", "Pistonbase3"],
+            ["Pistonbase3", "piston3"],
+            ["piston4", "Pistonbase4"],
+            ["Pistonbase4", "piston4"],
+        ],
         HeatAnimations: [
             "HeatAnimationAdvancedEngine"
         ]
@@ -1668,6 +1698,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD0105T.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
         HeatAnimations: [
             "HeatAnimatioEmissiveLiquidEngine3"
         ]
@@ -1699,6 +1739,7 @@ ModelInfo.models = [
         ],
         ImageSource: "img/modelPreviews/SRBLong.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         OriginalHeight: 1.444,
@@ -1728,6 +1769,7 @@ ModelInfo.models = [
         ],
         ImageSource: "img/modelPreviews/RT5.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "Flea"
         ]
@@ -1757,6 +1799,7 @@ ModelInfo.models = [
         HiddenMuObjects: [],
         ImageSource: "img/modelPreviews/RT2.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "RT-2"
         ]
@@ -1786,6 +1829,7 @@ ModelInfo.models = [
         HiddenMuObjects: [],
         ImageSource: "img/modelPreviews/S1.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "HeatAnimationSRB"
         ]
@@ -1818,6 +1862,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD0105.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
         HeatAnimations: [
             "HeatAnimatioEmissiveLiquidEngine3"
         ]
@@ -1851,6 +1905,24 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVA.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["piston1", "pistonBase1"],
+            ["pistonBase1", "piston1"],
+            ["piston2", "pistonBase2"],
+            ["pistonBase2", "piston2"],
+            ["piston3", "pistonBase3"],
+            ["pistonBase3", "piston3"],
+            ["piston4", "pistonBase4"],
+            ["pistonBase4", "piston4"],
+            ["piston5", "pistonBase5"],
+            ["pistonBase5", "piston5"],
+            ["piston6", "pistonBase6"],
+            ["pistonBase6", "piston6"],
+            ["piston7", "pistonBase7"],
+            ["pistonBase7", "piston7"],
+            ["piston8", "pistonBase8"],
+            ["pistonBase8", "piston8"],
+        ],
         HeatAnimations: [
             "overheat"
         ]
@@ -1883,6 +1955,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LVT30.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "LVT30"
         ]
@@ -1916,6 +1989,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LVT45.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
         HeatAnimations: [
             "LV45Heat"
         ]
@@ -1948,6 +2031,24 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/P1057.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+            ["Piston5", "PistonBase5"],
+            ["PistonBase5", "Piston5"],
+            ["Piston6", "PistonBase6"],
+            ["PistonBase6", "Piston6"],
+            ["Piston7", "PistonBase7"],
+            ["PistonBase7", "Piston7"],
+            ["Piston8", "PistonBase8"],
+            ["PistonBase8", "Piston8"],
+        ],
         HeatAnimations: [
             "105-7PHeat"
         ]
@@ -1977,6 +2078,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/OMSL.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         OriginalHeight: 1.584,
@@ -2007,6 +2109,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Poodle.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "overheatService"
         ]
@@ -2038,6 +2141,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/BallNuke.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "ShortNTR"
         ]
@@ -2070,6 +2174,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/BallNukeS.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "PoodleHeat"
         ]
@@ -2101,6 +2206,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Skipper.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["piston1", "pistonbase1"],
+            ["pistonbase1", "piston1"],
+            ["piston2", "pistonbase2"],
+            ["pistonbase2", "piston2"],
+            ["piston3", "pistonbase3"],
+            ["pistonbase3", "piston3"],
+            ["piston4", "pistonbase4"],
+            ["pistonbase4", "piston4"],
+        ],
         HeatAnimations: [
             "Size2MedEngineBEmmissive"
         ]
@@ -2133,6 +2248,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SkipperR.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "Pistonbase1"],
+            ["Pistonbase1", "Piston1"],
+            ["Piston2", "Pistonbase2"],
+            ["Pistonbase2", "Piston2"],
+            ["Piston3", "Pistonbase3"],
+            ["Pistonbase3", "Piston3"],
+            ["Piston4", "Pistonbase4"],
+            ["Pistonbase4", "Piston4"],
+        ],
         HeatAnimations: [
             "ksp_l_midrangeEngine_anim"
         ]
@@ -2171,6 +2296,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVA2.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "nerva"
         ]
@@ -2209,6 +2335,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVAwide.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "nerva"
         ]
@@ -2241,6 +2368,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Pancake.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "kopo4e"
         ]
@@ -2276,6 +2404,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.625,
         ImageSource: "img/modelPreviews/RT3.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "castoranim"
         ]
@@ -2310,6 +2439,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD170.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "k170heat"
         ]
@@ -2348,6 +2478,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD0120.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "25midenganim"
         ]
@@ -2385,6 +2516,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Gamma2.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "blackadderheatanim"
         ]
@@ -2417,6 +2549,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Gamma8.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "blackadderheatanim"
         ]
@@ -2447,6 +2580,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10_137.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2475,6 +2609,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10_190.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2503,6 +2638,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/F1.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2531,6 +2667,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/F1B.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2559,6 +2696,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/H1.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2587,6 +2725,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2615,6 +2754,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2X.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2643,6 +2783,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMAE.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2671,6 +2812,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMDE.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2699,6 +2841,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Bell8048.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2727,6 +2870,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Bell8096.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2755,6 +2899,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1A.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2783,6 +2928,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1B.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2811,6 +2957,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1BV.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2839,6 +2986,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1D.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2867,6 +3015,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1DV.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2895,6 +3044,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD107.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2923,6 +3073,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD171.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2951,6 +3102,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD180.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -2979,6 +3131,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD181.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3007,6 +3160,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A3.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3035,6 +3189,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A4.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3063,6 +3218,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A5.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3091,6 +3247,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10B2.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3119,6 +3276,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RS25_2.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3147,6 +3305,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RS68.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3174,6 +3333,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SuperDraco.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3201,6 +3361,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SuperDracoV.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3228,6 +3389,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/FRE1.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
         HeatAnimations: [
             "FRE-1Heat"
         ]
@@ -3257,6 +3424,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/FRE2.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3285,6 +3458,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LE5.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
         HeatAnimations: [
             "LE-5Heat"
         ]
@@ -3315,6 +3494,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LE7.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
         HeatAnimations: [
             "LE-7Heat"
         ]
@@ -3343,6 +3528,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD843.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3371,6 +3562,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Rutherford.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
         HeatAnimations: [
             "RutherfordHeat"
         ]
@@ -3401,6 +3598,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RutherfordVac.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
         HeatAnimations: [
             "RutherfordHeat",
             "RutherfordVacHeat"
@@ -3431,6 +3634,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 1.5,
         ImageSource: "img/modelPreviews/P80.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Attach1", "Piston3"],
+            ["Attach2", "Piston4"]
+        ],
         HeatAnimations: [
             "P80Heat"
         ]
@@ -3460,6 +3669,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.95,
         ImageSource: "img/modelPreviews/Zefiro9.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Attach1", "Piston3"],
+            ["Attach2", "Piston4"]
+        ],
         HeatAnimations: [
             "Zefiro9Heat"
         ]
@@ -3489,6 +3704,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.95,
         ImageSource: "img/modelPreviews/Zefiro23.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Attach1", "Piston3"],
+            ["Attach2", "Piston4"]
+        ],
         HeatAnimations: [
             "Zefiro23Heat"
         ]
@@ -3518,6 +3739,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Viking.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "VikingHeat"
         ]
@@ -3547,6 +3769,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/VikingVac.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "VikingHeat"
         ]
@@ -3580,6 +3803,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/ApolloSPSBlockII.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "bluedog_ApolloBlock2Service_Emit"
         ]
@@ -3616,6 +3840,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/ApolloSPSBlockIII.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "LEM_spsA_Emit_Anim"
         ]
@@ -3652,6 +3877,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/ApolloSPSBlockV.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3680,6 +3906,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMAE_BDB.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "LEM_Ascent_Emit_Anim"
         ]
@@ -3710,6 +3937,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMDE_BDB.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "LEM_Descent_Emit_Anim"
         ]
@@ -3740,6 +3968,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR89.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Gimbal1_Upper", "Gimbal1_Lower"],
+            ["Gimbal1_Lower", "Gimbal1_Upper"],
+            ["Gimbal2_Upper", "Gimbal2_Lower"],
+            ["Gimbal2_Lower", "Gimbal2_Upper"],
+        ],
         HeatAnimations: [
             "LR89_Heat_Anim"
         ]
@@ -3770,6 +4004,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR101.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "LR101_Heat_Anim"
         ]
@@ -3800,6 +4035,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR105.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Gimbal1_Upper", "Gimbal1_Lower"],
+            ["Gimbal1_Lower", "Gimbal1_Upper"],
+            ["Gimbal2_Upper", "Gimbal2_Lower"],
+            ["Gimbal2_Lower", "Gimbal2_Upper"],
+        ],
         HeatAnimations: [
             "bluedog_Atlas_LR105_Emit"
         ]
@@ -3830,6 +4071,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD180_BDB.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["PistonPN", "GimbalActuatorPN"],
+            ["GimbalActuatorPN", "PistonPN"],
+            ["PistonPZ", "GimbalActuatorPZ"],
+            ["GimbalActuatorPZ", "PistonPZ"],
+            ["PistonSN", "GimbalActuatorSN"],
+            ["GimbalActuatorSN", "PistonSN"],
+            ["PistonSZ", "GimbalActuatorSZ"],
+            ["GimbalActuatorSZ", "PistonSZ"],
+        ],
         HeatAnimations: [
             "RD180_Heat_Anim"
         ]
@@ -3862,6 +4113,10 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["lowerGimbal", "upperGimbal"],
+            ["upperGimbal", "lowerGimbal"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3892,6 +4147,10 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A41.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["lowerGimbal", "upperGimbal"],
+            ["upperGimbal", "lowerGimbal"],
+        ],
         HeatAnimations: [
             "RL10A41_Emit"
         ]
@@ -3927,6 +4186,10 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10B2_BDB.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["lowerGimbal", "upperGimbal"],
+            ["upperGimbal", "lowerGimbal"],
+        ],
         HeatAnimations: [
             "RL10B2_Emit"
         ]
@@ -3957,6 +4220,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.3125,
         ImageSource: "img/modelPreviews/GEM40.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "GEM60_Emit_Anim"
         ]
@@ -3987,6 +4251,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10_BDB.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4014,6 +4279,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.6885,
         ImageSource: "img/modelPreviews/Rita.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4041,6 +4307,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.2955,
         ImageSource: "img/modelPreviews/Rubis.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4070,6 +4337,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.3115,
         ImageSource: "img/modelPreviews/Topaze.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4100,6 +4368,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Able.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "Able_Emit_Anim"
         ]
@@ -4132,6 +4401,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Ablestar.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "Able_Emit_Anim"
         ]
@@ -4163,6 +4433,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Navaho.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4190,6 +4461,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Thor.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4220,6 +4492,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Vanguard.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "Vanguard_Engine_Anim"
         ]
@@ -4250,6 +4523,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/E1.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["gimbalBone1", "gimbalArm1_1"],
+            ["gimbalBone1", "gimbalArm1_2"],
+            ["gimbalBone2", "gimbalArm2_1"],
+            ["gimbalBone2", "gimbalArm2_2"],
+        ],
         HeatAnimations: [
             "E1_Heat_Anim"
         ]
@@ -4281,6 +4560,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.06,
         ImageSource: "img/modelPreviews/Sargent.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4309,6 +4589,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Juno6K.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4337,6 +4618,10 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Juno45K.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["LowerGimbal", "UpperGimbal"],
+            ["UpperGimbal", "LowerGimbal"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4365,6 +4650,10 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/S3D.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["LowerGimbal", "UpperGimbal"],
+            ["UpperGimbal", "LowerGimbal"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4392,6 +4681,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/F1_BDB.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["lowerGimbal2", "upperGimbal2"],
+            ["upperGimbal2", "lowerGimbal2"],
+            ["lowerGimbal1", "upperGimbal1"],
+            ["upperGimbal1", "lowerGimbal1"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4419,6 +4714,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/H1C.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4446,6 +4742,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/H1D.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["LowerGimbal2", "UpperGimbal2"],
+            ["UpperGimbal2", "LowerGimbal2"],
+            ["LowerGimbal1", "UpperGimbal1"],
+            ["UpperGimbal1", "LowerGimbal1"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4475,6 +4777,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2_BDB.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4504,6 +4807,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2T.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4533,6 +4837,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2SL.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4561,6 +4866,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 1.915,
         ImageSource: "img/modelPreviews/AJ260.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: [
             "AJ260_Vernier_Emit"
         ]
@@ -4590,6 +4896,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4617,6 +4924,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87S.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4644,6 +4952,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91_BDB.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4671,6 +4980,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.75,
         ImageSource: "img/modelPreviews/Soltan.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4698,6 +5008,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.935,
         ImageSource: "img/modelPreviews/UA1205.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4725,6 +5036,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.935,
         ImageSource: "img/modelPreviews/UA1207.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4752,6 +5064,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Transtage.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4781,6 +5094,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_5.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_1_Upper", "yawPivot_1_Lower"],
+            ["yawPivot_1_Lower", "yawPivot_1_Upper"],
+            ["yawPivot_2_Upper", "yawPivot_2_Lower"],
+            ["yawPivot_2_Lower", "yawPivot_2_Upper"],
+            ["pitchPivot_1_Upper", "pitchPivot_1_Lower"],
+            ["pitchPivot_1_Lower", "pitchPivot_1_Upper"],
+            ["pitchPivot_2_Upper", "pitchPivot_2_Lower"],
+            ["pitchPivot_2_Lower", "pitchPivot_2_Upper"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4810,6 +5133,16 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_1_Upper", "yawPivot_1_Lower"],
+            ["yawPivot_1_Lower", "yawPivot_1_Upper"],
+            ["yawPivot_2_Upper", "yawPivot_2_Lower"],
+            ["yawPivot_2_Lower", "yawPivot_2_Upper"],
+            ["pitchPivot_1_Upper", "pitchPivot_1_Lower"],
+            ["pitchPivot_1_Lower", "pitchPivot_1_Upper"],
+            ["pitchPivot_2_Upper", "pitchPivot_2_Lower"],
+            ["pitchPivot_2_Lower", "pitchPivot_2_Upper"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4839,6 +5172,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11S.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_Upper", "yawPivot_Lower"],
+            ["yawPivot_Lower", "yawPivot_Upper"],
+            ["pitchPivot_Upper", "pitchPivot_Lower"],
+            ["pitchPivot_Lower", "pitchPivot_Upper"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4868,6 +5207,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11SV.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_Upper", "yawPivot_Lower"],
+            ["yawPivot_Lower", "yawPivot_Upper"],
+            ["pitchPivot_Upper", "pitchPivot_Lower"],
+            ["pitchPivot_Lower", "pitchPivot_Upper"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4897,6 +5242,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11SH.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_Upper", "yawPivot_Lower"],
+            ["yawPivot_Lower", "yawPivot_Upper"],
+            ["pitchPivot_Upper", "pitchPivot_Lower"],
+            ["pitchPivot_Lower", "pitchPivot_Upper"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4926,6 +5277,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11SHV.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_Upper", "yawPivot_Lower"],
+            ["yawPivot_Lower", "yawPivot_Upper"],
+            ["pitchPivot_Upper", "pitchPivot_Lower"],
+            ["pitchPivot_Lower", "pitchPivot_Upper"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4955,6 +5312,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91_5.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["pivot_1_Upper", "pivot_1_Lower"],
+            ["pivot_1_Lower", "pivot_1_Upper"],
+            ["pivot_2_Upper", "pivot_2_Lower"],
+            ["pivot_2_Lower", "pivot_2_Upper"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4984,6 +5347,12 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91_11.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["pivot_1_Upper", "pivot_1_Lower"],
+            ["pivot_1_Lower", "pivot_1_Upper"],
+            ["pivot_2_Upper", "pivot_2_Lower"],
+            ["pivot_2_Lower", "pivot_2_Upper"],
+        ],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5017,6 +5386,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.937,
         ImageSource: "img/modelPreviews/SRMU.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5049,6 +5419,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.937,
         ImageSource: "img/modelPreviews/UA1205_NEW.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5081,6 +5452,7 @@ ModelInfo.models = [
         RadialAttachmentPoint: 0.937,
         ImageSource: "img/modelPreviews/UA1207_NEW.webp",
         get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
         HeatAnimations: []
     }
 ];
@@ -7611,6 +7983,25 @@ class Engine {
                 }
             `;
         });
+        let lookAtConfig = "";
+        if (modelInfo.LookatPairs.length > 0) {
+            modelInfo.LookatPairs.forEach(pair => {
+                lookAtConfig += `
+                    CONSTRAINLOOKFX
+                    {
+                        targetName = ${pair[0]}
+                        rotatorsName = ${pair[1]}
+                    }
+                `;
+            });
+            lookAtConfig = `
+                MODULE
+                {
+                    name = FXModuleLookAtConstraint
+                    ${lookAtConfig}
+                }
+            `;
+        }
         return `
             MODEL
             {
@@ -7628,6 +8019,8 @@ class Engine {
             ${attachmentNode}
             
             ${heatAnims}
+            
+            ${lookAtConfig}
         `;
     }
     IsTestFlightDefault() {

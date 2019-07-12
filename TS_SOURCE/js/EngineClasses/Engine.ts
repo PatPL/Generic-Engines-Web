@@ -1374,6 +1374,27 @@ class Engine {
             `;
         });
         
+        let lookAtConfig = "";
+        if (modelInfo.LookatPairs.length > 0) {
+            modelInfo.LookatPairs.forEach (pair => {
+                lookAtConfig += `
+                    CONSTRAINLOOKFX
+                    {
+                        targetName = ${ pair[0] }
+                        rotatorsName = ${ pair[1] }
+                    }
+                `;
+            });
+            
+            lookAtConfig = `
+                MODULE
+                {
+                    name = FXModuleLookAtConstraint
+                    ${ lookAtConfig }
+                }
+            `;
+        }
+        
         return `
             MODEL
             {
@@ -1391,6 +1412,8 @@ class Engine {
             ${attachmentNode}
             
             ${heatAnims}
+            
+            ${lookAtConfig}
         `;
     }
     

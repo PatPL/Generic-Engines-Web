@@ -1656,14 +1656,14 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/Rhino.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [
-            ["piston1", "Pistonbase1"],
-            ["Pistonbase1", "piston1"],
-            ["piston2", "Pistonbase2"],
-            ["Pistonbase2", "piston2"],
-            ["piston3", "Pistonbase3"],
-            ["Pistonbase3", "piston3"],
-            ["piston4", "Pistonbase4"],
-            ["Pistonbase4", "piston4"],
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
         ],
         HeatAnimations: [
             "HeatAnimationAdvancedEngine"
@@ -2249,14 +2249,14 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/SkipperR.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [
-            ["Piston1", "Pistonbase1"],
-            ["Pistonbase1", "Piston1"],
-            ["Piston2", "Pistonbase2"],
-            ["Pistonbase2", "Piston2"],
-            ["Piston3", "Pistonbase3"],
-            ["Pistonbase3", "Piston3"],
-            ["Piston4", "Pistonbase4"],
-            ["Pistonbase4", "Piston4"],
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
         ],
         HeatAnimations: [
             "ksp_l_midrangeEngine_anim"
@@ -2344,7 +2344,7 @@ ModelInfo.models = [
         OriginalBellWidth: 0.5,
         OriginalBaseWidth: 2,
         PlumeSizeMultiplier: 0.43,
-        PlumePositionOffset: 0.13,
+        PlumePositionOffset: 0.12,
         NodeStackTop: 0,
         NodeStackBottom: -0.288,
         ModelPath: "GenericEngines/models/SXT/Kopo4e/model",
@@ -2413,7 +2413,7 @@ ModelInfo.models = [
         OriginalBellWidth: 1.517,
         OriginalBaseWidth: 3.74,
         PlumeSizeMultiplier: 1.33,
-        PlumePositionOffset: -0.25,
+        PlumePositionOffset: -0.23,
         NodeStackTop: 0.1,
         NodeStackBottom: -3.54,
         ModelPath: "GenericEngines/models/SXT/K170/model",
@@ -2486,7 +2486,7 @@ ModelInfo.models = [
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.143,
         OriginalBaseWidth: 0.361,
-        PlumeSizeMultiplier: 0.12,
+        PlumeSizeMultiplier: 0.11,
         PlumePositionOffset: 0,
         NodeStackTop: -0.034,
         NodeStackBottom: -0.49,
@@ -3368,7 +3368,7 @@ ModelInfo.models = [
         OriginalBellWidth: 0.824,
         OriginalBaseWidth: 0.824,
         PlumeSizeMultiplier: 0.72,
-        PlumePositionOffset: 0,
+        PlumePositionOffset: -0.01,
         NodeStackTop: 1,
         NodeStackBottom: -0.533,
         ModelPath: "GenericEngines/models/FRE/FRE-1/FRE-1",
@@ -3414,7 +3414,7 @@ ModelInfo.models = [
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
-        GimbalTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
         ModelName: "FRE-2",
         ModelType: EngineGroupType.IRL,
         HiddenMuObjects: [],
@@ -3428,7 +3428,51 @@ ModelInfo.models = [
             ["Base1", "Piston1"],
             ["Base2", "Piston2"],
             ["Base3", "Piston3"],
-            ["Base4", "Piston4"]
+            ["Base4", "Piston4"],
+            ["Base1.001", "Piston1.001"],
+            ["Base2.001", "Piston2.001"],
+            ["Base3.001", "Piston3.001"],
+            ["Base4.001", "Piston4.001"],
+            ["Base1.002", "Piston1.002"],
+            ["Base2.002", "Piston2.002"],
+            ["Base3.002", "Piston3.002"],
+            ["Base4.002", "Piston4.002"],
+            ["Base1.003", "Piston1.003"],
+            ["Base2.003", "Piston2.003"],
+            ["Base3.003", "Piston3.003"],
+            ["Base4.003", "Piston4.003"],
+            ["Base1.004", "Piston1.004"],
+            ["Base2.004", "Piston2.004"],
+            ["Base3.004", "Piston3.004"],
+            ["Base4.004", "Piston4.004"],
+            ["Base1.005", "Piston1.005"],
+            ["Base2.005", "Piston2.005"],
+            ["Base3.005", "Piston3.005"],
+            ["Base4.005", "Piston4.005"],
+            ["Base1.006", "Piston1.006"],
+            ["Base2.006", "Piston2.006"],
+            ["Base3.006", "Piston3.006"],
+            ["Base4.006", "Piston4.006"],
+            ["Base1.007", "Piston1.007"],
+            ["Base2.007", "Piston2.007"],
+            ["Base3.007", "Piston3.007"],
+            ["Base4.007", "Piston4.007"],
+            ["Base1.008", "Piston1.008"],
+            ["Base2.008", "Piston2.008"],
+            ["Base3.008", "Piston3.008"],
+            ["Base4.008", "Piston4.008"],
+            ["Base1.009", "Piston1.009"],
+            ["Base2.009", "Piston2.009"],
+            ["Base3.009", "Piston3.009"],
+            ["Base4.009", "Piston4.009"],
+            ["Base1.010", "Piston1.010"],
+            ["Base2.010", "Piston2.010"],
+            ["Base3.010", "Piston3.010"],
+            ["Base4.010", "Piston4.010"],
+            ["Base1.011", "Piston1.011"],
+            ["Base2.011", "Piston2.011"],
+            ["Base3.011", "Piston3.011"],
+            ["Base4.011", "Piston4.011"],
         ],
         HeatAnimations: []
     }, {
@@ -4596,7 +4640,7 @@ ModelInfo.models = [
         OriginalBellWidth: 0.495,
         OriginalBaseWidth: 0.87,
         PlumeSizeMultiplier: 0.42,
-        PlumePositionOffset: 0.56,
+        PlumePositionOffset: 0.6,
         NodeStackTop: 0.014,
         NodeStackBottom: -1.19,
         ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine45K",
@@ -7928,13 +7972,14 @@ class Engine {
             `;
         }
         else if (plumeInfo.PlumeMod == "GenericPlumes") {
+            let bellWidth = modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
             return `
                 @PART[GE-${engine.ID}]:FOR[GenericPlumesPass0200] {
                     @MODULE[ModuleEngines*] {
                         GENERIC_PLUME {
                             name = ${plumeInfo.PlumeID}
-                            bellWidth = ${modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth)}
-                            verticalOffset = ${modelInfo.PlumePositionOffset}
+                            bellWidth = ${bellWidth}
+                            verticalOffset = ${modelInfo.PlumePositionOffset + modelInfo.OriginalBellWidth * 0.33}
                             volume = ${this.Thrust / 100 + 1}
                             pitch = ${Math.max(Math.min(Math.log10(this.Thrust / 10 + 1) / 3, 2), 0.4)}
                         }
@@ -8830,7 +8875,13 @@ class DebugLists {
             let trimmed = newEngine.Height.toFixed(3);
             let numberString = newEngine.Height.toString().length >= trimmed.length ? trimmed : newEngine.Height.toString();
             newEngine.Height = parseFloat(numberString);
-            newEngine.Gimbal = 15;
+            newEngine.NeedsUllage = false;
+            newEngine.Mass = 0.05;
+            newEngine.Thrust = 10;
+            newEngine.VacIsp = 15000;
+            newEngine.AtmIsp = 10000;
+            newEngine.AlternatorPower = 10;
+            newEngine.Gimbal = 20;
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
             let plumes = [Plume.GP_Alcolox, Plume.GP_Ammonialox, Plume.GP_Hydrolox, Plume.GP_Hydynelox, Plume.GP_Hypergolic, Plume.GP_Kerolox, Plume.GP_Methalox, Plume.GP_Solid];

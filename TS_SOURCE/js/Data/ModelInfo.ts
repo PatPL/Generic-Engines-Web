@@ -242,14 +242,14 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/Rhino.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [
-                ["piston1", "Pistonbase1"],
-                ["Pistonbase1", "piston1"],
-                ["piston2", "Pistonbase2"],
-                ["Pistonbase2", "piston2"],
-                ["piston3", "Pistonbase3"],
-                ["Pistonbase3", "piston3"],
-                ["piston4", "Pistonbase4"],
-                ["Pistonbase4", "piston4"],
+                ["Piston1", "PistonBase1"],
+                ["PistonBase1", "Piston1"],
+                ["Piston2", "PistonBase2"],
+                ["PistonBase2", "Piston2"],
+                ["Piston3", "PistonBase3"],
+                ["PistonBase3", "Piston3"],
+                ["Piston4", "PistonBase4"],
+                ["PistonBase4", "Piston4"],
             ],
             HeatAnimations: [
                 "HeatAnimationAdvancedEngine"
@@ -835,14 +835,14 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/SkipperR.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [
-                ["Piston1", "Pistonbase1"],
-                ["Pistonbase1", "Piston1"],
-                ["Piston2", "Pistonbase2"],
-                ["Pistonbase2", "Piston2"],
-                ["Piston3", "Pistonbase3"],
-                ["Pistonbase3", "Piston3"],
-                ["Piston4", "Pistonbase4"],
-                ["Pistonbase4", "Piston4"],
+                ["Piston1", "PistonBase1"],
+                ["PistonBase1", "Piston1"],
+                ["Piston2", "PistonBase2"],
+                ["PistonBase2", "Piston2"],
+                ["Piston3", "PistonBase3"],
+                ["PistonBase3", "Piston3"],
+                ["Piston4", "PistonBase4"],
+                ["PistonBase4", "Piston4"],
             ],
             HeatAnimations: [
                 "ksp_l_midrangeEngine_anim"
@@ -930,7 +930,7 @@ class ModelInfo {
             OriginalBellWidth: 0.5,
             OriginalBaseWidth: 2,
             PlumeSizeMultiplier: 0.43,
-            PlumePositionOffset: 0.13,
+            PlumePositionOffset: 0.12,
             NodeStackTop: 0,
             NodeStackBottom: -0.288,
             ModelPath: "GenericEngines/models/SXT/Kopo4e/model",
@@ -1000,7 +1000,7 @@ class ModelInfo {
             OriginalBellWidth: 1.517,
             OriginalBaseWidth: 3.74,
             PlumeSizeMultiplier: 1.33,
-            PlumePositionOffset: -0.25,
+            PlumePositionOffset: -0.23,
             NodeStackTop: 0.1,
             NodeStackBottom: -3.54,
             ModelPath: "GenericEngines/models/SXT/K170/model",
@@ -1073,7 +1073,7 @@ class ModelInfo {
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.143,
             OriginalBaseWidth: 0.361,
-            PlumeSizeMultiplier: 0.12,
+            PlumeSizeMultiplier: 0.11,
             PlumePositionOffset: 0, // The bells are pointed outwards, so I'm not sure what to do.
             NodeStackTop: -0.034,
             NodeStackBottom: -0.49,
@@ -1955,7 +1955,7 @@ class ModelInfo {
             OriginalBellWidth: 0.824,
             OriginalBaseWidth: 0.824,
             PlumeSizeMultiplier: 0.72,
-            PlumePositionOffset: 0,
+            PlumePositionOffset: -0.01,
             NodeStackTop: 1,
             NodeStackBottom: -0.533,
             ModelPath: "GenericEngines/models/FRE/FRE-1/FRE-1",
@@ -2001,7 +2001,7 @@ class ModelInfo {
             ],
             TextureDefinitions: "",
             ThrustTransformName: "thrustTransform",
-            GimbalTransformName: "thrustTransform",
+            GimbalTransformName: "gimbalTransform",
             ModelName: "FRE-2",
             ModelType: EngineGroupType.IRL,
             HiddenMuObjects: [],
@@ -2012,10 +2012,54 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/FRE2.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [
-                ["Base1", "Piston1"],
-                ["Base2", "Piston2"],
+                ["Base1", "Piston1"], // These actually have names with .001 .002 etc
+                ["Base2", "Piston2"], // Goddammit
                 ["Base3", "Piston3"],
-                ["Base4", "Piston4"]
+                ["Base4", "Piston4"],
+                ["Base1.001", "Piston1.001"],
+                ["Base2.001", "Piston2.001"],
+                ["Base3.001", "Piston3.001"],
+                ["Base4.001", "Piston4.001"],
+                ["Base1.002", "Piston1.002"],
+                ["Base2.002", "Piston2.002"],
+                ["Base3.002", "Piston3.002"],
+                ["Base4.002", "Piston4.002"],
+                ["Base1.003", "Piston1.003"],
+                ["Base2.003", "Piston2.003"],
+                ["Base3.003", "Piston3.003"],
+                ["Base4.003", "Piston4.003"],
+                ["Base1.004", "Piston1.004"],
+                ["Base2.004", "Piston2.004"],
+                ["Base3.004", "Piston3.004"],
+                ["Base4.004", "Piston4.004"],
+                ["Base1.005", "Piston1.005"],
+                ["Base2.005", "Piston2.005"],
+                ["Base3.005", "Piston3.005"],
+                ["Base4.005", "Piston4.005"],
+                ["Base1.006", "Piston1.006"],
+                ["Base2.006", "Piston2.006"],
+                ["Base3.006", "Piston3.006"],
+                ["Base4.006", "Piston4.006"],
+                ["Base1.007", "Piston1.007"],
+                ["Base2.007", "Piston2.007"],
+                ["Base3.007", "Piston3.007"],
+                ["Base4.007", "Piston4.007"],
+                ["Base1.008", "Piston1.008"],
+                ["Base2.008", "Piston2.008"],
+                ["Base3.008", "Piston3.008"],
+                ["Base4.008", "Piston4.008"],
+                ["Base1.009", "Piston1.009"],
+                ["Base2.009", "Piston2.009"],
+                ["Base3.009", "Piston3.009"],
+                ["Base4.009", "Piston4.009"],
+                ["Base1.010", "Piston1.010"],
+                ["Base2.010", "Piston2.010"],
+                ["Base3.010", "Piston3.010"],
+                ["Base4.010", "Piston4.010"],
+                ["Base1.011", "Piston1.011"],
+                ["Base2.011", "Piston2.011"],
+                ["Base3.011", "Piston3.011"],
+                ["Base4.011", "Piston4.011"],
             ],
             HeatAnimations: []
         }, { //Model.LE5
@@ -3186,7 +3230,7 @@ class ModelInfo {
             OriginalBellWidth: 0.495,
             OriginalBaseWidth: 0.87,
             PlumeSizeMultiplier: 0.42,
-            PlumePositionOffset: 0.56,
+            PlumePositionOffset: 0.6,
             NodeStackTop: 0.014,
             NodeStackBottom: -1.19,
             ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine45K",
@@ -4103,4 +4147,39 @@ class ModelInfo {
     LookatPairs: [],
     HeatAnimations: []
 }
+*/
+
+/* 0.9.0 fix list
+0014 - Tweak thrustTransform
+0015 - Lookat doesn't work
+0013 - Tweak thrustTransform
+0018 - Plume origin very far down
+0019 - Plume origin far up
+0011 - Tweak thrustTransform
+0011 - Gray emissive?
+0022 - Plume origin very far down
+0022 - Scuffed lookat stuff (upper target points the opposite way?)
+0021 - Lookat doesn't work
+0027 - No lookat?
+0026 - Tweak thrustTransform
+0024 - Tweak thrustTransform
+|0025 - Tweaked plume origin
+|0027 - Tweaked plume origin
+|0029 - Tweaked plume origin
+|0059 - Tweaked plume origin
+0057 - Tweak thrustTransform
+0058 - Tweak thrustTransform
+0072 - Tweak thrustTransform
+0074 - Tweak thrustTransform
+0089 & esp. 0088 - Plume seems kinda small. Is the bell width correct?
+0079 - lookat stuff kinda... rotates on gimbal? idk
+0094 - Tweak thrustTransform
+0099 - No gimbal? Also tweak thrustTransform
+0097 - Plume's like twice the size of the bell. Check bell width.
+|0096 - Tweaked plume origin
+0109 - Tweak thrustTransform
+0110 - Tweak thrustTransform
+0114 & 0115 & 0116 & 0117 & 0118 & 0119 - Pipe doesn't have the lookat stuff?
+0121 - Tweak thrustTransform
+0122 - Tweak thrustTransform
 */

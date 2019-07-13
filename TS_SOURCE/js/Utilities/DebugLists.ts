@@ -20,7 +20,14 @@ class DebugLists {
             let numberString = newEngine.Height.toString ().length >= trimmed.length ? trimmed : newEngine.Height.toString ();
             newEngine.Height = parseFloat (numberString);
             
-            newEngine.Gimbal = 15;
+            newEngine.NeedsUllage = false;
+            newEngine.Mass = 0.05;
+            newEngine.Thrust = 10;
+            newEngine.VacIsp = 15000;
+            newEngine.AtmIsp = 10000;
+            newEngine.AlternatorPower = 10;
+            
+            newEngine.Gimbal = 20;
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
             let plumes = [Plume.GP_Alcolox, Plume.GP_Ammonialox, Plume.GP_Hydrolox, Plume.GP_Hydynelox, Plume.GP_Hypergolic, Plume.GP_Kerolox, Plume.GP_Methalox, Plume.GP_Solid];

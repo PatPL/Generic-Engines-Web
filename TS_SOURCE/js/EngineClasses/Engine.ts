@@ -1310,13 +1310,14 @@ class Engine {
                 }
             `;
         } else if (plumeInfo.PlumeMod == "GenericPlumes") {
+            let bellWidth = modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
             return `
                 @PART[GE-${engine.ID}]:FOR[GenericPlumesPass0200] {
                     @MODULE[ModuleEngines*] {
                         GENERIC_PLUME {
                             name = ${ plumeInfo.PlumeID }
-                            bellWidth = ${ modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth) }
-                            verticalOffset = ${ modelInfo.PlumePositionOffset }
+                            bellWidth = ${ bellWidth }
+                            verticalOffset = ${ modelInfo.PlumePositionOffset + modelInfo.OriginalBellWidth * 0.33 }
                             volume = ${ this.Thrust / 100 + 1 }
                             pitch = ${ Math.max (Math.min (Math.log10 (this.Thrust / 10 + 1) / 3, 2), 0.4) }
                         }

@@ -7,7 +7,7 @@ class ModelInfo {
     
     private static readonly models: IModelInfo[] = [
         { //Model.LR91
-            OriginalHeight: 1.885,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.9635,
             OriginalBaseWidth: 0.892,
             PlumeSizeMultiplier: 1.0,
@@ -37,7 +37,7 @@ class ModelInfo {
                 "HeatEmissiveAnimation"
             ]
         }, { //Model.AJ10
-            OriginalHeight: 0.654,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.285,
             OriginalBaseWidth: 0.395,
             PlumeSizeMultiplier: 0.295,
@@ -79,7 +79,7 @@ class ModelInfo {
                 "aj10"
             ]
         }, { //Model.RS25
-            OriginalHeight: 1.5,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.865,
             OriginalBaseWidth: 0.989,
             PlumeSizeMultiplier: 0.85,
@@ -111,7 +111,7 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: []
         }, { //Model.Thruster
-            OriginalHeight: 0.3055,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.12,
             OriginalBaseWidth: 0.222,
             PlumeSizeMultiplier: 0.11,
@@ -139,7 +139,7 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: []
         }, { //Model.Aestus
-            OriginalHeight: 0.393,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.234,
             OriginalBaseWidth: 0.616,
             PlumeSizeMultiplier: 0.225,
@@ -181,7 +181,7 @@ class ModelInfo {
                 "48-7SHeat"
             ]
         }, { //Model.IonThruster
-            OriginalHeight: 0.3935,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.459,
             OriginalBaseWidth: 0.627,
             PlumeSizeMultiplier: 0.42,
@@ -214,7 +214,7 @@ class ModelInfo {
                 "colorAnimation"
             ]
         }, { //Model.Rhino
-            OriginalHeight: 4.48,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.802,
             OriginalBaseWidth: 3.78,
             PlumeSizeMultiplier: 1.6,
@@ -255,7 +255,7 @@ class ModelInfo {
                 "HeatAnimationAdvancedEngine"
             ]
         }, { //Model.RD0105T
-            OriginalHeight: 0.727,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.445,
             OriginalBaseWidth: 0.989,
             PlumeSizeMultiplier: 0.4,
@@ -298,7 +298,7 @@ class ModelInfo {
                 "HeatAnimatioEmissiveLiquidEngine3"
             ]
         }, { //Model.SRBLong
-            OriginalHeight: 8.018,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.05265,
             OriginalBaseWidth: 1.276,
             PlumeSizeMultiplier: 1.1,
@@ -328,7 +328,7 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: []
         }, { //Model.RT5
-            OriginalHeight: 1.444,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.773,
             OriginalBaseWidth: 1.003,
             PlumeSizeMultiplier: 0.7,
@@ -360,7 +360,7 @@ class ModelInfo {
                 "Flea"
             ]
         }, { //Model.RT2
-            OriginalHeight: 3.5,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.5945,
             OriginalBaseWidth: 0.613,
             PlumeSizeMultiplier: 0.55,
@@ -390,11 +390,11 @@ class ModelInfo {
                 "RT-2"
             ]
         }, { //Model.S1
-            OriginalHeight: 14.81,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.043,
             OriginalBaseWidth: 1.183,
             PlumeSizeMultiplier: 1.1,
-            PlumePositionOffset: 0.55,
+            PlumePositionOffset: 0,
             NodeStackTop: 7.445,
             NodeStackBottom: -7.365,
             RadialAttachmentPoint: 0.595,
@@ -420,7 +420,7 @@ class ModelInfo {
                 "HeatAnimationSRB"
             ]
         }, { //Model.RD0105
-            OriginalHeight: 0.633,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.445,
             OriginalBaseWidth: 0.991,
             PlumeSizeMultiplier: 0.4,
@@ -462,11 +462,11 @@ class ModelInfo {
                 "HeatAnimatioEmissiveLiquidEngine3"
             ]
         }, { //Model.NERVA
-            OriginalHeight: 3.25,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.996,
             OriginalBaseWidth: 1.245,
             PlumeSizeMultiplier: 0.9,
-            PlumePositionOffset: 0.56,
+            PlumePositionOffset: 0,
             NodeStackTop: 1.414,
             NodeStackBottom: -1.836,
             ModelPath: "GenericEngines/models/VenStockRevamp/LVN",
@@ -480,11 +480,7 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform",
             ModelName: "NERVA",
             ModelType: EngineGroupType.IRL,
-            HiddenMuObjects: [
-                "fairingL",
-                "fairingR",
-                "Size2A"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -513,11 +509,11 @@ class ModelInfo {
                 "overheat"
             ]
         }, { //Model.LVT30
-            OriginalHeight: 1.574,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.653,
             OriginalBaseWidth: 1.001,
             PlumeSizeMultiplier: 0.57,
-            PlumePositionOffset: -0.1,
+            PlumePositionOffset: 0,
             NodeStackTop: 0.774,
             NodeStackBottom: -0.8,
             ModelPath: "GenericEngines/models/VenStockRevamp/LVT30",
@@ -531,10 +527,7 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform",
             ModelName: "LV-T30",
             ModelType: EngineGroupType.Fake,
-            HiddenMuObjects: [
-                "fairing",
-                "Size2A"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -546,11 +539,11 @@ class ModelInfo {
                 "LVT30"
             ]
         }, { //Model.LVT45
-            OriginalHeight: 1.643,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.602,
             OriginalBaseWidth: 0.998,
             PlumeSizeMultiplier: 0.53,
-            PlumePositionOffset: -0.16,
+            PlumePositionOffset: 0,
             NodeStackTop: 0.75,
             NodeStackBottom: -0.893,
             ModelPath: "GenericEngines/models/VenStockRevamp/LVT45",
@@ -564,11 +557,7 @@ class ModelInfo {
             GimbalTransformName: "Obj_Gimbal",
             ModelName: "LV-T45",
             ModelType: EngineGroupType.Fake,
-            HiddenMuObjects: [
-                "fairing",
-                "Size2A",
-                "Cube_006_031_001"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -589,7 +578,7 @@ class ModelInfo {
                 "LV45Heat"
             ]
         }, { //Model.P1057
-            OriginalHeight: 0.615,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.226,
             OriginalBaseWidth: 0.584,
             PlumeSizeMultiplier: 0.19,
@@ -639,7 +628,7 @@ class ModelInfo {
                 "105-7PHeat"
             ]
         }, { //Model.OMSL
-            OriginalHeight: 1.228,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.773,
             OriginalBaseWidth: 0.653,
             PlumeSizeMultiplier: 0.72,
@@ -667,13 +656,13 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: []
         }, { //Model.Poodle
-            OriginalHeight: 1.584,
-            OriginalBellWidth: 1.222,
-            OriginalBaseWidth: 1.196,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: 1.225,
+            OriginalBaseWidth: 1.192,
             PlumeSizeMultiplier: 1.12,
             PlumePositionOffset: 0.0,
-            NodeStackTop: 0.722,
-            NodeStackBottom: -0.862,
+            NodeStackTop: 0.817,
+            NodeStackBottom: -0.702,
             ModelPath: "GenericEngines/models/VenStockRevamp/Poodle",
             ModelFiles: [
                 "files/models/VenStockRevamp/Poodle.mu",
@@ -685,10 +674,7 @@ class ModelInfo {
             GimbalTransformName: "Obj_Gimbal",
             ModelName: "Poodle",
             ModelType: EngineGroupType.Fake,
-            HiddenMuObjects: [
-                "Size2B",
-                "fairing"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -700,13 +686,13 @@ class ModelInfo {
                 "overheatService"
             ]
         }, { //Model.BallNuke
-            OriginalHeight: 1.868,
-            OriginalBellWidth: 0.886,
-            OriginalBaseWidth: 2.5,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: 0.9,
+            OriginalBaseWidth: 2.54,
             PlumeSizeMultiplier: 0.82,
-            PlumePositionOffset: -0.4,
-            NodeStackTop: 0.0,
-            NodeStackBottom: -1.868,
+            PlumePositionOffset: 0,
+            NodeStackTop: 0.6,
+            NodeStackBottom: -1.267,
             ModelPath: "GenericEngines/models/VenStockRevamp/PoodleLargeNTR",
             ModelFiles: [
                 "files/models/VenStockRevamp/PoodleLargeNTR.mu",
@@ -718,9 +704,7 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform",
             ModelName: "Sphere NTR",
             ModelType: EngineGroupType.Fake,
-            HiddenMuObjects: [
-                "fairing"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -732,7 +716,7 @@ class ModelInfo {
                 "ShortNTR"
             ]
         }, { //Model.BallNukeS
-            OriginalHeight: 0.767,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.407,
             OriginalBaseWidth: 0.585,
             PlumeSizeMultiplier: 0.36,
@@ -765,11 +749,11 @@ class ModelInfo {
                 "PoodleHeat"
             ]
         }, { //Model.Skipper
-            OriginalHeight: 3.514,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.6,
             OriginalBaseWidth: 2.504,
             PlumeSizeMultiplier: 1.45,
-            PlumePositionOffset: -0.65,
+            PlumePositionOffset: 0,
             NodeStackTop: 1.19,
             NodeStackBottom: -2.324,
             ModelPath: "GenericEngines/models/VenStockRevamp/Size2MedEngineB",
@@ -783,9 +767,7 @@ class ModelInfo {
             GimbalTransformName: "Nozzle",
             ModelName: "Gas Generator",
             ModelType: EngineGroupType.Fake,
-            HiddenMuObjects: [
-                "fairing"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -793,26 +775,26 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/Skipper.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [
-                ["piston1", "pistonbase1"],
-                ["pistonbase1", "piston1"],
-                ["piston2", "pistonbase2"],
-                ["pistonbase2", "piston2"],
-                ["piston3", "pistonbase3"],
-                ["pistonbase3", "piston3"],
-                ["piston4", "pistonbase4"],
-                ["pistonbase4", "piston4"],
+                ["Piston1", "pistonBase1"],
+                ["pistonBase1", "Piston1"],
+                ["Piston2", "pistonBase2"],
+                ["pistonBase2", "Piston2"],
+                ["Piston3", "pistonBase3"],
+                ["pistonBase3", "Piston3"],
+                ["Piston4", "pistonBase4"],
+                ["pistonBase4", "Piston4"],
             ],
             HeatAnimations: [
                 "Size2MedEngineBEmmissive"
             ]
         }, { //Model.SkipperR
-            OriginalHeight: 2.655,
-            OriginalBellWidth: 1.415,
-            OriginalBaseWidth: 1.225,
-            PlumeSizeMultiplier: 1.3,
+            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalBellWidth: 0.01155,
+            OriginalBaseWidth: 0.01,
+            PlumeSizeMultiplier: 0.001,
             PlumePositionOffset: 0.0,
-            NodeStackTop: 0.007,
-            NodeStackBottom: -2.648,
+            NodeStackTop: 0.0063,
+            NodeStackBottom: -0.01534,
             ModelPath: "GenericEngines/models/VenStockRevamp/Skipper",
             ModelFiles: [
                 "files/models/VenStockRevamp/Skipper.mu",
@@ -824,10 +806,7 @@ class ModelInfo {
             GimbalTransformName: "Obj_Gimbal",
             ModelName: "Skipper",
             ModelType: EngineGroupType.Fake,
-            HiddenMuObjects: [
-                "obj_fairing",
-                "Size2A"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -891,7 +870,7 @@ class ModelInfo {
             OriginalBellWidth: 2.074,
             OriginalBaseWidth: 2.895,
             PlumeSizeMultiplier: 1.8,
-            PlumePositionOffset: -2,
+            PlumePositionOffset: 0,
             NodeStackTop: 0.05,
             NodeStackBottom: -5.74,
             ModelPath: "GenericEngines/models/SXT/NERVA/portlyman",
@@ -912,9 +891,7 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform", // No gimbal obj, and the thrust transform is below the engine, so gimballing makes the plume's origin change. :/
             ModelName: "NERVA wide",
             ModelType: EngineGroupType.Fake,
-            HiddenMuObjects: [
-                "fairing"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -1899,7 +1876,7 @@ class ModelInfo {
             OriginalBellWidth: 0.128,
             OriginalBaseWidth: 0.09,
             PlumeSizeMultiplier: 0.11,
-            PlumePositionOffset: 0.03,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.005,
             NodeStackBottom: -0.365,
             ModelPath: "GenericEngines/models/SSTU/SuperDraco/SC-ENG-SuperDraco",
@@ -1927,7 +1904,7 @@ class ModelInfo {
             OriginalBellWidth: 0.321,
             OriginalBaseWidth: 0.09,
             PlumeSizeMultiplier: 0.29,
-            PlumePositionOffset: 0.2,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.005,
             NodeStackBottom: -0.615,
             ModelPath: "GenericEngines/models/SSTU/SuperDraco/SC-ENG-SuperDraco-L",
@@ -2443,7 +2420,7 @@ class ModelInfo {
             OriginalBellWidth: 0.578,
             OriginalBaseWidth: 2.5,
             PlumeSizeMultiplier: 0.5,
-            PlumePositionOffset: 0.24,
+            PlumePositionOffset: 0,
             NodeStackTop: 0.03,
             NodeStackBottom: -0.844,
             ModelPath: "GenericEngines/models/BDB/Apollo/bluedog_Apollo_Block3_ServiceEngine",
@@ -2515,7 +2492,7 @@ class ModelInfo {
             OriginalBellWidth: 0.531,
             OriginalBaseWidth: 0.373,
             PlumeSizeMultiplier: 0.45,
-            PlumePositionOffset: -0.03,
+            PlumePositionOffset: 0,
             NodeStackTop: 0.28,
             NodeStackBottom: -0.58,
             ModelPath: "GenericEngines/models/BDB/Apollo/bluedog_LEM_Ascent_Engine",
@@ -2993,9 +2970,7 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform",
             ModelName: "Able",
             ModelType: EngineGroupType.IRL,
-            HiddenMuObjects: [
-                "fairing"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -3008,7 +2983,7 @@ class ModelInfo {
             ]
         }, { //Model.Ablestar
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
-            OriginalBellWidth: 0.470,
+            OriginalBellWidth: 0.480,
             OriginalBaseWidth: 0.585,
             PlumeSizeMultiplier: 0.42,
             PlumePositionOffset: 0.265,
@@ -3026,9 +3001,7 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform",
             ModelName: "Ablestar",
             ModelType: EngineGroupType.IRL,
-            HiddenMuObjects: [
-                "fairing"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -3185,9 +3158,7 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform",
             ModelName: "Sargent",
             ModelType: EngineGroupType.SRB,
-            HiddenMuObjects: [
-                "fairing"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: true,
             OriginalTankVolume: 4.3,
             RadialAttachment: true,
@@ -3275,9 +3246,7 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform",
             ModelName: "S3D",
             ModelType: EngineGroupType.IRL,
-            HiddenMuObjects: [
-                "fairing"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -3621,7 +3590,7 @@ class ModelInfo {
             OriginalBellWidth: 1.9,
             OriginalBaseWidth: 1.87,
             PlumeSizeMultiplier: 1.65,
-            PlumePositionOffset: -0.08,
+            PlumePositionOffset: 0,
             NodeStackTop: 8.1,
             NodeStackBottom: -6.25,
             ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Titan_SRB5segStack",
@@ -3649,7 +3618,7 @@ class ModelInfo {
             OriginalBellWidth: 1.9,
             OriginalBaseWidth: 1.87,
             PlumeSizeMultiplier: 1.65,
-            PlumePositionOffset: -0.08,
+            PlumePositionOffset: 0,
             NodeStackTop: 11.85,
             NodeStackBottom: -6.25,
             ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Titan_SRB7segStack",
@@ -4027,7 +3996,7 @@ class ModelInfo {
             OriginalBellWidth: 1.75,
             OriginalBaseWidth: 1.874,
             PlumeSizeMultiplier: 1.57,
-            PlumePositionOffset: 0.81,
+            PlumePositionOffset: 0,
             NodeStackTop: 8.79,
             NodeStackBottom: -5,
             ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_UA1205_Tweaked",
@@ -4060,7 +4029,7 @@ class ModelInfo {
             OriginalBellWidth: 1.75,
             OriginalBaseWidth: 1.874,
             PlumeSizeMultiplier: 1.57,
-            PlumePositionOffset: 0.81,
+            PlumePositionOffset: 0,
             NodeStackTop: 13.19,
             NodeStackBottom: -5,
             ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_UA1207_Tweaked",
@@ -4147,39 +4116,4 @@ class ModelInfo {
     LookatPairs: [],
     HeatAnimations: []
 }
-*/
-
-/* 0.9.0 fix list
-0014 - Tweak thrustTransform
-0015 - Lookat doesn't work
-0013 - Tweak thrustTransform
-0018 - Plume origin very far down
-0019 - Plume origin far up
-0011 - Tweak thrustTransform
-0011 - Gray emissive?
-0022 - Plume origin very far down
-0022 - Scuffed lookat stuff (upper target points the opposite way?)
-0021 - Lookat doesn't work
-0027 - No lookat?
-0026 - Tweak thrustTransform
-0024 - Tweak thrustTransform
-|0025 - Tweaked plume origin
-|0027 - Tweaked plume origin
-|0029 - Tweaked plume origin
-|0059 - Tweaked plume origin
-0057 - Tweak thrustTransform
-0058 - Tweak thrustTransform
-0072 - Tweak thrustTransform
-0074 - Tweak thrustTransform
-0089 & esp. 0088 - Plume seems kinda small. Is the bell width correct?
-0079 - lookat stuff kinda... rotates on gimbal? idk
-0094 - Tweak thrustTransform
-0099 - No gimbal? Also tweak thrustTransform
-0097 - Plume's like twice the size of the bell. Check bell width.
-|0096 - Tweaked plume origin
-0109 - Tweak thrustTransform
-0110 - Tweak thrustTransform
-0114 & 0115 & 0116 & 0117 & 0118 & 0119 - Pipe doesn't have the lookat stuff?
-0121 - Tweak thrustTransform
-0122 - Tweak thrustTransform
 */

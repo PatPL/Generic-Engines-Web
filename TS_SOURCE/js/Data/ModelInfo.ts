@@ -750,12 +750,12 @@ class ModelInfo {
             ]
         }, { //Model.Skipper
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
-            OriginalBellWidth: 1.6,
-            OriginalBaseWidth: 2.504,
-            PlumeSizeMultiplier: 1.45,
+            OriginalBellWidth: 0.16,
+            OriginalBaseWidth: 0.2504,
+            PlumeSizeMultiplier: 0.145,
             PlumePositionOffset: 0,
-            NodeStackTop: 1.19,
-            NodeStackBottom: -2.324,
+            NodeStackTop: 0.119,
+            NodeStackBottom: -0.2324,
             ModelPath: "GenericEngines/models/VenStockRevamp/Size2MedEngineB",
             ModelFiles: [
                 "files/models/VenStockRevamp/Size2MedEngineB.mu",
@@ -941,7 +941,7 @@ class ModelInfo {
                                       // https://github.com/linuxgurugamer/SXTContinued/issues/68
             OriginalBaseWidth: 1.25,
             PlumeSizeMultiplier: 0.44,
-            PlumePositionOffset: 0.4,
+            PlumePositionOffset: 0.0,
             NodeStackTop: 0.594,
             NodeStackBottom: -0.75,
             ModelPath: "GenericEngines/models/SXT/KickMotor/model",
@@ -959,9 +959,7 @@ class ModelInfo {
             GimbalTransformName: "thrustTransform",
             ModelName: "RT-3",
             ModelType: EngineGroupType.Fake,
-            HiddenMuObjects: [
-                "solidBooster2_001"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: true,
             OriginalTankVolume: 607,
             RadialAttachment: true,
@@ -1144,7 +1142,18 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/AJ10_137.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["AJ10-137-Target-Upper1", "AJ10-137-Strut-Lower1"],
+                ["AJ10-137-Target-Lower1", "AJ10-137-Strut-Upper1"],
+                ["AJ10-137-Target-Upper2", "AJ10-137-Strut-Lower2"],
+                ["AJ10-137-Target-Lower2", "AJ10-137-Strut-Upper2"],
+                ["AJ10-137-Target-Upper3", "AJ10-137-Strut-Lower3"],
+                ["AJ10-137-Target-Lower3", "AJ10-137-Strut-Upper3"],
+                ["AJ10-137-Target-Upper4", "AJ10-137-Strut-Lower4"],
+                ["AJ10-137-Target-Lower4", "AJ10-137-Strut-Upper4"],
+                ["AJ10-137-Target-Fuel1", "AJ10-137-FuelJoint1"],
+                ["AJ10-137-Target-Fuel2", "AJ10-137-FuelJoint2"],
+            ],
             HeatAnimations: []
         }, { //Model.AJ10_190
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1173,7 +1182,15 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/AJ10_190.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["AJ10-190-Strut-Lower1", "AJ10-190-Strut-Upper1"],
+                ["AJ10-190-Strut-Upper1", "AJ10-190-Strut-Lower1"],
+                ["AJ10-190-Strut-Lower2", "AJ10-190-Strut-Upper2"],
+                ["AJ10-190-Strut-Upper2", "AJ10-190-Strut-Lower2"],
+                ["AJ10-190-Target-Fuel1", "AJ10-190-FuelJoint1"],
+                ["AJ10-190-Target-Fuel2", "AJ10-190-FuelJoint2"],
+                
+            ],
             HeatAnimations: []
         }, { //Model.F1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1202,7 +1219,15 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/F1.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["F1-Target-LeftLower", "F1-Strut-LeftUpper"],
+                ["F1-Target-LeftUpper", "F1-Strut-LeftLower"],
+                ["F1-Target-RightLower", "F1-Strut-RightUpper"],
+                ["F1-Target-RightUpper", "F1-Strut-RightLower"],
+                ["F1-Target-FuelLeft", "F1-FuelLineLeft"],
+                ["F1-Target-FuelRight", "F1-FuelLineRight"],
+                ["F1-Target-FuelCenter", "F1-FuelLineCenter"],
+            ],
             HeatAnimations: []
         }, { //Model.F1B
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1231,7 +1256,15 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/F1B.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["F1B-Target-LeftUpper", "F1B-Strut-LeftLower"],
+                ["F1B-Target-LeftLower", "F1B-Strut-LeftUpper"],
+                ["F1B-Target-RightUpper", "F1B-Strut-RightLower"],
+                ["F1B-Target-RightLower", "F1B-Strut-RightUpper"],
+                ["F1B-Target-FuelLeft", "F1B-FuelLineLeft"],
+                ["F1B-Target-FuelRight", "F1B-FuelLineRight"],
+                ["F1B-Target-FuelCenter", "F1B-FuelLineCenter"],
+            ],
             HeatAnimations: []
         }, { //Model.H1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1260,7 +1293,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/H1.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["H-1-Target-LeftUpper", "H-1-Strut-LeftLower"],
+                ["H-1-Target-LeftLower", "H-1-Strut-LeftUpper"],
+                ["H-1-Target-RightUpper", "H-1-Strut-RightLower"],
+                ["H-1-Target-RightLower", "H-1-Strut-RightUpper"],
+                ["H-1-Target-FuelLeft", "H-1-FuelJointLeft"],
+                ["H-1-Target-FuelRight", "H-1-FuelJointRight"],
+            ],
             HeatAnimations: []
         }, { //Model.J2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1289,7 +1329,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/J2.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["J-2-Target-LeftUpper", "J-2-Strut-LeftLower"],
+                ["J-2-Target-LeftLower", "J-2-Strut-LeftUpper"],
+                ["J-2-Target-RightUpper", "J-2-Strut-RightLower"],
+                ["J-2-Target-RightLower", "J-2-Strut-RightUpper"],
+                ["J-2-Target-FuelLeft", "J-2-FuelLineLeft"],
+                ["J-2-Target-FuelRight", "J-2-FuelLineRight"],
+            ],
             HeatAnimations: []
         }, { //Model.J2X
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1318,7 +1365,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/J2X.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["J-2X-Target-LowerLeft", "J-2X-Strut-UpperLeft"],
+                ["J-2X-Target-UpperLeft", "J-2X-Strut-LowerLeft"],
+                ["J-2X-Target-LowerRight", "J-2X-Strut-UpperRight"],
+                ["J-2X-Target-UpperRight", "J-2X-Strut-LowerRight"],
+                ["J-2X-Target-FuelLeft", "J-2X-FuelLineLeft"],
+                ["J-2X-Target-FuelRight", "J-2X-FuelLineRight"],
+            ],
             HeatAnimations: []
         }, { //Model.LMAE
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1376,7 +1430,12 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/LMDE.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["LMDE-GimbalUpper1", "LMDE-GimbalLower1"],
+                ["LMDE-GimbalLower1", "LMDE-GimbalUpper1"],
+                ["LMDE-GimbalUpper2", "LMDE-GimbalLower2"],
+                ["LMDE-GimbalLower2", "LMDE-GimbalUpper2"],
+            ],
             HeatAnimations: []
         }, { //Model.Bell8048
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1405,7 +1464,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Bell8048.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["LR-81-8048-ExhaustTarget", "LR-81-8048-ExhaustJoint"],
+                ["LR-81-8048-FuelTarget", "LR-81-8048-FuelJoint"],
+                ["LR-81-8048-Strut-LeftUpper", "LR-81-8048-Strut-LeftLower"],
+                ["LR-81-8048-Strut-LeftLower", "LR-81-8048-Strut-LeftUpper"],
+                ["LR-81-8048-Strut-RightUpper", "LR-81-8048-Strut-RightLower"],
+                ["LR-81-8048-Strut-RightLower", "LR-81-8048-Strut-RightUpper"],
+            ],
             HeatAnimations: []
         }, { //Model.Bell8096
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1434,7 +1500,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Bell8096.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["LR-81-8096-ExhaustTarget", "LR-81-8096-ExhaustJoint"],
+                ["LR-81-8096-FuelTarget", "LR-81-8096-FuelJoint"],
+                ["LR-81-8096-Strut-LeftUpper", "LR-81-8096-Strut-LeftLower"],
+                ["LR-81-8096-Strut-LeftLower", "LR-81-8096-Strut-LeftUpper"],
+                ["LR-81-8096-Strut-RightUpper", "LR-81-8096-Strut-RightLower"],
+                ["LR-81-8096-Strut-RightLower", "LR-81-8096-Strut-RightUpper"],
+            ],
             HeatAnimations: []
         }, { //Model.Merlin1A
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1463,7 +1536,12 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1A.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["Merlin-1A-Strut-Lower1", "Merlin-1A-Strut-Upper1"],
+                ["Merlin-1A-Strut-Upper1", "Merlin-1A-Strut-Lower1"],
+                ["Merlin-1A-Strut-Lower2", "Merlin-1A-Strut-Upper2"],
+                ["Merlin-1A-Strut-Upper2", "Merlin-1A-Strut-Lower2"],
+            ],
             HeatAnimations: []
         }, { //Model.MerlinB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1492,7 +1570,12 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1B.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["Merlin-1B-Strut-Lower1", "Merlin-1B-Strut-Upper1"],
+                ["Merlin-1B-Strut-Upper1", "Merlin-1B-Strut-Lower1"],
+                ["Merlin-1B-Strut-Lower2", "Merlin-1B-Strut-Upper2"],
+                ["Merlin-1B-Strut-Upper2", "Merlin-1B-Strut-Lower2"],
+            ],
             HeatAnimations: []
         }, { //Model.Merlin1BV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1521,7 +1604,12 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1BV.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["Merlin-1BV-Strut-Lower1", "Merlin-1BV-Strut-Upper1"],
+                ["Merlin-1BV-Strut-Upper1", "Merlin-1BV-Strut-Lower1"],
+                ["Merlin-1BV-Strut-Lower2", "Merlin-1BV-Strut-Upper2"],
+                ["Merlin-1BV-Strut-Upper2", "Merlin-1BV-Strut-Lower2"],
+            ],
             HeatAnimations: []
         }, { //Model.Merlin1D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1550,7 +1638,12 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1D.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["Merlin-1D-Strut-Lower1", "Merlin-1D-Strut-Upper1"],
+                ["Merlin-1D-Strut-Upper1", "Merlin-1D-Strut-Lower1"],
+                ["Merlin-1D-Strut-Lower2", "Merlin-1D-Strut-Upper2"],
+                ["Merlin-1D-Strut-Upper2", "Merlin-1D-Strut-Lower2"],
+            ],
             HeatAnimations: []
         }, { //Model.Merlin1DV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1579,7 +1672,12 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/Merlin1DV.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["Merlin-1DV-Strut-Lower1", "Merlin-1DV-Strut-Upper1"],
+                ["Merlin-1DV-Strut-Upper1", "Merlin-1DV-Strut-Lower1"],
+                ["Merlin-1DV-Strut-Lower2", "Merlin-1DV-Strut-Upper2"],
+                ["Merlin-1DV-Strut-Upper2", "Merlin-1DV-Strut-Lower2"],
+            ],
             HeatAnimations: []
         }, { //Model.RD107
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1637,7 +1735,24 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD171.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["RD-171-GimbalUpper1", "RD-171-GimbalLower1"],
+                ["RD-171-GimbalLower1", "RD-171-GimbalUpper1"],
+                ["RD-171-GimbalUpper2", "RD-171-GimbalLower2"],
+                ["RD-171-GimbalLower2", "RD-171-GimbalUpper2"],
+                ["RD-171-GimbalUpper3", "RD-171-GimbalLower3"],
+                ["RD-171-GimbalLower3", "RD-171-GimbalUpper3"],
+                ["RD-171-GimbalUpper4", "RD-171-GimbalLower4"],
+                ["RD-171-GimbalLower4", "RD-171-GimbalUpper4"],
+                ["RD-171-GimbalUpper5", "RD-171-GimbalLower5"],
+                ["RD-171-GimbalLower5", "RD-171-GimbalUpper5"],
+                ["RD-171-GimbalUpper6", "RD-171-GimbalLower6"],
+                ["RD-171-GimbalLower6", "RD-171-GimbalUpper6"],
+                ["RD-171-GimbalUpper7", "RD-171-GimbalLower7"],
+                ["RD-171-GimbalLower7", "RD-171-GimbalUpper7"],
+                ["RD-171-GimbalUpper8", "RD-171-GimbalLower8"],
+                ["RD-171-GimbalLower8", "RD-171-GimbalUpper8"],
+            ],
             HeatAnimations: []
         }, { //Model.RD180
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1666,7 +1781,20 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD180.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["RD-180-GimbalLeftLower1", "RD-180-GimbalLeftUpper1X"],
+                ["RD-180-GimbalLeftLower1", "RD-180-GimbalLeftUpper1"],
+                ["RD-180-GimbalLeftUpper1", "RD-180-GimbalLeftLower1"],
+                ["RD-180-GimbalLeftLower2", "RD-180-GimbalLeftUpper2X"],
+                ["RD-180-GimbalLeftLower2", "RD-180-GimbalLeftUpper2"],
+                ["RD-180-GimbalLeftUpper2", "RD-180-GimbalLeftLower2"],
+                ["RD-180-GimbalRightLower1", "RD-180-GimbalRightUpper1X"],
+                ["RD-180-GimbalRightLower1", "RD-180-GimbalRightUpper1"],
+                ["RD-180-GimbalRightUpper1", "RD-180-GimbalRightLower1"],
+                ["RD-180-GimbalRightLower2", "RD-180-GimbalRightUpper2X"],
+                ["RD-180-GimbalRightLower2", "RD-180-GimbalRightUpper2"],
+                ["RD-180-GimbalRightUpper2", "RD-180-GimbalRightLower2"],
+            ],
             HeatAnimations: []
         }, { //Model.RD181
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1695,7 +1823,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RD181.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["RD-181-GimbalLower1", "RD-181-GimbalUpperX1"],
+                ["RD-181-GimbalUpper1", "RD-181-GimbalLower1"],
+                ["RD-181-GimbalLower1", "RD-181-GimbalUpper1"],
+                ["RD-181-GimbalLower2", "RD-181-GimbalUpperX2"],
+                ["RD-181-GimbalUpper2", "RD-181-GimbalLower2"],
+                ["RD-181-GimbalLower2", "RD-181-GimbalUpper2"],
+            ],
             HeatAnimations: []
         }, { //Model.RL10A3
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1724,7 +1859,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10A3.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["RL10A-3-Target-LeftUpper", "RL10A-3-Strut-LeftLower"],
+                ["RL10A-3-Target-LeftLower", "RL10A-3-Strut-LeftUpper"],
+                ["RL10A-3-Target-RightUpper", "RL10A-3-Strut-RightLower"],
+                ["RL10A-3-Target-RightLower", "RL10A-3-Strut-RightUpper"],
+                ["RL10A-3-Target-FuelLeft", "RL10A-3-FuelJointLeft"],
+                ["RL10A-3-Target-FuelRight", "RL10A-3-FuelJointRight"],
+            ],
             HeatAnimations: []
         }, { //Model.RL10A4
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1753,7 +1895,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10A4.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["RL10A-4-Target-LeftUpper", "RL10A-4-Strut-LeftLower"],
+                ["RL10A-4-Target-LeftLower", "RL10A-4-Strut-LeftUpper"],
+                ["RL10A-4-Target-RightUpper", "RL10A-4-Strut-RightLower"],
+                ["RL10A-4-Target-RightLower", "RL10A-4-Strut-RightUpper"],
+                ["RL10A-4-Target-FuelLeft", "RL10A-4-FuelJointLeft"],
+                ["RL10A-4-Target-FuelRight", "RL10A-4-FuelJointRight"],
+            ],
             HeatAnimations: []
         }, { //Model.RL10A5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1782,7 +1931,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10A5.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["RL10A-5-Target-LeftUpper", "RL10A-5-Strut-LeftLower"],
+                ["RL10A-5-Target-LeftLower", "RL10A-5-Strut-LeftUpper"],
+                ["RL10A-5-Target-RightUpper", "RL10A-5-Strut-RightLower"],
+                ["RL10A-5-Target-RightLower", "RL10A-5-Strut-RightUpper"],
+                ["RL10A-5-Target-FuelLeft", "RL10A-5-FuelJointLeft"],
+                ["RL10A-5-Target-FuelRight", "RL10A-5-FuelJointRight"],
+            ],
             HeatAnimations: []
         }, { //Model.RL10B2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1811,7 +1967,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RL10B2.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["RL10B-2-Target-LeftUpper", "RL10B-2-Strut-LeftLower"],
+                ["RL10B-2-Target-LeftLower", "RL10B-2-Strut-LeftUpper"],
+                ["RL10B-2-Target-RightUpper", "RL10B-2-Strut-RightLower"],
+                ["RL10B-2-Target-RightLower", "RL10B-2-Strut-RightUpper"],
+                ["RL10B-2-Target-FuelLeft", "RL10B-2-FuelJointLeft"],
+                ["RL10B-2-Target-FuelRight", "RL10B-2-FuelJointRight"],
+            ],
             HeatAnimations: []
         }, { //Model.RS25_2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1840,7 +2003,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RS25_2.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["RS-25-Target-LeftUpper", "RS-25-Strut-LeftLower"],
+                ["RS-25-Target-LeftLower", "RS-25-Strut-LeftUpper"],
+                ["RS-25-Target-RightUpper", "RS-25-Strut-RightLower"],
+                ["RS-25-Target-RightLower", "RS-25-Strut-RightUpper"],
+                ["RS-25-Target-FuelLeft", "RS-25-FuelJointLeft"],
+                ["RS-25-Target-FuelRight", "RS-25-FuelJointRight"],
+            ],
             HeatAnimations: []
         }, { //Model.RS68
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -1869,7 +2039,14 @@ class ModelInfo {
             RadialAttachmentPoint: 0,
             ImageSource: "img/modelPreviews/RS68.webp",
             get ImageLabel(): string { return this.ModelName },
-            LookatPairs: [],
+            LookatPairs: [
+                ["RS-68-Target-LeftUpper", "RS-68-Strut-LeftLower"],
+                ["RS-68-Target-LeftLower", "RS-68-Strut-LeftUpper"],
+                ["RS-68-Target-RightUpper", "RS-68-Strut-RightLower"],
+                ["RS-68-Target-RightLower", "RS-68-Strut-RightUpper"],
+                ["RS-68-Target-FuelFront", "RS-68-FuelJointFront"],
+                ["RS-68-Target-FuelRear", "RS-68-FuelJointRear"],
+            ],
             HeatAnimations: []
         }, { //Model.SuperDraco
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
@@ -3198,12 +3375,12 @@ class ModelInfo {
             HeatAnimations: []
         }, { //Model.Juno45K
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
-            OriginalBellWidth: 0.495,
-            OriginalBaseWidth: 0.87,
-            PlumeSizeMultiplier: 0.42,
-            PlumePositionOffset: 0.6,
-            NodeStackTop: 0.014,
-            NodeStackBottom: -1.19,
+            OriginalBellWidth: 0.7,
+            OriginalBaseWidth: 1.231,
+            PlumeSizeMultiplier: 0.6,
+            PlumePositionOffset: 0.0,
+            NodeStackTop: 0.0198,
+            NodeStackBottom: -1.6836,
             ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine45K",
             ModelFiles: [
                 "files/models/BDB/Juno/bluedog_Juno_Engine45K.mu",
@@ -3211,12 +3388,10 @@ class ModelInfo {
             ],
             TextureDefinitions: "",
             ThrustTransformName: "thrustTransform",
-            GimbalTransformName: "thrustTransform",
+            GimbalTransformName: "gimbalTransform",
             ModelName: "Juno 45K",
             ModelType: EngineGroupType.IRL,
-            HiddenMuObjects: [
-                "fairing"
-            ],
+            HiddenMuObjects: [],
             CanAttachOnModel: false,
             OriginalTankVolume: 0,
             RadialAttachment: false,
@@ -3230,12 +3405,12 @@ class ModelInfo {
             HeatAnimations: []
         }, { //Model.S3D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
-            OriginalBellWidth: 0.745,
-            OriginalBaseWidth: 0.93,
-            PlumeSizeMultiplier: 0.66,
-            PlumePositionOffset: 0.92,
-            NodeStackTop: 0.074,
-            NodeStackBottom: -1.466,
+            OriginalBellWidth: 1.99,
+            OriginalBaseWidth: 2.4864,
+            PlumeSizeMultiplier: 1.8,
+            PlumePositionOffset: 0.0,
+            NodeStackTop: 0.198,
+            NodeStackBottom: -3.92,
             ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_EngineS3D",
             ModelFiles: [
                 "files/models/BDB/Juno/bluedog_Juno_EngineS3D.mu",
@@ -3243,7 +3418,7 @@ class ModelInfo {
             ],
             TextureDefinitions: "",
             ThrustTransformName: "thrustTransform",
-            GimbalTransformName: "thrustTransform",
+            GimbalTransformName: "gimbalTransform",
             ModelName: "S3D",
             ModelType: EngineGroupType.IRL,
             HiddenMuObjects: [],

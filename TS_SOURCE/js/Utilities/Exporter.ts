@@ -104,7 +104,13 @@ class Exporter {
                 author = Generic Engines
                 
                 ${engine.GetModelConfig ()}
-
+                
+                RSSROConfig = True
+                RP0conf = True
+                breakingForce = 250
+                breakingTorque = 250
+                stageOffset = 1
+                childStageOffset = 1
                 TechRequired = ${TechNode[engine.TechUnlockNode]}
                 entryCost = ${engine.EntryCost}
                 cost = ${engine.Cost}
@@ -123,21 +129,25 @@ class Exporter {
                 minimum_drag = 0.2
                 angularDrag = 2
                 crashTolerance = 12
-                maxTemp = 2200 // = 3600
-                bulkheadProfiles = size1
-                tags = REP
-
+                maxTemp = 573.15
+                skinMaxTemp = 673.15
+                bulkheadProfiles = srf, size3
+                tags = Generic Engine
+                stagingIcon = ${engine.StagingIconConfig ()}
+                
                 MODULE
                 {
                     name = GenericEnginesPlumeScaleFixer
                 }
-
+                
                 ${engine.GetHiddenObjectsConfig ()}
-
+                
+                ${engine.GetGimbalConfig ()}
+                
                 MODULE
                 {
-                    name = ModuleEngines
-                    %engineID = PrimaryMode
+                    name = ModuleEnginesFX
+                    engineID = PrimaryMode
                     thrustVectorTransformName = ${modelInfo.ThrustTransformName}
                     exhaustDamage = True
                     allowShutdown = ${engine.EngineVariant != EngineType.Solid}
@@ -163,7 +173,8 @@ class Exporter {
                     
                 }
                 
-                ${engine.GetGimbalConfig ()}
+                ${engine.GetTankConfig ()}
+                !RESOURCE,*{}
                 
                 ${engine.GetAlternatorConfig ()}
                 
@@ -177,27 +188,9 @@ class Exporter {
                     thrustTransformName = ${modelInfo.ThrustTransformName}
                 }
             }
-
-            @PART[GE-${engine.ID}]:FOR[RealismOverhaul]
-            {
-                %RSSROConfig = True
-                %RP0conf = True
-                
-                %breakingForce = 250
-                %breakingTorque = 250
-                @maxTemp = 573.15
-                %skinMaxTemp = 673.15
-                %stageOffset = 1
-                %childStageOffset = 1
-                %stagingIcon = ${engine.StagingIconConfig ()}
-                @bulkheadProfiles = srf, size3
-                @tags = Generic Engine
-
-                ${engine.GetTankConfig ()}
-
+            
+            @PART[GE-${engine.ID}]:FOR[RealismOverhaul] {
                 ${engine.GetEngineModuleConfig (allEngines)}
-
-                !RESOURCE,*{}
             }
 
             ${engine.GetPlumeConfig ()}
@@ -222,13 +215,13 @@ class Exporter {
             
             @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
             {
-                +MODULE[ModuleEngines*]
+                +MODULE[ModuleEnginesFX]
                 {
                     @engineID = SecondaryMode
                     @minThrust = ${engine.Thrust * engine.MinThrust / 100}
                     @maxThrust = ${engine.Thrust}
                     @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeID}
+                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeEffectName}
                     
                     !PROPELLANT,*{}
                     

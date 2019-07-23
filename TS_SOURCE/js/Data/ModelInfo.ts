@@ -35,7 +35,13 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: [
                 "HeatEmissiveAnimation"
-            ]
+            ],
+            Exhaust: {
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "exhaustEffect",
+                exhaustBellWidth: 0.0757
+            }
         }, { //Model.AJ10
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.285,

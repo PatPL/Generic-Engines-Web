@@ -123,5 +123,8 @@ interface IModelInfo extends IImageSelectable {
 }
 
 interface IExhaustInfo {
-    
+    exhaustThrustTransform: string;
+    exhaustGimbalTransform: string;
+    exhaustEffectTransform: string;
+    exhaustBellWidth: number;
 }

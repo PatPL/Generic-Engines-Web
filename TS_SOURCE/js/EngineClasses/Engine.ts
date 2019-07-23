@@ -1313,7 +1313,7 @@ class Engine {
             let bellWidth = modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
             return `
                 @PART[GE-${engine.ID}]:FOR[GenericPlumesPass0200] {
-                    @MODULE[ModuleEngines*] {
+                    @MODULE[ModuleEngine*] {
                         GENERIC_PLUME {
                             name = ${ plumeInfo.PlumeID }
                             bellWidth = ${ bellWidth }

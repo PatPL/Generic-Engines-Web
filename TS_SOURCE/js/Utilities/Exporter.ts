@@ -137,24 +137,26 @@ class Exporter {
                 MODULE
                 {
                     name = ModuleEngines
+                    %engineID = PrimaryMode
                     thrustVectorTransformName = ${modelInfo.ThrustTransformName}
                     exhaustDamage = True
                     allowShutdown = ${engine.EngineVariant != EngineType.Solid}
                     useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
                     throttleLocked = ${engine.EngineVariant == EngineType.Solid}
                     ignitionThreshold = 0.1
-                    minThrust = 0
-                    maxThrust = 610
-                    heatProduction = 200
+                    minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    maxThrust = ${engine.Thrust}
+                    heatProduction = 180
                     EngineType = ${engine.EngineTypeConfig ()}
-                    useThrustCurve = ${engine.ThrustCurve.length > 0}
                     exhaustDamageDistanceOffset = 0.79
-
+                    useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    
+                    ${engine.GetPropellantConfig ()}
+                    
                     atmosphereCurve
                     {
-                        key = 0 345
-                        key = 1 204
-                        key = 6 0.001
+                        key = 0 ${engine.VacIsp}
+                        key = 1 ${engine.AtmIsp}
                     }
                     
                     ${engine.GetThrustCurveConfig ()}
@@ -193,27 +195,6 @@ class Exporter {
 
                 ${engine.GetTankConfig ()}
 
-                @MODULE[ModuleEngines*]
-                {
-                    %engineID = PrimaryMode
-                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
-                    @maxThrust = ${engine.Thrust}
-                    @heatProduction = 180
-                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeEffectName}
-
-                    ${engine.GetPropellantConfig ()}
-
-                    @atmosphereCurve
-                    {
-                        @key,0 = 0 ${engine.VacIsp}
-                        @key,1 = 1 ${engine.AtmIsp}
-                    }
-
-                    ${engine.GetThrustCurveConfig ()}
-
-                }
-
                 ${engine.GetEngineModuleConfig (allEngines)}
 
                 !RESOURCE,*{}
@@ -246,24 +227,23 @@ class Exporter {
                     @engineID = SecondaryMode
                     @minThrust = ${engine.Thrust * engine.MinThrust / 100}
                     @maxThrust = ${engine.Thrust}
-                    @heatProduction = 180
                     @useThrustCurve = ${engine.ThrustCurve.length > 0}
                     %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeID}
-
-                    !PROPELLANT,*
-                    {
-                    }
-
+                    
+                    !PROPELLANT,*{}
+                    
                     ${engine.GetPropellantConfig ()}
-
+                    
                     @atmosphereCurve
                     {
                         @key,0 = 0 ${engine.VacIsp}
                         @key,1 = 1 ${engine.AtmIsp}
                     }
-
+                    
+                    !curveResource
+                    !thrustCurve
                     ${engine.GetThrustCurveConfig ()}
-
+                    
                 }
             }
 

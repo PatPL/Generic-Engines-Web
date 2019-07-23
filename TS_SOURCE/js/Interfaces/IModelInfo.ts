@@ -115,5 +115,13 @@ interface IModelInfo extends IImageSelectable {
      * Use this to get the clip names: https://patpl.github.io/muTS/animations.html
      */
     readonly HeatAnimations: string[];
+    /**
+     * Object with data about model's exhaust for gas generator exhaust, and verniers
+     */
+    readonly Exhaust?: IExhaustInfo;
+    
+}
+
+interface IExhaustInfo {
     
 }

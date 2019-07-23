@@ -646,6 +646,10 @@ const Settings = {
         return Store.GetText("setting:show_info_panel", "1") == "1";
     }, set show_info_panel(value) {
         Store.SetText("setting:show_info_panel", value ? "1" : "0");
+    }, get prettify_config() {
+        return Store.GetText("setting:prettify_config", "0") == "1";
+    }, set prettify_config(value) {
+        Store.SetText("setting:prettify_config", value ? "1" : "0");
     }
 };
 var ListName = "Unnamed";
@@ -9209,7 +9213,11 @@ class Exporter {
                     break;
             }
         });
-        return Exporter.CompactConfig(output);
+        output = Exporter.CompactConfig(output);
+        if (Settings.prettify_config) {
+            output = Exporter.PrettifyConfig(output);
+        }
+        return output;
     }
     static CompactConfig(input) {
         let output = "";
@@ -9218,6 +9226,26 @@ class Exporter {
             let tmp = l.trim();
             if (tmp != "") {
                 output += `${tmp}\n`;
+            }
+        });
+        return output;
+    }
+    static PrettifyConfig(input) {
+        let output = "";
+        let lines = input.split("\n");
+        let tabCount = 0;
+        lines.forEach(l => {
+            let closeBracketCount = (l.match(/}/g) || []).length;
+            tabCount -= closeBracketCount;
+            if (closeBracketCount > 0) {
+                tabCount += (l.match(/{/g) || []).length;
+            }
+            output += `${"\t".repeat(tabCount)}${l}\n`;
+            if (closeBracketCount > 0) {
+                output += `${"\t".repeat(tabCount)}\n`;
+            }
+            else {
+                tabCount += (l.match(/{/g) || []).length;
             }
         });
         return output;

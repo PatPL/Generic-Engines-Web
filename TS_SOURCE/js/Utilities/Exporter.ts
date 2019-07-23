@@ -39,7 +39,13 @@ class Exporter {
             }
         });
         
-        return Exporter.CompactConfig (output);
+        output = Exporter.CompactConfig (output);
+        
+        if (Settings.prettify_config) {
+            output = Exporter.PrettifyConfig (output);
+        }
+        
+        return output;
     }
     
     public static CompactConfig (input: string): string {
@@ -51,6 +57,37 @@ class Exporter {
             
             if (tmp != "") {
                 output += `${tmp}\n`;
+            }
+        });
+        
+        return output;
+    }
+    
+    public static PrettifyConfig (input: string): string {
+        let output = "";
+        let lines = input.split ("\n");
+        let tabCount = 0;
+        
+        lines.forEach (l => {
+            // Remove tabs before 
+            let closeBracketCount = (l.match (/}/g) || []).length;
+            tabCount -= closeBracketCount;
+            
+            // Add opening tabs if there is a closing tab to make it work well with a line like this:
+            // !RESOURCE,*{}
+            if (closeBracketCount > 0) {
+                tabCount += (l.match (/{/g) || []).length;
+            }
+            
+            // Add the parsed line, with tabs
+            output += `${ "\t".repeat (tabCount) }${ l }\n`;
+            
+            if (closeBracketCount > 0) {
+                // Add an empty line after a closing bracket
+                output += `${ "\t".repeat (tabCount) }\n`;
+            } else {
+                // Now add new tabs of there were no closing braces
+                tabCount += (l.match (/{/g) || []).length;
             }
         });
         

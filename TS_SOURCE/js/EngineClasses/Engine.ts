@@ -60,7 +60,7 @@ class Engine {
             DisplayFlags: 0b00110
         }, Visuals: {
             Name: "Visuals",
-            DefaultWidth: 240,
+            DefaultWidth: 300,
             DisplayFlags: 0b00000
         }, Dimensions: {
             Name: "Size",
@@ -105,6 +105,8 @@ class Engine {
         }
     }
     Spacer: boolean = false; // For an empty space at the end of the table
+    // Fuck me I wish I used React or Vue instead of dealing with this clusterfuck
+    // I genuinely hope noone will have to debug this, ever.
     public readonly EditableFieldMetadata: { [id: string]: IEditable } = {
         Spacer: {
             GetDisplayElement: () => {
@@ -1118,25 +1120,45 @@ class Engine {
                     e.innerHTML = `${ModelInfo.GetModelInfo (this.ModelID).ModelName}, ${PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeName}`;
                 }
             }, GetEditElement: () => {
+                let targetEngine = (
+                    this.PolyType == PolymorphismType.MultiModeSlave ||
+                    this.PolyType == PolymorphismType.MultiConfigSlave
+                ) ? this.EngineList.find (x => x.ID == this.MasterEngineName) : this;
+                targetEngine = targetEngine != undefined ? targetEngine : this;
+                
                 let tmp = document.createElement ("div");
                 tmp.classList.add ("content-cell-content");
-                tmp.style.height = "48px";
                 tmp.style.padding = "0";
                 
                 let grid = document.createElement ("div");
                 grid.style.display = "grid";
                 grid.style.gridTemplateColumns = "60px auto";
-                grid.style.gridTemplateRows = "24px 24px";
                 grid.style.gridTemplateAreas = `
                     "a b"
                     "c d"
+                    "e e"
                 `;
+                tmp.style.height = "168px";
+                grid.style.gridTemplateRows = "24px 24px 120px";
                 
                 grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: a;">Model</div>
                     <div style="grid-area: b;"><span class="clickable-text modelText" value="999">Placeholder</span></div>
                     <div class="content-cell-content" style="grid-area: c;">Plume</div>
                     <div style="grid-area: d;"><span class="clickable-text plumeText" value="999">Placeholder</span></div>
+                    <div class="exhaustBox" style="grid-area: e; display: grid; grid-template: 'ea ea' 24px 'eb eb' 96px / auto">
+                    <div class="content-cell-content" style="grid-area: ea;"><input class="enableExhaust" type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Enable exhaust effects</span></div>
+                    <div class="exhaustSettings" style="grid-area: eb; display: grid; grid-template: 'eba ebb' 24px 'ebc ebd' 24px 'ebe ebf' 24px 'ebg ebh' 24px / 140px auto">
+                    <div class="content-cell-content" style="grid-area: eba;">Exhaust plume</div>
+                    <div style="grid-area: ebb;"><span class="clickable-text exhaustPlumeText" value="999">Placeholder</span></div>
+                    <div class="content-cell-content" style="grid-area: ebc; cursor: help;" title="What fraction of engine's overall thrust is produced by this exhaust?">Exhaust thrust%</div>
+                    <div style="grid-area: ebd;"><input class="exhaustThrust" style="width: calc(100%);"></div>
+                    <div class="content-cell-content" style="grid-area: ebe; cursor: help;" title="Multiplier of exhaust's efficiency, compared to main engine">Exhaust impulse</div>
+                    <div style="grid-area: ebf;"><input class="exhaustImpulse" style="width: calc(100%);"></div>
+                    <div class="content-cell-content" style="grid-area: ebg;">Exhaust gimbal</div>
+                    <div style="grid-area: ebh;"><input class="exhaustGimbal" style="width: calc(100%);"></div>
+                    </div>
+                    </div>
                 `;
                 
                 let modelText = grid.querySelector (".modelText")!;
@@ -1145,6 +1167,7 @@ class Engine {
                         if (m != null) {
                             modelText.setAttribute ("value", m.toString ());
                             modelText.innerHTML = ModelInfo.GetModelInfo (m).ModelName;
+                            grid.querySelector<HTMLDivElement> (".exhaustBox")!.style.display = ModelInfo.GetModelInfo (m).Exhaust ? "grid" : "none";
                         }
                     });
                 });
@@ -1159,6 +1182,21 @@ class Engine {
                     });
                 });
                 
+                let exhaustPlumeText = grid.querySelector (".exhaustPlumeText")!;
+                exhaustPlumeText.addEventListener ("click", () => {
+                    PlumeSelector.GetPlume (m => {
+                        if (m != null) {
+                            exhaustPlumeText.setAttribute ("value", m.toString ());
+                            exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo (m).PlumeName;
+                        }
+                    });
+                });
+                
+                let exhaustCheckbox = grid.querySelector<HTMLInputElement> (".enableExhaust")!;
+                exhaustCheckbox.addEventListener ("change", () => {
+                    grid.querySelector<HTMLDivElement> (".exhaustSettings")!.style.display = exhaustCheckbox.checked ? "grid" : "none";
+                })
+                
                 tmp.appendChild (grid);
                 
                 return tmp;
@@ -1172,12 +1210,24 @@ class Engine {
                 let select = e.querySelector ("select")!;
                 let modelText = e.querySelector<HTMLSpanElement> (".modelText")!;
                 let plumeText = e.querySelector<HTMLSpanElement> (".plumeText")!;
+                let exhaustPlumeText = e.querySelector<HTMLSpanElement> (".exhaustPlumeText")!;
                 
                 modelText.setAttribute ("value", targetEngine.ModelID.toString ());
                 modelText.innerHTML = ModelInfo.GetModelInfo (targetEngine.ModelID).ModelName;
                 
                 plumeText.setAttribute ("value", targetEngine.PlumeID.toString ());
                 plumeText.innerHTML = PlumeInfo.GetPlumeInfo (targetEngine.PlumeID).PlumeName;
+                
+                exhaustPlumeText.setAttribute ("value", targetEngine.ExhaustPlumeID.toString ());
+                exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo (targetEngine.ExhaustPlumeID).PlumeName;
+                
+                e.querySelector<HTMLDivElement> (".exhaustBox")!.style.display = ModelInfo.GetModelInfo (this.ModelID).Exhaust ? "grid" : "none";
+                e.querySelector<HTMLInputElement> (".enableExhaust")!.checked = this.UseExhaustEffect;
+                e.querySelector<HTMLDivElement> (".exhaustSettings")!.style.display = this.UseExhaustEffect ? "grid" : "none";
+                
+                e.querySelector<HTMLInputElement> (".exhaustThrust")!.value = this.ExhaustThrustPercent.toString ();
+                e.querySelector<HTMLInputElement> (".exhaustImpulse")!.value = this.ExhaustIspMultiplier.toString ();
+                e.querySelector<HTMLInputElement> (".exhaustGimbal")!.value = this.ExhaustGimbal.toString ();
                 
                 modelText.style.pointerEvents = (
                     this.PolyType == PolymorphismType.MultiConfigSlave ||
@@ -1186,9 +1236,20 @@ class Engine {
             }, ApplyChangesToValue: (e: HTMLElement) => {
                 let modelText = e.querySelector (".modelText")!;
                 let plumeText = e.querySelector (".plumeText")!;
+                let exhaustPlumeText = e.querySelector (".exhaustPlumeText")!;
+                
+                let exhaustThrust = e.querySelector<HTMLInputElement> (".exhaustThrust")!;
+                let exhaustImpulse = e.querySelector<HTMLInputElement> (".exhaustImpulse")!;
+                let exhaustGimbal = e.querySelector<HTMLInputElement> (".exhaustGimbal")!;
                 
                 this.ModelID = parseInt (modelText.getAttribute ("value")!);
                 this.PlumeID = parseInt (plumeText.getAttribute ("value")!);
+                this.ExhaustPlumeID = parseInt (exhaustPlumeText.getAttribute ("value")!);
+                
+                this.UseExhaustEffect = e.querySelector<HTMLInputElement> (".enableExhaust")!.checked;
+                this.ExhaustThrustPercent = parseFloat (exhaustThrust.value.replace (",", "."));
+                this.ExhaustIspMultiplier = parseFloat (exhaustImpulse.value.replace (",", "."));
+                this.ExhaustGimbal = parseFloat (exhaustGimbal.value.replace (",", "."));
             }
         }
     }
@@ -1248,7 +1309,12 @@ class Engine {
     CycleReliability10k: number = 98;
     
     ModelID: Model = Model.LR91; //Visuals
-    PlumeID: Plume = Plume.Kerolox_Upper;
+    PlumeID: Plume = Plume.GP_Kerolox;
+    UseExhaustEffect: boolean = false; // Exhaust
+    ExhaustPlumeID: Plume = Plume.GP_TurbopumpSmoke;
+    ExhaustThrustPercent: number = 1;
+    ExhaustIspMultiplier: number = 0.5;
+    ExhaustGimbal: number = 10;
     
     public readonly OnEditEnd = () => {
         this.UpdateEveryDisplay ();
@@ -1427,6 +1493,17 @@ class Engine {
             this.StartReliability10k == defaultConfig.StartReliability10k &&
             this.CycleReliability0 == defaultConfig.CycleReliability0 &&
             this.CycleReliability10k == defaultConfig.CycleReliability10k
+        );
+    }
+    
+    public IsExhaustDefault (): boolean {
+        let defaultConfig = new Engine ();
+        return (
+            this.UseExhaustEffect == defaultConfig.UseExhaustEffect &&
+            this.ExhaustPlumeID == defaultConfig.ExhaustPlumeID &&
+            this.ExhaustThrustPercent == defaultConfig.ExhaustThrustPercent &&
+            this.ExhaustIspMultiplier == defaultConfig.ExhaustIspMultiplier &&
+            this.ExhaustGimbal == defaultConfig.ExhaustGimbal
         );
     }
     

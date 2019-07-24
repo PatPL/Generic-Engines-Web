@@ -885,7 +885,7 @@ class Engine {
                 grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
                     
-                    <div class="content-cell-content" style="grid-area: d"><input type="checkbox"></div>
+                    <div class="content-cell-content" style="grid-area: d"><input style="cursor: help;" title="Enable tank volume restriction" type="checkbox"></div>
                     <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
                     
                     <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
@@ -1151,12 +1151,12 @@ class Engine {
                     <div class="exhaustSettings" style="grid-area: eb; display: grid; grid-template: 'eba ebb' 24px 'ebc ebd' 24px 'ebe ebf' 24px 'ebg ebh' 24px / 140px auto">
                     <div class="content-cell-content" style="grid-area: eba;">Exhaust plume</div>
                     <div style="grid-area: ebb;"><span class="clickable-text exhaustPlumeText" value="999">Placeholder</span></div>
-                    <div class="content-cell-content" style="grid-area: ebc; cursor: help;" title="What fraction of engine's overall thrust is produced by this exhaust?">Exhaust thrust%</div>
-                    <div style="grid-area: ebd;"><input class="exhaustThrust" style="width: calc(100%);"></div>
+                    <div class="content-cell-content" style="grid-area: ebc; cursor: help;" title="What fraction of engine's overall thrust is produced by this exhaust?">Exhaust thrust</div>
+                    <div style="grid-area: ebd;"><input class="exhaustThrust" style="width: calc(100% - 24px);">%</div>
                     <div class="content-cell-content" style="grid-area: ebe; cursor: help;" title="Multiplier of exhaust's efficiency, compared to main engine">Exhaust impulse</div>
-                    <div style="grid-area: ebf;"><input class="exhaustImpulse" style="width: calc(100%);"></div>
+                    <div style="grid-area: ebf;"><input class="exhaustImpulse" style="width: calc(100% - 24px);">%</div>
                     <div class="content-cell-content" style="grid-area: ebg;">Exhaust gimbal</div>
-                    <div style="grid-area: ebh;"><input class="exhaustGimbal" style="width: calc(100%);"></div>
+                    <div style="grid-area: ebh;"><input class="exhaustGimbal" style="width: calc(100% - 24px);"><input title="Restrict this gimbal to only roll control" class="exhaustGimbalRoll" type="checkbox" style="cursor: help; margin: -1px 0px 0px 0px; position: relative; top: 2px; left: 2px;"></div>
                     </div>
                     </div>
                 `;
@@ -1226,8 +1226,9 @@ class Engine {
                 e.querySelector<HTMLDivElement> (".exhaustSettings")!.style.display = this.UseExhaustEffect ? "grid" : "none";
                 
                 e.querySelector<HTMLInputElement> (".exhaustThrust")!.value = this.ExhaustThrustPercent.toString ();
-                e.querySelector<HTMLInputElement> (".exhaustImpulse")!.value = this.ExhaustIspMultiplier.toString ();
+                e.querySelector<HTMLInputElement> (".exhaustImpulse")!.value = this.ExhaustIspPercent.toString ();
                 e.querySelector<HTMLInputElement> (".exhaustGimbal")!.value = this.ExhaustGimbal.toString ();
+                e.querySelector<HTMLInputElement> (".exhaustGimbalRoll")!.checked = this.ExhaustGimbalOnlyRoll;
                 
                 modelText.style.pointerEvents = (
                     this.PolyType == PolymorphismType.MultiConfigSlave ||
@@ -1248,8 +1249,9 @@ class Engine {
                 
                 this.UseExhaustEffect = e.querySelector<HTMLInputElement> (".enableExhaust")!.checked;
                 this.ExhaustThrustPercent = parseFloat (exhaustThrust.value.replace (",", "."));
-                this.ExhaustIspMultiplier = parseFloat (exhaustImpulse.value.replace (",", "."));
+                this.ExhaustIspPercent = parseFloat (exhaustImpulse.value.replace (",", "."));
                 this.ExhaustGimbal = parseFloat (exhaustGimbal.value.replace (",", "."));
+                this.ExhaustGimbalOnlyRoll = e.querySelector<HTMLInputElement> (".exhaustGimbalRoll")!.checked;
             }
         }
     }
@@ -1313,8 +1315,9 @@ class Engine {
     UseExhaustEffect: boolean = false; // Exhaust
     ExhaustPlumeID: Plume = Plume.GP_TurbopumpSmoke;
     ExhaustThrustPercent: number = 1;
-    ExhaustIspMultiplier: number = 0.5;
+    ExhaustIspPercent: number = 75;
     ExhaustGimbal: number = 10;
+    ExhaustGimbalOnlyRoll: boolean = true;
     
     public readonly OnEditEnd = () => {
         this.UpdateEveryDisplay ();
@@ -1502,7 +1505,7 @@ class Engine {
             this.UseExhaustEffect == defaultConfig.UseExhaustEffect &&
             this.ExhaustPlumeID == defaultConfig.ExhaustPlumeID &&
             this.ExhaustThrustPercent == defaultConfig.ExhaustThrustPercent &&
-            this.ExhaustIspMultiplier == defaultConfig.ExhaustIspMultiplier &&
+            this.ExhaustIspPercent == defaultConfig.ExhaustIspPercent &&
             this.ExhaustGimbal == defaultConfig.ExhaustGimbal
         );
     }

@@ -104,7 +104,8 @@ class Serializer {
             2 + //short - ExhaustPlumeID
             8 + //double - ExhaustThrustPercent
             8 + //double - ExhaustIspMultiplier
-            8 //double - ExhaustGimbal
+            8 + //double - ExhaustGimbal
+            1 //bool - ExhaustGimbalOnlyRoll
             )
         );
         
@@ -364,12 +365,15 @@ class Serializer {
             i += 8;
             
             //double - ExhaustIspMultiplier
-            output.set (BitConverter.DoubleToByteArray (e.ExhaustIspMultiplier), i);
+            output.set (BitConverter.DoubleToByteArray (e.ExhaustIspPercent), i);
             i += 8;
             
             //double - ExhaustGimbal
             output.set (BitConverter.DoubleToByteArray (e.ExhaustGimbal), i);
             i += 8;
+            
+            //bool - ExhaustGimbalOnlyRoll
+            output[i++] = e.ExhaustGimbalOnlyRoll ? 1 : 0;
         }
         
         return output;
@@ -686,12 +690,15 @@ class Serializer {
                 i += 8;
                 
                 //double - ExhaustIspMultiplier
-                output.ExhaustIspMultiplier = BitConverter.ByteArrayToDouble (input, i);
+                output.ExhaustIspPercent = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
                 //double - ExhaustGimbal
                 output.ExhaustGimbal = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
+                
+                //bool - ExhaustGimbalOnlyRoll
+                output.ExhaustGimbalOnlyRoll = input[i++] == 1;
             }
         }
         

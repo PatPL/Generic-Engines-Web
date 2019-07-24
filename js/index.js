@@ -7766,7 +7766,7 @@ class Engine {
                     grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
                     
-                    <div class="content-cell-content" style="grid-area: d"><input type="checkbox"></div>
+                    <div class="content-cell-content" style="grid-area: d"><input style="cursor: help;" title="Enable tank volume restriction" type="checkbox"></div>
                     <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
                     
                     <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
@@ -7992,12 +7992,12 @@ class Engine {
                     <div class="exhaustSettings" style="grid-area: eb; display: grid; grid-template: 'eba ebb' 24px 'ebc ebd' 24px 'ebe ebf' 24px 'ebg ebh' 24px / 140px auto">
                     <div class="content-cell-content" style="grid-area: eba;">Exhaust plume</div>
                     <div style="grid-area: ebb;"><span class="clickable-text exhaustPlumeText" value="999">Placeholder</span></div>
-                    <div class="content-cell-content" style="grid-area: ebc; cursor: help;" title="What fraction of engine's overall thrust is produced by this exhaust?">Exhaust thrust%</div>
-                    <div style="grid-area: ebd;"><input class="exhaustThrust" style="width: calc(100%);"></div>
+                    <div class="content-cell-content" style="grid-area: ebc; cursor: help;" title="What fraction of engine's overall thrust is produced by this exhaust?">Exhaust thrust</div>
+                    <div style="grid-area: ebd;"><input class="exhaustThrust" style="width: calc(100% - 24px);">%</div>
                     <div class="content-cell-content" style="grid-area: ebe; cursor: help;" title="Multiplier of exhaust's efficiency, compared to main engine">Exhaust impulse</div>
-                    <div style="grid-area: ebf;"><input class="exhaustImpulse" style="width: calc(100%);"></div>
+                    <div style="grid-area: ebf;"><input class="exhaustImpulse" style="width: calc(100% - 24px);">%</div>
                     <div class="content-cell-content" style="grid-area: ebg;">Exhaust gimbal</div>
-                    <div style="grid-area: ebh;"><input class="exhaustGimbal" style="width: calc(100%);"></div>
+                    <div style="grid-area: ebh;"><input class="exhaustGimbal" style="width: calc(100% - 24px);"><input title="Restrict this gimbal to only roll control" class="exhaustGimbalRoll" type="checkbox" style="cursor: help; margin: -1px 0px 0px 0px; position: relative; top: 2px; left: 2px;"></div>
                     </div>
                     </div>
                 `;
@@ -8053,8 +8053,9 @@ class Engine {
                     e.querySelector(".enableExhaust").checked = this.UseExhaustEffect;
                     e.querySelector(".exhaustSettings").style.display = this.UseExhaustEffect ? "grid" : "none";
                     e.querySelector(".exhaustThrust").value = this.ExhaustThrustPercent.toString();
-                    e.querySelector(".exhaustImpulse").value = this.ExhaustIspMultiplier.toString();
+                    e.querySelector(".exhaustImpulse").value = this.ExhaustIspPercent.toString();
                     e.querySelector(".exhaustGimbal").value = this.ExhaustGimbal.toString();
+                    e.querySelector(".exhaustGimbalRoll").checked = this.ExhaustGimbalOnlyRoll;
                     modelText.style.pointerEvents = (this.PolyType == PolymorphismType.MultiConfigSlave ||
                         this.PolyType == PolymorphismType.MultiModeSlave) ? "none" : "all";
                 }, ApplyChangesToValue: (e) => {
@@ -8069,8 +8070,9 @@ class Engine {
                     this.ExhaustPlumeID = parseInt(exhaustPlumeText.getAttribute("value"));
                     this.UseExhaustEffect = e.querySelector(".enableExhaust").checked;
                     this.ExhaustThrustPercent = parseFloat(exhaustThrust.value.replace(",", "."));
-                    this.ExhaustIspMultiplier = parseFloat(exhaustImpulse.value.replace(",", "."));
+                    this.ExhaustIspPercent = parseFloat(exhaustImpulse.value.replace(",", "."));
                     this.ExhaustGimbal = parseFloat(exhaustGimbal.value.replace(",", "."));
+                    this.ExhaustGimbalOnlyRoll = e.querySelector(".exhaustGimbalRoll").checked;
                 }
             }
         };
@@ -8123,8 +8125,9 @@ class Engine {
         this.UseExhaustEffect = false;
         this.ExhaustPlumeID = Plume.GP_TurbopumpSmoke;
         this.ExhaustThrustPercent = 1;
-        this.ExhaustIspMultiplier = 0.5;
+        this.ExhaustIspPercent = 75;
         this.ExhaustGimbal = 10;
+        this.ExhaustGimbalOnlyRoll = true;
         this.OnEditEnd = () => {
             this.UpdateEveryDisplay();
         };
@@ -8289,7 +8292,7 @@ class Engine {
         return (this.UseExhaustEffect == defaultConfig.UseExhaustEffect &&
             this.ExhaustPlumeID == defaultConfig.ExhaustPlumeID &&
             this.ExhaustThrustPercent == defaultConfig.ExhaustThrustPercent &&
-            this.ExhaustIspMultiplier == defaultConfig.ExhaustIspMultiplier &&
+            this.ExhaustIspPercent == defaultConfig.ExhaustIspPercent &&
             this.ExhaustGimbal == defaultConfig.ExhaustGimbal);
     }
     GetTestFlightConfig() {
@@ -9422,6 +9425,26 @@ class Exporter {
             ${engine.GetTestFlightConfig()}
         `;
     }
+    static MultiConfigSlaveEngineConfig(engine, allEngines) {
+        return `
+            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                @MODULE[ModuleEngineConfigs]
+                {
+                    ${engine.GetEngineConfig(allEngines)}
+                }
+            }
+            
+            ${engine.GetPlumeConfig()}
+            
+            ${engine.GetTestFlightConfig()}
+            
+            @ENTRYCOSTMODS:FOR[xxxRP-0]
+            {
+                GE-${engine.ID} = ${engine.EntryCost}
+            }
+        `;
+    }
     static MultiModeSlaveEngineConfig(engine, allEngines) {
         return `
             @PART[GE-${engine.MasterEngineName}]
@@ -9464,26 +9487,6 @@ class Exporter {
             }
 
             ${engine.GetPlumeConfig()}
-        `;
-    }
-    static MultiConfigSlaveEngineConfig(engine, allEngines) {
-        return `
-            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
-            {
-                @MODULE[ModuleEngineConfigs]
-                {
-                    ${engine.GetEngineConfig(allEngines)}
-                }
-            }
-            
-            ${engine.GetPlumeConfig()}
-            
-            ${engine.GetTestFlightConfig()}
-            
-            @ENTRYCOSTMODS:FOR[xxxRP-0]
-            {
-                GE-${engine.ID} = ${engine.EntryCost}
-            }
         `;
     }
 }
@@ -9863,7 +9866,8 @@ class Serializer {
                 2 +
                 8 +
                 8 +
-                8));
+                8 +
+                1));
         output[i++] = Serializer.Version / 256;
         output[i++] = Serializer.Version % 256;
         output[i++] = e.Active ? 1 : 0;
@@ -9995,10 +9999,11 @@ class Serializer {
             output[i++] = e.ExhaustPlumeID / 256;
             output.set(BitConverter.DoubleToByteArray(e.ExhaustThrustPercent), i);
             i += 8;
-            output.set(BitConverter.DoubleToByteArray(e.ExhaustIspMultiplier), i);
+            output.set(BitConverter.DoubleToByteArray(e.ExhaustIspPercent), i);
             i += 8;
             output.set(BitConverter.DoubleToByteArray(e.ExhaustGimbal), i);
             i += 8;
+            output[i++] = e.ExhaustGimbalOnlyRoll ? 1 : 0;
         }
         return output;
     }
@@ -10198,10 +10203,11 @@ class Serializer {
                 output.ExhaustPlumeID += input[i++] * 256;
                 output.ExhaustThrustPercent = BitConverter.ByteArrayToDouble(input, i);
                 i += 8;
-                output.ExhaustIspMultiplier = BitConverter.ByteArrayToDouble(input, i);
+                output.ExhaustIspPercent = BitConverter.ByteArrayToDouble(input, i);
                 i += 8;
                 output.ExhaustGimbal = BitConverter.ByteArrayToDouble(input, i);
                 i += 8;
+                output.ExhaustGimbalOnlyRoll = input[i++] == 1;
             }
         }
         return [output, i - startOffset];

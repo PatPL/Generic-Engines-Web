@@ -199,6 +199,27 @@ class Exporter {
         `;
     }
     
+    private static MultiConfigSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
+        return `
+            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                @MODULE[ModuleEngineConfigs]
+                {
+                    ${engine.GetEngineConfig (allEngines)}
+                }
+            }
+            
+            ${engine.GetPlumeConfig ()}
+            
+            ${engine.GetTestFlightConfig ()}
+            
+            @ENTRYCOSTMODS:FOR[xxxRP-0]
+            {
+                GE-${engine.ID} = ${engine.EntryCost}
+            }
+        `;
+    }
+    
     private static MultiModeSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
         return `
             @PART[GE-${engine.MasterEngineName}]
@@ -241,27 +262,6 @@ class Exporter {
             }
 
             ${engine.GetPlumeConfig ()}
-        `;
-    }
-    
-    private static MultiConfigSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
-        return `
-            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
-            {
-                @MODULE[ModuleEngineConfigs]
-                {
-                    ${engine.GetEngineConfig (allEngines)}
-                }
-            }
-            
-            ${engine.GetPlumeConfig ()}
-            
-            ${engine.GetTestFlightConfig ()}
-            
-            @ENTRYCOSTMODS:FOR[xxxRP-0]
-            {
-                GE-${engine.ID} = ${engine.EntryCost}
-            }
         `;
     }
     

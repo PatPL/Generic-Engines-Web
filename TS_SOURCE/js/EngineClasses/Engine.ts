@@ -1206,6 +1206,7 @@ class Engine {
                     this.PolyType == PolymorphismType.MultiConfigSlave
                 ) ? this.EngineList.find (x => x.ID == this.MasterEngineName) : this;
                 targetEngine = targetEngine != undefined ? targetEngine : this;
+                let isSlave = this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave;
                 
                 let select = e.querySelector ("select")!;
                 let modelText = e.querySelector<HTMLSpanElement> (".modelText")!;
@@ -1215,25 +1216,25 @@ class Engine {
                 modelText.setAttribute ("value", targetEngine.ModelID.toString ());
                 modelText.innerHTML = ModelInfo.GetModelInfo (targetEngine.ModelID).ModelName;
                 
-                plumeText.setAttribute ("value", targetEngine.PlumeID.toString ());
-                plumeText.innerHTML = PlumeInfo.GetPlumeInfo (targetEngine.PlumeID).PlumeName;
+                plumeText.setAttribute ("value", this.PlumeID.toString ());
+                plumeText.innerHTML = PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeName;
                 
-                exhaustPlumeText.setAttribute ("value", targetEngine.ExhaustPlumeID.toString ());
-                exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo (targetEngine.ExhaustPlumeID).PlumeName;
+                exhaustPlumeText.setAttribute ("value", this.ExhaustPlumeID.toString ());
+                exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeName;
                 
                 e.querySelector<HTMLDivElement> (".exhaustBox")!.style.display = ModelInfo.GetModelInfo (this.ModelID).Exhaust ? "grid" : "none";
-                e.querySelector<HTMLInputElement> (".enableExhaust")!.checked = this.UseExhaustEffect;
-                e.querySelector<HTMLDivElement> (".exhaustSettings")!.style.display = this.UseExhaustEffect ? "grid" : "none";
+                e.querySelector<HTMLInputElement> (".enableExhaust")!.checked = targetEngine.UseExhaustEffect;
+                e.querySelector<HTMLDivElement> (".exhaustSettings")!.style.display = targetEngine.UseExhaustEffect ? "grid" : "none";
                 
                 e.querySelector<HTMLInputElement> (".exhaustThrust")!.value = this.ExhaustThrustPercent.toString ();
                 e.querySelector<HTMLInputElement> (".exhaustImpulse")!.value = this.ExhaustIspPercent.toString ();
-                e.querySelector<HTMLInputElement> (".exhaustGimbal")!.value = this.ExhaustGimbal.toString ();
-                e.querySelector<HTMLInputElement> (".exhaustGimbalRoll")!.checked = this.ExhaustGimbalOnlyRoll;
+                e.querySelector<HTMLInputElement> (".exhaustGimbal")!.value = targetEngine.ExhaustGimbal.toString ();
+                e.querySelector<HTMLInputElement> (".exhaustGimbalRoll")!.checked = targetEngine.ExhaustGimbalOnlyRoll;
                 
-                modelText.style.pointerEvents = (
-                    this.PolyType == PolymorphismType.MultiConfigSlave ||
-                    this.PolyType == PolymorphismType.MultiModeSlave
-                ) ? "none" : "all";
+                modelText.style.pointerEvents = isSlave ? "none" : "all";
+                e.querySelector<HTMLInputElement> (".enableExhaust")!.disabled = isSlave;
+                e.querySelector<HTMLInputElement> (".exhaustGimbal")!.disabled = isSlave;
+                e.querySelector<HTMLInputElement> (".exhaustGimbalRoll")!.disabled = isSlave;
             }, ApplyChangesToValue: (e: HTMLElement) => {
                 let modelText = e.querySelector (".modelText")!;
                 let plumeText = e.querySelector (".plumeText")!;
@@ -1349,8 +1350,6 @@ class Engine {
     }
     
     public GetPlumeConfig (): string {
-        let plumeInfo: IPlumeInfo = PlumeInfo.GetPlumeInfo (this.PlumeID);
-        let modelInfo: IModelInfo;
         let engine: Engine;
         
         if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
@@ -1359,44 +1358,46 @@ class Engine {
             engine = this;
         }
         
-        modelInfo = ModelInfo.GetModelInfo (engine.ModelID);
+        let plumeInfo: IPlumeInfo = PlumeInfo.GetPlumeInfo (this.PlumeID);
+        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (engine.ModelID);
+        let exhaustConfig = "";
         
-        if (plumeInfo.PlumeMod == "RealPlume") {
-            return `
-                @PART[GE-${engine.ID}]:FOR[RealPlume]:HAS[!PLUME[${plumeInfo.PlumeID}]]:NEEDS[SmokeScreen]
-                {
-                    PLUME
-                    {
-                        name = ${plumeInfo.PlumeID}
-                        transformName = ${modelInfo.ThrustTransformName}
-                        localRotation = 0,0,0
-                        localPosition = 0,0,${(modelInfo.PlumePositionOffset + plumeInfo.PositionOffset + plumeInfo.FinalOffset)}
-                        fixedScale = ${(modelInfo.PlumeSizeMultiplier * plumeInfo.Scale * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth))}
-                        flareScale = 0
-                        energy = ${(Math.log (engine.Thrust + 5) / Math.log (10) / 3 * plumeInfo.EnergyMultiplier)}
-                        speed = ${Math.max ((Math.log (engine.VacIsp) / Math.log (2) / 1.5) - 4.5, 0.2)}
+        if (engine.UseExhaustEffect && modelInfo.Exhaust) {
+            exhaustConfig = `
+                @MODULE[ModuleEngine*] {
+                    !GENERIC_PLUME[${ PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeID }]{}
+                    GENERIC_PLUME {
+                        name = ${ PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeID }
+                        effectTransform = ${ modelInfo.Exhaust.exhaustEffectTransform }
+                        bellWidth = ${ modelInfo.Exhaust.exhaustBellWidth }
+                        verticalOffset = 0
+                        volume = ${ (this.ExhaustThrustPercent / 100) * this.Thrust / 100 + 1 }
+                        pitch = ${ Math.max (Math.min (Math.log10 (this.Thrust / 10 + 1) / 3, 2), 0.4) }
                     }
                 }
             `;
-        } else if (plumeInfo.PlumeMod == "GenericPlumes") {
-            let bellWidth = modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
-            return `
-                @PART[GE-${engine.ID}]:FOR[GenericPlumesPass0200] {
-                    @MODULE[ModuleEngine*] {
-                        GENERIC_PLUME {
-                            name = ${ plumeInfo.PlumeID }
-                            bellWidth = ${ bellWidth }
-                            verticalOffset = ${ modelInfo.PlumePositionOffset + modelInfo.OriginalBellWidth * 0.33 }
-                            volume = ${ this.Thrust / 100 + 1 }
-                            pitch = ${ Math.max (Math.min (Math.log10 (this.Thrust / 10 + 1) / 3, 2), 0.4) }
-                        }
-                    }
-                }
-            `;
-        } else {
-            console.warn (`This shouldn't ever happen. Unknown mod: ${ plumeInfo.PlumeMod }`);
-            return "";
         }
+        
+        let bellWidth = modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
+        let output = `
+            @PART[GE-${engine.ID}]:FOR[zGenericPlumesPass0200] {
+                @MODULE[ModuleEngine*] {
+                    !GENERIC_PLUME[${ plumeInfo.PlumeID }]{}
+                    GENERIC_PLUME {
+                        name = ${ plumeInfo.PlumeID }
+                        bellWidth = ${ bellWidth }
+                        verticalOffset = ${ modelInfo.PlumePositionOffset + modelInfo.OriginalBellWidth * 0.33 }
+                        volume = ${ this.Thrust / 100 + 1 }
+                        pitch = ${ Math.max (Math.min (Math.log10 (this.Thrust / 10 + 1) / 3, 2), 0.4) }
+                    }
+                }
+                
+                ${exhaustConfig}
+                
+            }
+        `;
+        
+        return output;
     }
     
     public GetHiddenObjectsConfig (): string {
@@ -1690,9 +1691,10 @@ class Engine {
     
     public GetGimbalConfig (): string {
         let modelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
+        let output = ""
         
         if (this.AdvancedGimbal) {
-            return `
+            output += `
                 MODULE
                 {
                     name = ModuleGimbal
@@ -1705,7 +1707,7 @@ class Engine {
                 }
             `;
         } else {
-            return `
+            output += `
                 MODULE
                 {
                     name = ModuleGimbal
@@ -1715,6 +1717,22 @@ class Engine {
                 }
             `;
         }
+        
+        if (this.UseExhaustEffect && modelInfo.Exhaust) {
+            output += `
+                MODULE
+                {
+                    name = ModuleGimbal
+                    gimbalTransformName = ${modelInfo.Exhaust.exhaustGimbalTransform}
+                    useGimbalResponseSpeed = false
+                    gimbalRange = ${this.ExhaustGimbal}
+                    enableYaw = ${!this.ExhaustGimbalOnlyRoll}
+                    enablePitch = ${!this.ExhaustGimbalOnlyRoll}
+                }
+            `;
+        }
+        
+        return output;
     }
     
     public GetPropellantConfig (): string {
@@ -1896,45 +1914,120 @@ class Engine {
         ) {
             return "";
         } else {
-            return `
-                MODULE
-                {
-                    name = ModuleEngineConfigs
-                    configuration = GE-${this.ID}
-                    modded = false
-                    origMass = ${this.Mass}
+            let modelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
+            if (modelInfo.Exhaust && this.UseExhaustEffect) {
+                return `
+                    MODULE
+                    {
+                        name = ModuleEngineConfigs
+                        configuration = GE-${this.ID}
+                        modded = false
+                        origMass = ${this.Mass}
+                        moduleIndex = 0
+                        
+                        ${this.GetEngineConfig (allEngines)}
+                        
+                    }
                     
-                    ${this.GetEngineConfig (allEngines)}
-                    
-                }
-            `;
+                    MODULE
+                    {
+                        name = ModuleEngineConfigs
+                        configuration = GE-${this.ID}-vernier
+                        modded = false
+                        origMass = ${this.Mass}
+                        moduleIndex = 1
+                        
+                        ${this.GetExhaustConfig (allEngines)}
+                        
+                    }
+                `;
+            } else {
+                return `
+                    MODULE
+                    {
+                        name = ModuleEngineConfigs
+                        configuration = GE-${this.ID}
+                        modded = false
+                        origMass = ${this.Mass}
+                        moduleIndex = 0
+                        
+                        ${this.GetEngineConfig (allEngines)}
+                        
+                    }
+                `;
+            }
         }
     }
     
     public GetEngineConfig (allEngines: { [id: string]: Engine }): string {
+        let masterEngine: Engine;
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            masterEngine = this.EngineList.find (x => x.ID == this.MasterEngineName)!;
+        } else {
+            masterEngine = this;
+        }
+        let modelInfo = ModelInfo.GetModelInfo (masterEngine.GetModelID ());
+        
+        let hasExhaust = !!(modelInfo.Exhaust && masterEngine.UseExhaustEffect);
         return `
             CONFIG
             {
                 name = GE-${this.ID}
                 description = ${this.EngineDescription}
-                maxThrust = ${this.Thrust}
-                minThrust = ${this.Thrust * this.MinThrust / 100}
+                maxThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust}
+                minThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeEffectName}
                 heatProduction = 100
                 massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.MasterEngineName].Cost : 0)}
-
+                
                 ${this.GetPropellantConfig ()}
-
+                
                 atmosphereCurve
                 {
                     key = 0 ${this.VacIsp}
                     key = 1 ${this.AtmIsp}
                 }
-
+                
                 ${this.GetThrustCurveConfig ()}
-
+                
+                ullage = ${this.NeedsUllage && this.EngineVariant != EngineType.Solid}
+                pressureFed = ${this.PressureFed}
+                ignitions = ${Math.max (this.Ignitions, 0)}
+                IGNITOR_RESOURCE
+                {
+                    name = ElectricCharge
+                    amount = 1
+                }
+            }
+        `;
+    }
+    
+    public GetExhaustConfig (allEngines: { [id: string]: Engine }): string {
+        return `
+            CONFIG
+            {
+                name = GE-${this.ID}-vernier
+                description = ${this.EngineDescription}
+                maxThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust}
+                minThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust * this.MinThrust / 100}
+                %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeEffectName}
+                heatProduction = 100
+                massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
+                %techRequired = ${TechNode[this.TechUnlockNode]}
+                cost = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.MasterEngineName].Cost : 0)}
+                
+                ${this.GetPropellantConfig ()}
+                
+                atmosphereCurve
+                {
+                    key = 0 ${(this.ExhaustIspPercent / 100) * this.VacIsp}
+                    key = 1 ${(this.ExhaustIspPercent / 100) * this.AtmIsp}
+                }
+                
+                ${this.GetThrustCurveConfig ()}
+                
                 ullage = ${this.NeedsUllage && this.EngineVariant != EngineType.Solid}
                 pressureFed = ${this.PressureFed}
                 ignitions = ${Math.max (this.Ignitions, 0)}

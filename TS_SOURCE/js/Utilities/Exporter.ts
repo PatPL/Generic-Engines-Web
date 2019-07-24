@@ -96,6 +96,103 @@ class Exporter {
     
     private static RegularEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
         let modelInfo = ModelInfo.GetModelInfo (engine.GetModelID ());
+        let baseEngineConfig = "";
+        if (modelInfo.Exhaust && engine.UseExhaustEffect) {
+            baseEngineConfig = `
+                MODULE
+                {
+                    name = ModuleEnginesFX
+                    engineID = PrimaryMode
+                    thrustVectorTransformName = ${modelInfo.ThrustTransformName}
+                    exhaustDamage = True
+                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
+                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
+                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
+                    ignitionThreshold = 0.1
+                    minThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
+                    maxThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust}
+                    heatProduction = 180
+                    EngineType = ${engine.EngineTypeConfig ()}
+                    exhaustDamageDistanceOffset = 0.79
+                    useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeEffectName}
+                    
+                    ${engine.GetPropellantConfig ()}
+                    
+                    atmosphereCurve
+                    {
+                        key = 0 ${engine.VacIsp}
+                        key = 1 ${engine.AtmIsp}
+                    }
+                    
+                    ${engine.GetThrustCurveConfig ()}
+                    
+                }
+                
+                MODULE
+                {
+                    name = ModuleEnginesFX
+                    engineID = PrimaryModeVernier
+                    thrustVectorTransformName = ${modelInfo.Exhaust.exhaustThrustTransform}
+                    exhaustDamage = True
+                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
+                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
+                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
+                    ignitionThreshold = 0.1
+                    minThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
+                    maxThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust}
+                    heatProduction = 180
+                    EngineType = ${engine.EngineTypeConfig ()}
+                    exhaustDamageDistanceOffset = 0.79
+                    useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.ExhaustPlumeID).PlumeEffectName}
+                    
+                    ${engine.GetPropellantConfig ()}
+                    
+                    atmosphereCurve
+                    {
+                        key = 0 ${(engine.ExhaustIspPercent / 100) * engine.VacIsp}
+                        key = 1 ${(engine.ExhaustIspPercent / 100) * engine.AtmIsp}
+                    }
+                    
+                    ${engine.GetThrustCurveConfig ()}
+                    
+                }
+            `;
+        } else {
+            baseEngineConfig = `
+                MODULE
+                {
+                    name = ModuleEnginesFX
+                    engineID = PrimaryMode
+                    thrustVectorTransformName = ${modelInfo.ThrustTransformName}
+                    exhaustDamage = True
+                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
+                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
+                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
+                    ignitionThreshold = 0.1
+                    minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    maxThrust = ${engine.Thrust}
+                    heatProduction = 180
+                    EngineType = ${engine.EngineTypeConfig ()}
+                    exhaustDamageDistanceOffset = 0.79
+                    useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeEffectName}
+                    
+                    ${engine.GetPropellantConfig ()}
+                    
+                    atmosphereCurve
+                    {
+                        key = 0 ${engine.VacIsp}
+                        key = 1 ${engine.AtmIsp}
+                    }
+                    
+                    ${engine.GetThrustCurveConfig ()}
+                    
+                }
+            `;
+        }
+        
         return `
             PART
             {
@@ -144,34 +241,7 @@ class Exporter {
                 
                 ${engine.GetGimbalConfig ()}
                 
-                MODULE
-                {
-                    name = ModuleEnginesFX
-                    engineID = PrimaryMode
-                    thrustVectorTransformName = ${modelInfo.ThrustTransformName}
-                    exhaustDamage = True
-                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
-                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
-                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
-                    ignitionThreshold = 0.1
-                    minThrust = ${engine.Thrust * engine.MinThrust / 100}
-                    maxThrust = ${engine.Thrust}
-                    heatProduction = 180
-                    EngineType = ${engine.EngineTypeConfig ()}
-                    exhaustDamageDistanceOffset = 0.79
-                    useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    
-                    ${engine.GetPropellantConfig ()}
-                    
-                    atmosphereCurve
-                    {
-                        key = 0 ${engine.VacIsp}
-                        key = 1 ${engine.AtmIsp}
-                    }
-                    
-                    ${engine.GetThrustCurveConfig ()}
-                    
-                }
+                ${baseEngineConfig}
                 
                 ${engine.GetTankConfig ()}
                 !RESOURCE,*{}
@@ -200,13 +270,33 @@ class Exporter {
     }
     
     private static MultiConfigSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
-        return `
-            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
-            {
+        let masterEngine = allEngines[engine.MasterEngineName];
+        let moduleEngineConfigs = "";
+        if (masterEngine.UseExhaustEffect && ModelInfo.GetModelInfo (masterEngine.ModelID).Exhaust) {
+            moduleEngineConfigs = `
+                @MODULE[ModuleEngineConfigs],0
+                {
+                    ${engine.GetEngineConfig (allEngines)}
+                }
+                
+                @MODULE[ModuleEngineConfigs],1
+                {
+                    ${engine.GetExhaustConfig (allEngines)}
+                }
+            `;
+        } else {
+            moduleEngineConfigs = `
                 @MODULE[ModuleEngineConfigs]
                 {
                     ${engine.GetEngineConfig (allEngines)}
                 }
+            `;
+        }
+        
+        return `
+            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                ${moduleEngineConfigs}
             }
             
             ${engine.GetPlumeConfig ()}
@@ -221,28 +311,32 @@ class Exporter {
     }
     
     private static MultiModeSlaveEngineConfig (engine: Engine, allEngines: { [id: string]: Engine }): string {
-        return `
-            @PART[GE-${engine.MasterEngineName}]
-            {
+        let exhaustMultiModeConfig = "";
+        let copiedEngineConfig = "";
+        let masterEngine = allEngines[engine.MasterEngineName];
+        
+        if (masterEngine.UseExhaustEffect && ModelInfo.GetModelInfo (masterEngine.ModelID).Exhaust) {
+            exhaustMultiModeConfig = `
                 MODULE
                 {
                     name = MultiModeEngine
-                    primaryEngineID = PrimaryMode
-                    primaryEngineModeDisplayName = Primary mode (GE-${engine.MasterEngineName})
-                    secondaryEngineID = SecondaryMode
-                    secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
+                    autoSwitchAvailable = false
+                    carryOverThrottle = true
+                    primaryEngineID = PrimaryModeVernier
+                    primaryEngineModeDisplayName = Primary mode vernier (GE-${engine.MasterEngineName})
+                    secondaryEngineID = SecondaryModeVernier
+                    secondaryEngineModeDisplayName = Secondary mode vernier (GE-${engine.ID})
                 }
-            }
+            `;
             
-            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
-            {
+            copiedEngineConfig = `
                 +MODULE[ModuleEnginesFX]
                 {
                     @engineID = SecondaryMode
-                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
-                    @maxThrust = ${engine.Thrust}
+                    @minThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust}
                     @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeEffectName}
+                    @powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeEffectName}
                     
                     !PROPELLANT,*{}
                     
@@ -259,6 +353,82 @@ class Exporter {
                     ${engine.GetThrustCurveConfig ()}
                     
                 }
+                
+                +MODULE[ModuleEnginesFX]
+                {
+                    @engineID = SecondaryModeVernier
+                    @minThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust}
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    @powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.ExhaustPlumeID).PlumeEffectName}
+                    
+                    !PROPELLANT,*{}
+                    
+                    ${engine.GetPropellantConfig ()}
+                    
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${(engine.ExhaustIspPercent / 100) * engine.VacIsp}
+                        @key,1 = 1 ${(engine.ExhaustIspPercent / 100) * engine.AtmIsp}
+                    }
+                    
+                    !curveResource
+                    !thrustCurve
+                    ${engine.GetThrustCurveConfig ()}
+                    
+                }
+            `;
+        } else {
+            copiedEngineConfig = `
+                +MODULE[ModuleEnginesFX]
+                {
+                    @engineID = SecondaryMode
+                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${engine.Thrust}
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    @powerEffectName = ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeEffectName}
+                    
+                    !PROPELLANT,*{}
+                    
+                    ${engine.GetPropellantConfig ()}
+                    
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${engine.VacIsp}
+                        @key,1 = 1 ${engine.AtmIsp}
+                    }
+                    
+                    !curveResource
+                    !thrustCurve
+                    ${engine.GetThrustCurveConfig ()}
+                    
+                }
+            `;
+        }
+        
+        return `
+            @PART[GE-${engine.MasterEngineName}]
+            {
+                MODULE
+                {
+                    name = MultiModeEngine
+                    autoSwitchAvailable = false
+                    carryOverThrottle = true
+                    primaryEngineID = PrimaryMode
+                    primaryEngineModeDisplayName = Primary mode (GE-${engine.MasterEngineName})
+                    secondaryEngineID = SecondaryMode
+                    secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
+                }
+                
+                ${exhaustMultiModeConfig}
+                
+            }
+            
+            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                
+                ${copiedEngineConfig}
+                
             }
 
             ${engine.GetPlumeConfig ()}

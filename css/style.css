@@ -160,6 +160,11 @@ input[type="checkbox"]:checked {
     background: var(--confirm);
 }
 
+input[type="checkbox"]:disabled {
+    border: 2px var(--error) dashed;
+    cursor: not-allowed !important;
+}
+
 span.checkbox-label {
     position: relative;
     top: -4px;

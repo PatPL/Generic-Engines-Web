@@ -1363,13 +1363,14 @@ class Engine {
         let exhaustConfig = "";
         
         if (engine.UseExhaustEffect && modelInfo.Exhaust) {
+            let exhaustBellWidth = modelInfo.Exhaust.exhaustBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
             exhaustConfig = `
                 @MODULE[ModuleEngine*] {
                     !GENERIC_PLUME[${ PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeID }]{}
                     GENERIC_PLUME {
                         name = ${ PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeID }
                         effectTransform = ${ modelInfo.Exhaust.exhaustEffectTransform }
-                        bellWidth = ${ modelInfo.Exhaust.exhaustBellWidth }
+                        bellWidth = ${ exhaustBellWidth }
                         verticalOffset = 0
                         volume = ${ (this.ExhaustThrustPercent / 100) * this.Thrust / 100 + 1 }
                         pitch = ${ Math.max (Math.min (Math.log10 (this.Thrust / 10 + 1) / 3, 2), 0.4) }
@@ -1385,6 +1386,7 @@ class Engine {
                     !GENERIC_PLUME[${ plumeInfo.PlumeID }]{}
                     GENERIC_PLUME {
                         name = ${ plumeInfo.PlumeID }
+                        effectTransform = ${ modelInfo.ThrustTransformName }
                         bellWidth = ${ bellWidth }
                         verticalOffset = ${ modelInfo.PlumePositionOffset + modelInfo.OriginalBellWidth * 0.33 }
                         volume = ${ this.Thrust / 100 + 1 }
@@ -2014,9 +2016,9 @@ class Engine {
                 minThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeEffectName}
                 heatProduction = 100
-                massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
+                massMult = 1
                 %techRequired = ${TechNode[this.TechUnlockNode]}
-                cost = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.MasterEngineName].Cost : 0)}
+                cost = 0
                 
                 ${this.GetPropellantConfig ()}
                 

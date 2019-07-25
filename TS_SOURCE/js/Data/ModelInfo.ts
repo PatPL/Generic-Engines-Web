@@ -513,7 +513,13 @@ class ModelInfo {
             ],
             HeatAnimations: [
                 "overheat"
-            ]
+            ],
+            Exhaust: {
+                exhaustBellWidth: 0.098,
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "exhaustTransform",
+            }
         }, { //Model.LVT30
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.653,
@@ -543,7 +549,13 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: [
                 "LVT30"
-            ]
+            ],
+            Exhaust: {
+                exhaustBellWidth: 0.054,
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "exhaustEffect",
+            }
         }, { //Model.LVT45
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.602,
@@ -582,7 +594,13 @@ class ModelInfo {
             ],
             HeatAnimations: [
                 "LV45Heat"
-            ]
+            ],
+            Exhaust: {
+                exhaustBellWidth: 0.054,
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "exhaustEffect",
+            }
         }, { //Model.P1057
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.226,
@@ -792,7 +810,13 @@ class ModelInfo {
             ],
             HeatAnimations: [
                 "Size2MedEngineBEmmissive"
-            ]
+            ],
+            Exhaust: {
+                exhaustBellWidth: 0.0252,
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "exhaustEffect",
+            }
         }, { //Model.SkipperR
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.01155,
@@ -1240,7 +1264,7 @@ class ModelInfo {
             OriginalBellWidth: 2.165,
             OriginalBaseWidth: 2.007,
             PlumeSizeMultiplier: 1.86,
-            PlumePositionOffset: -0.6,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.0075,
             NodeStackBottom: -3.25,
             ModelPath: "GenericEngines/models/SSTU/F1B/SC-ENG-F1B",
@@ -1271,7 +1295,13 @@ class ModelInfo {
                 ["F1B-Target-FuelRight", "F1B-FuelLineRight"],
                 ["F1B-Target-FuelCenter", "F1B-FuelLineCenter"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: 0.4,
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "exhaustEffect",
+            }
         }, { //Model.H1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.757,
@@ -1448,7 +1478,7 @@ class ModelInfo {
             OriginalBellWidth: 0.412,
             OriginalBaseWidth: 0.838,
             PlumeSizeMultiplier: 0.35,
-            PlumePositionOffset: -0.12,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.005,
             NodeStackBottom: -1.18,
             ModelPath: "GenericEngines/models/SSTU/LR-81/SC-ENG-LR-81-8048",
@@ -1478,13 +1508,19 @@ class ModelInfo {
                 ["LR-81-8048-Strut-RightUpper", "LR-81-8048-Strut-RightLower"],
                 ["LR-81-8048-Strut-RightLower", "LR-81-8048-Strut-RightUpper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: 0.045, // A bit larger, not to leave any gaps
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "exhaustEffect",
+            }
         }, { //Model.Bell8096
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.611,
             OriginalBaseWidth: 0.838,
             PlumeSizeMultiplier: 0.53,
-            PlumePositionOffset: -0.22,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.005,
             NodeStackBottom: -1.46,
             ModelPath: "GenericEngines/models/SSTU/LR-81/SC-ENG-LR-81-8096",
@@ -1514,13 +1550,19 @@ class ModelInfo {
                 ["LR-81-8096-Strut-RightUpper", "LR-81-8096-Strut-RightLower"],
                 ["LR-81-8096-Strut-RightLower", "LR-81-8096-Strut-RightUpper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: 0.045, // A bit larger, not to leave any gaps
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "exhaustEffect",
+            }
         }, { //Model.Merlin1A
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.597,
             OriginalBaseWidth: 0.74,
             PlumeSizeMultiplier: 0.53,
-            PlumePositionOffset: -0.18,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.015,
             NodeStackBottom: -1.3,
             ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1A",
@@ -1548,13 +1590,19 @@ class ModelInfo {
                 ["Merlin-1A-Strut-Lower2", "Merlin-1A-Strut-Upper2"],
                 ["Merlin-1A-Strut-Upper2", "Merlin-1A-Strut-Lower2"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: 0.084,
+                exhaustThrustTransform: "Merlin-1A-RollGimbal",
+                exhaustGimbalTransform: "Merlin-1A-RollGimbal",
+                exhaustEffectTransform: "Merlin-1A-RollFXTransform",
+            }
         }, { //Model.MerlinB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.599,
             OriginalBaseWidth: 0.73,
             PlumeSizeMultiplier: 0.54,
-            PlumePositionOffset: -0.18,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.015,
             NodeStackBottom: -1.39,
             ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1B",
@@ -1582,13 +1630,19 @@ class ModelInfo {
                 ["Merlin-1B-Strut-Lower2", "Merlin-1B-Strut-Upper2"],
                 ["Merlin-1B-Strut-Upper2", "Merlin-1B-Strut-Lower2"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: 0.084,
+                exhaustThrustTransform: "Merlin-1B-RollGimbal",
+                exhaustGimbalTransform: "Merlin-1B-RollGimbal",
+                exhaustEffectTransform: "Merlin-1B-RollFXTransform",
+            }
         }, { //Model.Merlin1BV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.599,
             OriginalBaseWidth: 0.73,
             PlumeSizeMultiplier: 1.4,
-            PlumePositionOffset: -0.66,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.015,
             NodeStackBottom: -2.87,
             ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1BV",
@@ -1616,13 +1670,19 @@ class ModelInfo {
                 ["Merlin-1BV-Strut-Lower2", "Merlin-1BV-Strut-Upper2"],
                 ["Merlin-1BV-Strut-Upper2", "Merlin-1BV-Strut-Lower2"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "Merlin-1BV-RollGimbal",
+                exhaustGimbalTransform: "Merlin-1BV-RollGimbal",
+                exhaustEffectTransform: "Merlin-1BV-RollFXTransform",
+            }
         }, { //Model.Merlin1D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.601,
             OriginalBaseWidth: 0.73,
             PlumeSizeMultiplier: 0.53,
-            PlumePositionOffset: -0.2,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.015,
             NodeStackBottom: -1.39,
             ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1D",
@@ -1650,7 +1710,13 @@ class ModelInfo {
                 ["Merlin-1D-Strut-Lower2", "Merlin-1D-Strut-Upper2"],
                 ["Merlin-1D-Strut-Upper2", "Merlin-1D-Strut-Lower2"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: 0.143,
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "effectTransform",
+            }
         }, { //Model.Merlin1DV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.601,
@@ -2023,7 +2089,7 @@ class ModelInfo {
             OriginalBellWidth: 1.61,
             OriginalBaseWidth: 2.272,
             PlumeSizeMultiplier: 1.43,
-            PlumePositionOffset: -0.6,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.01,
             NodeStackBottom: -3.6,
             ModelPath: "GenericEngines/models/SSTU/RS-68/SC-ENG-RS-68",
@@ -2053,7 +2119,13 @@ class ModelInfo {
                 ["RS-68-Target-FuelFront", "RS-68-FuelJointFront"],
                 ["RS-68-Target-FuelRear", "RS-68-FuelJointRear"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: 0.24,
+                exhaustThrustTransform: "exhaustTransform",
+                exhaustGimbalTransform: "exhaustTransform",
+                exhaustEffectTransform: "exhaustEffect",
+            }
         }, { //Model.SuperDraco
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.128,
@@ -2533,7 +2605,13 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: [
                 "VikingHeat"
-            ]
+            ],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.VikingVac
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.8,
@@ -2563,7 +2641,13 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: [
                 "VikingHeat"
-            ]
+            ],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.ApolloSPSBlockII
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.639,
@@ -3224,7 +3308,13 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/Navaho.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.Thor
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.885,
@@ -3252,7 +3342,13 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/Thor.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.Vanguard
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.284,
@@ -3285,7 +3381,13 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: [
                 "Vanguard_Engine_Anim"
-            ]
+            ],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.E1
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.975,
@@ -3321,7 +3423,13 @@ class ModelInfo {
             ],
             HeatAnimations: [
                 "E1_Heat_Anim"
-            ]
+            ],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.Sargent
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.106,
@@ -3378,7 +3486,13 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/Juno6K.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.Juno45K
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.7,
@@ -3408,7 +3522,13 @@ class ModelInfo {
                 ["LowerGimbal", "UpperGimbal"],
                 ["UpperGimbal", "LowerGimbal"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.S3D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.99,
@@ -3438,7 +3558,13 @@ class ModelInfo {
                 ["LowerGimbal", "UpperGimbal"],
                 ["UpperGimbal", "LowerGimbal"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.F1_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.96,
@@ -3499,7 +3625,13 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/H1C.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.H1D
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.588,
@@ -3562,7 +3694,13 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/J2_BDB.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.J2T
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.248, // It's an aerospike. What do I do?
@@ -3622,7 +3760,13 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/J2SL.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.AJ260
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 3.914,
@@ -3653,7 +3797,13 @@ class ModelInfo {
             LookatPairs: [],
             HeatAnimations: [
                 "AJ260_Vernier_Emit"
-            ]
+            ],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR87
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.708,
@@ -3681,7 +3831,13 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/LR87.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR87S
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.692,
@@ -3709,7 +3865,13 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/LR87S.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR91_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.854,
@@ -3737,7 +3899,13 @@ class ModelInfo {
             ImageSource: "img/modelPreviews/LR91_BDB.webp",
             get ImageLabel(): string { return this.ModelName },
             LookatPairs: [],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.Soltan
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.497,
@@ -3888,7 +4056,13 @@ class ModelInfo {
                 ["pitchPivot_2_Upper", "pitchPivot_2_Lower"],
                 ["pitchPivot_2_Lower", "pitchPivot_2_Upper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR87_11
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.735,
@@ -3927,7 +4101,13 @@ class ModelInfo {
                 ["pitchPivot_2_Upper", "pitchPivot_2_Lower"],
                 ["pitchPivot_2_Lower", "pitchPivot_2_Upper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR87_11S
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.733,
@@ -3962,7 +4142,13 @@ class ModelInfo {
                 ["pitchPivot_Upper", "pitchPivot_Lower"],
                 ["pitchPivot_Lower", "pitchPivot_Upper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR87_11SV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.918,
@@ -3997,7 +4183,13 @@ class ModelInfo {
                 ["pitchPivot_Upper", "pitchPivot_Lower"],
                 ["pitchPivot_Lower", "pitchPivot_Upper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR87_11SH
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.67,
@@ -4032,7 +4224,13 @@ class ModelInfo {
                 ["pitchPivot_Upper", "pitchPivot_Lower"],
                 ["pitchPivot_Lower", "pitchPivot_Upper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR87_11SHV
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.977,
@@ -4067,7 +4265,13 @@ class ModelInfo {
                 ["pitchPivot_Upper", "pitchPivot_Lower"],
                 ["pitchPivot_Lower", "pitchPivot_Upper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR91_5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.95,
@@ -4102,7 +4306,13 @@ class ModelInfo {
                 ["pivot_2_Upper", "pivot_2_Lower"],
                 ["pivot_2_Lower", "pivot_2_Upper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.LR91_11
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.934,
@@ -4137,7 +4347,13 @@ class ModelInfo {
                 ["pivot_2_Upper", "pivot_2_Lower"],
                 ["pivot_2_Lower", "pivot_2_Upper"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            Exhaust: {
+                exhaustBellWidth: ,
+                exhaustThrustTransform: "",
+                exhaustGimbalTransform: "",
+                exhaustEffectTransform: "",
+            }
         }, { //Model.SRMU
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.9,

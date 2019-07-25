@@ -65,6 +65,7 @@ class Packager {
             
             let modelInfo = ModelInfo.GetModelInfo (e.GetModelID ());
             let plumeInfo = PlumeInfo.GetPlumeInfo (e.PlumeID);
+            let exhaustPlumeInfo = e.UseExhaustEffect && modelInfo.Exhaust ? PlumeInfo.GetPlumeInfo (e.ExhaustPlumeID) : null;
             
             modelInfo.ModelFiles.forEach (f => {
                 if (!toFetch.some (x => x[0] == f)) {
@@ -79,6 +80,15 @@ class Packager {
                     toFetch.push ([f, f.replace (/^files\//, "")]);
                 }
             });
+            
+            if (exhaustPlumeInfo) {
+                exhaustPlumeInfo.PlumeFiles.forEach (f => {
+                    if (!toFetch.some (x => x[0] == f)) {
+                        //Add to the list if it's not on it already
+                        toFetch.push ([f, f.replace (/^files\//, "")]);
+                    }
+                });
+            }
             
         });
         

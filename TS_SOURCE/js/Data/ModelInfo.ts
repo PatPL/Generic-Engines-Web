@@ -3461,7 +3461,7 @@ class ModelInfo {
             OriginalBellWidth: 0.376,
             OriginalBaseWidth: 0.898,
             PlumeSizeMultiplier: 0.32,
-            PlumePositionOffset: 0.48,
+            PlumePositionOffset: 0.28,
             NodeStackTop: 0.013,
             NodeStackBottom: -1.09,
             ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine6K",

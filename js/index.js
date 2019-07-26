@@ -10249,9 +10249,8 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (<span class="zippedCount">#</span>/<span class="fileCount">#</span>)`;
-                let zippedCountElement = exportStatusElement.querySelector(".zippedCount");
-                let fileCountElement = exportStatusElement.querySelector(".fileCount");
+                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files <progress />`;
+                let progressElement = exportStatusElement.querySelector("progress");
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date().getTime();
                 FileIO.ZipBlobs("GameData", blobs, zipData => {
@@ -10268,8 +10267,8 @@ class Packager {
                         callback(zipData);
                     }
                 }, (alreadyZippedCount, toZipCount) => {
-                    zippedCountElement.innerHTML = alreadyZippedCount.toString();
-                    fileCountElement.innerHTML = toZipCount.toString();
+                    progressElement.value = alreadyZippedCount;
+                    progressElement.max = toZipCount;
                 });
             }
         };

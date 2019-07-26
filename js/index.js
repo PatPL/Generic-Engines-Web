@@ -3088,7 +3088,7 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
+            exhaustBellWidth: 0.084,
             exhaustThrustTransform: "Merlin-1BV-RollGimbal",
             exhaustGimbalTransform: "Merlin-1BV-RollGimbal",
             exhaustEffectTransform: "Merlin-1BV-RollFXTransform",
@@ -3997,7 +3997,7 @@ ModelInfo.models = [
         OriginalBellWidth: 0.944,
         OriginalBaseWidth: 0.947,
         PlumeSizeMultiplier: 0.8,
-        PlumePositionOffset: 1.55,
+        PlumePositionOffset: 0,
         NodeStackTop: 1.6,
         NodeStackBottom: -1.03,
         ModelPath: "GenericEngines/models/FRE/Viking/VikingLower",
@@ -4023,10 +4023,10 @@ ModelInfo.models = [
             "VikingHeat"
         ],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.11,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4059,10 +4059,10 @@ ModelInfo.models = [
             "VikingHeat"
         ],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.11,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4723,10 +4723,10 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.059,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "polySurface27",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4757,10 +4757,10 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.135,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "vernierTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4782,9 +4782,7 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "Vanguard",
         ModelType: EngineGroupType.IRL,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
@@ -4796,17 +4794,17 @@ ModelInfo.models = [
             "Vanguard_Engine_Anim"
         ],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.0975,
+            exhaustThrustTransform: "vernierTransform",
+            exhaustGimbalTransform: "vernierTransform",
+            exhaustEffectTransform: "vernierTransform",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.975,
         OriginalBaseWidth: 1.061,
         PlumeSizeMultiplier: 0.86,
-        PlumePositionOffset: -0.15,
+        PlumePositionOffset: 0,
         NodeStackTop: 1.2,
         NodeStackBottom: -0.86,
         ModelPath: "GenericEngines/models/BDB/Engines/bluedog_E1",
@@ -4838,10 +4836,10 @@ ModelInfo.models = [
             "E1_Heat_Anim"
         ],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.168,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4901,10 +4899,10 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.0945,
+            exhaustThrustTransform: "vernierEffects",
+            exhaustGimbalTransform: "vernierTransform",
+            exhaustEffectTransform: "vernierEffects",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4937,10 +4935,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.134,
+            exhaustThrustTransform: "vernierEffects",
+            exhaustGimbalTransform: "vernierTransform",
+            exhaustEffectTransform: "vernierEffects",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -4973,10 +4971,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.292,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5040,10 +5038,10 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.0555,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5083,7 +5081,7 @@ ModelInfo.models = [
         OriginalBellWidth: 1.147,
         OriginalBaseWidth: 0.85,
         PlumeSizeMultiplier: 1,
-        PlumePositionOffset: -0.13,
+        PlumePositionOffset: 0,
         NodeStackTop: 0.737,
         NodeStackBottom: -0.93,
         ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2",
@@ -5109,10 +5107,10 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.063,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5149,7 +5147,7 @@ ModelInfo.models = [
         OriginalBellWidth: 0.904,
         OriginalBaseWidth: 0.852,
         PlumeSizeMultiplier: 0.8,
-        PlumePositionOffset: -0.39,
+        PlumePositionOffset: 0,
         NodeStackTop: 0.7,
         NodeStackBottom: -0.64,
         ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2sl",
@@ -5175,10 +5173,10 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.063,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5212,10 +5210,10 @@ ModelInfo.models = [
             "AJ260_Vernier_Emit"
         ],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.73,
+            exhaustThrustTransform: "vernierTransform",
+            exhaustGimbalTransform: "vernierGimbal",
+            exhaustEffectTransform: "vernierTransform",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5246,10 +5244,10 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.11,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5280,10 +5278,10 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.1,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5314,10 +5312,10 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.15,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustGimbal",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5471,10 +5469,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustTransform",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5516,10 +5514,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustTransform",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5557,10 +5555,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5598,10 +5596,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5639,10 +5637,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5680,10 +5678,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5721,10 +5719,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.17,
+            exhaustThrustTransform: "vernierThrust",
+            exhaustGimbalTransform: "vernierGimbal",
+            exhaustEffectTransform: "vernierFX",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
@@ -5762,10 +5760,10 @@ ModelInfo.models = [
         ],
         HeatAnimations: [],
         Exhaust: {
-            exhaustBellWidth: ,
-            exhaustThrustTransform: "",
-            exhaustGimbalTransform: "",
-            exhaustEffectTransform: "",
+            exhaustBellWidth: 0.17,
+            exhaustThrustTransform: "vernierThrust",
+            exhaustGimbalTransform: "vernierGimbal",
+            exhaustEffectTransform: "vernierFX",
         }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },

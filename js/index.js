@@ -10005,6 +10005,7 @@ class Exporter {
         `;
     }
 }
+zip.workerScriptsPath = "lib/";
 class FileIO {
     static ToClipboard(value) {
         if (value.length == 0) {
@@ -10019,29 +10020,49 @@ class FileIO {
         document.body.removeChild(textArea);
         return ok;
     }
-    static ZipBlobs(rootDirName, blobs, callback) {
-        let zip = new JSZip();
-        let zipRoot = zip.folder(rootDirName);
-        for (let blobname in blobs) {
-            let blob = blobs[blobname];
-            if (blob instanceof Uint8Array) {
-                zipRoot.file(blobname, blob, {
-                    binary: true
-                });
-            }
-            else {
-                zipRoot.file(blobname, blob, {
-                    binary: false
-                });
-            }
+    static ZipBlobs(rootDirName, blobs, callback, progressStatus) {
+        let zippedCount = 0;
+        let fileCount = Object.getOwnPropertyNames(blobs).length;
+        if (progressStatus) {
+            progressStatus(0, fileCount);
         }
-        zip.generateAsync({
-            type: "uint8array",
-            compression: "DEFLATE",
-            compressionOptions: {
-                level: 1
+        zip.createWriter(new zip.BlobWriter(), (writer) => {
+            for (let blobname in blobs) {
+                let blob = blobs[blobname];
+                const onEnd = () => {
+                    writer.close((blob) => {
+                        new Response(blob).arrayBuffer().then(a => {
+                            callback(new Uint8Array(a));
+                        });
+                    });
+                };
+                if (blob instanceof Uint8Array) {
+                    writer.add(`${rootDirName}/${blobname}`, new zip.BlobReader(new Blob([blob])), () => {
+                        ++zippedCount;
+                        if (progressStatus) {
+                            progressStatus(zippedCount, fileCount);
+                        }
+                        if (zippedCount == fileCount) {
+                            onEnd();
+                        }
+                    });
+                }
+                else {
+                    writer.add(`${rootDirName}/${blobname}`, new zip.TextReader(blob), () => {
+                        ++zippedCount;
+                        if (progressStatus) {
+                            progressStatus(zippedCount, fileCount);
+                        }
+                        if (zippedCount == fileCount) {
+                            onEnd();
+                        }
+                    });
+                }
             }
-        }).then(callback);
+        }, (error) => {
+            Notifier.Error("There was an error during zip.js initialization");
+            console.error("zip.js error:", error);
+        }, true);
     }
     static OpenText(extensions, callback) {
         this.Open(FileType.Text, extensions, (result, filename) => {
@@ -10228,7 +10249,9 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (Might take over a minute)`;
+                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (<span class="zippedCount">#</span>/<span class="fileCount">#</span>)`;
+                let zippedCountElement = exportStatusElement.querySelector(".zippedCount");
+                let fileCountElement = exportStatusElement.querySelector(".fileCount");
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date().getTime();
                 FileIO.ZipBlobs("GameData", blobs, zipData => {
@@ -10244,6 +10267,9 @@ class Packager {
                         this.IsWorking = false;
                         callback(zipData);
                     }
+                }, (alreadyZippedCount, toZipCount) => {
+                    zippedCountElement.innerHTML = alreadyZippedCount.toString();
+                    fileCountElement.innerHTML = toZipCount.toString();
                 });
             }
         };

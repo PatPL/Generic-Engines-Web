@@ -1,4 +1,5 @@
-declare let JSZip: any;
+declare var zip: any;
+zip.workerScriptsPath = "lib/";
 
 class FileIO {
     
@@ -19,31 +20,55 @@ class FileIO {
         return ok;
     }
     
-    public static ZipBlobs (rootDirName: string, blobs: {[blobname: string]: Uint8Array | string}, callback: (zipBlob: Uint8Array) => void) {
-        let zip = new JSZip ();
-        let zipRoot = zip.folder (rootDirName);
+    // Benchmark: 330 files:
+    // JSZip DEFLATE1: Zipped in 99'726ms, 91.3MB
+    // JSZIP STORE: Zipped in 76'360ms, 262MB
+    // zip.js DEFLATE: Zipped in 27'936ms, 84.7MB 
+    // zip.js STORE: Zipped in 3'207ms, 262MB << the way to go
+    public static ZipBlobs (
+        rootDirName: string,
+        blobs: {[blobname: string]: Uint8Array | string},
+        callback: (zipBlob: Uint8Array) => void,
+        progressStatus?: (alreadyZipped: number, toZip: number) => void
+    ) {
         
-        for (let blobname in blobs) {
-            let blob = blobs[blobname];
-            
-            if (blob instanceof Uint8Array) {
-                zipRoot.file (blobname, blob, {
-                    binary: true
-                });
-            } else {
-                zipRoot.file (blobname, blob, {
-                    binary: false
-                });
-            }
-        }
+        let zippedCount = 0;
+        let fileCount = Object.getOwnPropertyNames (blobs).length;
         
-        zip.generateAsync ({
-            type: "uint8array",
-            compression: "DEFLATE", //Doesn't slow down zipping as much, and halves the size
-            compressionOptions: {
-                level: 1
+        if (progressStatus) { progressStatus (0, fileCount); }
+        zip.createWriter (new zip.BlobWriter (), (writer: any) => {
+            for (let blobname in blobs) {
+                let blob = blobs[blobname];
+                const onEnd = () => {
+                    writer.close ((blob: Blob) => {
+                        new Response (blob).arrayBuffer ().then (a => {
+                            callback (new Uint8Array (a));
+                        });
+                    })
+                }
+                
+                if (blob instanceof Uint8Array) {
+                    writer.add (`${rootDirName}/${blobname}`, new zip.BlobReader (new Blob ([blob])), () => {
+                        ++zippedCount;
+                        if (progressStatus) { progressStatus (zippedCount, fileCount); }
+                        if (zippedCount == fileCount) {
+                            onEnd ();
+                        }
+                    });
+                } else {
+                    writer.add (`${rootDirName}/${blobname}`, new zip.TextReader (blob), () => {
+                        ++zippedCount;
+                        if (progressStatus) { progressStatus (zippedCount, fileCount); }
+                        if (zippedCount == fileCount) {
+                            onEnd ();
+                        }
+                    });
+                }
             }
-        }).then (callback);
+        }, (error: any) => {
+            Notifier.Error ("There was an error during zip.js initialization");
+            console.error ("zip.js error:", error);
+        }, true);
         
     }
     

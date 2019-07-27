@@ -1441,7 +1441,7 @@ class Engine {
                     name = ModuleDeployableEngine
                     EngineAnimationName = ${ modelInfo.ExtendNozzleAnimation }
                     WaitForAnimation = 0.9
-                    Layer = 1
+                    Layer = ${ Math.ceil (Math.random () * 2_000_000_000) }
                 }
             `;
         }

@@ -21,7 +21,12 @@ document.addEventListener ("DOMContentLoaded", () => {
         }
         
         let id = parseInt (i);
-        plumes.push ([id, PlumeInfo.GetPlumeInfo (id)]);
+        let plumeInfo = PlumeInfo.GetPlumeInfo (id);
+        
+        // As of 0.9.0, Real Plume is deprecated
+        if (plumeInfo.PlumeMod != "RealPlume") {
+            plumes.push ([id, plumeInfo]);
+        }
     }
     
     //Sort first by plume mod, than by plume name

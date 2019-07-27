@@ -553,6 +553,9 @@ class Serializer {
             //short - PlumeID
             output.PlumeID = input[i++]; //Same here
             output.PlumeID += input[i++] * 256; // EDIT: This became a problem. Fixed.
+            
+            // As of 0.9.0, Real Plume is deprecated
+            output.PlumeID = PlumeInfo.MapRealPlumesToGenericPlumes (output.PlumeID);
         }
         
         if (version >= 7) {

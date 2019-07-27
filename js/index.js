@@ -5876,6 +5876,39 @@ class PlumeInfo {
     static GetPlumeInfo(id) {
         return PlumeInfo.plumes[id];
     }
+    static MapRealPlumesToGenericPlumes(plume) {
+        switch (plume) {
+            case Plume.Alcolox_Lower: return Plume.GP_Alcolox;
+            case Plume.Amonnialox: return Plume.GP_Ammonialox;
+            case Plume.Cryogenic_UpperLower_125: return Plume.GP_Hydrolox;
+            case Plume.Cryogenic_UpperLower_25: return Plume.GP_Hydrolox;
+            case Plume.Cryogenic_UpperLower_375: return Plume.GP_Hydrolox;
+            case Plume.Hydrogen_NTR: return Plume.GP_HydrogenNTR;
+            case Plume.Hydrolox_Lower: return Plume.GP_Hydrolox;
+            case Plume.Hydrolox_Upper: return Plume.GP_Hydrolox;
+            case Plume.Hydynelox_A7: return Plume.GP_Hydynelox;
+            case Plume.Hypergolic_Lower: return Plume.GP_Hypergolic;
+            case Plume.Hypergolic_OMS_Red: return Plume.GP_OmsRed;
+            case Plume.Hypergolic_OMS_White: return Plume.GP_OmsWhite;
+            case Plume.Hypergolic_Upper: return Plume.GP_Hypergolic;
+            case Plume.Hypergolic_Vernier: return Plume.GP_Hypergolic;
+            case Plume.Ion_Argon_Gridded: return Plume.GP_IonArgon;
+            case Plume.Ion_Krypton_Gridded: return Plume.GP_IonKrypton;
+            case Plume.Ion_Krypton_Hall: return Plume.GP_IonKrypton;
+            case Plume.Ion_Xenon_Gridded: return Plume.GP_IonXenon;
+            case Plume.Ion_Xenon_Hall: return Plume.GP_IonXenon;
+            case Plume.Kerolox_Lower: return Plume.GP_Kerolox;
+            case Plume.Kerolox_Upper: return Plume.GP_Kerolox;
+            case Plume.Kerolox_Vernier: return Plume.GP_Kerolox;
+            case Plume.Solid_Lower: return Plume.GP_Solid;
+            case Plume.Solid_Sepmotor: return Plume.GP_Solid;
+            case Plume.Solid_Upper: return Plume.GP_Solid;
+            case Plume.Solid_Vacuum: return Plume.GP_Solid;
+            case Plume.Turbofan: return Plume.GP_OmsRed;
+            case Plume.Turbojet: return Plume.GP_OmsRed;
+            default: return plume;
+        }
+    }
     static BuildDropdown() {
         let output = document.createElement("select");
         PlumeInfo.plumes.forEach((v, i) => {
@@ -7250,7 +7283,10 @@ document.addEventListener("DOMContentLoaded", () => {
             break;
         }
         let id = parseInt(i);
-        plumes.push([id, PlumeInfo.GetPlumeInfo(id)]);
+        let plumeInfo = PlumeInfo.GetPlumeInfo(id);
+        if (plumeInfo.PlumeMod != "RealPlume") {
+            plumes.push([id, plumeInfo]);
+        }
     }
     plumes.sort((a, b) => {
         if (a[1].PlumeMod > b[1].PlumeMod) {
@@ -8452,7 +8488,7 @@ class Engine {
                     name = ModuleDeployableEngine
                     EngineAnimationName = ${modelInfo.ExtendNozzleAnimation}
                     WaitForAnimation = 0.9
-                    Layer = 1
+                    Layer = ${Math.ceil(Math.random() * 2000000000)}
                 }
             `;
         }
@@ -10702,6 +10738,7 @@ class Serializer {
             output.ModelID += input[i++] * 256;
             output.PlumeID = input[i++];
             output.PlumeID += input[i++] * 256;
+            output.PlumeID = PlumeInfo.MapRealPlumesToGenericPlumes(output.PlumeID);
         }
         if (version >= 7) {
             output.TechUnlockNode += input[i++];

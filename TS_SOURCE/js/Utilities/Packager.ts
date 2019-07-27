@@ -58,6 +58,7 @@ class Packager {
         
         toFetch.push (["files/PlumeScaleFixer.dll", "GenericEngines/PlumeScaleFixer.dll"]);
         
+        let needsDeployableEngines = false;
         engines.forEach (e => {
             if (!e.Active) {
                 return; //continue;
@@ -66,6 +67,8 @@ class Packager {
             let modelInfo = ModelInfo.GetModelInfo (e.GetModelID ());
             let plumeInfo = PlumeInfo.GetPlumeInfo (e.PlumeID);
             let exhaustPlumeInfo = e.UseExhaustEffect && modelInfo.Exhaust ? PlumeInfo.GetPlumeInfo (e.ExhaustPlumeID) : null;
+            
+            needsDeployableEngines = needsDeployableEngines || modelInfo.ExtendNozzleAnimation != undefined;
             
             modelInfo.ModelFiles.forEach (f => {
                 if (!toFetch.some (x => x[0] == f)) {
@@ -91,6 +94,12 @@ class Packager {
             }
             
         });
+        
+        if (needsDeployableEngines) {
+            // Add DeployableEngines if we export an engine with a model that has a deployable engine
+            toFetch.push (["files/DeployableEngines/Plugins/DeployableEngines.dll", "DeployableEngines/Plugins/DeployableEngines.dll"]);
+            toFetch.push (["files/DeployableEngines/Versioning/DeployableEngines.version", "DeployableEngines/Versioning/DeployableEngines.version"]);
+        }
         
         downloadedFilesCountElement.innerHTML = "0";
         toDownload = toFetch.length;

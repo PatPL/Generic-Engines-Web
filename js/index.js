@@ -3363,7 +3363,7 @@ ModelInfo.models = [
         PlumeSizeMultiplier: 0.71,
         PlumePositionOffset: -0.27,
         NodeStackTop: -0.01,
-        NodeStackBottom: -1.49,
+        NodeStackBottom: -1.125,
         ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10A-4",
         ModelFiles: [
             "files/models/SSTU/RL10/SC-ENG-RL10A-4.mu",
@@ -3391,7 +3391,8 @@ ModelInfo.models = [
             ["RL10A-4-Target-FuelLeft", "RL10A-4-FuelJointLeft"],
             ["RL10A-4-Target-FuelRight", "RL10A-4-FuelJointRight"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        ExtendNozzleAnimation: "SC-ENG-RL10A-4-Deploy"
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.25,
@@ -3433,9 +3434,9 @@ ModelInfo.models = [
         OriginalBellWidth: 1.27,
         OriginalBaseWidth: 0.568,
         PlumeSizeMultiplier: 1.13,
-        PlumePositionOffset: -0.5,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.005,
-        NodeStackBottom: -2.56,
+        NodeStackBottom: -1.362,
         ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10B-2",
         ModelFiles: [
             "files/models/SSTU/RL10/SC-ENG-RL10B-2.mu",
@@ -3463,7 +3464,8 @@ ModelInfo.models = [
             ["RL10B-2-Target-FuelLeft", "RL10B-2-FuelJointLeft"],
             ["RL10B-2-Target-FuelRight", "RL10B-2-FuelJointRight"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        ExtendNozzleAnimation: "SC-ENG-RL10B-2-Deploy"
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.569,
@@ -4416,7 +4418,7 @@ ModelInfo.models = [
         PlumeSizeMultiplier: 0.64,
         PlumePositionOffset: 0,
         NodeStackTop: 0.332,
-        NodeStackBottom: -1.18,
+        NodeStackBottom: -0.805,
         ModelPath: "GenericEngines/models/BDB/Centaur/bluedog_Centaur_RL10A41_Shroudless_Extended",
         ModelFiles: [
             "files/models/BDB/Centaur/bluedog_Centaur_RL10A41_Shroudless_Extended.mu",
@@ -4444,7 +4446,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "RL10A41_Emit"
-        ]
+        ],
+        ExtendNozzleAnimation: "extend"
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.905,
@@ -4452,7 +4455,7 @@ ModelInfo.models = [
         PlumeSizeMultiplier: 0.8,
         PlumePositionOffset: 0,
         NodeStackTop: 0.33,
-        NodeStackBottom: -1.75,
+        NodeStackBottom: -0.807,
         ModelPath: "GenericEngines/models/BDB/Centaur/bluedog_Centaur_RL10B2_Shroudless_Extended",
         ModelFiles: [
             "files/models/BDB/Centaur/bluedog_Centaur_RL10B2_Shroudless_Extended.mu",
@@ -4483,7 +4486,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "RL10B2_Emit"
-        ]
+        ],
+        ExtendNozzleAnimation: "extend"
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.508,
@@ -8440,6 +8444,18 @@ class Engine {
         let attachmentNode = (modelInfo.RadialAttachment ?
             `node_attach = ${modelInfo.RadialAttachmentPoint * widthScale}, 0.0, 0.0, 1.0, 0.0, 0.0` :
             `node_attach = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0`);
+        let deployableEnginesConfig = "";
+        if (modelInfo.ExtendNozzleAnimation) {
+            deployableEnginesConfig = `
+                MODULE
+                {
+                    name = ModuleDeployableEngine
+                    EngineAnimationName = ${modelInfo.ExtendNozzleAnimation}
+                    WaitForAnimation = 0.9
+                    Layer = 1
+                }
+            `;
+        }
         let heatAnims = "";
         modelInfo.HeatAnimations.forEach(clip => {
             heatAnims += `
@@ -8491,6 +8507,9 @@ class Engine {
             ${heatAnims}
             
             ${lookAtConfig}
+            
+            ${deployableEnginesConfig}
+            
         `;
     }
     IsTestFlightDefault() {
@@ -10027,15 +10046,20 @@ class FileIO {
             progressStatus(0, fileCount);
         }
         zip.createWriter(new zip.BlobWriter(), (writer) => {
+            let blobnames = [];
             for (let blobname in blobs) {
-                let blob = blobs[blobname];
-                const onEnd = () => {
-                    writer.close((blob) => {
-                        new Response(blob).arrayBuffer().then(a => {
-                            callback(new Uint8Array(a));
-                        });
+                blobnames.push(blobname);
+            }
+            const onEnd = () => {
+                writer.close((blob) => {
+                    new Response(blob).arrayBuffer().then(a => {
+                        callback(new Uint8Array(a));
                     });
-                };
+                });
+            };
+            const processBlob = (index) => {
+                let blobname = blobnames[index];
+                let blob = blobs[blobname];
                 if (blob instanceof Uint8Array) {
                     writer.add(`${rootDirName}/${blobname}`, new zip.BlobReader(new Blob([blob])), () => {
                         ++zippedCount;
@@ -10044,6 +10068,9 @@ class FileIO {
                         }
                         if (zippedCount == fileCount) {
                             onEnd();
+                        }
+                        else {
+                            processBlob(zippedCount);
                         }
                     });
                 }
@@ -10056,9 +10083,13 @@ class FileIO {
                         if (zippedCount == fileCount) {
                             onEnd();
                         }
+                        else {
+                            processBlob(zippedCount);
+                        }
                     });
                 }
-            }
+            };
+            processBlob(0);
         }, (error) => {
             Notifier.Error("There was an error during zip.js initialization");
             console.error("zip.js error:", error);
@@ -10217,6 +10248,7 @@ class Packager {
         blobs[`GenericEngines/${name}.cfg`] = Exporter.ConvertEngineListToConfig(engines);
         blobs[`GenericEngines/GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
         toFetch.push(["files/PlumeScaleFixer.dll", "GenericEngines/PlumeScaleFixer.dll"]);
+        let needsDeployableEngines = false;
         engines.forEach(e => {
             if (!e.Active) {
                 return;
@@ -10224,6 +10256,7 @@ class Packager {
             let modelInfo = ModelInfo.GetModelInfo(e.GetModelID());
             let plumeInfo = PlumeInfo.GetPlumeInfo(e.PlumeID);
             let exhaustPlumeInfo = e.UseExhaustEffect && modelInfo.Exhaust ? PlumeInfo.GetPlumeInfo(e.ExhaustPlumeID) : null;
+            needsDeployableEngines = needsDeployableEngines || modelInfo.ExtendNozzleAnimation != undefined;
             modelInfo.ModelFiles.forEach(f => {
                 if (!toFetch.some(x => x[0] == f)) {
                     toFetch.push([f, f.replace(/^files\//, "GenericEngines/")]);
@@ -10242,6 +10275,10 @@ class Packager {
                 });
             }
         });
+        if (needsDeployableEngines) {
+            toFetch.push(["files/DeployableEngines/Plugins/DeployableEngines.dll", "DeployableEngines/Plugins/DeployableEngines.dll"]);
+            toFetch.push(["files/DeployableEngines/Versioning/DeployableEngines.version", "DeployableEngines/Versioning/DeployableEngines.version"]);
+        }
         downloadedFilesCountElement.innerHTML = "0";
         toDownload = toFetch.length;
         document.getElementById("export-to-download").innerHTML = toDownload.toString();

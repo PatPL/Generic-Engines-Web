@@ -22,7 +22,7 @@ class FileIO {
     
     // Benchmark: 330 files:
     // JSZip DEFLATE1: Zipped in 99'726ms, 91.3MB
-    // JSZIP STORE: Zipped in 76'360ms, 262MB
+    // JSZip STORE: Zipped in 76'360ms, 262MB
     // zip.js DEFLATE: Zipped in 27'936ms, 84.7MB 
     // zip.js STORE: Zipped in 3'207ms, 262MB << the way to go
     public static ZipBlobs (
@@ -37,22 +37,30 @@ class FileIO {
         
         if (progressStatus) { progressStatus (0, fileCount); }
         zip.createWriter (new zip.BlobWriter (), (writer: any) => {
+            let blobnames: string[] = [];
             for (let blobname in blobs) {
+                blobnames.push (blobname);
+            }
+            
+            const onEnd = () => {
+                writer.close ((blob: Blob) => {
+                    new Response (blob).arrayBuffer ().then (a => {
+                        callback (new Uint8Array (a));
+                    });
+                })
+            }
+            
+            const processBlob = (index: number) => {
+                let blobname = blobnames[index];
                 let blob = blobs[blobname];
-                const onEnd = () => {
-                    writer.close ((blob: Blob) => {
-                        new Response (blob).arrayBuffer ().then (a => {
-                            callback (new Uint8Array (a));
-                        });
-                    })
-                }
-                
                 if (blob instanceof Uint8Array) {
                     writer.add (`${rootDirName}/${blobname}`, new zip.BlobReader (new Blob ([blob])), () => {
                         ++zippedCount;
                         if (progressStatus) { progressStatus (zippedCount, fileCount); }
                         if (zippedCount == fileCount) {
                             onEnd ();
+                        } else {
+                            processBlob (zippedCount);
                         }
                     });
                 } else {
@@ -61,10 +69,16 @@ class FileIO {
                         if (progressStatus) { progressStatus (zippedCount, fileCount); }
                         if (zippedCount == fileCount) {
                             onEnd ();
+                        } else {
+                            processBlob (zippedCount);
                         }
                     });
                 }
             }
+            
+            // Start it all
+            processBlob (0);
+            
         }, (error: any) => {
             Notifier.Error ("There was an error during zip.js initialization");
             console.error ("zip.js error:", error);

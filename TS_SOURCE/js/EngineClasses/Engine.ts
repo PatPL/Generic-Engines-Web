@@ -1432,6 +1432,20 @@ class Engine {
             `node_attach = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0`
         );
         
+        // Extendable nozzle config
+        let deployableEnginesConfig = "";
+        if (modelInfo.ExtendNozzleAnimation) {
+            deployableEnginesConfig = `
+                MODULE
+                {
+                    name = ModuleDeployableEngine
+                    EngineAnimationName = ${ modelInfo.ExtendNozzleAnimation }
+                    WaitForAnimation = 0.9
+                    Layer = 1
+                }
+            `;
+        }
+        
         // Heat animations
         let heatAnims = "";
         modelInfo.HeatAnimations.forEach (clip => {
@@ -1487,6 +1501,9 @@ class Engine {
             ${heatAnims}
             
             ${lookAtConfig}
+            
+            ${deployableEnginesConfig}
+            
         `;
     }
     

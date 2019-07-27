@@ -1947,7 +1947,7 @@ class ModelInfo {
             PlumeSizeMultiplier: 0.71,
             PlumePositionOffset: -0.27,
             NodeStackTop: -0.01,
-            NodeStackBottom: -1.49,
+            NodeStackBottom: -1.125,
             ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10A-4",
             ModelFiles: [
                 "files/models/SSTU/RL10/SC-ENG-RL10A-4.mu",
@@ -1975,7 +1975,8 @@ class ModelInfo {
                 ["RL10A-4-Target-FuelLeft", "RL10A-4-FuelJointLeft"],
                 ["RL10A-4-Target-FuelRight", "RL10A-4-FuelJointRight"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            ExtendNozzleAnimation: "SC-ENG-RL10A-4-Deploy"
         }, { //Model.RL10A5
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.25,
@@ -2017,9 +2018,9 @@ class ModelInfo {
             OriginalBellWidth: 1.27,
             OriginalBaseWidth: 0.568,
             PlumeSizeMultiplier: 1.13,
-            PlumePositionOffset: -0.5,
+            PlumePositionOffset: 0,
             NodeStackTop: -0.005,
-            NodeStackBottom: -2.56,
+            NodeStackBottom: -1.362,
             ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10B-2",
             ModelFiles: [
                 "files/models/SSTU/RL10/SC-ENG-RL10B-2.mu",
@@ -2047,7 +2048,8 @@ class ModelInfo {
                 ["RL10B-2-Target-FuelLeft", "RL10B-2-FuelJointLeft"],
                 ["RL10B-2-Target-FuelRight", "RL10B-2-FuelJointRight"],
             ],
-            HeatAnimations: []
+            HeatAnimations: [],
+            ExtendNozzleAnimation: "SC-ENG-RL10B-2-Deploy"
         }, { //Model.RS25_2
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 1.569,
@@ -3003,7 +3005,7 @@ class ModelInfo {
             PlumeSizeMultiplier: 0.64,
             PlumePositionOffset: 0,
             NodeStackTop: 0.332,
-            NodeStackBottom: -1.18,
+            NodeStackBottom: -0.805,
             ModelPath: "GenericEngines/models/BDB/Centaur/bluedog_Centaur_RL10A41_Shroudless_Extended",
             ModelFiles: [
                 "files/models/BDB/Centaur/bluedog_Centaur_RL10A41_Shroudless_Extended.mu",
@@ -3031,7 +3033,8 @@ class ModelInfo {
             ],
             HeatAnimations: [
                 "RL10A41_Emit"
-            ]
+            ],
+            ExtendNozzleAnimation: "extend"
         }, { //Model.RL10B2_BDB
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.905,
@@ -3039,7 +3042,7 @@ class ModelInfo {
             PlumeSizeMultiplier: 0.8,
             PlumePositionOffset: 0,
             NodeStackTop: 0.33,
-            NodeStackBottom: -1.75,
+            NodeStackBottom: -0.807,
             ModelPath: "GenericEngines/models/BDB/Centaur/bluedog_Centaur_RL10B2_Shroudless_Extended",
             ModelFiles: [
                 "files/models/BDB/Centaur/bluedog_Centaur_RL10B2_Shroudless_Extended.mu",
@@ -3070,7 +3073,8 @@ class ModelInfo {
             ],
             HeatAnimations: [
                 "RL10B2_Emit"
-            ]
+            ],
+            ExtendNozzleAnimation: "extend"
         }, { //Model.GEM40
             get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
             OriginalBellWidth: 0.508,

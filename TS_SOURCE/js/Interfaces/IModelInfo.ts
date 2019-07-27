@@ -119,6 +119,10 @@ interface IModelInfo extends IImageSelectable {
      * Object with data about model's exhaust for gas generator exhaust, and verniers
      */
     readonly Exhaust?: IExhaustInfo;
+    /**
+     * The name of the animation, that extends the nozzle
+     */
+    readonly ExtendNozzleAnimation?: string;
     
 }
 

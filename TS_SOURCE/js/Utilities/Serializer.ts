@@ -1,6 +1,6 @@
 class Serializer {
     
-    public static readonly Version = 13;
+    public static readonly Version = 14;
     
     public static Copy (engine: Engine): Engine {
         let [copiedEngine, _] = Serializer.Deserialize (Serializer.Serialize (engine), 0, engine.EngineList);
@@ -97,7 +97,16 @@ class Serializer {
             1 + //bool - UseTanks
             1 + //bool - LimitTanks
             1 + //Polymorphism - PolyType
-            e.MasterEngineName.length + 2 //1B * length + 2B length header - MasterEngineName
+            e.MasterEngineName.length + 2 + //1B * length + 2B length header - MasterEngineName
+            1 + //bool - ExhaustConfigNotDefault
+            (!e.IsExhaustDefault () ? 1 : 0) * ( //Include exhaust settings if they're not default
+            1 + //bool - UseExhaustEffect
+            2 + //short - ExhaustPlumeID
+            8 + //double - ExhaustThrustPercent
+            8 + //double - ExhaustIspMultiplier
+            8 + //double - ExhaustGimbal
+            1 //bool - ExhaustGimbalOnlyRoll
+            )
         );
         
         //short - Version (BIG ENDIAN - BACKWARDS COMPATIBILITY)
@@ -340,6 +349,33 @@ class Serializer {
             output[i++] = e.MasterEngineName.charCodeAt (c);
         }
         
+        //bool - ExhaustNotDefault
+        output[i++] = !e.IsExhaustDefault () ? 1 : 0;
+        
+        if (!e.IsExhaustDefault ()) {
+            //bool - UseExhaustEffect
+            output[i++] = e.UseExhaustEffect ? 1 : 0;
+            
+            //short - ExhaustPlumeID
+            output[i++] = e.ExhaustPlumeID % 256;
+            output[i++] = e.ExhaustPlumeID / 256;
+            
+            //double - ExhaustThrustPercent
+            output.set (BitConverter.DoubleToByteArray (e.ExhaustThrustPercent), i);
+            i += 8;
+            
+            //double - ExhaustIspMultiplier
+            output.set (BitConverter.DoubleToByteArray (e.ExhaustIspPercent), i);
+            i += 8;
+            
+            //double - ExhaustGimbal
+            output.set (BitConverter.DoubleToByteArray (e.ExhaustGimbal), i);
+            i += 8;
+            
+            //bool - ExhaustGimbalOnlyRoll
+            output[i++] = e.ExhaustGimbalOnlyRoll ? 1 : 0;
+        }
+        
         return output;
     }
     
@@ -511,12 +547,15 @@ class Serializer {
         
         if (version >= 6) {
             //short - ModelID
-            output.ModelID += input[i++]; //Might be a problem if I change default engine from value 0
+            output.ModelID = input[i++]; //Might be a problem if I change default engine from value 0
             output.ModelID += input[i++] * 256; //Will keep as it is for now though.
             
             //short - PlumeID
-            output.PlumeID += input[i++]; //Same here
-            output.PlumeID += input[i++] * 256;
+            output.PlumeID = input[i++]; //Same here
+            output.PlumeID += input[i++] * 256; // EDIT: This became a problem. Fixed.
+            
+            // As of 0.9.0, Real Plume is deprecated
+            output.PlumeID = PlumeInfo.MapRealPlumesToGenericPlumes (output.PlumeID);
         }
         
         if (version >= 7) {
@@ -637,6 +676,33 @@ class Serializer {
             //Only version 12 has these in the file
             //They are not read, but we need to add 12B to the byte counter to avoid errors.
             i += 12;
+        }
+        
+        if (version >= 14) {
+            //bool - ExhaustNotDefault
+            if (input[i++] == 1) {
+                //bool - UseExhaustEffect
+                output.UseExhaustEffect = input[i++] == 1;
+                
+                //short - ExhaustPlumeID
+                output.ExhaustPlumeID = input[i++];
+                output.ExhaustPlumeID += input[i++] * 256;
+                
+                //double - ExhaustThrustPercent
+                output.ExhaustThrustPercent = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                //double - ExhaustIspMultiplier
+                output.ExhaustIspPercent = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                //double - ExhaustGimbal
+                output.ExhaustGimbal = BitConverter.ByteArrayToDouble (input, i);
+                i += 8;
+                
+                //bool - ExhaustGimbalOnlyRoll
+                output.ExhaustGimbalOnlyRoll = input[i++] == 1;
+            }
         }
         
         return [output, i - startOffset];

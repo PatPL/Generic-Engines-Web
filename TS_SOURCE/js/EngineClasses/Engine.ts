@@ -60,7 +60,7 @@ class Engine {
             DisplayFlags: 0b00110
         }, Visuals: {
             Name: "Visuals",
-            DefaultWidth: 240,
+            DefaultWidth: 300,
             DisplayFlags: 0b00000
         }, Dimensions: {
             Name: "Size",
@@ -105,6 +105,8 @@ class Engine {
         }
     }
     Spacer: boolean = false; // For an empty space at the end of the table
+    // Fuck me I wish I used React or Vue instead of dealing with this clusterfuck
+    // I genuinely hope noone will have to debug this, ever.
     public readonly EditableFieldMetadata: { [id: string]: IEditable } = {
         Spacer: {
             GetDisplayElement: () => {
@@ -883,7 +885,7 @@ class Engine {
                 grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
                     
-                    <div class="content-cell-content" style="grid-area: d"><input type="checkbox"></div>
+                    <div class="content-cell-content" style="grid-area: d"><input style="cursor: help;" title="Enable tank volume restriction" type="checkbox"></div>
                     <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
                     
                     <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
@@ -1118,36 +1120,82 @@ class Engine {
                     e.innerHTML = `${ModelInfo.GetModelInfo (this.ModelID).ModelName}, ${PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeName}`;
                 }
             }, GetEditElement: () => {
+                let targetEngine = (
+                    this.PolyType == PolymorphismType.MultiModeSlave ||
+                    this.PolyType == PolymorphismType.MultiConfigSlave
+                ) ? this.EngineList.find (x => x.ID == this.MasterEngineName) : this;
+                targetEngine = targetEngine != undefined ? targetEngine : this;
+                
                 let tmp = document.createElement ("div");
                 tmp.classList.add ("content-cell-content");
-                tmp.style.height = "48px";
                 tmp.style.padding = "0";
                 
                 let grid = document.createElement ("div");
                 grid.style.display = "grid";
                 grid.style.gridTemplateColumns = "60px auto";
-                grid.style.gridTemplateRows = "24px 24px";
                 grid.style.gridTemplateAreas = `
                     "a b"
                     "c d"
+                    "e e"
                 `;
+                tmp.style.height = "168px";
+                grid.style.gridTemplateRows = "24px 24px 120px";
                 
                 grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: a;">Model</div>
-                    <div style="grid-area: b;"><span class="clickable-text" value="999">Placeholder</span></div>
+                    <div style="grid-area: b;"><span class="clickable-text modelText" value="999">Placeholder</span></div>
                     <div class="content-cell-content" style="grid-area: c;">Plume</div>
-                    <div style="grid-area: d;">${PlumeInfo.Dropdown.outerHTML}</div>
+                    <div style="grid-area: d;"><span class="clickable-text plumeText" value="999">Placeholder</span></div>
+                    <div class="exhaustBox" style="grid-area: e; display: grid; grid-template: 'ea ea' 24px 'eb eb' 96px / auto">
+                    <div class="content-cell-content" style="grid-area: ea;"><input class="enableExhaust" type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Enable exhaust effects</span></div>
+                    <div class="exhaustSettings" style="grid-area: eb; display: grid; grid-template: 'eba ebb' 24px 'ebc ebd' 24px 'ebe ebf' 24px 'ebg ebh' 24px / 140px auto">
+                    <div class="content-cell-content" style="grid-area: eba;">Exhaust plume</div>
+                    <div style="grid-area: ebb;"><span class="clickable-text exhaustPlumeText" value="999">Placeholder</span></div>
+                    <div class="content-cell-content" style="grid-area: ebc; cursor: help;" title="What fraction of engine's overall thrust is produced by this exhaust?">Exhaust thrust</div>
+                    <div style="grid-area: ebd;"><input class="exhaustThrust" style="width: calc(100% - 24px);">%</div>
+                    <div class="content-cell-content" style="grid-area: ebe; cursor: help;" title="Multiplier of exhaust's efficiency, compared to main engine">Exhaust impulse</div>
+                    <div style="grid-area: ebf;"><input class="exhaustImpulse" style="width: calc(100% - 24px);">%</div>
+                    <div class="content-cell-content" style="grid-area: ebg;">Exhaust gimbal</div>
+                    <div style="grid-area: ebh;"><input class="exhaustGimbal" style="width: calc(100% - 24px);"><input title="Restrict this gimbal to only roll control" class="exhaustGimbalRoll" type="checkbox" style="cursor: help; margin: -1px 0px 0px 0px; position: relative; top: 2px; left: 2px;"></div>
+                    </div>
+                    </div>
                 `;
                 
-                let span = grid.querySelector ("span")!;
-                span.addEventListener ("click", () => {
+                let modelText = grid.querySelector (".modelText")!;
+                modelText.addEventListener ("click", () => {
                     ModelSelector.GetModel (m => {
                         if (m != null) {
-                            span.setAttribute ("value", m.toString ());
-                            span.innerHTML = ModelInfo.GetModelInfo (m).ModelName;
+                            modelText.setAttribute ("value", m.toString ());
+                            modelText.innerHTML = ModelInfo.GetModelInfo (m).ModelName;
+                            grid.querySelector<HTMLDivElement> (".exhaustBox")!.style.display = ModelInfo.GetModelInfo (m).Exhaust ? "grid" : "none";
                         }
                     });
                 });
+                
+                let plumeText = grid.querySelector (".plumeText")!;
+                plumeText.addEventListener ("click", () => {
+                    PlumeSelector.GetPlume (m => {
+                        if (m != null) {
+                            plumeText.setAttribute ("value", m.toString ());
+                            plumeText.innerHTML = PlumeInfo.GetPlumeInfo (m).PlumeName;
+                        }
+                    });
+                });
+                
+                let exhaustPlumeText = grid.querySelector (".exhaustPlumeText")!;
+                exhaustPlumeText.addEventListener ("click", () => {
+                    PlumeSelector.GetPlume (m => {
+                        if (m != null) {
+                            exhaustPlumeText.setAttribute ("value", m.toString ());
+                            exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo (m).PlumeName;
+                        }
+                    });
+                });
+                
+                let exhaustCheckbox = grid.querySelector<HTMLInputElement> (".enableExhaust")!;
+                exhaustCheckbox.addEventListener ("change", () => {
+                    grid.querySelector<HTMLDivElement> (".exhaustSettings")!.style.display = exhaustCheckbox.checked ? "grid" : "none";
+                })
                 
                 tmp.appendChild (grid);
                 
@@ -1158,24 +1206,53 @@ class Engine {
                     this.PolyType == PolymorphismType.MultiConfigSlave
                 ) ? this.EngineList.find (x => x.ID == this.MasterEngineName) : this;
                 targetEngine = targetEngine != undefined ? targetEngine : this;
+                let isSlave = this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave;
                 
                 let select = e.querySelector ("select")!;
-                let span = e.querySelector ("span")!;
+                let modelText = e.querySelector<HTMLSpanElement> (".modelText")!;
+                let plumeText = e.querySelector<HTMLSpanElement> (".plumeText")!;
+                let exhaustPlumeText = e.querySelector<HTMLSpanElement> (".exhaustPlumeText")!;
                 
-                span.setAttribute ("value", targetEngine.ModelID.toString ());
-                span.innerHTML = ModelInfo.GetModelInfo (targetEngine.ModelID).ModelName;
-                select.value = this.PlumeID.toString ();
+                modelText.setAttribute ("value", targetEngine.ModelID.toString ());
+                modelText.innerHTML = ModelInfo.GetModelInfo (targetEngine.ModelID).ModelName;
                 
-                span.style.pointerEvents = (
-                    this.PolyType == PolymorphismType.MultiConfigSlave ||
-                    this.PolyType == PolymorphismType.MultiModeSlave
-                ) ? "none" : "all";
+                plumeText.setAttribute ("value", this.PlumeID.toString ());
+                plumeText.innerHTML = PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeName;
+                
+                exhaustPlumeText.setAttribute ("value", this.ExhaustPlumeID.toString ());
+                exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeName;
+                
+                e.querySelector<HTMLDivElement> (".exhaustBox")!.style.display = ModelInfo.GetModelInfo (this.ModelID).Exhaust ? "grid" : "none";
+                e.querySelector<HTMLInputElement> (".enableExhaust")!.checked = targetEngine.UseExhaustEffect;
+                e.querySelector<HTMLDivElement> (".exhaustSettings")!.style.display = targetEngine.UseExhaustEffect ? "grid" : "none";
+                
+                e.querySelector<HTMLInputElement> (".exhaustThrust")!.value = this.ExhaustThrustPercent.toString ();
+                e.querySelector<HTMLInputElement> (".exhaustImpulse")!.value = this.ExhaustIspPercent.toString ();
+                e.querySelector<HTMLInputElement> (".exhaustGimbal")!.value = targetEngine.ExhaustGimbal.toString ();
+                e.querySelector<HTMLInputElement> (".exhaustGimbalRoll")!.checked = targetEngine.ExhaustGimbalOnlyRoll;
+                
+                modelText.style.pointerEvents = isSlave ? "none" : "all";
+                e.querySelector<HTMLInputElement> (".enableExhaust")!.disabled = isSlave;
+                e.querySelector<HTMLInputElement> (".exhaustGimbal")!.disabled = isSlave;
+                e.querySelector<HTMLInputElement> (".exhaustGimbalRoll")!.disabled = isSlave;
             }, ApplyChangesToValue: (e: HTMLElement) => {
-                let select = e.querySelector ("select")!;
-                let span = e.querySelector ("span")!;
+                let modelText = e.querySelector (".modelText")!;
+                let plumeText = e.querySelector (".plumeText")!;
+                let exhaustPlumeText = e.querySelector (".exhaustPlumeText")!;
                 
-                this.ModelID = parseInt (span.getAttribute ("value")!);
-                this.PlumeID = parseInt (select.value);
+                let exhaustThrust = e.querySelector<HTMLInputElement> (".exhaustThrust")!;
+                let exhaustImpulse = e.querySelector<HTMLInputElement> (".exhaustImpulse")!;
+                let exhaustGimbal = e.querySelector<HTMLInputElement> (".exhaustGimbal")!;
+                
+                this.ModelID = parseInt (modelText.getAttribute ("value")!);
+                this.PlumeID = parseInt (plumeText.getAttribute ("value")!);
+                this.ExhaustPlumeID = parseInt (exhaustPlumeText.getAttribute ("value")!);
+                
+                this.UseExhaustEffect = e.querySelector<HTMLInputElement> (".enableExhaust")!.checked;
+                this.ExhaustThrustPercent = parseFloat (exhaustThrust.value.replace (",", "."));
+                this.ExhaustIspPercent = parseFloat (exhaustImpulse.value.replace (",", "."));
+                this.ExhaustGimbal = parseFloat (exhaustGimbal.value.replace (",", "."));
+                this.ExhaustGimbalOnlyRoll = e.querySelector<HTMLInputElement> (".exhaustGimbalRoll")!.checked;
             }
         }
     }
@@ -1235,7 +1312,13 @@ class Engine {
     CycleReliability10k: number = 98;
     
     ModelID: Model = Model.LR91; //Visuals
-    PlumeID: Plume = Plume.Kerolox_Upper;
+    PlumeID: Plume = Plume.GP_Kerolox;
+    UseExhaustEffect: boolean = false; // Exhaust
+    ExhaustPlumeID: Plume = Plume.GP_TurbopumpSmoke;
+    ExhaustThrustPercent: number = 1;
+    ExhaustIspPercent: number = 75;
+    ExhaustGimbal: number = 10;
+    ExhaustGimbalOnlyRoll: boolean = true;
     
     public readonly OnEditEnd = () => {
         this.UpdateEveryDisplay ();
@@ -1267,8 +1350,6 @@ class Engine {
     }
     
     public GetPlumeConfig (): string {
-        let plumeInfo: IPlumeInfo = PlumeInfo.GetPlumeInfo (this.PlumeID);
-        let modelInfo: IModelInfo;
         let engine: Engine;
         
         if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
@@ -1277,24 +1358,48 @@ class Engine {
             engine = this;
         }
         
-        modelInfo = ModelInfo.GetModelInfo (engine.ModelID);
+        let plumeInfo: IPlumeInfo = PlumeInfo.GetPlumeInfo (this.PlumeID);
+        let modelInfo: IModelInfo = ModelInfo.GetModelInfo (engine.ModelID);
+        let exhaustConfig = "";
         
-        return `
-            @PART[GE-${engine.ID}]:FOR[RealPlume]:HAS[!PLUME[${plumeInfo.PlumeID}]]:NEEDS[SmokeScreen]
-            {
-                PLUME
-                {
-                    name = ${plumeInfo.PlumeID}
-                    transformName = ${modelInfo.ThrustTransformName}
-                    localRotation = 0,0,0
-                    localPosition = 0,0,${(modelInfo.PlumePositionOffset + plumeInfo.PositionOffset + plumeInfo.FinalOffset)}
-                    fixedScale = ${(modelInfo.PlumeSizeMultiplier * plumeInfo.Scale * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth))}
-                    flareScale = 0
-                    energy = ${(Math.log (engine.Thrust + 5) / Math.log (10) / 3 * plumeInfo.EnergyMultiplier)}
-                    speed = ${Math.max ((Math.log (engine.VacIsp) / Math.log (2) / 1.5) - 4.5, 0.2)}
+        if (engine.UseExhaustEffect && modelInfo.Exhaust) {
+            let exhaustBellWidth = modelInfo.Exhaust.exhaustBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
+            exhaustConfig = `
+                @MODULE[ModuleEngine*] {
+                    !GENERIC_PLUME[${ PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeID }]{}
+                    GENERIC_PLUME {
+                        name = ${ PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeID }
+                        effectTransform = ${ modelInfo.Exhaust.exhaustEffectTransform }
+                        bellWidth = ${ exhaustBellWidth }
+                        verticalOffset = 0
+                        volume = ${ (this.ExhaustThrustPercent / 100) * this.Thrust / 100 + 1 }
+                        pitch = ${ Math.max (Math.min (Math.log10 (this.Thrust / 10 + 1) / 3, 2), 0.4) }
+                    }
                 }
+            `;
+        }
+        
+        let bellWidth = modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
+        let output = `
+            @PART[GE-${engine.ID}]:FOR[zGenericPlumesPass0200] {
+                @MODULE[ModuleEngine*] {
+                    !GENERIC_PLUME[${ plumeInfo.PlumeID }]{}
+                    GENERIC_PLUME {
+                        name = ${ plumeInfo.PlumeID }
+                        effectTransform = ${ modelInfo.ThrustTransformName }
+                        bellWidth = ${ bellWidth }
+                        verticalOffset = ${ modelInfo.PlumePositionOffset + modelInfo.OriginalBellWidth * 0.33 }
+                        volume = ${ this.Thrust / 100 + 1 }
+                        pitch = ${ Math.max (Math.min (Math.log10 (this.Thrust / 10 + 1) / 3, 2), 0.4) }
+                    }
+                }
+                
+                ${exhaustConfig}
+                
             }
         `;
+        
+        return output;
     }
     
     public GetHiddenObjectsConfig (): string {
@@ -1327,6 +1432,56 @@ class Engine {
             `node_attach = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0`
         );
         
+        // Extendable nozzle config
+        let deployableEnginesConfig = "";
+        if (modelInfo.ExtendNozzleAnimation) {
+            deployableEnginesConfig = `
+                MODULE
+                {
+                    name = ModuleDeployableEngine
+                    EngineAnimationName = ${ modelInfo.ExtendNozzleAnimation }
+                    WaitForAnimation = 0.9
+                    Layer = ${ Math.ceil (Math.random () * 2_000_000_000) }
+                }
+            `;
+        }
+        
+        // Heat animations
+        let heatAnims = "";
+        modelInfo.HeatAnimations.forEach (clip => {
+            heatAnims += `
+                MODULE
+                {
+                    name = FXModuleAnimateThrottle
+                    animationName = ${ clip }
+                    responseSpeed = 0.001
+                    dependOnEngineState = True
+                    dependOnThrottle = True
+                }
+            `;
+        });
+        
+        let lookAtConfig = "";
+        if (modelInfo.LookatPairs.length > 0) {
+            modelInfo.LookatPairs.forEach (pair => {
+                lookAtConfig += `
+                    CONSTRAINLOOKFX
+                    {
+                        targetName = ${ pair[0] }
+                        rotatorsName = ${ pair[1] }
+                    }
+                `;
+            });
+            
+            lookAtConfig = `
+                MODULE
+                {
+                    name = FXModuleLookAtConstraint
+                    ${ lookAtConfig }
+                }
+            `;
+        }
+        
         return `
             MODEL
             {
@@ -1342,6 +1497,13 @@ class Engine {
             node_stack_hide = 0.0, ${modelInfo.NodeStackBottom + 0.001}, 0.0, 0.0, 0.0, 1.0, 0
 
             ${attachmentNode}
+            
+            ${heatAnims}
+            
+            ${lookAtConfig}
+            
+            ${deployableEnginesConfig}
+            
         `;
     }
     
@@ -1354,6 +1516,17 @@ class Engine {
             this.StartReliability10k == defaultConfig.StartReliability10k &&
             this.CycleReliability0 == defaultConfig.CycleReliability0 &&
             this.CycleReliability10k == defaultConfig.CycleReliability10k
+        );
+    }
+    
+    public IsExhaustDefault (): boolean {
+        let defaultConfig = new Engine ();
+        return (
+            this.UseExhaustEffect == defaultConfig.UseExhaustEffect &&
+            this.ExhaustPlumeID == defaultConfig.ExhaustPlumeID &&
+            this.ExhaustThrustPercent == defaultConfig.ExhaustThrustPercent &&
+            this.ExhaustIspPercent == defaultConfig.ExhaustIspPercent &&
+            this.ExhaustGimbal == defaultConfig.ExhaustGimbal
         );
     }
     
@@ -1537,9 +1710,10 @@ class Engine {
     
     public GetGimbalConfig (): string {
         let modelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
+        let output = ""
         
         if (this.AdvancedGimbal) {
-            return `
+            output += `
                 MODULE
                 {
                     name = ModuleGimbal
@@ -1552,7 +1726,7 @@ class Engine {
                 }
             `;
         } else {
-            return `
+            output += `
                 MODULE
                 {
                     name = ModuleGimbal
@@ -1562,6 +1736,22 @@ class Engine {
                 }
             `;
         }
+        
+        if (this.UseExhaustEffect && modelInfo.Exhaust) {
+            output += `
+                MODULE
+                {
+                    name = ModuleGimbal
+                    gimbalTransformName = ${modelInfo.Exhaust.exhaustGimbalTransform}
+                    useGimbalResponseSpeed = false
+                    gimbalRange = ${this.ExhaustGimbal}
+                    enableYaw = ${!this.ExhaustGimbalOnlyRoll}
+                    enablePitch = ${!this.ExhaustGimbalOnlyRoll}
+                }
+            `;
+        }
+        
+        return output;
     }
     
     public GetPropellantConfig (): string {
@@ -1743,45 +1933,120 @@ class Engine {
         ) {
             return "";
         } else {
-            return `
-                MODULE
-                {
-                    name = ModuleEngineConfigs
-                    configuration = GE-${this.ID}
-                    modded = false
-                    origMass = ${this.Mass}
+            let modelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
+            if (modelInfo.Exhaust && this.UseExhaustEffect) {
+                return `
+                    MODULE
+                    {
+                        name = ModuleEngineConfigs
+                        configuration = GE-${this.ID}
+                        modded = false
+                        origMass = ${this.Mass}
+                        moduleIndex = 0
+                        
+                        ${this.GetEngineConfig (allEngines)}
+                        
+                    }
                     
-                    ${this.GetEngineConfig (allEngines)}
-                    
-                }
-            `;
+                    MODULE
+                    {
+                        name = ModuleEngineConfigs
+                        configuration = GE-${this.ID}-vernier
+                        modded = false
+                        origMass = ${this.Mass}
+                        moduleIndex = 1
+                        
+                        ${this.GetExhaustConfig (allEngines)}
+                        
+                    }
+                `;
+            } else {
+                return `
+                    MODULE
+                    {
+                        name = ModuleEngineConfigs
+                        configuration = GE-${this.ID}
+                        modded = false
+                        origMass = ${this.Mass}
+                        moduleIndex = 0
+                        
+                        ${this.GetEngineConfig (allEngines)}
+                        
+                    }
+                `;
+            }
         }
     }
     
     public GetEngineConfig (allEngines: { [id: string]: Engine }): string {
+        let masterEngine: Engine;
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            masterEngine = this.EngineList.find (x => x.ID == this.MasterEngineName)!;
+        } else {
+            masterEngine = this;
+        }
+        let modelInfo = ModelInfo.GetModelInfo (masterEngine.GetModelID ());
+        
+        let hasExhaust = !!(modelInfo.Exhaust && masterEngine.UseExhaustEffect);
         return `
             CONFIG
             {
                 name = GE-${this.ID}
                 description = ${this.EngineDescription}
-                maxThrust = ${this.Thrust}
-                minThrust = ${this.Thrust * this.MinThrust / 100}
-                %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeID}
+                maxThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust}
+                minThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust * this.MinThrust / 100}
+                %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeEffectName}
                 heatProduction = 100
                 massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.MasterEngineName].Cost : 0)}
-
+                
                 ${this.GetPropellantConfig ()}
-
+                
                 atmosphereCurve
                 {
                     key = 0 ${this.VacIsp}
                     key = 1 ${this.AtmIsp}
                 }
-
+                
                 ${this.GetThrustCurveConfig ()}
-
+                
+                ullage = ${this.NeedsUllage && this.EngineVariant != EngineType.Solid}
+                pressureFed = ${this.PressureFed}
+                ignitions = ${Math.max (this.Ignitions, 0)}
+                IGNITOR_RESOURCE
+                {
+                    name = ElectricCharge
+                    amount = 1
+                }
+            }
+        `;
+    }
+    
+    public GetExhaustConfig (allEngines: { [id: string]: Engine }): string {
+        return `
+            CONFIG
+            {
+                name = GE-${this.ID}-vernier
+                description = ${this.EngineDescription}
+                maxThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust}
+                minThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust * this.MinThrust / 100}
+                %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeEffectName}
+                heatProduction = 100
+                massMult = 1
+                %techRequired = ${TechNode[this.TechUnlockNode]}
+                cost = 0
+                
+                ${this.GetPropellantConfig ()}
+                
+                atmosphereCurve
+                {
+                    key = 0 ${(this.ExhaustIspPercent / 100) * this.VacIsp}
+                    key = 1 ${(this.ExhaustIspPercent / 100) * this.AtmIsp}
+                }
+                
+                ${this.GetThrustCurveConfig ()}
+                
                 ullage = ${this.NeedsUllage && this.EngineVariant != EngineType.Solid}
                 pressureFed = ${this.PressureFed}
                 ignitions = ${Math.max (this.Ignitions, 0)}

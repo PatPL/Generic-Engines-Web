@@ -105,5 +105,30 @@ interface IModelInfo extends IImageSelectable {
      * Names of nodes that will be hidden in game
      */
     readonly HiddenMuObjects: string[];
+    /**
+     * Array of [targetName, rotatorsName] in CONSTRAINLOOKFX elements in FXModuleLookAtConstraint
+     */
+    readonly LookatPairs: [string, string][];
+    /**
+     * Names of heat animation clips on the model.
+     * 
+     * Use this to get the clip names: https://patpl.github.io/muTS/animations.html
+     */
+    readonly HeatAnimations: string[];
+    /**
+     * Object with data about model's exhaust for gas generator exhaust, and verniers
+     */
+    readonly Exhaust?: IExhaustInfo;
+    /**
+     * The name of the animation, that extends the nozzle
+     */
+    readonly ExtendNozzleAnimation?: string;
     
+}
+
+interface IExhaustInfo {
+    exhaustThrustTransform: string;
+    exhaustGimbalTransform: string;
+    exhaustEffectTransform: string;
+    exhaustBellWidth: number;
 }

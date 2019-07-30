@@ -53,25 +53,53 @@ class Packager {
          */
         let toFetch: [string, string, HTMLElement?][] = [];
         
-        blobs[`${name}.cfg`] = Exporter.ConvertEngineListToConfig (engines);
-        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get ();
+        blobs[`GenericEngines/${name}.cfg`] = Exporter.ConvertEngineListToConfig (engines);
+        blobs[`GenericEngines/GEAllTankDefinition.cfg`] = AllTankDefinition.Get ();
         
-        toFetch.push (["files/PlumeScaleFixer.dll", "PlumeScaleFixer.dll"]);
+        toFetch.push (["files/PlumeScaleFixer.dll", "GenericEngines/PlumeScaleFixer.dll"]);
         
+        let needsDeployableEngines = false;
         engines.forEach (e => {
             if (!e.Active) {
                 return; //continue;
             }
             
             let modelInfo = ModelInfo.GetModelInfo (e.GetModelID ());
+            let plumeInfo = PlumeInfo.GetPlumeInfo (e.PlumeID);
+            let exhaustPlumeInfo = e.UseExhaustEffect && modelInfo.Exhaust ? PlumeInfo.GetPlumeInfo (e.ExhaustPlumeID) : null;
+            
+            needsDeployableEngines = needsDeployableEngines || modelInfo.ExtendNozzleAnimation != undefined;
             
             modelInfo.ModelFiles.forEach (f => {
+                if (!toFetch.some (x => x[0] == f)) {
+                    //Add to the list if it's not on it already
+                    toFetch.push ([f, f.replace (/^files\//, "GenericEngines/")]);
+                }
+            });
+            
+            plumeInfo.PlumeFiles.forEach (f => {
                 if (!toFetch.some (x => x[0] == f)) {
                     //Add to the list if it's not on it already
                     toFetch.push ([f, f.replace (/^files\//, "")]);
                 }
             });
+            
+            if (exhaustPlumeInfo) {
+                exhaustPlumeInfo.PlumeFiles.forEach (f => {
+                    if (!toFetch.some (x => x[0] == f)) {
+                        //Add to the list if it's not on it already
+                        toFetch.push ([f, f.replace (/^files\//, "")]);
+                    }
+                });
+            }
+            
         });
+        
+        if (needsDeployableEngines) {
+            // Add DeployableEngines if we export an engine with a model that has a deployable engine
+            toFetch.push (["files/DeployableEngines/Plugins/DeployableEngines.dll", "DeployableEngines/Plugins/DeployableEngines.dll"]);
+            toFetch.push (["files/DeployableEngines/Versioning/DeployableEngines.version", "DeployableEngines/Versioning/DeployableEngines.version"]);
+        }
         
         downloadedFilesCountElement.innerHTML = "0";
         toDownload = toFetch.length;
@@ -81,10 +109,11 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString ();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (Might take over a minute)`;
+                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files <progress />`;
+                let progressElement = exportStatusElement.querySelector<HTMLProgressElement> ("progress")!;
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date ().getTime ();
-                FileIO.ZipBlobs ("GenericEngines", blobs, zipData => {
+                FileIO.ZipBlobs ("GameData", blobs, zipData => {
                     console.log (`Zipped in ${(new Date ().getTime () - zipStart).toLocaleString ("us").replace (/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
                         latestData = zipData;
@@ -97,6 +126,9 @@ class Packager {
                         this.IsWorking = false;
                         callback (zipData);
                     }
+                }, (alreadyZippedCount, toZipCount) => {
+                    progressElement.value = alreadyZippedCount;
+                    progressElement.max = toZipCount;
                 });
             }
         }

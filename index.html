@@ -10,7 +10,7 @@
 	
 	<style id="edit-cell-height-override">/* Changed in JS */</style>
 	
-	<script src="lib/jszip.min.js"></script>
+	<script src="lib/zip.js"></script>
 	
 	<script src="js/index.js"></script>
 </head>
@@ -34,7 +34,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="fullscreen-box" id="model-selector" style="display: none;">
+	<div class="fullscreen-box modal-selector-root" id="model-selector" style="display: none;">
 		<div class="fullscreen-grayout"></div>
 		<div class="fullscreen-content">
 			<span>
@@ -42,20 +42,33 @@
 				<span style="font-size: 14px; font-family: serif;"><i>This list is incomplete. <a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/wiki/Adding-a-new-model-to-the-website">You can help by expanding it.</a></i></span>
 				<span style="font-size: 14px;"><a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/tree/master/files/models">Licences</a></span>
 			</span>
-			<div id="model-selector-content">
-				<div>
-					<img src=""><br>
-					Model name
-				</div>
+			<!-- Populated on 'DOMContentLoaded' in 'ModelSelector.ts' -->
+			<div id="model-selector-content" class="modal-selector">
+			</div>
+		</div>
+	</div>
+	<div class="fullscreen-box modal-selector-root" id="plume-selector" style="display: none;">
+		<div class="fullscreen-grayout"></div>
+		<div class="fullscreen-content">
+			<span>
+				Select a plume<br>
+				<span style="font-size: 14px;">
+					Due to how hard it is to cut a background out of a translucent object (plume), there might be some black shade left.<br>
+					To enhance your plume viewing experience, please imagine, that shades of black are actually varying levels of transparency<br>
+				</span>
+			</span>
+			<!-- Populated on 'DOMContentLoaded' in 'ModelSelector.ts' -->
+			<div id="plume-selector-content" class="modal-selector">
 			</div>
 		</div>
 	</div>
 	<div class="fullscreen-box" id="settings-box" style="display: none;">
 		<div class="fullscreen-grayout"></div>
 		<div class="fullscreen-content">
-			<input setting-field="classic_unit_display" type="checkbox"><span class="checkbox-label">Display only KSP units (t, kN, l, kW (EC/s))</span><hr>
-			<input setting-field="dark_theme" type="checkbox"><span class="checkbox-label">Use dark theme</span><hr>
-			<input setting-field="show_info_panel" type="checkbox"><span class="checkbox-label">Show side panel with additional info</span>
+			<input setting-field="classic_unit_display" type="checkbox"><span class="checkbox-label">Display only KSP units (t, kN, l, kW (EC/s))</span><br>
+			<input setting-field="dark_theme" type="checkbox"><span class="checkbox-label">Use dark theme</span><br>
+			<input setting-field="show_info_panel" type="checkbox"><span class="checkbox-label">Show side panel with additional info</span><br>
+			<input setting-field="prettify_config" type="checkbox"><span class="checkbox-label">Prettify exported config (For debug purposes)</span>
 		</div>
 	</div>
 	<div class="fullscreen-box" id="about-box" style="display: none;">
@@ -182,7 +195,7 @@
 			
 			<table border="1">
 				<tr>
-					<td width="33%"><b>TWR <span title="9.80665m/s^2">(g)</span></b></td>
+					<td width="33%"><b>TWR <span style="cursor: help;" title="9.80665m/s^2">(g)</span></b></td>
 					<td width="33%">Full tanks</td>
 					<td width="33%">Empty tanks</td>
 				</tr>

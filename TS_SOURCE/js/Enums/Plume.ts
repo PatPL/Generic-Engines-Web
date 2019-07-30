@@ -26,5 +26,22 @@ enum Plume {
     Solid_Sepmotor,
     Solid_Vacuum,
     Turbofan,
-    Turbojet
+    Turbojet,
+    
+    // Generic Plumes
+    GP_Alcolox,
+    GP_Ammonialox,
+    GP_HydrogenNTR,
+    GP_Hydrolox,
+    GP_Hydynelox,
+    GP_Hypergolic,
+    GP_IonArgon,
+    GP_IonKrypton,
+    GP_IonXenon,
+    GP_Kerolox,
+    GP_Methalox,
+    GP_OmsRed,
+    GP_OmsWhite,
+    GP_Solid,
+    GP_TurbopumpSmoke
 }

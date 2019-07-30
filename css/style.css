@@ -160,6 +160,11 @@ input[type="checkbox"]:checked {
     background: var(--confirm);
 }
 
+input[type="checkbox"]:disabled {
+    border: 2px var(--error) dashed;
+    cursor: not-allowed !important;
+}
+
 span.checkbox-label {
     position: relative;
     top: -4px;
@@ -351,7 +356,7 @@ span.checkbox-label {
 .content-header {
     position: relative;
     display: inline-block;
-    white-space: normal;
+    white-space: pre;
     word-break: break-all;
     
     box-sizing: border-box;
@@ -596,12 +601,15 @@ input.content-cell-content {
     margin: 8px -8px 8px -8px;
 }
 
-#model-selector {
+/* ModelSelector.ts & PlumeSelector.ts */
+
+.modal-selector-root {
     z-index: 9999;
 }
 
-#model-selector > div.fullscreen-content {
-    width: 1013px;
+.modal-selector-root > div.fullscreen-content {
+    max-width: 1600px;
+    width: calc(100% - 10vh);
     height: 90vh;
     padding: 0;
     
@@ -613,34 +621,87 @@ input.content-cell-content {
     overflow-y: auto;
 }
 
-#model-selector-content {
-    columns: 6;
-    column-gap: 0;
-    column-rule: 2px solid var(--darkBorder);
+.modal-selector {
+    padding: 0;
 }
 
-#model-selector-content > div {
+.modal-selector > div {
     box-sizing: border-box;
     
-    /* Don't break in columns */
-    -webkit-column-break-inside: avoid; /* Chrome, Safari */
-    page-break-inside: avoid;           /* Theoretically FF 20+ */
-    break-inside: avoid-column;         /* IE 11 */
-    display:table;                      /* Actually FF 20+ */
-    
     width: 100%;
-    height: auto;
+    height: 100px;
+    float: left;
     
-    border-top: 2px solid var(--darkBorder);
+    outline-color: var(--darkBorder);
+    outline-width: 2px;
+    outline-offset: -1px;
+    outline-style: solid;
     
-    padding: 8px;
+    margin: 0;
+    padding: 0;
     
-    font-size: 20px;
+    font-size: 16px;
+    
+    display: grid;
+    grid-template-columns: 100px auto;
+    grid-template-rows: auto;
+    grid-template-areas: "div img";
 }
 
-#model-selector-content > div > img {
-    width: 100%;
+#plume-selector-content > div {
+    height: 75px;
 }
+
+.modal-selector > div > span {
+    grid-area: div;
+    border-right: 2px solid var(--grayBorder);
+}
+
+@media only screen and (max-width: 700px) {
+    .modal-selector > div {
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width: 700px) and (max-width: 1100px) {
+    .modal-selector > div {
+        width: 50%;
+    }
+}
+
+@media only screen and (min-width: 1100px) and (max-width: 1500px) {
+    .modal-selector > div {
+        width: 33.33333333%;
+    }
+}
+
+@media only screen and (min-width: 1500px) {
+    .modal-selector > div {
+        width: 25%;
+    }
+}
+
+#plume-selector-content > div {
+    width: 100% !important;
+}
+
+.modal-selector > div > div {
+    grid-area: img;
+    width: 100%;
+    overflow: hidden;
+}
+
+.modal-selector > div > div > img {
+    height: 100px;
+    float: left;
+    pointer-events: none; /* So that root div of the img will catch the event */
+}
+
+#plume-selector-content > div > div > img {
+    height: 75px;
+}
+
+/**ModelSelector.ts**/
 
 #export-box > div.fullscreen-content {
     display: flex;

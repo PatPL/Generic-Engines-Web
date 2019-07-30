@@ -521,7 +521,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.8.4";
+Version.CurrentVersion = "Web.0.9.0";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -646,6 +646,10 @@ const Settings = {
         return Store.GetText("setting:show_info_panel", "1") == "1";
     }, set show_info_panel(value) {
         Store.SetText("setting:show_info_panel", value ? "1" : "0");
+    }, get prettify_config() {
+        return Store.GetText("setting:prettify_config", "0") == "1";
+    }, set prettify_config(value) {
+        Store.SetText("setting:prettify_config", value ? "1" : "0");
     }
 };
 var ListName = "Unnamed";
@@ -734,14 +738,16 @@ addEventListener("DOMContentLoaded", () => {
         if (files.length == 0) {
             return;
         }
-        let reader = new FileReader();
-        reader.onload = () => {
-            let data = new Uint8Array(reader.result);
-            let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-            MainEngineTable.RebuildTable();
-            Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
-        };
-        reader.readAsArrayBuffer(files[0]);
+        for (let i = 0; i < files.length; ++i) {
+            let reader = new FileReader();
+            reader.onload = () => {
+                let data = new Uint8Array(reader.result);
+                let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
+                MainEngineTable.RebuildTable();
+                Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
+            };
+            reader.readAsArrayBuffer(files[i]);
+        }
     });
     let imgs = document.querySelectorAll("img.browser-relevant");
     imgs.forEach(i => {
@@ -1421,7 +1427,7 @@ class ModelInfo {
 }
 ModelInfo.models = [
     {
-        OriginalHeight: 1.885,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.9635,
         OriginalBaseWidth: 0.892,
         PlumeSizeMultiplier: 1.0,
@@ -1445,9 +1451,19 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "HeatEmissiveAnimation"
+        ],
+        Exhaust: {
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+            exhaustBellWidth: 0.0757
+        }
     }, {
-        OriginalHeight: 0.654,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.285,
         OriginalBaseWidth: 0.395,
         PlumeSizeMultiplier: 0.295,
@@ -1478,9 +1494,18 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["marker1", "susp1"],
+            ["marker2", "susp2"],
+            ["marker3", "susp3"],
+            ["marker4", "susp4"],
+        ],
+        HeatAnimations: [
+            "aj10"
+        ]
     }, {
-        OriginalHeight: 1.5,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.865,
         OriginalBaseWidth: 0.989,
         PlumeSizeMultiplier: 0.85,
@@ -1508,9 +1533,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RS25.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
-        OriginalHeight: 0.3055,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.12,
         OriginalBaseWidth: 0.222,
         PlumeSizeMultiplier: 0.11,
@@ -1534,9 +1561,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Thruster.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
-        OriginalHeight: 0.393,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.234,
         OriginalBaseWidth: 0.616,
         PlumeSizeMultiplier: 0.225,
@@ -1563,9 +1592,22 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Aestus.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
+        HeatAnimations: [
+            "48-7SHeat"
+        ]
     }, {
-        OriginalHeight: 0.3935,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.459,
         OriginalBaseWidth: 0.627,
         PlumeSizeMultiplier: 0.42,
@@ -1592,9 +1634,13 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/IonThruster.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "colorAnimation"
+        ]
     }, {
-        OriginalHeight: 4.48,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.802,
         OriginalBaseWidth: 3.78,
         PlumeSizeMultiplier: 1.6,
@@ -1620,9 +1666,22 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Rhino.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
+        HeatAnimations: [
+            "HeatAnimationAdvancedEngine"
+        ]
     }, {
-        OriginalHeight: 0.727,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.445,
         OriginalBaseWidth: 0.989,
         PlumeSizeMultiplier: 0.4,
@@ -1650,9 +1709,22 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD0105T.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
+        HeatAnimations: [
+            "HeatAnimatioEmissiveLiquidEngine3"
+        ]
     }, {
-        OriginalHeight: 8.018,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.05265,
         OriginalBaseWidth: 1.276,
         PlumeSizeMultiplier: 1.1,
@@ -1678,9 +1750,11 @@ ModelInfo.models = [
             "fairing"
         ],
         ImageSource: "img/modelPreviews/SRBLong.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
-        OriginalHeight: 1.444,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.773,
         OriginalBaseWidth: 1.003,
         PlumeSizeMultiplier: 0.7,
@@ -1706,9 +1780,13 @@ ModelInfo.models = [
             "fairing"
         ],
         ImageSource: "img/modelPreviews/RT5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "Flea"
+        ]
     }, {
-        OriginalHeight: 3.5,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.5945,
         OriginalBaseWidth: 0.613,
         PlumeSizeMultiplier: 0.55,
@@ -1732,13 +1810,17 @@ ModelInfo.models = [
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         ImageSource: "img/modelPreviews/RT2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "RT-2"
+        ]
     }, {
-        OriginalHeight: 14.81,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.043,
         OriginalBaseWidth: 1.183,
         PlumeSizeMultiplier: 1.1,
-        PlumePositionOffset: 0.55,
+        PlumePositionOffset: 0,
         NodeStackTop: 7.445,
         NodeStackBottom: -7.365,
         RadialAttachmentPoint: 0.595,
@@ -1758,9 +1840,13 @@ ModelInfo.models = [
         ModelType: EngineGroupType.SRB,
         HiddenMuObjects: [],
         ImageSource: "img/modelPreviews/S1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "HeatAnimationSRB"
+        ]
     }, {
-        OriginalHeight: 0.633,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.445,
         OriginalBaseWidth: 0.991,
         PlumeSizeMultiplier: 0.4,
@@ -1787,13 +1873,26 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD0105.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
+        HeatAnimations: [
+            "HeatAnimatioEmissiveLiquidEngine3"
+        ]
     }, {
-        OriginalHeight: 3.25,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.996,
         OriginalBaseWidth: 1.245,
         PlumeSizeMultiplier: 0.9,
-        PlumePositionOffset: 0.56,
+        PlumePositionOffset: 0,
         NodeStackTop: 1.414,
         NodeStackBottom: -1.836,
         ModelPath: "GenericEngines/models/VenStockRevamp/LVN",
@@ -1807,23 +1906,46 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "NERVA",
         ModelType: EngineGroupType.IRL,
-        HiddenMuObjects: [
-            "fairingL",
-            "fairingR",
-            "Size2A"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVA.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["piston1", "pistonBase1"],
+            ["pistonBase1", "piston1"],
+            ["piston2", "pistonBase2"],
+            ["pistonBase2", "piston2"],
+            ["piston3", "pistonBase3"],
+            ["pistonBase3", "piston3"],
+            ["piston4", "pistonBase4"],
+            ["pistonBase4", "piston4"],
+            ["piston5", "pistonBase5"],
+            ["pistonBase5", "piston5"],
+            ["piston6", "pistonBase6"],
+            ["pistonBase6", "piston6"],
+            ["piston7", "pistonBase7"],
+            ["pistonBase7", "piston7"],
+            ["piston8", "pistonBase8"],
+            ["pistonBase8", "piston8"],
+        ],
+        HeatAnimations: [
+            "overheat"
+        ],
+        Exhaust: {
+            exhaustBellWidth: 0.098,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustTransform",
+        }
     }, {
-        OriginalHeight: 1.574,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.653,
         OriginalBaseWidth: 1.001,
         PlumeSizeMultiplier: 0.57,
-        PlumePositionOffset: -0.1,
+        PlumePositionOffset: 0,
         NodeStackTop: 0.774,
         NodeStackBottom: -0.8,
         ModelPath: "GenericEngines/models/VenStockRevamp/LVT30",
@@ -1837,22 +1959,29 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "LV-T30",
         ModelType: EngineGroupType.Fake,
-        HiddenMuObjects: [
-            "fairing",
-            "Size2A"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LVT30.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "LVT30"
+        ],
+        Exhaust: {
+            exhaustBellWidth: 0.054,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
-        OriginalHeight: 1.643,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.602,
         OriginalBaseWidth: 0.998,
         PlumeSizeMultiplier: 0.53,
-        PlumePositionOffset: -0.16,
+        PlumePositionOffset: 0,
         NodeStackTop: 0.75,
         NodeStackBottom: -0.893,
         ModelPath: "GenericEngines/models/VenStockRevamp/LVT45",
@@ -1866,19 +1995,34 @@ ModelInfo.models = [
         GimbalTransformName: "Obj_Gimbal",
         ModelName: "LV-T45",
         ModelType: EngineGroupType.Fake,
-        HiddenMuObjects: [
-            "fairing",
-            "Size2A",
-            "Cube_006_031_001"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LVT45.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
+        HeatAnimations: [
+            "LV45Heat"
+        ],
+        Exhaust: {
+            exhaustBellWidth: 0.054,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
-        OriginalHeight: 0.615,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.226,
         OriginalBaseWidth: 0.584,
         PlumeSizeMultiplier: 0.19,
@@ -1905,9 +2049,30 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/P1057.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+            ["Piston5", "PistonBase5"],
+            ["PistonBase5", "Piston5"],
+            ["Piston6", "PistonBase6"],
+            ["PistonBase6", "Piston6"],
+            ["Piston7", "PistonBase7"],
+            ["PistonBase7", "Piston7"],
+            ["Piston8", "PistonBase8"],
+            ["PistonBase8", "Piston8"],
+        ],
+        HeatAnimations: [
+            "105-7PHeat"
+        ]
     }, {
-        OriginalHeight: 1.228,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.773,
         OriginalBaseWidth: 0.653,
         PlumeSizeMultiplier: 0.72,
@@ -1931,15 +2096,17 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/OMSL.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
-        OriginalHeight: 1.584,
-        OriginalBellWidth: 1.222,
-        OriginalBaseWidth: 1.196,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 1.225,
+        OriginalBaseWidth: 1.192,
         PlumeSizeMultiplier: 1.12,
         PlumePositionOffset: 0.0,
-        NodeStackTop: 0.722,
-        NodeStackBottom: -0.862,
+        NodeStackTop: 0.817,
+        NodeStackBottom: -0.702,
         ModelPath: "GenericEngines/models/VenStockRevamp/Poodle",
         ModelFiles: [
             "files/models/VenStockRevamp/Poodle.mu",
@@ -1951,24 +2118,25 @@ ModelInfo.models = [
         GimbalTransformName: "Obj_Gimbal",
         ModelName: "Poodle",
         ModelType: EngineGroupType.Fake,
-        HiddenMuObjects: [
-            "Size2B",
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Poodle.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "overheatService"
+        ]
     }, {
-        OriginalHeight: 1.868,
-        OriginalBellWidth: 0.886,
-        OriginalBaseWidth: 2.5,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.9,
+        OriginalBaseWidth: 2.54,
         PlumeSizeMultiplier: 0.82,
-        PlumePositionOffset: -0.4,
-        NodeStackTop: 0.0,
-        NodeStackBottom: -1.868,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.6,
+        NodeStackBottom: -1.267,
         ModelPath: "GenericEngines/models/VenStockRevamp/PoodleLargeNTR",
         ModelFiles: [
             "files/models/VenStockRevamp/PoodleLargeNTR.mu",
@@ -1980,17 +2148,19 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "Sphere NTR",
         ModelType: EngineGroupType.Fake,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/BallNuke.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "ShortNTR"
+        ]
     }, {
-        OriginalHeight: 0.767,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.407,
         OriginalBaseWidth: 0.585,
         PlumeSizeMultiplier: 0.36,
@@ -2017,15 +2187,19 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/BallNukeS.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "PoodleHeat"
+        ]
     }, {
-        OriginalHeight: 3.514,
-        OriginalBellWidth: 1.6,
-        OriginalBaseWidth: 2.504,
-        PlumeSizeMultiplier: 1.45,
-        PlumePositionOffset: -0.65,
-        NodeStackTop: 1.19,
-        NodeStackBottom: -2.324,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.16,
+        OriginalBaseWidth: 0.2504,
+        PlumeSizeMultiplier: 0.145,
+        PlumePositionOffset: 0,
+        NodeStackTop: 0.119,
+        NodeStackBottom: -0.2324,
         ModelPath: "GenericEngines/models/VenStockRevamp/Size2MedEngineB",
         ModelFiles: [
             "files/models/VenStockRevamp/Size2MedEngineB.mu",
@@ -2037,23 +2211,40 @@ ModelInfo.models = [
         GimbalTransformName: "Nozzle",
         ModelName: "Gas Generator",
         ModelType: EngineGroupType.Fake,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Skipper.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "pistonBase1"],
+            ["pistonBase1", "Piston1"],
+            ["Piston2", "pistonBase2"],
+            ["pistonBase2", "Piston2"],
+            ["Piston3", "pistonBase3"],
+            ["pistonBase3", "Piston3"],
+            ["Piston4", "pistonBase4"],
+            ["pistonBase4", "Piston4"],
+        ],
+        HeatAnimations: [
+            "Size2MedEngineBEmmissive"
+        ],
+        Exhaust: {
+            exhaustBellWidth: 0.0252,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
-        OriginalHeight: 2.655,
-        OriginalBellWidth: 1.415,
-        OriginalBaseWidth: 1.225,
-        PlumeSizeMultiplier: 1.3,
+        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalBellWidth: 0.01155,
+        OriginalBaseWidth: 0.01,
+        PlumeSizeMultiplier: 0.001,
         PlumePositionOffset: 0.0,
-        NodeStackTop: 0.007,
-        NodeStackBottom: -2.648,
+        NodeStackTop: 0.0063,
+        NodeStackBottom: -0.01534,
         ModelPath: "GenericEngines/models/VenStockRevamp/Skipper",
         ModelFiles: [
             "files/models/VenStockRevamp/Skipper.mu",
@@ -2065,16 +2256,26 @@ ModelInfo.models = [
         GimbalTransformName: "Obj_Gimbal",
         ModelName: "Skipper",
         ModelType: EngineGroupType.Fake,
-        HiddenMuObjects: [
-            "obj_fairing",
-            "Size2A"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SkipperR.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Piston1", "PistonBase1"],
+            ["PistonBase1", "Piston1"],
+            ["Piston2", "PistonBase2"],
+            ["PistonBase2", "Piston2"],
+            ["Piston3", "PistonBase3"],
+            ["PistonBase3", "Piston3"],
+            ["Piston4", "PistonBase4"],
+            ["PistonBase4", "Piston4"],
+        ],
+        HeatAnimations: [
+            "ksp_l_midrangeEngine_anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.96,
@@ -2109,13 +2310,17 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVA2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "nerva"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.074,
         OriginalBaseWidth: 2.895,
         PlumeSizeMultiplier: 1.8,
-        PlumePositionOffset: -2,
+        PlumePositionOffset: 0,
         NodeStackTop: 0.05,
         NodeStackBottom: -5.74,
         ModelPath: "GenericEngines/models/SXT/NERVA/portlyman",
@@ -2136,21 +2341,23 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "NERVA wide",
         ModelType: EngineGroupType.Fake,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/NERVAwide.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "nerva"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.5,
         OriginalBaseWidth: 2,
         PlumeSizeMultiplier: 0.43,
-        PlumePositionOffset: 0.13,
+        PlumePositionOffset: 0.12,
         NodeStackTop: 0,
         NodeStackBottom: -0.288,
         ModelPath: "GenericEngines/models/SXT/Kopo4e/model",
@@ -2173,13 +2380,17 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Pancake.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "kopo4e"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.512,
         OriginalBaseWidth: 1.25,
         PlumeSizeMultiplier: 0.44,
-        PlumePositionOffset: 0.4,
+        PlumePositionOffset: 0.0,
         NodeStackTop: 0.594,
         NodeStackBottom: -0.75,
         ModelPath: "GenericEngines/models/SXT/KickMotor/model",
@@ -2197,21 +2408,23 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "RT-3",
         ModelType: EngineGroupType.Fake,
-        HiddenMuObjects: [
-            "solidBooster2_001"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: true,
         OriginalTankVolume: 607,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.625,
         ImageSource: "img/modelPreviews/RT3.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "castoranim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.517,
         OriginalBaseWidth: 3.74,
         PlumeSizeMultiplier: 1.33,
-        PlumePositionOffset: -0.25,
+        PlumePositionOffset: -0.23,
         NodeStackTop: 0.1,
         NodeStackBottom: -3.54,
         ModelPath: "GenericEngines/models/SXT/K170/model",
@@ -2236,7 +2449,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD170.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "k170heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.671,
@@ -2271,12 +2488,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD0120.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "25midenganim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.143,
         OriginalBaseWidth: 0.361,
-        PlumeSizeMultiplier: 0.12,
+        PlumeSizeMultiplier: 0.11,
         PlumePositionOffset: 0,
         NodeStackTop: -0.034,
         NodeStackBottom: -0.49,
@@ -2305,7 +2526,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Gamma2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "blackadderheatanim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.142,
@@ -2334,7 +2559,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Gamma8.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "blackadderheatanim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.66,
@@ -2361,7 +2590,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10_137.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["AJ10-137-Target-Upper1", "AJ10-137-Strut-Lower1"],
+            ["AJ10-137-Target-Lower1", "AJ10-137-Strut-Upper1"],
+            ["AJ10-137-Target-Upper2", "AJ10-137-Strut-Lower2"],
+            ["AJ10-137-Target-Lower2", "AJ10-137-Strut-Upper2"],
+            ["AJ10-137-Target-Upper3", "AJ10-137-Strut-Lower3"],
+            ["AJ10-137-Target-Lower3", "AJ10-137-Strut-Upper3"],
+            ["AJ10-137-Target-Upper4", "AJ10-137-Strut-Lower4"],
+            ["AJ10-137-Target-Lower4", "AJ10-137-Strut-Upper4"],
+            ["AJ10-137-Target-Fuel1", "AJ10-137-FuelJoint1"],
+            ["AJ10-137-Target-Fuel2", "AJ10-137-FuelJoint2"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.707,
@@ -2388,7 +2630,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10_190.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["AJ10-190-Strut-Lower1", "AJ10-190-Strut-Upper1"],
+            ["AJ10-190-Strut-Upper1", "AJ10-190-Strut-Lower1"],
+            ["AJ10-190-Strut-Lower2", "AJ10-190-Strut-Upper2"],
+            ["AJ10-190-Strut-Upper2", "AJ10-190-Strut-Lower2"],
+            ["AJ10-190-Target-Fuel1", "AJ10-190-FuelJoint1"],
+            ["AJ10-190-Target-Fuel2", "AJ10-190-FuelJoint2"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.446,
@@ -2415,13 +2666,23 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/F1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["F1-Target-LeftLower", "F1-Strut-LeftUpper"],
+            ["F1-Target-LeftUpper", "F1-Strut-LeftLower"],
+            ["F1-Target-RightLower", "F1-Strut-RightUpper"],
+            ["F1-Target-RightUpper", "F1-Strut-RightLower"],
+            ["F1-Target-FuelLeft", "F1-FuelLineLeft"],
+            ["F1-Target-FuelRight", "F1-FuelLineRight"],
+            ["F1-Target-FuelCenter", "F1-FuelLineCenter"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.165,
         OriginalBaseWidth: 2.007,
         PlumeSizeMultiplier: 1.86,
-        PlumePositionOffset: -0.6,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.0075,
         NodeStackBottom: -3.25,
         ModelPath: "GenericEngines/models/SSTU/F1B/SC-ENG-F1B",
@@ -2442,7 +2703,23 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/F1B.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["F1B-Target-LeftUpper", "F1B-Strut-LeftLower"],
+            ["F1B-Target-LeftLower", "F1B-Strut-LeftUpper"],
+            ["F1B-Target-RightUpper", "F1B-Strut-RightLower"],
+            ["F1B-Target-RightLower", "F1B-Strut-RightUpper"],
+            ["F1B-Target-FuelLeft", "F1B-FuelLineLeft"],
+            ["F1B-Target-FuelRight", "F1B-FuelLineRight"],
+            ["F1B-Target-FuelCenter", "F1B-FuelLineCenter"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.4,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.757,
@@ -2469,7 +2746,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/H1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["H-1-Target-LeftUpper", "H-1-Strut-LeftLower"],
+            ["H-1-Target-LeftLower", "H-1-Strut-LeftUpper"],
+            ["H-1-Target-RightUpper", "H-1-Strut-RightLower"],
+            ["H-1-Target-RightLower", "H-1-Strut-RightUpper"],
+            ["H-1-Target-FuelLeft", "H-1-FuelJointLeft"],
+            ["H-1-Target-FuelRight", "H-1-FuelJointRight"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.332,
@@ -2496,7 +2782,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["J-2-Target-LeftUpper", "J-2-Strut-LeftLower"],
+            ["J-2-Target-LeftLower", "J-2-Strut-LeftUpper"],
+            ["J-2-Target-RightUpper", "J-2-Strut-RightLower"],
+            ["J-2-Target-RightLower", "J-2-Strut-RightUpper"],
+            ["J-2-Target-FuelLeft", "J-2-FuelLineLeft"],
+            ["J-2-Target-FuelRight", "J-2-FuelLineRight"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.943,
@@ -2523,7 +2818,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2X.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["J-2X-Target-LowerLeft", "J-2X-Strut-UpperLeft"],
+            ["J-2X-Target-UpperLeft", "J-2X-Strut-LowerLeft"],
+            ["J-2X-Target-LowerRight", "J-2X-Strut-UpperRight"],
+            ["J-2X-Target-UpperRight", "J-2X-Strut-LowerRight"],
+            ["J-2X-Target-FuelLeft", "J-2X-FuelLineLeft"],
+            ["J-2X-Target-FuelRight", "J-2X-FuelLineRight"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.512,
@@ -2550,7 +2854,9 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMAE.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.904,
@@ -2577,13 +2883,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMDE.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["LMDE-GimbalUpper1", "LMDE-GimbalLower1"],
+            ["LMDE-GimbalLower1", "LMDE-GimbalUpper1"],
+            ["LMDE-GimbalUpper2", "LMDE-GimbalLower2"],
+            ["LMDE-GimbalLower2", "LMDE-GimbalUpper2"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.412,
         OriginalBaseWidth: 0.838,
         PlumeSizeMultiplier: 0.35,
-        PlumePositionOffset: -0.12,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.005,
         NodeStackBottom: -1.18,
         ModelPath: "GenericEngines/models/SSTU/LR-81/SC-ENG-LR-81-8048",
@@ -2604,13 +2917,28 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Bell8048.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["LR-81-8048-ExhaustTarget", "LR-81-8048-ExhaustJoint"],
+            ["LR-81-8048-FuelTarget", "LR-81-8048-FuelJoint"],
+            ["LR-81-8048-Strut-LeftUpper", "LR-81-8048-Strut-LeftLower"],
+            ["LR-81-8048-Strut-LeftLower", "LR-81-8048-Strut-LeftUpper"],
+            ["LR-81-8048-Strut-RightUpper", "LR-81-8048-Strut-RightLower"],
+            ["LR-81-8048-Strut-RightLower", "LR-81-8048-Strut-RightUpper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.045,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.611,
         OriginalBaseWidth: 0.838,
         PlumeSizeMultiplier: 0.53,
-        PlumePositionOffset: -0.22,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.005,
         NodeStackBottom: -1.46,
         ModelPath: "GenericEngines/models/SSTU/LR-81/SC-ENG-LR-81-8096",
@@ -2631,13 +2959,28 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Bell8096.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["LR-81-8096-ExhaustTarget", "LR-81-8096-ExhaustJoint"],
+            ["LR-81-8096-FuelTarget", "LR-81-8096-FuelJoint"],
+            ["LR-81-8096-Strut-LeftUpper", "LR-81-8096-Strut-LeftLower"],
+            ["LR-81-8096-Strut-LeftLower", "LR-81-8096-Strut-LeftUpper"],
+            ["LR-81-8096-Strut-RightUpper", "LR-81-8096-Strut-RightLower"],
+            ["LR-81-8096-Strut-RightLower", "LR-81-8096-Strut-RightUpper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.045,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.597,
         OriginalBaseWidth: 0.74,
         PlumeSizeMultiplier: 0.53,
-        PlumePositionOffset: -0.18,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.015,
         NodeStackBottom: -1.3,
         ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1A",
@@ -2658,13 +3001,26 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1A.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Merlin-1A-Strut-Lower1", "Merlin-1A-Strut-Upper1"],
+            ["Merlin-1A-Strut-Upper1", "Merlin-1A-Strut-Lower1"],
+            ["Merlin-1A-Strut-Lower2", "Merlin-1A-Strut-Upper2"],
+            ["Merlin-1A-Strut-Upper2", "Merlin-1A-Strut-Lower2"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.084,
+            exhaustThrustTransform: "Merlin-1A-RollGimbal",
+            exhaustGimbalTransform: "Merlin-1A-RollGimbal",
+            exhaustEffectTransform: "Merlin-1A-RollFXTransform",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.599,
         OriginalBaseWidth: 0.73,
         PlumeSizeMultiplier: 0.54,
-        PlumePositionOffset: -0.18,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.015,
         NodeStackBottom: -1.39,
         ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1B",
@@ -2685,13 +3041,26 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1B.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Merlin-1B-Strut-Lower1", "Merlin-1B-Strut-Upper1"],
+            ["Merlin-1B-Strut-Upper1", "Merlin-1B-Strut-Lower1"],
+            ["Merlin-1B-Strut-Lower2", "Merlin-1B-Strut-Upper2"],
+            ["Merlin-1B-Strut-Upper2", "Merlin-1B-Strut-Lower2"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.084,
+            exhaustThrustTransform: "Merlin-1B-RollGimbal",
+            exhaustGimbalTransform: "Merlin-1B-RollGimbal",
+            exhaustEffectTransform: "Merlin-1B-RollFXTransform",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.599,
         OriginalBaseWidth: 0.73,
         PlumeSizeMultiplier: 1.4,
-        PlumePositionOffset: -0.66,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.015,
         NodeStackBottom: -2.87,
         ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1BV",
@@ -2712,13 +3081,26 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1BV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Merlin-1BV-Strut-Lower1", "Merlin-1BV-Strut-Upper1"],
+            ["Merlin-1BV-Strut-Upper1", "Merlin-1BV-Strut-Lower1"],
+            ["Merlin-1BV-Strut-Lower2", "Merlin-1BV-Strut-Upper2"],
+            ["Merlin-1BV-Strut-Upper2", "Merlin-1BV-Strut-Lower2"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.084,
+            exhaustThrustTransform: "Merlin-1BV-RollGimbal",
+            exhaustGimbalTransform: "Merlin-1BV-RollGimbal",
+            exhaustEffectTransform: "Merlin-1BV-RollFXTransform",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.601,
         OriginalBaseWidth: 0.73,
         PlumeSizeMultiplier: 0.53,
-        PlumePositionOffset: -0.2,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.015,
         NodeStackBottom: -1.39,
         ModelPath: "GenericEngines/models/SSTU/Merlin-1/SC-ENG-Merlin-1D",
@@ -2739,7 +3121,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1D.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Merlin-1D-Strut-Lower1", "Merlin-1D-Strut-Upper1"],
+            ["Merlin-1D-Strut-Upper1", "Merlin-1D-Strut-Lower1"],
+            ["Merlin-1D-Strut-Lower2", "Merlin-1D-Strut-Upper2"],
+            ["Merlin-1D-Strut-Upper2", "Merlin-1D-Strut-Lower2"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.143,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "effectTransform",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.601,
@@ -2766,7 +3161,14 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Merlin1DV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Merlin-1DV-Strut-Lower1", "Merlin-1DV-Strut-Upper1"],
+            ["Merlin-1DV-Strut-Upper1", "Merlin-1DV-Strut-Lower1"],
+            ["Merlin-1DV-Strut-Lower2", "Merlin-1DV-Strut-Upper2"],
+            ["Merlin-1DV-Strut-Upper2", "Merlin-1DV-Strut-Lower2"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.471,
@@ -2793,7 +3195,9 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD107.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.964,
@@ -2820,7 +3224,26 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD171.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["RD-171-GimbalUpper1", "RD-171-GimbalLower1"],
+            ["RD-171-GimbalLower1", "RD-171-GimbalUpper1"],
+            ["RD-171-GimbalUpper2", "RD-171-GimbalLower2"],
+            ["RD-171-GimbalLower2", "RD-171-GimbalUpper2"],
+            ["RD-171-GimbalUpper3", "RD-171-GimbalLower3"],
+            ["RD-171-GimbalLower3", "RD-171-GimbalUpper3"],
+            ["RD-171-GimbalUpper4", "RD-171-GimbalLower4"],
+            ["RD-171-GimbalLower4", "RD-171-GimbalUpper4"],
+            ["RD-171-GimbalUpper5", "RD-171-GimbalLower5"],
+            ["RD-171-GimbalLower5", "RD-171-GimbalUpper5"],
+            ["RD-171-GimbalUpper6", "RD-171-GimbalLower6"],
+            ["RD-171-GimbalLower6", "RD-171-GimbalUpper6"],
+            ["RD-171-GimbalUpper7", "RD-171-GimbalLower7"],
+            ["RD-171-GimbalLower7", "RD-171-GimbalUpper7"],
+            ["RD-171-GimbalUpper8", "RD-171-GimbalLower8"],
+            ["RD-171-GimbalLower8", "RD-171-GimbalUpper8"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.963,
@@ -2847,7 +3270,22 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD180.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["RD-180-GimbalLeftLower1", "RD-180-GimbalLeftUpper1X"],
+            ["RD-180-GimbalLeftLower1", "RD-180-GimbalLeftUpper1"],
+            ["RD-180-GimbalLeftUpper1", "RD-180-GimbalLeftLower1"],
+            ["RD-180-GimbalLeftLower2", "RD-180-GimbalLeftUpper2X"],
+            ["RD-180-GimbalLeftLower2", "RD-180-GimbalLeftUpper2"],
+            ["RD-180-GimbalLeftUpper2", "RD-180-GimbalLeftLower2"],
+            ["RD-180-GimbalRightLower1", "RD-180-GimbalRightUpper1X"],
+            ["RD-180-GimbalRightLower1", "RD-180-GimbalRightUpper1"],
+            ["RD-180-GimbalRightUpper1", "RD-180-GimbalRightLower1"],
+            ["RD-180-GimbalRightLower2", "RD-180-GimbalRightUpper2X"],
+            ["RD-180-GimbalRightLower2", "RD-180-GimbalRightUpper2"],
+            ["RD-180-GimbalRightUpper2", "RD-180-GimbalRightLower2"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.964,
@@ -2874,7 +3312,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD181.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["RD-181-GimbalLower1", "RD-181-GimbalUpperX1"],
+            ["RD-181-GimbalUpper1", "RD-181-GimbalLower1"],
+            ["RD-181-GimbalLower1", "RD-181-GimbalUpper1"],
+            ["RD-181-GimbalLower2", "RD-181-GimbalUpperX2"],
+            ["RD-181-GimbalUpper2", "RD-181-GimbalLower2"],
+            ["RD-181-GimbalLower2", "RD-181-GimbalUpper2"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.671,
@@ -2901,15 +3348,24 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A3.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["RL10A-3-Target-LeftUpper", "RL10A-3-Strut-LeftLower"],
+            ["RL10A-3-Target-LeftLower", "RL10A-3-Strut-LeftUpper"],
+            ["RL10A-3-Target-RightUpper", "RL10A-3-Strut-RightLower"],
+            ["RL10A-3-Target-RightLower", "RL10A-3-Strut-RightUpper"],
+            ["RL10A-3-Target-FuelLeft", "RL10A-3-FuelJointLeft"],
+            ["RL10A-3-Target-FuelRight", "RL10A-3-FuelJointRight"],
+        ],
+        HeatAnimations: []
     }, {
-        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalHeight: 1.48,
         OriginalBellWidth: 0.798,
         OriginalBaseWidth: 0.568,
         PlumeSizeMultiplier: 0.71,
         PlumePositionOffset: -0.27,
         NodeStackTop: -0.01,
-        NodeStackBottom: -1.49,
+        NodeStackBottom: -1.125,
         ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10A-4",
         ModelFiles: [
             "files/models/SSTU/RL10/SC-ENG-RL10A-4.mu",
@@ -2928,7 +3384,17 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A4.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["RL10A-4-Target-LeftUpper", "RL10A-4-Strut-LeftLower"],
+            ["RL10A-4-Target-LeftLower", "RL10A-4-Strut-LeftUpper"],
+            ["RL10A-4-Target-RightUpper", "RL10A-4-Strut-RightLower"],
+            ["RL10A-4-Target-RightLower", "RL10A-4-Strut-RightUpper"],
+            ["RL10A-4-Target-FuelLeft", "RL10A-4-FuelJointLeft"],
+            ["RL10A-4-Target-FuelRight", "RL10A-4-FuelJointRight"],
+        ],
+        HeatAnimations: [],
+        ExtendNozzleAnimation: "SC-ENG-RL10A-4-Deploy"
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.25,
@@ -2955,15 +3421,24 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["RL10A-5-Target-LeftUpper", "RL10A-5-Strut-LeftLower"],
+            ["RL10A-5-Target-LeftLower", "RL10A-5-Strut-LeftUpper"],
+            ["RL10A-5-Target-RightUpper", "RL10A-5-Strut-RightLower"],
+            ["RL10A-5-Target-RightLower", "RL10A-5-Strut-RightUpper"],
+            ["RL10A-5-Target-FuelLeft", "RL10A-5-FuelJointLeft"],
+            ["RL10A-5-Target-FuelRight", "RL10A-5-FuelJointRight"],
+        ],
+        HeatAnimations: []
     }, {
-        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalHeight: 2.555,
         OriginalBellWidth: 1.27,
         OriginalBaseWidth: 0.568,
         PlumeSizeMultiplier: 1.13,
-        PlumePositionOffset: -0.5,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.005,
-        NodeStackBottom: -2.56,
+        NodeStackBottom: -1.362,
         ModelPath: "GenericEngines/models/SSTU/RL10/SC-ENG-RL10B-2",
         ModelFiles: [
             "files/models/SSTU/RL10/SC-ENG-RL10B-2.mu",
@@ -2982,7 +3457,17 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10B2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["RL10B-2-Target-LeftUpper", "RL10B-2-Strut-LeftLower"],
+            ["RL10B-2-Target-LeftLower", "RL10B-2-Strut-LeftUpper"],
+            ["RL10B-2-Target-RightUpper", "RL10B-2-Strut-RightLower"],
+            ["RL10B-2-Target-RightLower", "RL10B-2-Strut-RightUpper"],
+            ["RL10B-2-Target-FuelLeft", "RL10B-2-FuelJointLeft"],
+            ["RL10B-2-Target-FuelRight", "RL10B-2-FuelJointRight"],
+        ],
+        HeatAnimations: [],
+        ExtendNozzleAnimation: "SC-ENG-RL10B-2-Deploy"
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.569,
@@ -3009,13 +3494,22 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RS25_2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["RS-25-Target-LeftUpper", "RS-25-Strut-LeftLower"],
+            ["RS-25-Target-LeftLower", "RS-25-Strut-LeftUpper"],
+            ["RS-25-Target-RightUpper", "RS-25-Strut-RightLower"],
+            ["RS-25-Target-RightLower", "RS-25-Strut-RightUpper"],
+            ["RS-25-Target-FuelLeft", "RS-25-FuelJointLeft"],
+            ["RS-25-Target-FuelRight", "RS-25-FuelJointRight"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.61,
         OriginalBaseWidth: 2.272,
         PlumeSizeMultiplier: 1.43,
-        PlumePositionOffset: -0.6,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.01,
         NodeStackBottom: -3.6,
         ModelPath: "GenericEngines/models/SSTU/RS-68/SC-ENG-RS-68",
@@ -3036,13 +3530,28 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RS68.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["RS-68-Target-LeftUpper", "RS-68-Strut-LeftLower"],
+            ["RS-68-Target-LeftLower", "RS-68-Strut-LeftUpper"],
+            ["RS-68-Target-RightUpper", "RS-68-Strut-RightLower"],
+            ["RS-68-Target-RightLower", "RS-68-Strut-RightUpper"],
+            ["RS-68-Target-FuelFront", "RS-68-FuelJointFront"],
+            ["RS-68-Target-FuelRear", "RS-68-FuelJointRear"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.24,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.128,
         OriginalBaseWidth: 0.09,
         PlumeSizeMultiplier: 0.11,
-        PlumePositionOffset: 0.03,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.005,
         NodeStackBottom: -0.365,
         ModelPath: "GenericEngines/models/SSTU/SuperDraco/SC-ENG-SuperDraco",
@@ -3062,13 +3571,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SuperDraco.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.321,
         OriginalBaseWidth: 0.09,
         PlumeSizeMultiplier: 0.29,
-        PlumePositionOffset: 0.2,
+        PlumePositionOffset: 0,
         NodeStackTop: -0.005,
         NodeStackBottom: -0.615,
         ModelPath: "GenericEngines/models/SSTU/SuperDraco/SC-ENG-SuperDraco-L",
@@ -3088,13 +3599,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/SuperDracoV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.824,
         OriginalBaseWidth: 0.824,
         PlumeSizeMultiplier: 0.72,
-        PlumePositionOffset: 0,
+        PlumePositionOffset: -0.01,
         NodeStackTop: 1,
         NodeStackBottom: -0.533,
         ModelPath: "GenericEngines/models/FRE/FRE-1/FRE-1",
@@ -3114,7 +3627,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/FRE1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
+        HeatAnimations: [
+            "FRE-1Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.38,
@@ -3131,7 +3653,7 @@ ModelInfo.models = [
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
-        GimbalTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
         ModelName: "FRE-2",
         ModelType: EngineGroupType.IRL,
         HiddenMuObjects: [],
@@ -3140,7 +3662,58 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/FRE2.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"],
+            ["Base1.001", "Piston1.001"],
+            ["Base2.001", "Piston2.001"],
+            ["Base3.001", "Piston3.001"],
+            ["Base4.001", "Piston4.001"],
+            ["Base1.002", "Piston1.002"],
+            ["Base2.002", "Piston2.002"],
+            ["Base3.002", "Piston3.002"],
+            ["Base4.002", "Piston4.002"],
+            ["Base1.003", "Piston1.003"],
+            ["Base2.003", "Piston2.003"],
+            ["Base3.003", "Piston3.003"],
+            ["Base4.003", "Piston4.003"],
+            ["Base1.004", "Piston1.004"],
+            ["Base2.004", "Piston2.004"],
+            ["Base3.004", "Piston3.004"],
+            ["Base4.004", "Piston4.004"],
+            ["Base1.005", "Piston1.005"],
+            ["Base2.005", "Piston2.005"],
+            ["Base3.005", "Piston3.005"],
+            ["Base4.005", "Piston4.005"],
+            ["Base1.006", "Piston1.006"],
+            ["Base2.006", "Piston2.006"],
+            ["Base3.006", "Piston3.006"],
+            ["Base4.006", "Piston4.006"],
+            ["Base1.007", "Piston1.007"],
+            ["Base2.007", "Piston2.007"],
+            ["Base3.007", "Piston3.007"],
+            ["Base4.007", "Piston4.007"],
+            ["Base1.008", "Piston1.008"],
+            ["Base2.008", "Piston2.008"],
+            ["Base3.008", "Piston3.008"],
+            ["Base4.008", "Piston4.008"],
+            ["Base1.009", "Piston1.009"],
+            ["Base2.009", "Piston2.009"],
+            ["Base3.009", "Piston3.009"],
+            ["Base4.009", "Piston4.009"],
+            ["Base1.010", "Piston1.010"],
+            ["Base2.010", "Piston2.010"],
+            ["Base3.010", "Piston3.010"],
+            ["Base4.010", "Piston4.010"],
+            ["Base1.011", "Piston1.011"],
+            ["Base2.011", "Piston2.011"],
+            ["Base3.011", "Piston3.011"],
+            ["Base4.011", "Piston4.011"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.517,
@@ -3167,7 +3740,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LE5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
+        HeatAnimations: [
+            "LE-5Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.12,
@@ -3194,7 +3776,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LE7.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
+        HeatAnimations: [
+            "LE-7Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.276,
@@ -3219,7 +3810,14 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD843.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.322,
@@ -3246,7 +3844,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Rutherford.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
+        HeatAnimations: [
+            "RutherfordHeat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.679,
@@ -3273,7 +3880,17 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RutherfordVac.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Base3", "Piston3"],
+            ["Base4", "Piston4"]
+        ],
+        HeatAnimations: [
+            "RutherfordHeat",
+            "RutherfordVacHeat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.326,
@@ -3299,7 +3916,16 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 1.5,
         ImageSource: "img/modelPreviews/P80.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Attach1", "Piston3"],
+            ["Attach2", "Piston4"]
+        ],
+        HeatAnimations: [
+            "P80Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.036,
@@ -3325,7 +3951,16 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.95,
         ImageSource: "img/modelPreviews/Zefiro9.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Attach1", "Piston3"],
+            ["Attach2", "Piston4"]
+        ],
+        HeatAnimations: [
+            "Zefiro9Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.449,
@@ -3351,13 +3986,22 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.95,
         ImageSource: "img/modelPreviews/Zefiro23.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Base1", "Piston1"],
+            ["Base2", "Piston2"],
+            ["Attach1", "Piston3"],
+            ["Attach2", "Piston4"]
+        ],
+        HeatAnimations: [
+            "Zefiro23Heat"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.944,
         OriginalBaseWidth: 0.947,
         PlumeSizeMultiplier: 0.8,
-        PlumePositionOffset: 1.55,
+        PlumePositionOffset: 0,
         NodeStackTop: 1.6,
         NodeStackBottom: -1.03,
         ModelPath: "GenericEngines/models/FRE/Viking/VikingLower",
@@ -3377,7 +4021,17 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Viking.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "VikingHeat"
+        ],
+        Exhaust: {
+            exhaustBellWidth: 0.11,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.8,
@@ -3403,7 +4057,17 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/VikingVac.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "VikingHeat"
+        ],
+        Exhaust: {
+            exhaustBellWidth: 0.11,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.639,
@@ -3433,13 +4097,17 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/ApolloSPSBlockII.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "bluedog_ApolloBlock2Service_Emit"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.578,
         OriginalBaseWidth: 2.5,
         PlumeSizeMultiplier: 0.5,
-        PlumePositionOffset: 0.24,
+        PlumePositionOffset: 0,
         NodeStackTop: 0.03,
         NodeStackBottom: -0.844,
         ModelPath: "GenericEngines/models/BDB/Apollo/bluedog_Apollo_Block3_ServiceEngine",
@@ -3466,7 +4134,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/ApolloSPSBlockIII.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "LEM_spsA_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.81,
@@ -3499,13 +4171,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/ApolloSPSBlockV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.531,
         OriginalBaseWidth: 0.373,
         PlumeSizeMultiplier: 0.45,
-        PlumePositionOffset: -0.03,
+        PlumePositionOffset: 0,
         NodeStackTop: 0.28,
         NodeStackBottom: -0.58,
         ModelPath: "GenericEngines/models/BDB/Apollo/bluedog_LEM_Ascent_Engine",
@@ -3526,7 +4200,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMAE_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "LEM_Ascent_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.811,
@@ -3553,7 +4231,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LMDE_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "LEM_Descent_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.723,
@@ -3580,7 +4262,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR89.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Gimbal1_Upper", "Gimbal1_Lower"],
+            ["Gimbal1_Lower", "Gimbal1_Upper"],
+            ["Gimbal2_Upper", "Gimbal2_Lower"],
+            ["Gimbal2_Lower", "Gimbal2_Upper"],
+        ],
+        HeatAnimations: [
+            "LR89_Heat_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.111,
@@ -3607,7 +4298,11 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR101.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "LR101_Heat_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.73,
@@ -3634,7 +4329,16 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR105.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["Gimbal1_Upper", "Gimbal1_Lower"],
+            ["Gimbal1_Lower", "Gimbal1_Upper"],
+            ["Gimbal2_Upper", "Gimbal2_Lower"],
+            ["Gimbal2_Lower", "Gimbal2_Upper"],
+        ],
+        HeatAnimations: [
+            "bluedog_Atlas_LR105_Emit"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.819,
@@ -3661,7 +4365,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RD180_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["PistonPN", "GimbalActuatorPN"],
+            ["GimbalActuatorPN", "PistonPN"],
+            ["PistonPZ", "GimbalActuatorPZ"],
+            ["GimbalActuatorPZ", "PistonPZ"],
+            ["PistonSN", "GimbalActuatorSN"],
+            ["GimbalActuatorSN", "PistonSN"],
+            ["PistonSZ", "GimbalActuatorSZ"],
+            ["GimbalActuatorSZ", "PistonSZ"],
+        ],
+        HeatAnimations: [
+            "RD180_Heat_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.641,
@@ -3690,15 +4407,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["lowerGimbal", "upperGimbal"],
+            ["upperGimbal", "lowerGimbal"],
+        ],
+        HeatAnimations: []
     }, {
-        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalHeight: 1.512,
         OriginalBellWidth: 0.73,
         OriginalBaseWidth: 0.352,
         PlumeSizeMultiplier: 0.64,
         PlumePositionOffset: 0,
         NodeStackTop: 0.332,
-        NodeStackBottom: -1.18,
+        NodeStackBottom: -0.805,
         ModelPath: "GenericEngines/models/BDB/Centaur/bluedog_Centaur_RL10A41_Shroudless_Extended",
         ModelFiles: [
             "files/models/BDB/Centaur/bluedog_Centaur_RL10A41_Shroudless_Extended.mu",
@@ -3719,15 +4441,23 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10A41.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["lowerGimbal", "upperGimbal"],
+            ["upperGimbal", "lowerGimbal"],
+        ],
+        HeatAnimations: [
+            "RL10A41_Emit"
+        ],
+        ExtendNozzleAnimation: "extend"
     }, {
-        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalHeight: 2.08,
         OriginalBellWidth: 0.905,
         OriginalBaseWidth: 0.64,
         PlumeSizeMultiplier: 0.8,
         PlumePositionOffset: 0,
         NodeStackTop: 0.33,
-        NodeStackBottom: -1.75,
+        NodeStackBottom: -0.807,
         ModelPath: "GenericEngines/models/BDB/Centaur/bluedog_Centaur_RL10B2_Shroudless_Extended",
         ModelFiles: [
             "files/models/BDB/Centaur/bluedog_Centaur_RL10B2_Shroudless_Extended.mu",
@@ -3751,7 +4481,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/RL10B2_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["lowerGimbal", "upperGimbal"],
+            ["upperGimbal", "lowerGimbal"],
+        ],
+        HeatAnimations: [
+            "RL10B2_Emit"
+        ],
+        ExtendNozzleAnimation: "extend"
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.508,
@@ -3778,7 +4516,11 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.3125,
         ImageSource: "img/modelPreviews/GEM40.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "GEM60_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.813,
@@ -3805,7 +4547,9 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/AJ10_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.865,
@@ -3831,7 +4575,9 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.6885,
         ImageSource: "img/modelPreviews/Rita.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.498,
@@ -3857,7 +4603,9 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.2955,
         ImageSource: "img/modelPreviews/Rubis.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.219,
@@ -3885,7 +4633,9 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.3115,
         ImageSource: "img/modelPreviews/Topaze.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.346,
@@ -3906,18 +4656,20 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "Able",
         ModelType: EngineGroupType.IRL,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Able.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "Able_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
-        OriginalBellWidth: 0.470,
+        OriginalBellWidth: 0.480,
         OriginalBaseWidth: 0.585,
         PlumeSizeMultiplier: 0.42,
         PlumePositionOffset: 0.265,
@@ -3935,15 +4687,17 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "Ablestar",
         ModelType: EngineGroupType.IRL,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Ablestar.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "Able_Emit_Anim"
+        ]
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.269,
@@ -3971,7 +4725,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Navaho.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.059,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "polySurface27",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.885,
@@ -3997,7 +4759,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Thor.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.135,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "vernierTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.284,
@@ -4018,21 +4788,29 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "Vanguard",
         ModelType: EngineGroupType.IRL,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Vanguard.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "Vanguard_Engine_Anim"
+        ],
+        Exhaust: {
+            exhaustBellWidth: 0.0975,
+            exhaustThrustTransform: "vernierTransform",
+            exhaustGimbalTransform: "vernierTransform",
+            exhaustEffectTransform: "vernierTransform",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.975,
         OriginalBaseWidth: 1.061,
         PlumeSizeMultiplier: 0.86,
-        PlumePositionOffset: -0.15,
+        PlumePositionOffset: 0,
         NodeStackTop: 1.2,
         NodeStackBottom: -0.86,
         ModelPath: "GenericEngines/models/BDB/Engines/bluedog_E1",
@@ -4053,7 +4831,22 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/E1.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["gimbalBone1", "gimbalArm1_1"],
+            ["gimbalBone1", "gimbalArm1_2"],
+            ["gimbalBone2", "gimbalArm2_1"],
+            ["gimbalBone2", "gimbalArm2_2"],
+        ],
+        HeatAnimations: [
+            "E1_Heat_Anim"
+        ],
+        Exhaust: {
+            exhaustBellWidth: 0.168,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.106,
@@ -4073,21 +4866,21 @@ ModelInfo.models = [
         GimbalTransformName: "thrustTransform",
         ModelName: "Sargent",
         ModelType: EngineGroupType.SRB,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: true,
         OriginalTankVolume: 4.3,
         RadialAttachment: true,
         RadialAttachmentPoint: 0.06,
         ImageSource: "img/modelPreviews/Sargent.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.376,
         OriginalBaseWidth: 0.898,
         PlumeSizeMultiplier: 0.32,
-        PlumePositionOffset: 0.48,
+        PlumePositionOffset: 0.28,
         NodeStackTop: 0.013,
         NodeStackBottom: -1.09,
         ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine6K",
@@ -4108,15 +4901,23 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Juno6K.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.0945,
+            exhaustThrustTransform: "vernierEffects",
+            exhaustGimbalTransform: "vernierTransform",
+            exhaustEffectTransform: "vernierEffects",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
-        OriginalBellWidth: 0.495,
-        OriginalBaseWidth: 0.87,
-        PlumeSizeMultiplier: 0.42,
-        PlumePositionOffset: 0.56,
-        NodeStackTop: 0.014,
-        NodeStackBottom: -1.19,
+        OriginalBellWidth: 0.7,
+        OriginalBaseWidth: 1.231,
+        PlumeSizeMultiplier: 0.6,
+        PlumePositionOffset: 0.0,
+        NodeStackTop: 0.0198,
+        NodeStackBottom: -1.6836,
         ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_Engine45K",
         ModelFiles: [
             "files/models/BDB/Juno/bluedog_Juno_Engine45K.mu",
@@ -4124,26 +4925,35 @@ ModelInfo.models = [
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
-        GimbalTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
         ModelName: "Juno 45K",
         ModelType: EngineGroupType.IRL,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Juno45K.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["LowerGimbal", "UpperGimbal"],
+            ["UpperGimbal", "LowerGimbal"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.134,
+            exhaustThrustTransform: "vernierEffects",
+            exhaustGimbalTransform: "vernierTransform",
+            exhaustEffectTransform: "vernierEffects",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
-        OriginalBellWidth: 0.745,
-        OriginalBaseWidth: 0.93,
-        PlumeSizeMultiplier: 0.66,
-        PlumePositionOffset: 0.92,
-        NodeStackTop: 0.074,
-        NodeStackBottom: -1.466,
+        OriginalBellWidth: 1.99,
+        OriginalBaseWidth: 2.4864,
+        PlumeSizeMultiplier: 1.8,
+        PlumePositionOffset: 0.0,
+        NodeStackTop: 0.198,
+        NodeStackBottom: -3.92,
         ModelPath: "GenericEngines/models/BDB/Juno/bluedog_Juno_EngineS3D",
         ModelFiles: [
             "files/models/BDB/Juno/bluedog_Juno_EngineS3D.mu",
@@ -4151,18 +4961,27 @@ ModelInfo.models = [
         ],
         TextureDefinitions: "",
         ThrustTransformName: "thrustTransform",
-        GimbalTransformName: "thrustTransform",
+        GimbalTransformName: "gimbalTransform",
         ModelName: "S3D",
         ModelType: EngineGroupType.IRL,
-        HiddenMuObjects: [
-            "fairing"
-        ],
+        HiddenMuObjects: [],
         CanAttachOnModel: false,
         OriginalTankVolume: 0,
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/S3D.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["LowerGimbal", "UpperGimbal"],
+            ["UpperGimbal", "LowerGimbal"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.292,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.96,
@@ -4188,7 +5007,14 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/F1_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["lowerGimbal2", "upperGimbal2"],
+            ["upperGimbal2", "lowerGimbal2"],
+            ["lowerGimbal1", "upperGimbal1"],
+            ["upperGimbal1", "lowerGimbal1"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.589,
@@ -4214,7 +5040,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/H1C.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.0555,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.588,
@@ -4240,13 +5074,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/H1D.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["LowerGimbal2", "UpperGimbal2"],
+            ["UpperGimbal2", "LowerGimbal2"],
+            ["LowerGimbal1", "UpperGimbal1"],
+            ["UpperGimbal1", "LowerGimbal1"],
+        ],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.147,
         OriginalBaseWidth: 0.85,
         PlumeSizeMultiplier: 1,
-        PlumePositionOffset: -0.13,
+        PlumePositionOffset: 0,
         NodeStackTop: 0.737,
         NodeStackBottom: -0.93,
         ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2",
@@ -4268,7 +5109,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.063,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.248,
@@ -4296,13 +5145,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2T.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.904,
         OriginalBaseWidth: 0.852,
         PlumeSizeMultiplier: 0.8,
-        PlumePositionOffset: -0.39,
+        PlumePositionOffset: 0,
         NodeStackTop: 0.7,
         NodeStackBottom: -0.64,
         ModelPath: "GenericEngines/models/BDB/Saturn/bluedog_J2sl",
@@ -4324,7 +5175,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/J2SL.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.063,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 3.914,
@@ -4351,7 +5210,17 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 1.915,
         ImageSource: "img/modelPreviews/AJ260.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [
+            "AJ260_Vernier_Emit"
+        ],
+        Exhaust: {
+            exhaustBellWidth: 0.73,
+            exhaustThrustTransform: "vernierTransform",
+            exhaustGimbalTransform: "vernierGimbal",
+            exhaustEffectTransform: "vernierTransform",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.708,
@@ -4377,7 +5246,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.11,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.692,
@@ -4403,7 +5280,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87S.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.1,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.854,
@@ -4429,7 +5314,15 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91_BDB.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.15,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustGimbal",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.497,
@@ -4455,13 +5348,15 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.75,
         ImageSource: "img/modelPreviews/Soltan.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.9,
         OriginalBaseWidth: 1.87,
         PlumeSizeMultiplier: 1.65,
-        PlumePositionOffset: -0.08,
+        PlumePositionOffset: 0,
         NodeStackTop: 8.1,
         NodeStackBottom: -6.25,
         ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Titan_SRB5segStack",
@@ -4481,13 +5376,15 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.935,
         ImageSource: "img/modelPreviews/UA1205.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.9,
         OriginalBaseWidth: 1.87,
         PlumeSizeMultiplier: 1.65,
-        PlumePositionOffset: -0.08,
+        PlumePositionOffset: 0,
         NodeStackTop: 11.85,
         NodeStackBottom: -6.25,
         ModelPath: "GenericEngines/models/BDB/Titan/bluedog_Titan_SRB7segStack",
@@ -4507,7 +5404,9 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.935,
         ImageSource: "img/modelPreviews/UA1207.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.742,
@@ -4533,7 +5432,9 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/Transtage.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.677,
@@ -4561,7 +5462,24 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_1_Upper", "yawPivot_1_Lower"],
+            ["yawPivot_1_Lower", "yawPivot_1_Upper"],
+            ["yawPivot_2_Upper", "yawPivot_2_Lower"],
+            ["yawPivot_2_Lower", "yawPivot_2_Upper"],
+            ["pitchPivot_1_Upper", "pitchPivot_1_Lower"],
+            ["pitchPivot_1_Lower", "pitchPivot_1_Upper"],
+            ["pitchPivot_2_Upper", "pitchPivot_2_Lower"],
+            ["pitchPivot_2_Lower", "pitchPivot_2_Upper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustTransform",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.735,
@@ -4589,7 +5507,24 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_1_Upper", "yawPivot_1_Lower"],
+            ["yawPivot_1_Lower", "yawPivot_1_Upper"],
+            ["yawPivot_2_Upper", "yawPivot_2_Lower"],
+            ["yawPivot_2_Lower", "yawPivot_2_Upper"],
+            ["pitchPivot_1_Upper", "pitchPivot_1_Lower"],
+            ["pitchPivot_1_Lower", "pitchPivot_1_Upper"],
+            ["pitchPivot_2_Upper", "pitchPivot_2_Lower"],
+            ["pitchPivot_2_Lower", "pitchPivot_2_Upper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustTransform",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.733,
@@ -4617,7 +5552,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11S.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_Upper", "yawPivot_Lower"],
+            ["yawPivot_Lower", "yawPivot_Upper"],
+            ["pitchPivot_Upper", "pitchPivot_Lower"],
+            ["pitchPivot_Lower", "pitchPivot_Upper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.918,
@@ -4645,7 +5593,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11SV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_Upper", "yawPivot_Lower"],
+            ["yawPivot_Lower", "yawPivot_Upper"],
+            ["pitchPivot_Upper", "pitchPivot_Lower"],
+            ["pitchPivot_Lower", "pitchPivot_Upper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.67,
@@ -4673,7 +5634,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11SH.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_Upper", "yawPivot_Lower"],
+            ["yawPivot_Lower", "yawPivot_Upper"],
+            ["pitchPivot_Upper", "pitchPivot_Lower"],
+            ["pitchPivot_Lower", "pitchPivot_Upper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.977,
@@ -4701,7 +5675,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR87_11SHV.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["yawPivot_Upper", "yawPivot_Lower"],
+            ["yawPivot_Lower", "yawPivot_Upper"],
+            ["pitchPivot_Upper", "pitchPivot_Lower"],
+            ["pitchPivot_Lower", "pitchPivot_Upper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.121,
+            exhaustThrustTransform: "exhaustTransform",
+            exhaustGimbalTransform: "exhaustTransform",
+            exhaustEffectTransform: "exhaustEffect",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.95,
@@ -4729,7 +5716,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91_5.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["pivot_1_Upper", "pivot_1_Lower"],
+            ["pivot_1_Lower", "pivot_1_Upper"],
+            ["pivot_2_Upper", "pivot_2_Lower"],
+            ["pivot_2_Lower", "pivot_2_Upper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.17,
+            exhaustThrustTransform: "vernierThrust",
+            exhaustGimbalTransform: "vernierGimbal",
+            exhaustEffectTransform: "vernierFX",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.934,
@@ -4757,7 +5757,20 @@ ModelInfo.models = [
         RadialAttachment: false,
         RadialAttachmentPoint: 0,
         ImageSource: "img/modelPreviews/LR91_11.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [
+            ["pivot_1_Upper", "pivot_1_Lower"],
+            ["pivot_1_Lower", "pivot_1_Upper"],
+            ["pivot_2_Upper", "pivot_2_Lower"],
+            ["pivot_2_Lower", "pivot_2_Upper"],
+        ],
+        HeatAnimations: [],
+        Exhaust: {
+            exhaustBellWidth: 0.17,
+            exhaustThrustTransform: "vernierThrust",
+            exhaustGimbalTransform: "vernierGimbal",
+            exhaustEffectTransform: "vernierFX",
+        }
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.9,
@@ -4789,13 +5802,15 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.937,
         ImageSource: "img/modelPreviews/SRMU.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.75,
         OriginalBaseWidth: 1.874,
         PlumeSizeMultiplier: 1.57,
-        PlumePositionOffset: 0.81,
+        PlumePositionOffset: 0,
         NodeStackTop: 8.79,
         NodeStackBottom: -5,
         ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_UA1205_Tweaked",
@@ -4820,13 +5835,15 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.937,
         ImageSource: "img/modelPreviews/UA1205_NEW.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.75,
         OriginalBaseWidth: 1.874,
         PlumeSizeMultiplier: 1.57,
-        PlumePositionOffset: 0.81,
+        PlumePositionOffset: 0,
         NodeStackTop: 13.19,
         NodeStackBottom: -5,
         ModelPath: "GenericEngines/models/BDB/TitanRemake/bluedog_UA1207_Tweaked",
@@ -4851,13 +5868,48 @@ ModelInfo.models = [
         RadialAttachment: true,
         RadialAttachmentPoint: 0.937,
         ImageSource: "img/modelPreviews/UA1207_NEW.webp",
-        get ImageLabel() { return this.ModelName; }
+        get ImageLabel() { return this.ModelName; },
+        LookatPairs: [],
+        HeatAnimations: []
     }
 ];
 ModelInfo.Dropdown = ModelInfo.BuildDropdown();
 class PlumeInfo {
     static GetPlumeInfo(id) {
         return PlumeInfo.plumes[id];
+    }
+    static MapRealPlumesToGenericPlumes(plume) {
+        switch (plume) {
+            case Plume.Alcolox_Lower: return Plume.GP_Alcolox;
+            case Plume.Amonnialox: return Plume.GP_Ammonialox;
+            case Plume.Cryogenic_UpperLower_125: return Plume.GP_Hydrolox;
+            case Plume.Cryogenic_UpperLower_25: return Plume.GP_Hydrolox;
+            case Plume.Cryogenic_UpperLower_375: return Plume.GP_Hydrolox;
+            case Plume.Hydrogen_NTR: return Plume.GP_HydrogenNTR;
+            case Plume.Hydrolox_Lower: return Plume.GP_Hydrolox;
+            case Plume.Hydrolox_Upper: return Plume.GP_Hydrolox;
+            case Plume.Hydynelox_A7: return Plume.GP_Hydynelox;
+            case Plume.Hypergolic_Lower: return Plume.GP_Hypergolic;
+            case Plume.Hypergolic_OMS_Red: return Plume.GP_OmsRed;
+            case Plume.Hypergolic_OMS_White: return Plume.GP_OmsWhite;
+            case Plume.Hypergolic_Upper: return Plume.GP_Hypergolic;
+            case Plume.Hypergolic_Vernier: return Plume.GP_Hypergolic;
+            case Plume.Ion_Argon_Gridded: return Plume.GP_IonArgon;
+            case Plume.Ion_Krypton_Gridded: return Plume.GP_IonKrypton;
+            case Plume.Ion_Krypton_Hall: return Plume.GP_IonKrypton;
+            case Plume.Ion_Xenon_Gridded: return Plume.GP_IonXenon;
+            case Plume.Ion_Xenon_Hall: return Plume.GP_IonXenon;
+            case Plume.Kerolox_Lower: return Plume.GP_Kerolox;
+            case Plume.Kerolox_Upper: return Plume.GP_Kerolox;
+            case Plume.Kerolox_Vernier: return Plume.GP_Kerolox;
+            case Plume.Solid_Lower: return Plume.GP_Solid;
+            case Plume.Solid_Sepmotor: return Plume.GP_Solid;
+            case Plume.Solid_Upper: return Plume.GP_Solid;
+            case Plume.Solid_Vacuum: return Plume.GP_Solid;
+            case Plume.Turbofan: return Plume.GP_OmsRed;
+            case Plume.Turbojet: return Plume.GP_OmsRed;
+            default: return plume;
+        }
     }
     static BuildDropdown() {
         let output = document.createElement("select");
@@ -4877,196 +5929,591 @@ PlumeInfo.plumes = [
         Scale: 0.4,
         PositionOffset: -0.002,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Kerolox_Upper.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Kerolox-Lower",
         PlumeName: "Kerolox Lower",
         Scale: 0.4,
         PositionOffset: -0.002,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Kerolox_Lower.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Kerolox-Vernier",
         PlumeName: "Kerolox Vernier",
         Scale: 8.5,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 0.5
+        EnergyMultiplier: 0.5,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Kerolox_Vernier.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Cryogenic-UpperLower-125",
         PlumeName: "Cryogenic 1.25",
         Scale: 0.35,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Cryogenic_125.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Cryogenic-UpperLower-25",
         PlumeName: "Cryogenic 2.5",
         Scale: 0.6,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Cryogenic_25.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Cryogenic-UpperLower-375",
         PlumeName: "Cryogenic 3.75",
         Scale: 0.3,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Cryogenic_375.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Alcolox-Lower-A6",
         PlumeName: "Alcolox Lower (A6)",
         Scale: 0.6,
         PositionOffset: 0.032638,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Alcolox_Lower_A6.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ammonialox",
         PlumeName: "Ammonialox",
         Scale: 0.85,
         PositionOffset: 1.0319,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Ammonialox.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hydrogen-NTR",
         PlumeName: "Hydrogen NTR",
         Scale: 0.8,
         PositionOffset: -0.8,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_HydrogenNTR.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hydrolox-Lower",
         PlumeName: "Hydrolox Lower",
         Scale: 0.7,
         PositionOffset: 1.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Hydrolox_Lower.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hydrolox-Upper",
         PlumeName: "Hydrolox Upper",
         Scale: 0.8,
         PositionOffset: 1.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Hydrolox_Upper.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hydynelox-A7",
         PlumeName: "Hydynelox (A7)",
         Scale: 0.7,
         PositionOffset: -0.854729,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Hydynelox_A7.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-Lower",
         PlumeName: "Hypergolic Lower",
         Scale: 0.95,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Hypergolic_Lower.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-Upper",
         PlumeName: "Hypergolic Upper",
         Scale: 1.1,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Hypergolic_Upper.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-OMS-Red",
         PlumeName: "Hypergolic OMS (Red)",
         Scale: 1.7,
         PositionOffset: 0.514995,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Hypergolic_OMS_Red.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-OMS-White",
         PlumeName: "Hypergolic OMS (White)",
         Scale: 1.8,
         PositionOffset: 0,
         FinalOffset: -0.04,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Hypergolic_OMS_White.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Hypergolic-Vernier",
         PlumeName: "Hypergolic Vernier",
         Scale: 4.0,
         PositionOffset: 1.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Hypergolic_Vernier.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Argon-Gridded",
         PlumeName: "Ion Argon (Gridded)",
         Scale: 1.2,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Ion_Argon_Gridded.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Krypton-Gridded",
         PlumeName: "Ion Krypton (Gridded)",
         Scale: 1.5,
         PositionOffset: -0.854729,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Ion_Krypton_Gridded.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Krypton-Hall",
         PlumeName: "Ion Krypton (Hall)",
         Scale: 1.5,
         PositionOffset: -0.015503,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Ion_Krypton_Hall.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Xenon-Gridded",
         PlumeName: "Ion Xenon (Gridded)",
         Scale: 1.0,
         PositionOffset: 1.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Ion_Xenon_Gridded.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Ion-Xenon-Hall",
         PlumeName: "Ion Xenon (Hall)",
         Scale: 1.6,
         PositionOffset: -0.015503,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Ion_Xenon_Hall.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Solid-Lower",
         PlumeName: "Solid Lower",
         Scale: 0.3,
         PositionOffset: -0.002,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Solid_Lower.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Solid-Upper",
         PlumeName: "Solid Upper",
         Scale: 0.3,
         PositionOffset: -0.002,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Solid_Upper.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Solid-Sepmotor",
         PlumeName: "Solid Sepmotor",
         Scale: 3.0,
         PositionOffset: 0.0,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Solid_Sepmotor.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Solid-Vacuum",
         PlumeName: "Solid Vacuum",
         Scale: 1.44,
         PositionOffset: 0.35831,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Solid_Vacuum.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Turbofan",
         PlumeName: "Turbofan",
         Scale: 1.2,
         PositionOffset: -0.41932,
         FinalOffset: 0.0,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Turbofan.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
     }, {
         PlumeID: "Turbojet",
         PlumeName: "Turbojet",
         Scale: 1.2,
         PositionOffset: 1.0,
         FinalOffset: -0.6,
-        EnergyMultiplier: 1.0
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [],
+        ImageSource: "img/plumePreviews/RP_Turbojet.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "RealPlume",
+        get PlumeEffectName() { return this.PlumeID; }
+    }, {
+        PlumeID: "alcolox",
+        PlumeName: "Alcolox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/alcolox.mu",
+            "files/GenericPlumes/Presets/Flames/alcolox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Alcolox.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "ammonialox",
+        PlumeName: "Ammonialox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/ammonialox.mu",
+            "files/GenericPlumes/Presets/Flames/ammonialox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Ammonialox.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "hydrogenNTR",
+        PlumeName: "Thermal rocket hydrogen exhaust",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/hydrogenNTR.mu",
+            "files/GenericPlumes/Presets/Flames/hydrogenNTR.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop3.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Thermal_Rocket_Hydrogen_Exhaust.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "hydrolox",
+        PlumeName: "Hydrolox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/hydrolox.mu",
+            "files/GenericPlumes/Presets/Flames/hydrolox.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Hydrolox.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "hydynelox",
+        PlumeName: "Hydynelox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/hydynelox.mu",
+            "files/GenericPlumes/Presets/Flames/hydynelox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Hydynelox.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "hypergolic",
+        PlumeName: "Hypergolic",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/hypergolic.mu",
+            "files/GenericPlumes/Presets/Flames/hypergolic.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Hypergolic.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "ionArgon",
+        PlumeName: "Ion Argon",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/ionArgon.mu",
+            "files/GenericPlumes/Presets/Flames/ionArgon.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop3.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Ion_Argon.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "ionKrypton",
+        PlumeName: "Ion Krypton",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/ionKrypton.mu",
+            "files/GenericPlumes/Presets/Flames/ionKrypton.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop3.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Ion_Krypton.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "ionXenon",
+        PlumeName: "Ion Xenon",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/ionXenon.mu",
+            "files/GenericPlumes/Presets/Flames/ionXenon.cfg",
+            "files/GenericPlumes/Assets/particleSolid.png",
+            "files/GenericPlumes/Sounds/loop3.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Ion_Xenon.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "kerolox",
+        PlumeName: "Kerolox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/kerolox.mu",
+            "files/GenericPlumes/Presets/Flames/kerolox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Kerolox.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "methalox",
+        PlumeName: "Methalox",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/methalox.mu",
+            "files/GenericPlumes/Presets/Flames/methalox.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop1.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Methalox.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "omsRed",
+        PlumeName: "OMS Red",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/omsRed.mu",
+            "files/GenericPlumes/Presets/Flames/omsRed.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop2.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_OMS_Red.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "omsWhite",
+        PlumeName: "OMS White",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/omsWhite.mu",
+            "files/GenericPlumes/Presets/Flames/omsWhite.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop2.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_OMS_White.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "solid",
+        PlumeName: "Solid",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/solid.mu",
+            "files/GenericPlumes/Presets/Flames/solid.cfg",
+            "files/GenericPlumes/Assets/particle.png",
+            "files/GenericPlumes/Sounds/loop4.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Solid.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
+    }, {
+        PlumeID: "turbopumpSmoke",
+        PlumeName: "Turbopump Smoke",
+        Scale: 1.0,
+        PositionOffset: 0.0,
+        FinalOffset: 0.0,
+        EnergyMultiplier: 1.0,
+        PlumeFiles: [
+            "files/GenericPlumes/Assets/turbopumpSmoke.mu",
+            "files/GenericPlumes/Presets/Flames/turbopumpSmoke.cfg",
+            "files/GenericPlumes/Assets/particleRough.png",
+            "files/GenericPlumes/Sounds/loop2.wav",
+        ],
+        ImageSource: "img/plumePreviews/GP_Turbopump_Smoke.webp",
+        get ImageLabel() { return this.PlumeName; },
+        PlumeMod: "GenericPlumes",
+        get PlumeEffectName() { return `${this.PlumeID}Flame`; }
     }
 ];
 PlumeInfo.Dropdown = PlumeInfo.BuildDropdown();
@@ -5796,12 +7243,13 @@ document.addEventListener("DOMContentLoaded", () => {
     models.forEach(([id, modelInfo]) => {
         let newElement = document.createElement("div");
         newElement.innerHTML = `
-            <img class="option-button" src="${modelInfo.ImageSource}"><br>
-            ${modelInfo.ImageLabel}
+            <span>${modelInfo.ImageLabel}</span>
+            <div class="option-button"><img src="${modelInfo.ImageSource}"></div>
         `;
-        newElement.querySelector("img").addEventListener("click", () => {
+        newElement.querySelector("div").addEventListener("click", () => {
             ModelSelector.FinishTransaction(id);
         });
+        ImageOverflowPreview.Hook(newElement.querySelector("div"));
         container.appendChild(newElement);
     });
 });
@@ -5821,6 +7269,75 @@ class ModelSelector {
         this.CurrentTransaction = null;
     }
     static GetModel(callback) {
+        this.SetTransaction(callback);
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
+    PlumeSelector.DialogBoxElement = document.getElementById("plume-selector");
+    PlumeSelector.DialogBoxElement.querySelector("div.fullscreen-grayout").addEventListener("click", () => {
+        PlumeSelector.FinishTransaction(null);
+    });
+    let container = PlumeSelector.DialogBoxElement.querySelector("#plume-selector-content");
+    container.innerHTML = "";
+    let plumes = [];
+    for (let i in Plume) {
+        if (isNaN(parseInt(i))) {
+            break;
+        }
+        let id = parseInt(i);
+        let plumeInfo = PlumeInfo.GetPlumeInfo(id);
+        if (plumeInfo.PlumeMod != "RealPlume") {
+            plumes.push([id, plumeInfo]);
+        }
+    }
+    plumes.sort((a, b) => {
+        if (a[1].PlumeMod > b[1].PlumeMod) {
+            return 1;
+        }
+        else if (a[1].PlumeMod < b[1].PlumeMod) {
+            return -1;
+        }
+        else {
+            if (a[1].PlumeName > b[1].PlumeName) {
+                return 1;
+            }
+            else if (a[1].PlumeName < b[1].PlumeName) {
+                return -1;
+            }
+            else {
+                return 0;
+            }
+        }
+    });
+    plumes.forEach(([id, plumeInfo]) => {
+        let newElement = document.createElement("div");
+        newElement.innerHTML = `
+            <span>${plumeInfo.ImageLabel}</span>
+            <div class="option-button"><img src="${plumeInfo.ImageSource}"></div>
+        `;
+        newElement.querySelector("div").addEventListener("click", () => {
+            PlumeSelector.FinishTransaction(id);
+        });
+        ImageOverflowPreview.Hook(newElement.querySelector("div"));
+        container.appendChild(newElement);
+    });
+});
+class PlumeSelector {
+    static SetTransaction(transaction) {
+        if (this.CurrentTransaction) {
+            this.CurrentTransaction(null);
+        }
+        this.DialogBoxElement.style.display = "flex";
+        this.CurrentTransaction = transaction;
+    }
+    static FinishTransaction(message) {
+        if (this.CurrentTransaction) {
+            this.CurrentTransaction(message);
+        }
+        this.DialogBoxElement.style.display = "none";
+        this.CurrentTransaction = null;
+    }
+    static GetPlume(callback) {
         this.SetTransaction(callback);
     }
 }
@@ -6505,7 +8022,7 @@ class Engine {
                     grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
                     
-                    <div class="content-cell-content" style="grid-area: d"><input type="checkbox"></div>
+                    <div class="content-cell-content" style="grid-area: d"><input style="cursor: help;" title="Enable tank volume restriction" type="checkbox"></div>
                     <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
                     
                     <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
@@ -6705,32 +8222,72 @@ class Engine {
                         e.innerHTML = `${ModelInfo.GetModelInfo(this.ModelID).ModelName}, ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeName}`;
                     }
                 }, GetEditElement: () => {
+                    let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
+                        this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
+                    targetEngine = targetEngine != undefined ? targetEngine : this;
                     let tmp = document.createElement("div");
                     tmp.classList.add("content-cell-content");
-                    tmp.style.height = "48px";
                     tmp.style.padding = "0";
                     let grid = document.createElement("div");
                     grid.style.display = "grid";
                     grid.style.gridTemplateColumns = "60px auto";
-                    grid.style.gridTemplateRows = "24px 24px";
                     grid.style.gridTemplateAreas = `
                     "a b"
                     "c d"
+                    "e e"
                 `;
+                    tmp.style.height = "168px";
+                    grid.style.gridTemplateRows = "24px 24px 120px";
                     grid.innerHTML = `
                     <div class="content-cell-content" style="grid-area: a;">Model</div>
-                    <div style="grid-area: b;"><span class="clickable-text" value="999">Placeholder</span></div>
+                    <div style="grid-area: b;"><span class="clickable-text modelText" value="999">Placeholder</span></div>
                     <div class="content-cell-content" style="grid-area: c;">Plume</div>
-                    <div style="grid-area: d;">${PlumeInfo.Dropdown.outerHTML}</div>
+                    <div style="grid-area: d;"><span class="clickable-text plumeText" value="999">Placeholder</span></div>
+                    <div class="exhaustBox" style="grid-area: e; display: grid; grid-template: 'ea ea' 24px 'eb eb' 96px / auto">
+                    <div class="content-cell-content" style="grid-area: ea;"><input class="enableExhaust" type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Enable exhaust effects</span></div>
+                    <div class="exhaustSettings" style="grid-area: eb; display: grid; grid-template: 'eba ebb' 24px 'ebc ebd' 24px 'ebe ebf' 24px 'ebg ebh' 24px / 140px auto">
+                    <div class="content-cell-content" style="grid-area: eba;">Exhaust plume</div>
+                    <div style="grid-area: ebb;"><span class="clickable-text exhaustPlumeText" value="999">Placeholder</span></div>
+                    <div class="content-cell-content" style="grid-area: ebc; cursor: help;" title="What fraction of engine's overall thrust is produced by this exhaust?">Exhaust thrust</div>
+                    <div style="grid-area: ebd;"><input class="exhaustThrust" style="width: calc(100% - 24px);">%</div>
+                    <div class="content-cell-content" style="grid-area: ebe; cursor: help;" title="Multiplier of exhaust's efficiency, compared to main engine">Exhaust impulse</div>
+                    <div style="grid-area: ebf;"><input class="exhaustImpulse" style="width: calc(100% - 24px);">%</div>
+                    <div class="content-cell-content" style="grid-area: ebg;">Exhaust gimbal</div>
+                    <div style="grid-area: ebh;"><input class="exhaustGimbal" style="width: calc(100% - 24px);"><input title="Restrict this gimbal to only roll control" class="exhaustGimbalRoll" type="checkbox" style="cursor: help; margin: -1px 0px 0px 0px; position: relative; top: 2px; left: 2px;"></div>
+                    </div>
+                    </div>
                 `;
-                    let span = grid.querySelector("span");
-                    span.addEventListener("click", () => {
+                    let modelText = grid.querySelector(".modelText");
+                    modelText.addEventListener("click", () => {
                         ModelSelector.GetModel(m => {
                             if (m != null) {
-                                span.setAttribute("value", m.toString());
-                                span.innerHTML = ModelInfo.GetModelInfo(m).ModelName;
+                                modelText.setAttribute("value", m.toString());
+                                modelText.innerHTML = ModelInfo.GetModelInfo(m).ModelName;
+                                grid.querySelector(".exhaustBox").style.display = ModelInfo.GetModelInfo(m).Exhaust ? "grid" : "none";
                             }
                         });
+                    });
+                    let plumeText = grid.querySelector(".plumeText");
+                    plumeText.addEventListener("click", () => {
+                        PlumeSelector.GetPlume(m => {
+                            if (m != null) {
+                                plumeText.setAttribute("value", m.toString());
+                                plumeText.innerHTML = PlumeInfo.GetPlumeInfo(m).PlumeName;
+                            }
+                        });
+                    });
+                    let exhaustPlumeText = grid.querySelector(".exhaustPlumeText");
+                    exhaustPlumeText.addEventListener("click", () => {
+                        PlumeSelector.GetPlume(m => {
+                            if (m != null) {
+                                exhaustPlumeText.setAttribute("value", m.toString());
+                                exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo(m).PlumeName;
+                            }
+                        });
+                    });
+                    let exhaustCheckbox = grid.querySelector(".enableExhaust");
+                    exhaustCheckbox.addEventListener("change", () => {
+                        grid.querySelector(".exhaustSettings").style.display = exhaustCheckbox.checked ? "grid" : "none";
                     });
                     tmp.appendChild(grid);
                     return tmp;
@@ -6738,18 +8295,43 @@ class Engine {
                     let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
                         this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
                     targetEngine = targetEngine != undefined ? targetEngine : this;
+                    let isSlave = this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave;
                     let select = e.querySelector("select");
-                    let span = e.querySelector("span");
-                    span.setAttribute("value", targetEngine.ModelID.toString());
-                    span.innerHTML = ModelInfo.GetModelInfo(targetEngine.ModelID).ModelName;
-                    select.value = this.PlumeID.toString();
-                    span.style.pointerEvents = (this.PolyType == PolymorphismType.MultiConfigSlave ||
-                        this.PolyType == PolymorphismType.MultiModeSlave) ? "none" : "all";
+                    let modelText = e.querySelector(".modelText");
+                    let plumeText = e.querySelector(".plumeText");
+                    let exhaustPlumeText = e.querySelector(".exhaustPlumeText");
+                    modelText.setAttribute("value", targetEngine.ModelID.toString());
+                    modelText.innerHTML = ModelInfo.GetModelInfo(targetEngine.ModelID).ModelName;
+                    plumeText.setAttribute("value", this.PlumeID.toString());
+                    plumeText.innerHTML = PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeName;
+                    exhaustPlumeText.setAttribute("value", this.ExhaustPlumeID.toString());
+                    exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo(this.ExhaustPlumeID).PlumeName;
+                    e.querySelector(".exhaustBox").style.display = ModelInfo.GetModelInfo(this.ModelID).Exhaust ? "grid" : "none";
+                    e.querySelector(".enableExhaust").checked = targetEngine.UseExhaustEffect;
+                    e.querySelector(".exhaustSettings").style.display = targetEngine.UseExhaustEffect ? "grid" : "none";
+                    e.querySelector(".exhaustThrust").value = this.ExhaustThrustPercent.toString();
+                    e.querySelector(".exhaustImpulse").value = this.ExhaustIspPercent.toString();
+                    e.querySelector(".exhaustGimbal").value = targetEngine.ExhaustGimbal.toString();
+                    e.querySelector(".exhaustGimbalRoll").checked = targetEngine.ExhaustGimbalOnlyRoll;
+                    modelText.style.pointerEvents = isSlave ? "none" : "all";
+                    e.querySelector(".enableExhaust").disabled = isSlave;
+                    e.querySelector(".exhaustGimbal").disabled = isSlave;
+                    e.querySelector(".exhaustGimbalRoll").disabled = isSlave;
                 }, ApplyChangesToValue: (e) => {
-                    let select = e.querySelector("select");
-                    let span = e.querySelector("span");
-                    this.ModelID = parseInt(span.getAttribute("value"));
-                    this.PlumeID = parseInt(select.value);
+                    let modelText = e.querySelector(".modelText");
+                    let plumeText = e.querySelector(".plumeText");
+                    let exhaustPlumeText = e.querySelector(".exhaustPlumeText");
+                    let exhaustThrust = e.querySelector(".exhaustThrust");
+                    let exhaustImpulse = e.querySelector(".exhaustImpulse");
+                    let exhaustGimbal = e.querySelector(".exhaustGimbal");
+                    this.ModelID = parseInt(modelText.getAttribute("value"));
+                    this.PlumeID = parseInt(plumeText.getAttribute("value"));
+                    this.ExhaustPlumeID = parseInt(exhaustPlumeText.getAttribute("value"));
+                    this.UseExhaustEffect = e.querySelector(".enableExhaust").checked;
+                    this.ExhaustThrustPercent = parseFloat(exhaustThrust.value.replace(",", "."));
+                    this.ExhaustIspPercent = parseFloat(exhaustImpulse.value.replace(",", "."));
+                    this.ExhaustGimbal = parseFloat(exhaustGimbal.value.replace(",", "."));
+                    this.ExhaustGimbalOnlyRoll = e.querySelector(".exhaustGimbalRoll").checked;
                 }
             }
         };
@@ -6798,7 +8380,13 @@ class Engine {
         this.CycleReliability0 = 90;
         this.CycleReliability10k = 98;
         this.ModelID = Model.LR91;
-        this.PlumeID = Plume.Kerolox_Upper;
+        this.PlumeID = Plume.GP_Kerolox;
+        this.UseExhaustEffect = false;
+        this.ExhaustPlumeID = Plume.GP_TurbopumpSmoke;
+        this.ExhaustThrustPercent = 1;
+        this.ExhaustIspPercent = 75;
+        this.ExhaustGimbal = 10;
+        this.ExhaustGimbalOnlyRoll = true;
         this.OnEditEnd = () => {
             this.UpdateEveryDisplay();
         };
@@ -6824,8 +8412,6 @@ class Engine {
         }
     }
     GetPlumeConfig() {
-        let plumeInfo = PlumeInfo.GetPlumeInfo(this.PlumeID);
-        let modelInfo;
         let engine;
         if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
             engine = this.EngineList.find(x => x.ID == this.MasterEngineName);
@@ -6833,23 +8419,45 @@ class Engine {
         else {
             engine = this;
         }
-        modelInfo = ModelInfo.GetModelInfo(engine.ModelID);
-        return `
-            @PART[GE-${engine.ID}]:FOR[RealPlume]:HAS[!PLUME[${plumeInfo.PlumeID}]]:NEEDS[SmokeScreen]
-            {
-                PLUME
-                {
-                    name = ${plumeInfo.PlumeID}
-                    transformName = ${modelInfo.ThrustTransformName}
-                    localRotation = 0,0,0
-                    localPosition = 0,0,${(modelInfo.PlumePositionOffset + plumeInfo.PositionOffset + plumeInfo.FinalOffset)}
-                    fixedScale = ${(modelInfo.PlumeSizeMultiplier * plumeInfo.Scale * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth))}
-                    flareScale = 0
-                    energy = ${(Math.log(engine.Thrust + 5) / Math.log(10) / 3 * plumeInfo.EnergyMultiplier)}
-                    speed = ${Math.max((Math.log(engine.VacIsp) / Math.log(2) / 1.5) - 4.5, 0.2)}
+        let plumeInfo = PlumeInfo.GetPlumeInfo(this.PlumeID);
+        let modelInfo = ModelInfo.GetModelInfo(engine.ModelID);
+        let exhaustConfig = "";
+        if (engine.UseExhaustEffect && modelInfo.Exhaust) {
+            let exhaustBellWidth = modelInfo.Exhaust.exhaustBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
+            exhaustConfig = `
+                @MODULE[ModuleEngine*] {
+                    !GENERIC_PLUME[${PlumeInfo.GetPlumeInfo(this.ExhaustPlumeID).PlumeID}]{}
+                    GENERIC_PLUME {
+                        name = ${PlumeInfo.GetPlumeInfo(this.ExhaustPlumeID).PlumeID}
+                        effectTransform = ${modelInfo.Exhaust.exhaustEffectTransform}
+                        bellWidth = ${exhaustBellWidth}
+                        verticalOffset = 0
+                        volume = ${(this.ExhaustThrustPercent / 100) * this.Thrust / 100 + 1}
+                        pitch = ${Math.max(Math.min(Math.log10(this.Thrust / 10 + 1) / 3, 2), 0.4)}
+                    }
                 }
+            `;
+        }
+        let bellWidth = modelInfo.OriginalBellWidth * engine.Width / (engine.UseBaseWidth ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth);
+        let output = `
+            @PART[GE-${engine.ID}]:FOR[zGenericPlumesPass0200] {
+                @MODULE[ModuleEngine*] {
+                    !GENERIC_PLUME[${plumeInfo.PlumeID}]{}
+                    GENERIC_PLUME {
+                        name = ${plumeInfo.PlumeID}
+                        effectTransform = ${modelInfo.ThrustTransformName}
+                        bellWidth = ${bellWidth}
+                        verticalOffset = ${modelInfo.PlumePositionOffset + modelInfo.OriginalBellWidth * 0.33}
+                        volume = ${this.Thrust / 100 + 1}
+                        pitch = ${Math.max(Math.min(Math.log10(this.Thrust / 10 + 1) / 3, 2), 0.4)}
+                    }
+                }
+                
+                ${exhaustConfig}
+                
             }
         `;
+        return output;
     }
     GetHiddenObjectsConfig() {
         let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
@@ -6874,6 +8482,50 @@ class Engine {
         let attachmentNode = (modelInfo.RadialAttachment ?
             `node_attach = ${modelInfo.RadialAttachmentPoint * widthScale}, 0.0, 0.0, 1.0, 0.0, 0.0` :
             `node_attach = 0.0, ${modelInfo.NodeStackTop}, 0.0, 0.0, 1.0, 0.0`);
+        let deployableEnginesConfig = "";
+        if (modelInfo.ExtendNozzleAnimation) {
+            deployableEnginesConfig = `
+                MODULE
+                {
+                    name = ModuleDeployableEngine
+                    EngineAnimationName = ${modelInfo.ExtendNozzleAnimation}
+                    WaitForAnimation = 0.9
+                    Layer = ${Math.ceil(Math.random() * 2000000000)}
+                }
+            `;
+        }
+        let heatAnims = "";
+        modelInfo.HeatAnimations.forEach(clip => {
+            heatAnims += `
+                MODULE
+                {
+                    name = FXModuleAnimateThrottle
+                    animationName = ${clip}
+                    responseSpeed = 0.001
+                    dependOnEngineState = True
+                    dependOnThrottle = True
+                }
+            `;
+        });
+        let lookAtConfig = "";
+        if (modelInfo.LookatPairs.length > 0) {
+            modelInfo.LookatPairs.forEach(pair => {
+                lookAtConfig += `
+                    CONSTRAINLOOKFX
+                    {
+                        targetName = ${pair[0]}
+                        rotatorsName = ${pair[1]}
+                    }
+                `;
+            });
+            lookAtConfig = `
+                MODULE
+                {
+                    name = FXModuleLookAtConstraint
+                    ${lookAtConfig}
+                }
+            `;
+        }
         return `
             MODEL
             {
@@ -6889,6 +8541,13 @@ class Engine {
             node_stack_hide = 0.0, ${modelInfo.NodeStackBottom + 0.001}, 0.0, 0.0, 0.0, 1.0, 0
 
             ${attachmentNode}
+            
+            ${heatAnims}
+            
+            ${lookAtConfig}
+            
+            ${deployableEnginesConfig}
+            
         `;
     }
     IsTestFlightDefault() {
@@ -6899,6 +8558,14 @@ class Engine {
             this.StartReliability10k == defaultConfig.StartReliability10k &&
             this.CycleReliability0 == defaultConfig.CycleReliability0 &&
             this.CycleReliability10k == defaultConfig.CycleReliability10k);
+    }
+    IsExhaustDefault() {
+        let defaultConfig = new Engine();
+        return (this.UseExhaustEffect == defaultConfig.UseExhaustEffect &&
+            this.ExhaustPlumeID == defaultConfig.ExhaustPlumeID &&
+            this.ExhaustThrustPercent == defaultConfig.ExhaustThrustPercent &&
+            this.ExhaustIspPercent == defaultConfig.ExhaustIspPercent &&
+            this.ExhaustGimbal == defaultConfig.ExhaustGimbal);
     }
     GetTestFlightConfig() {
         if (!this.EnableTestFlight ||
@@ -7044,8 +8711,9 @@ class Engine {
     }
     GetGimbalConfig() {
         let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
+        let output = "";
         if (this.AdvancedGimbal) {
-            return `
+            output += `
                 MODULE
                 {
                     name = ModuleGimbal
@@ -7059,7 +8727,7 @@ class Engine {
             `;
         }
         else {
-            return `
+            output += `
                 MODULE
                 {
                     name = ModuleGimbal
@@ -7069,6 +8737,20 @@ class Engine {
                 }
             `;
         }
+        if (this.UseExhaustEffect && modelInfo.Exhaust) {
+            output += `
+                MODULE
+                {
+                    name = ModuleGimbal
+                    gimbalTransformName = ${modelInfo.Exhaust.exhaustGimbalTransform}
+                    useGimbalResponseSpeed = false
+                    gimbalRange = ${this.ExhaustGimbal}
+                    enableYaw = ${!this.ExhaustGimbalOnlyRoll}
+                    enablePitch = ${!this.ExhaustGimbalOnlyRoll}
+                }
+            `;
+        }
+        return output;
     }
     GetPropellantConfig() {
         let electricPower = 0;
@@ -7219,44 +8901,119 @@ class Engine {
             return "";
         }
         else {
-            return `
-                MODULE
-                {
-                    name = ModuleEngineConfigs
-                    configuration = GE-${this.ID}
-                    modded = false
-                    origMass = ${this.Mass}
+            let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
+            if (modelInfo.Exhaust && this.UseExhaustEffect) {
+                return `
+                    MODULE
+                    {
+                        name = ModuleEngineConfigs
+                        configuration = GE-${this.ID}
+                        modded = false
+                        origMass = ${this.Mass}
+                        moduleIndex = 0
+                        
+                        ${this.GetEngineConfig(allEngines)}
+                        
+                    }
                     
-                    ${this.GetEngineConfig(allEngines)}
-                    
-                }
-            `;
+                    MODULE
+                    {
+                        name = ModuleEngineConfigs
+                        configuration = GE-${this.ID}-vernier
+                        modded = false
+                        origMass = ${this.Mass}
+                        moduleIndex = 1
+                        
+                        ${this.GetExhaustConfig(allEngines)}
+                        
+                    }
+                `;
+            }
+            else {
+                return `
+                    MODULE
+                    {
+                        name = ModuleEngineConfigs
+                        configuration = GE-${this.ID}
+                        modded = false
+                        origMass = ${this.Mass}
+                        moduleIndex = 0
+                        
+                        ${this.GetEngineConfig(allEngines)}
+                        
+                    }
+                `;
+            }
         }
     }
     GetEngineConfig(allEngines) {
+        let masterEngine;
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            masterEngine = this.EngineList.find(x => x.ID == this.MasterEngineName);
+        }
+        else {
+            masterEngine = this;
+        }
+        let modelInfo = ModelInfo.GetModelInfo(masterEngine.GetModelID());
+        let hasExhaust = !!(modelInfo.Exhaust && masterEngine.UseExhaustEffect);
         return `
             CONFIG
             {
                 name = GE-${this.ID}
                 description = ${this.EngineDescription}
-                maxThrust = ${this.Thrust}
-                minThrust = ${this.Thrust * this.MinThrust / 100}
-                %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeID}
+                maxThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust}
+                minThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust * this.MinThrust / 100}
+                %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeEffectName}
                 heatProduction = 100
                 massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.MasterEngineName].Cost : 0)}
-
+                
                 ${this.GetPropellantConfig()}
-
+                
                 atmosphereCurve
                 {
                     key = 0 ${this.VacIsp}
                     key = 1 ${this.AtmIsp}
                 }
-
+                
                 ${this.GetThrustCurveConfig()}
-
+                
+                ullage = ${this.NeedsUllage && this.EngineVariant != EngineType.Solid}
+                pressureFed = ${this.PressureFed}
+                ignitions = ${Math.max(this.Ignitions, 0)}
+                IGNITOR_RESOURCE
+                {
+                    name = ElectricCharge
+                    amount = 1
+                }
+            }
+        `;
+    }
+    GetExhaustConfig(allEngines) {
+        return `
+            CONFIG
+            {
+                name = GE-${this.ID}-vernier
+                description = ${this.EngineDescription}
+                maxThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust}
+                minThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust * this.MinThrust / 100}
+                %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.ExhaustPlumeID).PlumeEffectName}
+                heatProduction = 100
+                massMult = 1
+                %techRequired = ${TechNode[this.TechUnlockNode]}
+                cost = 0
+                
+                ${this.GetPropellantConfig()}
+                
+                atmosphereCurve
+                {
+                    key = 0 ${(this.ExhaustIspPercent / 100) * this.VacIsp}
+                    key = 1 ${(this.ExhaustIspPercent / 100) * this.AtmIsp}
+                }
+                
+                ${this.GetThrustCurveConfig()}
+                
                 ullage = ${this.NeedsUllage && this.EngineVariant != EngineType.Solid}
                 pressureFed = ${this.PressureFed}
                 ignitions = ${Math.max(this.Ignitions, 0)}
@@ -7328,7 +9085,7 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b00110
     }, Visuals: {
         Name: "Visuals",
-        DefaultWidth: 240,
+        DefaultWidth: 300,
         DisplayFlags: 0b00000
     }, Dimensions: {
         Name: "Size",
@@ -7597,6 +9354,21 @@ var Plume;
     Plume[Plume["Solid_Vacuum"] = 25] = "Solid_Vacuum";
     Plume[Plume["Turbofan"] = 26] = "Turbofan";
     Plume[Plume["Turbojet"] = 27] = "Turbojet";
+    Plume[Plume["GP_Alcolox"] = 28] = "GP_Alcolox";
+    Plume[Plume["GP_Ammonialox"] = 29] = "GP_Ammonialox";
+    Plume[Plume["GP_HydrogenNTR"] = 30] = "GP_HydrogenNTR";
+    Plume[Plume["GP_Hydrolox"] = 31] = "GP_Hydrolox";
+    Plume[Plume["GP_Hydynelox"] = 32] = "GP_Hydynelox";
+    Plume[Plume["GP_Hypergolic"] = 33] = "GP_Hypergolic";
+    Plume[Plume["GP_IonArgon"] = 34] = "GP_IonArgon";
+    Plume[Plume["GP_IonKrypton"] = 35] = "GP_IonKrypton";
+    Plume[Plume["GP_IonXenon"] = 36] = "GP_IonXenon";
+    Plume[Plume["GP_Kerolox"] = 37] = "GP_Kerolox";
+    Plume[Plume["GP_Methalox"] = 38] = "GP_Methalox";
+    Plume[Plume["GP_OmsRed"] = 39] = "GP_OmsRed";
+    Plume[Plume["GP_OmsWhite"] = 40] = "GP_OmsWhite";
+    Plume[Plume["GP_Solid"] = 41] = "GP_Solid";
+    Plume[Plume["GP_TurbopumpSmoke"] = 42] = "GP_TurbopumpSmoke";
 })(Plume || (Plume = {}));
 class AllTankDefinition {
     static Get() {
@@ -7667,7 +9439,49 @@ BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
 class DebugLists {
-    static AppendListForPreviews() {
+    static AppendListForExhaustPreviews() {
+        let toAppend = [];
+        let modelCount = Object.getOwnPropertyNames(Model).length / 2;
+        for (let i = 0; i < modelCount; ++i) {
+            let newEngine = new Engine();
+            let modelInfo = ModelInfo.GetModelInfo(i);
+            if (!modelInfo.Exhaust) {
+                continue;
+            }
+            newEngine.Active = true;
+            newEngine.ID = `PREVIEW-E${("0000" + i).slice(-4)}`;
+            newEngine.EngineName = `(E${("0000" + i).slice(-4)}) Exhaust preview - ${modelInfo.ModelName}`;
+            newEngine.ModelID = i;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = 2;
+            newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
+            let trimmed = newEngine.Height.toFixed(3);
+            let numberString = newEngine.Height.toString().length >= trimmed.length ? trimmed : newEngine.Height.toString();
+            newEngine.Height = parseFloat(numberString);
+            newEngine.NeedsUllage = false;
+            newEngine.Mass = 0.5;
+            newEngine.Thrust = 100;
+            newEngine.VacIsp = 1500;
+            newEngine.AtmIsp = 1000;
+            newEngine.AlternatorPower = 10;
+            newEngine.Gimbal = 5;
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            let plumes = [Plume.GP_Alcolox, Plume.GP_Ammonialox, Plume.GP_Hydrolox, Plume.GP_Hydynelox, Plume.GP_Hypergolic, Plume.GP_Kerolox, Plume.GP_Methalox, Plume.GP_Solid];
+            newEngine.PlumeID = plumes[Math.floor(plumes.length * Math.random())];
+            let exhaustPlumes = [Plume.GP_OmsWhite, Plume.GP_OmsRed, Plume.GP_TurbopumpSmoke, Plume.GP_HydrogenNTR];
+            newEngine.UseExhaustEffect = true;
+            newEngine.ExhaustThrustPercent = 10;
+            newEngine.ExhaustIspPercent = 90;
+            newEngine.ExhaustGimbal = 20;
+            newEngine.ExhaustGimbalOnlyRoll = false;
+            newEngine.ExhaustPlumeID = exhaustPlumes[Math.floor(exhaustPlumes.length * Math.random())];
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
+        MainEngineTable.RebuildTable();
+    }
+    static AppendListForModelPreviews() {
         let toAppend = [];
         let modelCount = Object.getOwnPropertyNames(Model).length / 2;
         for (let i = 0; i < modelCount; ++i) {
@@ -7683,10 +9497,67 @@ class DebugLists {
             let trimmed = newEngine.Height.toFixed(3);
             let numberString = newEngine.Height.toString().length >= trimmed.length ? trimmed : newEngine.Height.toString();
             newEngine.Height = parseFloat(numberString);
-            newEngine.Gimbal = 15;
+            newEngine.NeedsUllage = false;
+            newEngine.Mass = 0.05;
+            newEngine.Thrust = 10;
+            newEngine.VacIsp = 15000;
+            newEngine.AtmIsp = 10000;
+            newEngine.AlternatorPower = 10;
+            newEngine.Gimbal = 20;
             newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
             newEngine.Ignitions = 0;
-            newEngine.PlumeID = Plume.Hypergolic_Lower;
+            let plumes = [Plume.GP_Alcolox, Plume.GP_Ammonialox, Plume.GP_Hydrolox, Plume.GP_Hydynelox, Plume.GP_Hypergolic, Plume.GP_Kerolox, Plume.GP_Methalox, Plume.GP_Solid];
+            newEngine.PlumeID = plumes[Math.floor(plumes.length * Math.random())];
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
+        MainEngineTable.RebuildTable();
+    }
+    static AppendListForPlumeTest() {
+        let toAppend = [];
+        let plumeCount = Object.getOwnPropertyNames(Plume).length / 2;
+        for (let i = 0; i < plumeCount; ++i) {
+            let newEngine = new Engine();
+            let plumeInfo = PlumeInfo.GetPlumeInfo(i);
+            newEngine.Active = true;
+            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUMETEST`;
+            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Plume test - ${plumeInfo.PlumeName}`;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = Math.random() * 2 + 0.5;
+            newEngine.Height = Math.random() * 3 + 1;
+            newEngine.Gimbal = 15;
+            newEngine.Thrust = Math.pow(10, Math.random() * 4);
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            newEngine.ModelID = Math.floor(Math.random() * 9999) % (Object.getOwnPropertyNames(Model).length / 2);
+            newEngine.PlumeID = i;
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
+        MainEngineTable.RebuildTable();
+    }
+    static AppendListForPlumePreviews() {
+        let toAppend = [];
+        let plumeCount = Object.getOwnPropertyNames(Plume).length / 2;
+        for (let i = 0; i < plumeCount; ++i) {
+            let newEngine = new Engine();
+            let modelInfo = ModelInfo.GetModelInfo(Model.RS25_2);
+            let plumeInfo = PlumeInfo.GetPlumeInfo(i);
+            newEngine.Active = true;
+            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUME`;
+            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Plume preview - ${plumeInfo.PlumeName}`;
+            newEngine.UseBaseWidth = true;
+            newEngine.Width = 2;
+            newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
+            let trimmed = newEngine.Height.toFixed(3);
+            let numberString = newEngine.Height.toString().length >= trimmed.length ? trimmed : newEngine.Height.toString();
+            newEngine.Height = parseFloat(numberString);
+            newEngine.Gimbal = 15;
+            newEngine.Thrust = Math.pow(10, Math.random() * 4);
+            newEngine.FuelRatioItems = [[Fuel.Kerosene, 1]];
+            newEngine.Ignitions = 0;
+            newEngine.ModelID = Model.RS25_2;
+            newEngine.PlumeID = i;
             toAppend.push(newEngine);
         }
         MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
@@ -7817,7 +9688,11 @@ class Exporter {
                     break;
             }
         });
-        return Exporter.CompactConfig(output);
+        output = Exporter.CompactConfig(output);
+        if (Settings.prettify_config) {
+            output = Exporter.PrettifyConfig(output);
+        }
+        return output;
     }
     static CompactConfig(input) {
         let output = "";
@@ -7830,8 +9705,125 @@ class Exporter {
         });
         return output;
     }
+    static PrettifyConfig(input) {
+        let output = "";
+        let lines = input.split("\n");
+        let tabCount = 0;
+        lines.forEach(l => {
+            let closeBracketCount = (l.match(/}/g) || []).length;
+            tabCount -= closeBracketCount;
+            if (closeBracketCount > 0) {
+                tabCount += (l.match(/{/g) || []).length;
+            }
+            output += `${"\t".repeat(tabCount)}${l}\n`;
+            if (closeBracketCount > 0) {
+                output += `${"\t".repeat(tabCount)}\n`;
+            }
+            else {
+                tabCount += (l.match(/{/g) || []).length;
+            }
+        });
+        return output;
+    }
     static RegularEngineConfig(engine, allEngines) {
         let modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
+        let baseEngineConfig = "";
+        if (modelInfo.Exhaust && engine.UseExhaustEffect) {
+            baseEngineConfig = `
+                MODULE
+                {
+                    name = ModuleEnginesFX
+                    engineID = PrimaryMode
+                    thrustVectorTransformName = ${modelInfo.ThrustTransformName}
+                    exhaustDamage = True
+                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
+                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
+                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
+                    ignitionThreshold = 0.1
+                    minThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
+                    maxThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust}
+                    heatProduction = 180
+                    EngineType = ${engine.EngineTypeConfig()}
+                    exhaustDamageDistanceOffset = 0.79
+                    useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeEffectName}
+                    
+                    ${engine.GetPropellantConfig()}
+                    
+                    atmosphereCurve
+                    {
+                        key = 0 ${engine.VacIsp}
+                        key = 1 ${engine.AtmIsp}
+                    }
+                    
+                    ${engine.GetThrustCurveConfig()}
+                    
+                }
+                
+                MODULE
+                {
+                    name = ModuleEnginesFX
+                    engineID = PrimaryModeVernier
+                    thrustVectorTransformName = ${modelInfo.Exhaust.exhaustThrustTransform}
+                    exhaustDamage = True
+                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
+                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
+                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
+                    ignitionThreshold = 0.1
+                    minThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
+                    maxThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust}
+                    heatProduction = 180
+                    EngineType = ${engine.EngineTypeConfig()}
+                    exhaustDamageDistanceOffset = 0.79
+                    useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.ExhaustPlumeID).PlumeEffectName}
+                    
+                    ${engine.GetPropellantConfig()}
+                    
+                    atmosphereCurve
+                    {
+                        key = 0 ${(engine.ExhaustIspPercent / 100) * engine.VacIsp}
+                        key = 1 ${(engine.ExhaustIspPercent / 100) * engine.AtmIsp}
+                    }
+                    
+                    ${engine.GetThrustCurveConfig()}
+                    
+                }
+            `;
+        }
+        else {
+            baseEngineConfig = `
+                MODULE
+                {
+                    name = ModuleEnginesFX
+                    engineID = PrimaryMode
+                    thrustVectorTransformName = ${modelInfo.ThrustTransformName}
+                    exhaustDamage = True
+                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
+                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
+                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
+                    ignitionThreshold = 0.1
+                    minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    maxThrust = ${engine.Thrust}
+                    heatProduction = 180
+                    EngineType = ${engine.EngineTypeConfig()}
+                    exhaustDamageDistanceOffset = 0.79
+                    useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeEffectName}
+                    
+                    ${engine.GetPropellantConfig()}
+                    
+                    atmosphereCurve
+                    {
+                        key = 0 ${engine.VacIsp}
+                        key = 1 ${engine.AtmIsp}
+                    }
+                    
+                    ${engine.GetThrustCurveConfig()}
+                    
+                }
+            `;
+        }
         return `
             PART
             {
@@ -7840,7 +9832,13 @@ class Exporter {
                 author = Generic Engines
                 
                 ${engine.GetModelConfig()}
-
+                
+                RSSROConfig = True
+                RP0conf = True
+                breakingForce = 250
+                breakingTorque = 250
+                stageOffset = 1
+                childStageOffset = 1
                 TechRequired = ${TechNode[engine.TechUnlockNode]}
                 entryCost = ${engine.EntryCost}
                 cost = ${engine.Cost}
@@ -7859,48 +9857,28 @@ class Exporter {
                 minimum_drag = 0.2
                 angularDrag = 2
                 crashTolerance = 12
-                maxTemp = 2200 // = 3600
-                bulkheadProfiles = size1
-                tags = REP
-
+                maxTemp = 573.15
+                skinMaxTemp = 673.15
+                bulkheadProfiles = srf, size3
+                tags = Generic Engine
+                stagingIcon = ${engine.StagingIconConfig()}
+                
                 MODULE
                 {
                     name = GenericEnginesPlumeScaleFixer
                 }
-
+                
                 ${engine.GetHiddenObjectsConfig()}
-
-                MODULE
-                {
-                    name = ModuleEngines
-                    thrustVectorTransformName = ${modelInfo.ThrustTransformName}
-                    exhaustDamage = True
-                    allowShutdown = ${engine.EngineVariant != EngineType.Solid}
-                    useEngineResponseTime = ${engine.EngineVariant != EngineType.Solid}
-                    throttleLocked = ${engine.EngineVariant == EngineType.Solid}
-                    ignitionThreshold = 0.1
-                    minThrust = 0
-                    maxThrust = 610
-                    heatProduction = 200
-                    EngineType = ${engine.EngineTypeConfig()}
-                    useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    exhaustDamageDistanceOffset = 0.79
-
-                    atmosphereCurve
-                    {
-                        key = 0 345
-                        key = 1 204
-                        key = 6 0.001
-                    }
-                    
-                    ${engine.GetThrustCurveConfig()}
-                    
-                }
-
+                
                 ${engine.GetGimbalConfig()}
-
+                
+                ${baseEngineConfig}
+                
+                ${engine.GetTankConfig()}
+                !RESOURCE,*{}
+                
                 ${engine.GetAlternatorConfig()}
-
+                
                 MODULE
                 {
                     name = ModuleSurfaceFX
@@ -7911,48 +9889,9 @@ class Exporter {
                     thrustTransformName = ${modelInfo.ThrustTransformName}
                 }
             }
-
-            @PART[GE-${engine.ID}]:FOR[RealismOverhaul]
-            {
-                %RSSROConfig = True
-                %RP0conf = True
-                
-                %breakingForce = 250
-                %breakingTorque = 250
-                @maxTemp = 573.15
-                %skinMaxTemp = 673.15
-                %stageOffset = 1
-                %childStageOffset = 1
-                %stagingIcon = ${engine.StagingIconConfig()}
-                @bulkheadProfiles = srf, size3
-                @tags = Generic Engine
-
-                ${engine.GetTankConfig()}
-
-                @MODULE[ModuleEngines*]
-                {
-                    %engineID = PrimaryMode
-                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
-                    @maxThrust = ${engine.Thrust}
-                    @heatProduction = 180
-                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeID}
-
-                    ${engine.GetPropellantConfig()}
-
-                    @atmosphereCurve
-                    {
-                        @key,0 = 0 ${engine.VacIsp}
-                        @key,1 = 1 ${engine.AtmIsp}
-                    }
-
-                    ${engine.GetThrustCurveConfig()}
-
-                }
-
+            
+            @PART[GE-${engine.ID}]:FOR[RealismOverhaul] {
                 ${engine.GetEngineModuleConfig(allEngines)}
-
-                !RESOURCE,*{}
             }
 
             ${engine.GetPlumeConfig()}
@@ -7960,59 +9899,34 @@ class Exporter {
             ${engine.GetTestFlightConfig()}
         `;
     }
-    static MultiModeSlaveEngineConfig(engine, allEngines) {
-        return `
-            @PART[GE-${engine.MasterEngineName}]
-            {
-                MODULE
-                {
-                    name = MultiModeEngine
-                    primaryEngineID = PrimaryMode
-                    primaryEngineModeDisplayName = Primary mode (GE-${engine.MasterEngineName})
-                    secondaryEngineID = SecondaryMode
-                    secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
-                }
-            }
-            
-            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
-            {
-                +MODULE[ModuleEngines*]
-                {
-                    @engineID = SecondaryMode
-                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
-                    @maxThrust = ${engine.Thrust}
-                    @heatProduction = 180
-                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
-                    %powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeID}
-
-                    !PROPELLANT,*
-                    {
-                    }
-
-                    ${engine.GetPropellantConfig()}
-
-                    @atmosphereCurve
-                    {
-                        @key,0 = 0 ${engine.VacIsp}
-                        @key,1 = 1 ${engine.AtmIsp}
-                    }
-
-                    ${engine.GetThrustCurveConfig()}
-
-                }
-            }
-
-            ${engine.GetPlumeConfig()}
-        `;
-    }
     static MultiConfigSlaveEngineConfig(engine, allEngines) {
-        return `
-            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
-            {
+        let masterEngine = allEngines[engine.MasterEngineName];
+        let moduleEngineConfigs = "";
+        if (masterEngine.UseExhaustEffect && ModelInfo.GetModelInfo(masterEngine.ModelID).Exhaust) {
+            moduleEngineConfigs = `
+                @MODULE[ModuleEngineConfigs],0
+                {
+                    ${engine.GetEngineConfig(allEngines)}
+                }
+                
+                @MODULE[ModuleEngineConfigs],1
+                {
+                    ${engine.GetExhaustConfig(allEngines)}
+                }
+            `;
+        }
+        else {
+            moduleEngineConfigs = `
                 @MODULE[ModuleEngineConfigs]
                 {
                     ${engine.GetEngineConfig(allEngines)}
                 }
+            `;
+        }
+        return `
+            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                ${moduleEngineConfigs}
             }
             
             ${engine.GetPlumeConfig()}
@@ -8025,7 +9939,130 @@ class Exporter {
             }
         `;
     }
+    static MultiModeSlaveEngineConfig(engine, allEngines) {
+        let exhaustMultiModeConfig = "";
+        let copiedEngineConfig = "";
+        let masterEngine = allEngines[engine.MasterEngineName];
+        if (masterEngine.UseExhaustEffect && ModelInfo.GetModelInfo(masterEngine.ModelID).Exhaust) {
+            exhaustMultiModeConfig = `
+                MODULE
+                {
+                    name = MultiModeEngine
+                    autoSwitchAvailable = false
+                    carryOverThrottle = true
+                    primaryEngineID = PrimaryModeVernier
+                    primaryEngineModeDisplayName = Primary mode vernier (GE-${engine.MasterEngineName})
+                    secondaryEngineID = SecondaryModeVernier
+                    secondaryEngineModeDisplayName = Secondary mode vernier (GE-${engine.ID})
+                }
+            `;
+            copiedEngineConfig = `
+                +MODULE[ModuleEnginesFX]
+                {
+                    @engineID = SecondaryMode
+                    @minThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust}
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    @powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeEffectName}
+                    
+                    !PROPELLANT,*{}
+                    
+                    ${engine.GetPropellantConfig()}
+                    
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${engine.VacIsp}
+                        @key,1 = 1 ${engine.AtmIsp}
+                    }
+                    
+                    !curveResource
+                    !thrustCurve
+                    ${engine.GetThrustCurveConfig()}
+                    
+                }
+                
+                +MODULE[ModuleEnginesFX]
+                {
+                    @engineID = SecondaryModeVernier
+                    @minThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust}
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    @powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.ExhaustPlumeID).PlumeEffectName}
+                    
+                    !PROPELLANT,*{}
+                    
+                    ${engine.GetPropellantConfig()}
+                    
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${(engine.ExhaustIspPercent / 100) * engine.VacIsp}
+                        @key,1 = 1 ${(engine.ExhaustIspPercent / 100) * engine.AtmIsp}
+                    }
+                    
+                    !curveResource
+                    !thrustCurve
+                    ${engine.GetThrustCurveConfig()}
+                    
+                }
+            `;
+        }
+        else {
+            copiedEngineConfig = `
+                +MODULE[ModuleEnginesFX]
+                {
+                    @engineID = SecondaryMode
+                    @minThrust = ${engine.Thrust * engine.MinThrust / 100}
+                    @maxThrust = ${engine.Thrust}
+                    @useThrustCurve = ${engine.ThrustCurve.length > 0}
+                    @powerEffectName = ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeEffectName}
+                    
+                    !PROPELLANT,*{}
+                    
+                    ${engine.GetPropellantConfig()}
+                    
+                    @atmosphereCurve
+                    {
+                        @key,0 = 0 ${engine.VacIsp}
+                        @key,1 = 1 ${engine.AtmIsp}
+                    }
+                    
+                    !curveResource
+                    !thrustCurve
+                    ${engine.GetThrustCurveConfig()}
+                    
+                }
+            `;
+        }
+        return `
+            @PART[GE-${engine.MasterEngineName}]
+            {
+                MODULE
+                {
+                    name = MultiModeEngine
+                    autoSwitchAvailable = false
+                    carryOverThrottle = true
+                    primaryEngineID = PrimaryMode
+                    primaryEngineModeDisplayName = Primary mode (GE-${engine.MasterEngineName})
+                    secondaryEngineID = SecondaryMode
+                    secondaryEngineModeDisplayName = Secondary mode (GE-${engine.ID})
+                }
+                
+                ${exhaustMultiModeConfig}
+                
+            }
+            
+            @PART[GE-${engine.MasterEngineName}]:FOR[RealismOverhaul]
+            {
+                
+                ${copiedEngineConfig}
+                
+            }
+
+            ${engine.GetPlumeConfig()}
+        `;
+    }
 }
+zip.workerScriptsPath = "lib/";
 class FileIO {
     static ToClipboard(value) {
         if (value.length == 0) {
@@ -8040,29 +10077,61 @@ class FileIO {
         document.body.removeChild(textArea);
         return ok;
     }
-    static ZipBlobs(rootDirName, blobs, callback) {
-        let zip = new JSZip();
-        let zipRoot = zip.folder(rootDirName);
-        for (let blobname in blobs) {
-            let blob = blobs[blobname];
-            if (blob instanceof Uint8Array) {
-                zipRoot.file(blobname, blob, {
-                    binary: true
-                });
-            }
-            else {
-                zipRoot.file(blobname, blob, {
-                    binary: false
-                });
-            }
+    static ZipBlobs(rootDirName, blobs, callback, progressStatus) {
+        let zippedCount = 0;
+        let fileCount = Object.getOwnPropertyNames(blobs).length;
+        if (progressStatus) {
+            progressStatus(0, fileCount);
         }
-        zip.generateAsync({
-            type: "uint8array",
-            compression: "DEFLATE",
-            compressionOptions: {
-                level: 1
+        zip.createWriter(new zip.BlobWriter(), (writer) => {
+            let blobnames = [];
+            for (let blobname in blobs) {
+                blobnames.push(blobname);
             }
-        }).then(callback);
+            const onEnd = () => {
+                writer.close((blob) => {
+                    new Response(blob).arrayBuffer().then(a => {
+                        callback(new Uint8Array(a));
+                    });
+                });
+            };
+            const processBlob = (index) => {
+                let blobname = blobnames[index];
+                let blob = blobs[blobname];
+                if (blob instanceof Uint8Array) {
+                    writer.add(`${rootDirName}/${blobname}`, new zip.BlobReader(new Blob([blob])), () => {
+                        ++zippedCount;
+                        if (progressStatus) {
+                            progressStatus(zippedCount, fileCount);
+                        }
+                        if (zippedCount == fileCount) {
+                            onEnd();
+                        }
+                        else {
+                            processBlob(zippedCount);
+                        }
+                    });
+                }
+                else {
+                    writer.add(`${rootDirName}/${blobname}`, new zip.TextReader(blob), () => {
+                        ++zippedCount;
+                        if (progressStatus) {
+                            progressStatus(zippedCount, fileCount);
+                        }
+                        if (zippedCount == fileCount) {
+                            onEnd();
+                        }
+                        else {
+                            processBlob(zippedCount);
+                        }
+                    });
+                }
+            };
+            processBlob(0);
+        }, (error) => {
+            Notifier.Error("There was an error during zip.js initialization");
+            console.error("zip.js error:", error);
+        }, true);
     }
     static OpenText(extensions, callback) {
         this.Open(FileType.Text, extensions, (result, filename) => {
@@ -8153,6 +10222,29 @@ class FileIO {
         saveDialog.dispatchEvent(evt);
     }
 }
+class ImageOverflowPreview {
+    static Hook(root) {
+        if (!root.firstChild) {
+            console.warn("Root has no child. Ignoring...");
+            return;
+        }
+        let child = root.firstChild;
+        child.style.position = "relative";
+        root.addEventListener("mousemove", e => {
+            if (child.clientHeight <= root.clientHeight && child.clientWidth <= root.clientWidth) {
+                return;
+            }
+            let xPercent = e.layerX / root.clientWidth;
+            let yPercent = e.layerY / root.clientHeight;
+            child.style.left = `-${(child.clientWidth - root.clientWidth) * xPercent}px`;
+            child.style.top = `-${(child.clientHeight - root.clientHeight) * yPercent}px`;
+        });
+        root.addEventListener("mouseleave", () => {
+            child.style.left = '0px';
+            child.style.top = '0px';
+        });
+    }
+}
 class Input {
 }
 Input.MouseX = 0;
@@ -8191,20 +10283,40 @@ class Packager {
         };
         let blobs = {};
         let toFetch = [];
-        blobs[`${name}.cfg`] = Exporter.ConvertEngineListToConfig(engines);
-        blobs[`GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
-        toFetch.push(["files/PlumeScaleFixer.dll", "PlumeScaleFixer.dll"]);
+        blobs[`GenericEngines/${name}.cfg`] = Exporter.ConvertEngineListToConfig(engines);
+        blobs[`GenericEngines/GEAllTankDefinition.cfg`] = AllTankDefinition.Get();
+        toFetch.push(["files/PlumeScaleFixer.dll", "GenericEngines/PlumeScaleFixer.dll"]);
+        let needsDeployableEngines = false;
         engines.forEach(e => {
             if (!e.Active) {
                 return;
             }
             let modelInfo = ModelInfo.GetModelInfo(e.GetModelID());
+            let plumeInfo = PlumeInfo.GetPlumeInfo(e.PlumeID);
+            let exhaustPlumeInfo = e.UseExhaustEffect && modelInfo.Exhaust ? PlumeInfo.GetPlumeInfo(e.ExhaustPlumeID) : null;
+            needsDeployableEngines = needsDeployableEngines || modelInfo.ExtendNozzleAnimation != undefined;
             modelInfo.ModelFiles.forEach(f => {
+                if (!toFetch.some(x => x[0] == f)) {
+                    toFetch.push([f, f.replace(/^files\//, "GenericEngines/")]);
+                }
+            });
+            plumeInfo.PlumeFiles.forEach(f => {
                 if (!toFetch.some(x => x[0] == f)) {
                     toFetch.push([f, f.replace(/^files\//, "")]);
                 }
             });
+            if (exhaustPlumeInfo) {
+                exhaustPlumeInfo.PlumeFiles.forEach(f => {
+                    if (!toFetch.some(x => x[0] == f)) {
+                        toFetch.push([f, f.replace(/^files\//, "")]);
+                    }
+                });
+            }
         });
+        if (needsDeployableEngines) {
+            toFetch.push(["files/DeployableEngines/Plugins/DeployableEngines.dll", "DeployableEngines/Plugins/DeployableEngines.dll"]);
+            toFetch.push(["files/DeployableEngines/Versioning/DeployableEngines.version", "DeployableEngines/Versioning/DeployableEngines.version"]);
+        }
         downloadedFilesCountElement.innerHTML = "0";
         toDownload = toFetch.length;
         document.getElementById("export-to-download").innerHTML = toDownload.toString();
@@ -8212,10 +10324,11 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files (Might take over a minute)`;
+                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files <progress />`;
+                let progressElement = exportStatusElement.querySelector("progress");
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date().getTime();
-                FileIO.ZipBlobs("GenericEngines", blobs, zipData => {
+                FileIO.ZipBlobs("GameData", blobs, zipData => {
                     console.log(`Zipped in ${(new Date().getTime() - zipStart).toLocaleString("us").replace(/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
                         latestData = zipData;
@@ -8228,6 +10341,9 @@ class Packager {
                         this.IsWorking = false;
                         callback(zipData);
                     }
+                }, (alreadyZippedCount, toZipCount) => {
+                    progressElement.value = alreadyZippedCount;
+                    progressElement.max = toZipCount;
                 });
             }
         };
@@ -8367,7 +10483,14 @@ class Serializer {
             1 +
             1 +
             1 +
-            e.MasterEngineName.length + 2);
+            e.MasterEngineName.length + 2 +
+            1 +
+            (!e.IsExhaustDefault() ? 1 : 0) * (1 +
+                2 +
+                8 +
+                8 +
+                8 +
+                1));
         output[i++] = Serializer.Version / 256;
         output[i++] = Serializer.Version % 256;
         output[i++] = e.Active ? 1 : 0;
@@ -8492,6 +10615,19 @@ class Serializer {
         for (let c = 0; c < e.MasterEngineName.length; ++c) {
             output[i++] = e.MasterEngineName.charCodeAt(c);
         }
+        output[i++] = !e.IsExhaustDefault() ? 1 : 0;
+        if (!e.IsExhaustDefault()) {
+            output[i++] = e.UseExhaustEffect ? 1 : 0;
+            output[i++] = e.ExhaustPlumeID % 256;
+            output[i++] = e.ExhaustPlumeID / 256;
+            output.set(BitConverter.DoubleToByteArray(e.ExhaustThrustPercent), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.ExhaustIspPercent), i);
+            i += 8;
+            output.set(BitConverter.DoubleToByteArray(e.ExhaustGimbal), i);
+            i += 8;
+            output[i++] = e.ExhaustGimbalOnlyRoll ? 1 : 0;
+        }
         return output;
     }
     static Deserialize(input, startOffset, originList) {
@@ -8600,10 +10736,11 @@ class Serializer {
             }
         }
         if (version >= 6) {
-            output.ModelID += input[i++];
+            output.ModelID = input[i++];
             output.ModelID += input[i++] * 256;
-            output.PlumeID += input[i++];
+            output.PlumeID = input[i++];
             output.PlumeID += input[i++] * 256;
+            output.PlumeID = PlumeInfo.MapRealPlumesToGenericPlumes(output.PlumeID);
         }
         if (version >= 7) {
             output.TechUnlockNode += input[i++];
@@ -8683,10 +10820,24 @@ class Serializer {
         if (version == 12) {
             i += 12;
         }
+        if (version >= 14) {
+            if (input[i++] == 1) {
+                output.UseExhaustEffect = input[i++] == 1;
+                output.ExhaustPlumeID = input[i++];
+                output.ExhaustPlumeID += input[i++] * 256;
+                output.ExhaustThrustPercent = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.ExhaustIspPercent = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.ExhaustGimbal = BitConverter.ByteArrayToDouble(input, i);
+                i += 8;
+                output.ExhaustGimbalOnlyRoll = input[i++] == 1;
+            }
+        }
         return [output, i - startOffset];
     }
 }
-Serializer.Version = 13;
+Serializer.Version = 14;
 class Unit {
     static Display(value, unit, forceUnit, decimalPlaces = 12) {
         if (forceUnit) {

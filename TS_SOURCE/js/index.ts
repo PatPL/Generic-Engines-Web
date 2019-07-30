@@ -116,17 +116,19 @@ addEventListener ("DOMContentLoaded", () => {
             return;
         }
         
-        let reader = new FileReader();
-        reader.onload = () => {
-            let data = new Uint8Array (reader.result as ArrayBuffer);
-            
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
-            MainEngineTable.RebuildTable ();
-            
-            Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
-        }
+        for (let i = 0; i < files.length; ++i) {
+            let reader = new FileReader();
+            reader.onload = () => {
+                let data = new Uint8Array (reader.result as ArrayBuffer);
+                
+                let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
+                MainEngineTable.RebuildTable ();
+                
+                Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
+            }
 
-        reader.readAsArrayBuffer(files[0]);
+            reader.readAsArrayBuffer(files[i]);
+        }
         
     });
     

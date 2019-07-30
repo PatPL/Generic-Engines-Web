@@ -83,12 +83,19 @@ const Settings: ISettings = {
         return Store.GetText ("setting:show_info_panel", "1") == "1";
     }, set show_info_panel(value: boolean) {
         Store.SetText ("setting:show_info_panel", value ? "1" : "0");
+    }, get prettify_config(): boolean {
+        return Store.GetText ("setting:prettify_config", "0") == "1";
+    }, set prettify_config(value: boolean) {
+        Store.SetText ("setting:prettify_config", value ? "1" : "0");
     }
 }
+
+// To add a setting, set it in the object above, the interface below, and in index.html, in '#settings-box' element
 
 interface ISettings {
     [id: string]: string | boolean;
     classic_unit_display: boolean;
     dark_theme: boolean;
     show_info_panel: boolean;
+    prettify_config: boolean;
 }

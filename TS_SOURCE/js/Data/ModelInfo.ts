@@ -1941,7 +1941,7 @@ class ModelInfo {
             ],
             HeatAnimations: []
         }, { //Model.RL10A4
-            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalHeight: 1.48, // Extended height
             OriginalBellWidth: 0.798,
             OriginalBaseWidth: 0.568,
             PlumeSizeMultiplier: 0.71,
@@ -2014,7 +2014,7 @@ class ModelInfo {
             ],
             HeatAnimations: []
         }, { //Model.RL10B2
-            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalHeight: 2.555, // Extended height
             OriginalBellWidth: 1.27,
             OriginalBaseWidth: 0.568,
             PlumeSizeMultiplier: 1.13,
@@ -2999,7 +2999,7 @@ class ModelInfo {
             ],
             HeatAnimations: []
         }, { //Model.RL10A41
-            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalHeight: 1.512, // Extended height
             OriginalBellWidth: 0.73,
             OriginalBaseWidth: 0.352,
             PlumeSizeMultiplier: 0.64,
@@ -3036,7 +3036,7 @@ class ModelInfo {
             ],
             ExtendNozzleAnimation: "extend"
         }, { //Model.RL10B2_BDB
-            get OriginalHeight (): number { return this.NodeStackTop - this.NodeStackBottom; },
+            OriginalHeight: 2.08, // Extended height
             OriginalBellWidth: 0.905,
             OriginalBaseWidth: 0.64,
             PlumeSizeMultiplier: 0.8,

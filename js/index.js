@@ -3359,7 +3359,7 @@ ModelInfo.models = [
         ],
         HeatAnimations: []
     }, {
-        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalHeight: 1.48,
         OriginalBellWidth: 0.798,
         OriginalBaseWidth: 0.568,
         PlumeSizeMultiplier: 0.71,
@@ -3432,7 +3432,7 @@ ModelInfo.models = [
         ],
         HeatAnimations: []
     }, {
-        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalHeight: 2.555,
         OriginalBellWidth: 1.27,
         OriginalBaseWidth: 0.568,
         PlumeSizeMultiplier: 1.13,
@@ -4414,7 +4414,7 @@ ModelInfo.models = [
         ],
         HeatAnimations: []
     }, {
-        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalHeight: 1.512,
         OriginalBellWidth: 0.73,
         OriginalBaseWidth: 0.352,
         PlumeSizeMultiplier: 0.64,
@@ -4451,7 +4451,7 @@ ModelInfo.models = [
         ],
         ExtendNozzleAnimation: "extend"
     }, {
-        get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
+        OriginalHeight: 2.08,
         OriginalBellWidth: 0.905,
         OriginalBaseWidth: 0.64,
         PlumeSizeMultiplier: 0.8,

@@ -521,7 +521,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.0 DEV";
+Version.CurrentVersion = "Web.0.9.0";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -738,14 +738,16 @@ addEventListener("DOMContentLoaded", () => {
         if (files.length == 0) {
             return;
         }
-        let reader = new FileReader();
-        reader.onload = () => {
-            let data = new Uint8Array(reader.result);
-            let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-            MainEngineTable.RebuildTable();
-            Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
-        };
-        reader.readAsArrayBuffer(files[0]);
+        for (let i = 0; i < files.length; ++i) {
+            let reader = new FileReader();
+            reader.onload = () => {
+                let data = new Uint8Array(reader.result);
+                let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
+                MainEngineTable.RebuildTable();
+                Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
+            };
+            reader.readAsArrayBuffer(files[i]);
+        }
     });
     let imgs = document.querySelectorAll("img.browser-relevant");
     imgs.forEach(i => {

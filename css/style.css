@@ -356,7 +356,7 @@ span.checkbox-label {
 .content-header {
     position: relative;
     display: inline-block;
-    white-space: normal;
+    white-space: pre;
     word-break: break-all;
     
     box-sizing: border-box;

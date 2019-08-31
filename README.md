@@ -1,5 +1,5 @@
 # Generic-Engines-Web
-Browser version of [Generic Engines](https://github.com/PatPL/Generic-Engines), KSP RO engine config generator.
+Browser version of [Generic Engines](https://github.com/PatPL/Generic-Engines), KSP RO engine config generator, for Firefox, and Chromium based browsers.
 
 ##
 

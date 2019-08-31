@@ -10224,6 +10224,7 @@ class FileIO {
 }
 class ImageOverflowPreview {
     static Hook(root) {
+        const deadzone = 16;
         if (!root.firstChild) {
             console.warn("Root has no child. Ignoring...");
             return;
@@ -10234,10 +10235,12 @@ class ImageOverflowPreview {
             if (child.clientHeight <= root.clientHeight && child.clientWidth <= root.clientWidth) {
                 return;
             }
-            let xPercent = e.layerX / root.clientWidth;
-            let yPercent = e.layerY / root.clientHeight;
-            child.style.left = `-${(child.clientWidth - root.clientWidth) * xPercent}px`;
-            child.style.top = `-${(child.clientHeight - root.clientHeight) * yPercent}px`;
+            let xOffset = (e.layerX - deadzone) / (root.clientWidth - deadzone * 2);
+            let yOffset = (e.layerY - deadzone) / (root.clientHeight - deadzone * 2);
+            xOffset = Math.min(Math.max(xOffset, 0.0), 1.0);
+            yOffset = Math.min(Math.max(yOffset, 0.0), 1.0);
+            child.style.left = `-${(child.clientWidth - root.clientWidth) * xOffset}px`;
+            child.style.top = `-${(child.clientHeight - root.clientHeight) * yOffset}px`;
         });
         root.addEventListener("mouseleave", () => {
             child.style.left = '0px';

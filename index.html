@@ -1,217 +1,243 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-	<meta charset="utf-8">
-	<title>Generic Engines </title>
-	<link rel="icon" href="img/favicon.ico">
-	
-	<link id="css-palette" rel="stylesheet" type="text/css" href="css/classicPalette.css">
-	<link id="main-css" rel="stylesheet" type="text/css" href="css/style.css">
-	
-	<style id="edit-cell-height-override">/* Changed in JS */</style>
-	
-	<script src="lib/zip.js"></script>
-	
-	<script src="js/index.js"></script>
+    <meta charset="utf-8">
+    <title>Generic Engines </title>
+    <link rel="icon" href="img/favicon.ico">
+    
+    <link id="css-palette" rel="stylesheet" type="text/css" href="css/classicPalette.css">
+    <link id="main-css" rel="stylesheet" type="text/css" href="css/style.css">
+    
+    <style id="edit-cell-height-override">/* Changed in JS */</style>
+    
+    <script>
+        // Detect IE and Edge, and display 'use Firefox or Chromium browser' notice
+        function checkIE () {
+            if (document.documentMode || /Edge/.test(navigator.userAgent)) {
+                var noticeHTML = "";
+                
+                // IE doesn't support multiline backtick strings
+                noticeHTML += ' <div class="fullscreen-box"> ';
+                noticeHTML += ' <div class="fullscreen-grayout"></div> ';
+                noticeHTML += ' <div class="fullscreen-content"> ';
+                noticeHTML += ' Generic Engines Web will not work on Internet Explorer or Edge. <hr /> ';
+                noticeHTML += ' Use ';
+                noticeHTML += ' <b><a href="https://www.mozilla.org/en-US/firefox/new/">Mozilla Firefox</a></b>, ';
+                noticeHTML += ' <a href="https://www.google.com/chrome/">Google Chrome</a> or ';
+                noticeHTML += ' <a href="https://www.opera.com/">Opera</a><br /> ';
+                noticeHTML += " For the best experience, I recommend using Mozilla Firefox, as that's the primary browser I use to test/develop this site";
+                noticeHTML += ' </div> ';
+                noticeHTML += ' </div> ';
+                
+                // Replace the entire site body
+                document.body.innerHTML = noticeHTML;
+            }
+        }
+    </script>
+    
+    <script src="lib/zip.js"></script>
+    
+    <script src="js/index.js"></script>
 </head>
 
-<body>
-	<div class="notify-container">
-		
-	</div>
-	<div class="fullscreen-box" id="export-box" style="display: none;">
-		<div class="fullscreen-grayout"></div>
-		<div class="fullscreen-content">
-			<div>
-				You can click off this window. Exporting will continue on background. Click 'Export' again to reopen this window. (Only while current exporting is still in progress)<br><br>
-				
-				Downloaded files: <span id="export-done"></span>/<span id="export-to-download"></span> | Current status: <span id="export-status">Waiting</span><br><br>
-				
-				<button id="export-refresh">Retry downloading pending files</button><button id="export-abort" class="right">Abort exporting</button><hr>
-			</div>
-			<div id="export-box-container">
-				
-			</div>
-		</div>
-	</div>
-	<div class="fullscreen-box modal-selector-root" id="model-selector" style="display: none;">
-		<div class="fullscreen-grayout"></div>
-		<div class="fullscreen-content">
-			<span>
-				Select a model<br style="display: block; margin: -10px 0;">
-				<span style="font-size: 14px; font-family: serif;"><i>This list is incomplete. <a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/wiki/Adding-a-new-model-to-the-website">You can help by expanding it.</a></i></span>
-				<span style="font-size: 14px;"><a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/tree/master/files/models">Licences</a></span>
-			</span>
-			<!-- Populated on 'DOMContentLoaded' in 'ModelSelector.ts' -->
-			<div id="model-selector-content" class="modal-selector">
-			</div>
-		</div>
-	</div>
-	<div class="fullscreen-box modal-selector-root" id="plume-selector" style="display: none;">
-		<div class="fullscreen-grayout"></div>
-		<div class="fullscreen-content">
-			<span>
-				Select a plume<br>
-				<span style="font-size: 14px;">
-					Due to how hard it is to cut a background out of a translucent object (plume), there might be some black shade left.<br>
-					To enhance your plume viewing experience, please imagine, that shades of black are actually varying levels of transparency<br>
-				</span>
-			</span>
-			<!-- Populated on 'DOMContentLoaded' in 'ModelSelector.ts' -->
-			<div id="plume-selector-content" class="modal-selector">
-			</div>
-		</div>
-	</div>
-	<div class="fullscreen-box" id="settings-box" style="display: none;">
-		<div class="fullscreen-grayout"></div>
-		<div class="fullscreen-content">
-			<input setting-field="classic_unit_display" type="checkbox"><span class="checkbox-label">Display only KSP units (t, kN, l, kW (EC/s))</span><br>
-			<input setting-field="dark_theme" type="checkbox"><span class="checkbox-label">Use dark theme</span><br>
-			<input setting-field="show_info_panel" type="checkbox"><span class="checkbox-label">Show side panel with additional info</span><br>
-			<input setting-field="prettify_config" type="checkbox"><span class="checkbox-label">Prettify exported config (For debug purposes)</span>
-		</div>
-	</div>
-	<div class="fullscreen-box" id="about-box" style="display: none;">
-		<div class="fullscreen-grayout"></div>
-		<div class="fullscreen-content">
-			<center>
-				<h1>Generic Engines <span class="js-insert-version"></span></h1>
-				
-				<hr>
-				
-				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/wiki">Wiki 🗗</a>
-				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/releases">Changelog 🗗</a>
-				<a target="_blank" href="https://old.reddit.com/r/GenericEngines/">Subreddit 🗗</a>
-				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/issues/new/choose">Report a bug 🗗</a>
-				
-				<hr>
-				
-				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/tree/master">Source 🗗</a>
-				<a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/graphs/contributors">Authors 🗗</a>
-			</center>
-		</div>
-	</div>
-	<div class="fullscreen-box" id="cache-box" style="display: none;">
-		<div class="fullscreen-grayout"></div>
-		<div class="fullscreen-content">
-			<span>Browser cache</span>
-			<div id="cache-box-content">
-				<div>12</div>
-				<div>32423</div>
-				<div>432546</div>
-			</div>
-		</div>
-	</div>
-	<div class="fullscreen-box" id="open-box" style="display: none;">
-		<div class="fullscreen-grayout"></div>
-		<div class="fullscreen-content">
-			<div>
-				<img id="option-button-open-upload-list" src="img/button/upload-large.png" class="option-button">
-				<img id="option-button-append-upload-list" src="img/button/upload-append-large.png" class="option-button">
-				<div>(Open/Append) list from a file</div>
-			</div>
-			<div>
-				<img id="option-button-open-cache-list" src="img/button/cache-open-().png" class="option-button browser-relevant">
-				<img id="option-button-append-cache-list" src="img/button/cache-append-().png" class="option-button browser-relevant">
-				<div>(Open/Append) list from browser cache</div>
-			</div>
-			<div>
-				<img id="option-button-open-clipboard-list" src="img/button/base64-open.png" class="option-button">
-				<img id="option-button-append-clipboard-list" src="img/button/base64-append.png" class="option-button">
-				<div>(Open/Append) list from base64 string</div>
-			</div>
-			<div>
-				<div>(Append) You can also try drag&dropping .enl files on this website</div>
-			</div>
-		</div>
-	</div>
-	<div class="fullscreen-box" id="save-box" style="display: none;">
-		<div class="fullscreen-grayout"></div>
-		<div class="fullscreen-content">
-			<div>
-				<img id="option-button-download-list" src="img/button/download-large.png" class="option-button">
-				<div>Download the list as .enl file</div>
-			</div>
-			<div>
-				<img id="option-button-cache-list" src="img/button/cache-save-().png" class="option-button browser-relevant">
-				<div>Store the list in broser cache</div>
-			</div>
-			<div>
-				<img id="option-button-clipboard-list" src="img/button/base64-save.png" class="option-button">
-				<div>Copy the list as a base64 string</div>
-			</div>
-			<div>
-				<img id="option-button-clipboard-selection" src="img/button/base64-save.png" class="option-button">
-				<div>Copy selected engines as a base64 string</div>
-			</div>
-		</div>
-	</div>
-	<div class="option-container" id="option-row">
-		<div class="option-container" id="option-container-left">
-			<img id="option-button-new" title="Clear the current list" class="option-button" src="img/button/clear.png">
-			<img id="option-button-open" title="Open/Append an existing list" class="option-button" src="img/button/open.png">
-			<img id="option-button-save" title="Save current list" class="option-button" src="img/button/save.png">
-			<img id="option-button-cache" title="Open browser cache" class="option-button browser-relevant" src="img/button/cache-().png">
-			<img id="option-button-validate" title="Check current list for inconsistencies" class="option-button" src="img/button/validate.png">
-			<img id="option-button-export" title="Export current list as KSP mod" class="option-button" src="img/button/export.png">
-			<img id="option-button-duplicate" title="Duplicate selected engines" class="option-button" src="img/button/duplicate.png">
-			<img id="option-button-add" title="Add a new engine to current list" class="option-button" src="img/button/add.png">
-			<img id="option-button-remove" title="Delete selected engines from current list" class="option-button" src="img/button/remove.png">
-		</div>
-		<div class="flex-spacer" id="list-name"></div>
-		<div class="option-container" id="option-container-right">
-			<img id="option-button-settings" title="Settings" class="option-button" src="img/button/settings.png">
-			<img id="option-button-help" title="Help & About" class="option-button" src="img/button/help.png">
-		</div>
-	</div>
-	<div id="content-container">
-		<div id="list-container">
-			
-		</div>
-		<div id="info-panel">
-			<div id="info-panel-resize"></div>
-			<b>ID:</b> <span info-field="id"></span><br><br>
-			
-			<b>Dry mass:</b> <span info-field="dry_mass"></span><br>
-			<b>Wet mass:</b> <span info-field="wet_mass"></span><br><br>
-			
-			<table border="1">
-				<tr>
-					<td width="33%"><b>Thrust</b></td>
-					<td width="33%">Min throttle</td>
-					<td width="33%">Full throttle</td>
-				</tr>
-				<tr>
-					<td>Vacuum</td>
-					<td><span info-field="thrust_min_vac"></span></td>
-					<td><span info-field="thrust_max_vac"></span></td>
-				</tr>
-				<tr>
-					<td>Sea level</td>
-					<td><span info-field="thrust_min_atm"></span></td>
-					<td><span info-field="thrust_max_atm"></span></td>
-				</tr>
-			</table><br>
-			
-			<table border="1">
-				<tr>
-					<td width="33%"><b>TWR <span style="cursor: help;" title="9.80665m/s^2">(g)</span></b></td>
-					<td width="33%">Full tanks</td>
-					<td width="33%">Empty tanks</td>
-				</tr>
-				<tr>
-					<td>Vacuum</td>
-					<td><span info-field="twr_wet_vac"></span></td>
-					<td><span info-field="twr_dry_vac"></span></td>
-				</tr>
-				<tr>
-					<td>Sea level</td>
-					<td><span info-field="twr_wet_atm"></span></td>
-					<td><span info-field="twr_dry_atm"></span></td>
-				</tr>
-			</table>
-		</div>
-	</div>
+<body onload="checkIE ()">
+    <div class="notify-container">
+        
+    </div>
+    <div class="fullscreen-box" id="export-box" style="display: none;">
+        <div class="fullscreen-grayout"></div>
+        <div class="fullscreen-content">
+            <div>
+                You can click off this window. Exporting will continue on background. Click 'Export' again to reopen this window. (Only while current exporting is still in progress)<br><br>
+                
+                Downloaded files: <span id="export-done"></span>/<span id="export-to-download"></span> | Current status: <span id="export-status">Waiting</span><br><br>
+                
+                <button id="export-refresh">Retry downloading pending files</button><button id="export-abort" class="right">Abort exporting</button><hr>
+            </div>
+            <div id="export-box-container">
+                
+            </div>
+        </div>
+    </div>
+    <div class="fullscreen-box modal-selector-root" id="model-selector" style="display: none;">
+        <div class="fullscreen-grayout"></div>
+        <div class="fullscreen-content">
+            <span>
+                Select a model<br style="display: block; margin: -10px 0;">
+                <span style="font-size: 14px; font-family: serif;"><i>This list is incomplete. <a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/wiki/Adding-a-new-model-to-the-website">You can help by expanding it.</a></i></span>
+                <span style="font-size: 14px;"><a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/tree/master/files/models">Licences</a></span>
+            </span>
+            <!-- Populated on 'DOMContentLoaded' in 'ModelSelector.ts' -->
+            <div id="model-selector-content" class="modal-selector">
+            </div>
+        </div>
+    </div>
+    <div class="fullscreen-box modal-selector-root" id="plume-selector" style="display: none;">
+        <div class="fullscreen-grayout"></div>
+        <div class="fullscreen-content">
+            <span>
+                Select a plume<br>
+                <span style="font-size: 14px;">
+                    Due to how hard it is to cut a background out of a translucent object (plume), there might be some black shade left.<br>
+                    To enhance your plume viewing experience, please imagine, that shades of black are actually varying levels of transparency<br>
+                </span>
+            </span>
+            <!-- Populated on 'DOMContentLoaded' in 'ModelSelector.ts' -->
+            <div id="plume-selector-content" class="modal-selector">
+            </div>
+        </div>
+    </div>
+    <div class="fullscreen-box" id="settings-box" style="display: none;">
+        <div class="fullscreen-grayout"></div>
+        <div class="fullscreen-content">
+            <input setting-field="classic_unit_display" type="checkbox"><span class="checkbox-label">Display only KSP units (t, kN, l, kW (EC/s))</span><br>
+            <input setting-field="dark_theme" type="checkbox"><span class="checkbox-label">Use dark theme</span><br>
+            <input setting-field="show_info_panel" type="checkbox"><span class="checkbox-label">Show side panel with additional info</span><br>
+            <input setting-field="prettify_config" type="checkbox"><span class="checkbox-label">Prettify exported config (For debug purposes)</span>
+        </div>
+    </div>
+    <div class="fullscreen-box" id="about-box" style="display: none;">
+        <div class="fullscreen-grayout"></div>
+        <div class="fullscreen-content">
+            <center>
+                <h1>Generic Engines <span class="js-insert-version"></span></h1>
+                
+                <hr>
+                
+                <a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/wiki">Wiki 🗗</a>
+                <a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/releases">Changelog 🗗</a>
+                <a target="_blank" href="https://old.reddit.com/r/GenericEngines/">Subreddit 🗗</a>
+                <a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/issues/new/choose">Report a bug 🗗</a>
+                
+                <hr>
+                
+                <a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/tree/master">Source 🗗</a>
+                <a target="_blank" href="https://github.com/PatPL/Generic-Engines-Web/graphs/contributors">Authors 🗗</a>
+            </center>
+        </div>
+    </div>
+    <div class="fullscreen-box" id="cache-box" style="display: none;">
+        <div class="fullscreen-grayout"></div>
+        <div class="fullscreen-content">
+            <span>Browser cache</span>
+            <div id="cache-box-content">
+                <div>12</div>
+                <div>32423</div>
+                <div>432546</div>
+            </div>
+        </div>
+    </div>
+    <div class="fullscreen-box" id="open-box" style="display: none;">
+        <div class="fullscreen-grayout"></div>
+        <div class="fullscreen-content">
+            <div>
+                <img id="option-button-open-upload-list" src="img/button/upload-large.png" class="option-button">
+                <img id="option-button-append-upload-list" src="img/button/upload-append-large.png" class="option-button">
+                <div>(Open/Append) list from a file</div>
+            </div>
+            <div>
+                <img id="option-button-open-cache-list" src="img/button/cache-open-().png" class="option-button browser-relevant">
+                <img id="option-button-append-cache-list" src="img/button/cache-append-().png" class="option-button browser-relevant">
+                <div>(Open/Append) list from browser cache</div>
+            </div>
+            <div>
+                <img id="option-button-open-clipboard-list" src="img/button/base64-open.png" class="option-button">
+                <img id="option-button-append-clipboard-list" src="img/button/base64-append.png" class="option-button">
+                <div>(Open/Append) list from base64 string</div>
+            </div>
+            <div>
+                <div>(Append) You can also try drag&dropping .enl files on this website</div>
+            </div>
+        </div>
+    </div>
+    <div class="fullscreen-box" id="save-box" style="display: none;">
+        <div class="fullscreen-grayout"></div>
+        <div class="fullscreen-content">
+            <div>
+                <img id="option-button-download-list" src="img/button/download-large.png" class="option-button">
+                <div>Download the list as .enl file</div>
+            </div>
+            <div>
+                <img id="option-button-cache-list" src="img/button/cache-save-().png" class="option-button browser-relevant">
+                <div>Store the list in broser cache</div>
+            </div>
+            <div>
+                <img id="option-button-clipboard-list" src="img/button/base64-save.png" class="option-button">
+                <div>Copy the list as a base64 string</div>
+            </div>
+            <div>
+                <img id="option-button-clipboard-selection" src="img/button/base64-save.png" class="option-button">
+                <div>Copy selected engines as a base64 string</div>
+            </div>
+        </div>
+    </div>
+    <div class="option-container" id="option-row">
+        <div class="option-container" id="option-container-left">
+            <img id="option-button-new" title="Clear the current list" class="option-button" src="img/button/clear.png">
+            <img id="option-button-open" title="Open/Append an existing list" class="option-button" src="img/button/open.png">
+            <img id="option-button-save" title="Save current list" class="option-button" src="img/button/save.png">
+            <img id="option-button-cache" title="Open browser cache" class="option-button browser-relevant" src="img/button/cache-().png">
+            <img id="option-button-validate" title="Check current list for inconsistencies" class="option-button" src="img/button/validate.png">
+            <img id="option-button-export" title="Export current list as KSP mod" class="option-button" src="img/button/export.png">
+            <img id="option-button-duplicate" title="Duplicate selected engines" class="option-button" src="img/button/duplicate.png">
+            <img id="option-button-add" title="Add a new engine to current list" class="option-button" src="img/button/add.png">
+            <img id="option-button-remove" title="Delete selected engines from current list" class="option-button" src="img/button/remove.png">
+        </div>
+        <div class="flex-spacer" id="list-name"></div>
+        <div class="option-container" id="option-container-right">
+            <img id="option-button-settings" title="Settings" class="option-button" src="img/button/settings.png">
+            <img id="option-button-help" title="Help & About" class="option-button" src="img/button/help.png">
+        </div>
+    </div>
+    <div id="content-container">
+        <div id="list-container">
+            
+        </div>
+        <div id="info-panel">
+            <div id="info-panel-resize"></div>
+            <b>ID:</b> <span info-field="id"></span><br><br>
+            
+            <b>Dry mass:</b> <span info-field="dry_mass"></span><br>
+            <b>Wet mass:</b> <span info-field="wet_mass"></span><br><br>
+            
+            <table border="1">
+                <tr>
+                    <td width="33%"><b>Thrust</b></td>
+                    <td width="33%">Min throttle</td>
+                    <td width="33%">Full throttle</td>
+                </tr>
+                <tr>
+                    <td>Vacuum</td>
+                    <td><span info-field="thrust_min_vac"></span></td>
+                    <td><span info-field="thrust_max_vac"></span></td>
+                </tr>
+                <tr>
+                    <td>Sea level</td>
+                    <td><span info-field="thrust_min_atm"></span></td>
+                    <td><span info-field="thrust_max_atm"></span></td>
+                </tr>
+            </table><br>
+            
+            <table border="1">
+                <tr>
+                    <td width="33%"><b>TWR <span style="cursor: help;" title="9.80665m/s^2">(g)</span></b></td>
+                    <td width="33%">Full tanks</td>
+                    <td width="33%">Empty tanks</td>
+                </tr>
+                <tr>
+                    <td>Vacuum</td>
+                    <td><span info-field="twr_wet_vac"></span></td>
+                    <td><span info-field="twr_dry_vac"></span></td>
+                </tr>
+                <tr>
+                    <td>Sea level</td>
+                    <td><span info-field="twr_wet_atm"></span></td>
+                    <td><span info-field="twr_dry_atm"></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </body>
 
 </html>

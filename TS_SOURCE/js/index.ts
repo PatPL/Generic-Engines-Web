@@ -1,6 +1,6 @@
 ///<reference path="DialogBoxes/SettingsDialog.ts" />
 var ListName = "Unnamed";
-var EditableFieldMetadata: { [id: string]: IEditable } = {
+var EditableFieldMetadata: { [id: string]: IEditable<any> } = {
     ListName: {
         ApplyValueToDisplayElement: e => {
             e.innerHTML = `${ListName}.enl`;

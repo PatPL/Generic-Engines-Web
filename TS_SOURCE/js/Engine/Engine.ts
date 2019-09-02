@@ -512,7 +512,11 @@ class Engine {
         selects[1].options.add (option1.cloneNode (true) as HTMLOptionElement);
         
         if (parseInt (selects[0].value) == PolymorphismType.MultiModeSlave) {
-            this.EngineList.filter (x => x.Active && x.PolyType == PolymorphismType.MultiModeMaster).forEach (e => {
+            this.EngineList.filter (x =>
+                x.ID != this.ID &&
+                x.Active &&
+                x.PolyType == PolymorphismType.MultiModeMaster
+            ).forEach (e => {
                 let option: HTMLOptionElement = document.createElement ("option");
                 option.value = `${e.ID}`;
                 option.text = e.ID;
@@ -520,7 +524,11 @@ class Engine {
                 selects[1].options.add (option);
             });
         } else if (parseInt (selects[0].value) == PolymorphismType.MultiConfigSlave) {
-            this.EngineList.filter (x => x.Active && x.PolyType == PolymorphismType.MultiConfigMaster).forEach (e => {
+            this.EngineList.filter (x =>
+                x.ID != this.ID &&
+                x.Active &&
+                x.PolyType == PolymorphismType.MultiConfigMaster
+            ).forEach (e => {
                 let option: HTMLOptionElement = document.createElement ("option");
                 option.value = `${e.ID}`;
                 option.text = e.ID;

@@ -1,5 +1,5 @@
 ///<reference path="../Enums/PolymorphismType.ts" />
-class Engine {
+class Engine implements ITableElement<Engine> {
     
     public static readonly ColumnDefinitions: { [id: string]: IColumnInfo } = {
         Active: {
@@ -106,6 +106,161 @@ class Engine {
     }
     Spacer: boolean = false; // For an empty space at the end of the table
     
+    private static RegularSort (...args: (string | number | boolean)[]) {
+        // Take 2 params per pass, ignore the last one if odd number of params was sent
+        for (let i = 0; i <= args.length - 2; i += 2) {
+            let a = args[i];
+            let b = args[i + 1];
+            
+            a = typeof a == "string" ? a.toLowerCase () : a;
+            b = typeof b == "string" ? b.toLowerCase () : b;
+            
+            if (a > b) {
+                return 1;
+            } else if (a < b) {
+                return -1;
+            } else {
+                continue;
+            }
+        }
+        
+        // If the code is here, no conclusive results were found. According to criteria, the objects can be treated as equal
+        return 0;
+    }
+    
+    public static readonly _ColumnSorts: { [columnID: string]: (a: Engine, b: Engine) => number } = {
+        Active: (a, b) => Engine.RegularSort (a.Active, b.Active, a.ID, b.ID),
+        ID: (a, b) => Engine.RegularSort (a.ID, b.ID),
+        Labels: (a, b) => Engine.RegularSort (a.GetDisplayLabel (), b.GetDisplayLabel (), a.ID, b.ID),
+        EngineVariant: (a, b) => Engine.RegularSort (a.EngineVariant, b.EngineVariant, a.ID, b.ID),
+        Mass: (a, b) => Engine.RegularSort (a.GetMass (), b.GetMass (), a.ID, b.ID),
+        Thrust: (a, b) => Engine.RegularSort (a.Thrust, b.Thrust, a.ID, b.ID),
+        MinThrust: (a, b) => Engine.RegularSort (a.MinThrust, b.MinThrust, a.ID, b.ID),
+        AtmIsp: (a, b) => Engine.RegularSort (a.AtmIsp, b.AtmIsp, a.ID, b.ID),
+        VacIsp: (a, b) => Engine.RegularSort (a.VacIsp, b.VacIsp, a.ID, b.ID),
+        PressureFed: (a, b) => Engine.RegularSort (a.PressureFed, b.PressureFed, a.ID, b.ID),
+        NeedsUllage: (a, b) => Engine.RegularSort (a.NeedsUllage, b.NeedsUllage, a.ID, b.ID),
+        TechUnlockNode: (a, b) => Engine.RegularSort (a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID),
+        EntryCost: (a, b) => Engine.RegularSort (a.EntryCost, b.EntryCost, a.ID, b.ID),
+        Cost: (a, b) => Engine.RegularSort (a.Cost, b.Cost, a.ID, b.ID),
+        AlternatorPower: (a, b) => Engine.RegularSort (a.AlternatorPower, b.AlternatorPower, a.ID, b.ID),
+        ThrustCurve: (a, b) => Engine.RegularSort (a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
+        Polymorphism: (a, b) => {
+            let output = Engine.RegularSort (a.PolyType, b.PolyType);
+            
+            if (output) { return output } // Return if non 0
+            
+            // Both have the same PolyType value
+            if (
+                a.PolyType == PolymorphismType.MultiModeSlave ||
+                a.PolyType == PolymorphismType.MultiConfigSlave
+            ) {
+                output = Engine.RegularSort (a.MasterEngineName, b.MasterEngineName);
+                
+                if (output) { return output } // Return if non 0
+            }
+            
+            // a & b have the same gimbal, sort by ID, as a last resort
+            return Engine.RegularSort (a.ID, b.ID);
+        }, FuelRatios: (a, b) => {
+            let output = Engine.RegularSort (a.FuelRatioItems.length, b.FuelRatioItems.length);
+            
+            if (output) { return output } // Return if non 0
+            
+            // At this point both a & b have the same propellant count
+            for (let i = 0; i < a.FuelRatioItems.length; ++i) {
+                output = Engine.RegularSort (a.FuelRatioItems[i][0], b.FuelRatioItems[i][0]);
+                
+                if (output) { return output } // Return if non 0
+            }
+            
+            // a & b have the same propellants, sort by ID, as a last resort
+            return Engine.RegularSort (a.ID, b.ID);
+        }, Ignitions: (a, b) => Engine.RegularSort (
+            a.Ignitions <= 0 ? 999999999 : a.Ignitions, b.Ignitions <= 0 ? 999999999 : b.Ignitions,
+            a.ID, b.ID
+        ), Visuals: (a, b) => Engine.RegularSort (
+            a.GetModelID (), b.GetModelID (),
+            a.PlumeID, b.PlumeID,
+            a.ID, b.ID
+        ), Dimensions: (a, b) => Engine.RegularSort (
+            a.GetWidth (), b.GetWidth (),
+            a.GetHeight (), b.GetHeight (),
+            a.ID, b.ID
+        ), Gimbal: (a, b) => {
+            let output = Engine.RegularSort (a.AdvancedGimbal, b.AdvancedGimbal);
+            
+            if (output) { return output } // Return if non 0
+            
+            // Both have the same AdvancedGimbal value
+            if (a.AdvancedGimbal) {
+                let output = Engine.RegularSort (
+                    a.GimbalNX + a.GimbalNY + a.GimbalPX + a.GimbalPY,
+                    b.GimbalNX + b.GimbalNY + b.GimbalPX + b.GimbalPY,
+                );
+                
+                if (output) { return output } // Return if non 0
+            } else {
+                let output = Engine.RegularSort (a.Gimbal, b.Gimbal);
+                
+                if (output) { return output } // Return if non 0
+            }
+            
+            // a & b have the same gimbal, sort by ID, as a last resort
+            return Engine.RegularSort (a.ID, b.ID);
+        }, TestFlight: (a, b) => {
+            let output = Engine.RegularSort (a.EnableTestFlight, b.EnableTestFlight);
+            
+            if (output) { return output } // Return if non 0
+            
+            // Both have the same EnableTestFlight value
+            if (a.EnableTestFlight) {
+                output = Engine.RegularSort (
+                    a.RatedBurnTime / (1 - a.CycleReliability10k / 100),
+                    b.RatedBurnTime / (1 - b.CycleReliability10k / 100)
+                );
+                
+                if (output) { return output } // Return if non 0
+            }
+            
+            // a & b have the same gimbal, sort by ID, as a last resort
+            return Engine.RegularSort (a.ID, b.ID);
+        }, Tank: (a, b) => {
+            let output = Engine.RegularSort (a.UseTanks, b.UseTanks);
+            
+            if (output) { return output } // Return if non 0
+            
+            // Both have the same UseTanks value
+            if (a.UseTanks) {
+                let aVolume = 0;
+                let bVolume = 0;
+                
+                a.GetConstrainedTankContents ().forEach (r => {
+                    aVolume += r[1];
+                });
+                b.GetConstrainedTankContents ().forEach (r => {
+                    bVolume += r[1];
+                });
+                
+                output = Engine.RegularSort (
+                    aVolume,
+                    bVolume
+                );
+                
+                if (output) { return output } // Return if non 0
+            }
+            
+            // a & b have the same gimbal, sort by ID, as a last resort
+            return Engine.RegularSort (a.ID, b.ID);
+        }, // first by enabled, then by volume
+    }
+    
+    public ColumnSorts () {
+        // TS doesn't allow static properties in interfaces :/
+        // This is a workaround, not to keep that list of functions in every single Engine instance
+        return Engine._ColumnSorts;
+    }
+    
     public readonly EditableFieldMetadata: { [id: string]: IEditable<Engine> } = {
         Spacer: EngineEditableFieldMetadata.Spacer,
         ID: EngineEditableFieldMetadata.ID,
@@ -133,7 +288,7 @@ class Engine {
     
     ListCols: HTMLElement[] = [];
     EditableFields: EditableField[] = [];
-    EngineList: Engine[];
+    EngineList: Engine[] = [];
     
     Active: boolean = false;
     ID: string = "New-Engine";
@@ -198,6 +353,16 @@ class Engine {
         this.UpdateEveryDisplay ();
     }
     
+    GetDisplayLabel () {
+        let isSlave = this.PolyType == PolymorphismType.MultiModeSlave || this.PolyType == PolymorphismType.MultiConfigSlave;
+            
+        if (this.EngineName == "" || isSlave) {
+            return `${this.ID}`;
+        } else {
+            return `${this.EngineName}`;
+        }
+    }
+    
     public UpdateEveryDisplay () {
         this.EditableFields.forEach (f => {
             f.RefreshDisplayElement ();
@@ -213,6 +378,22 @@ class Engine {
         targetEngine = targetEngine != undefined ? targetEngine : this;
         
         return targetEngine.Mass;
+    }
+    
+    public GetWidth (): number {
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            return this.EngineList.find (x => x.ID == this.MasterEngineName)!.Width;
+        } else {
+            return this.Width;
+        }
+    }
+    
+    public GetHeight (): number {
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            return this.EngineList.find (x => x.ID == this.MasterEngineName)!.Height;
+        } else {
+            return this.Height;
+        }
     }
     
     public GetModelID (): Model {
@@ -722,13 +903,13 @@ class Engine {
         }
     }
     
-    public OnTableDraw (e: HTMLElement[]) {
-        this.ListCols = e;
-        this.RehidePolyFields (e);
+    public OnTableDraw (rowElements: HTMLElement[]) {
+        this.ListCols = rowElements;
+        this.RehidePolyFields (rowElements);
     }
     
-    constructor (originList: Engine[] = []) {
-        this.EngineList = originList;
+    constructor () {
+        
     }
     
     public EngineTypeConfig (): string {

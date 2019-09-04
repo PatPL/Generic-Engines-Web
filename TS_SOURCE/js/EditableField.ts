@@ -312,6 +312,9 @@ class EditableField {
 }
 
 window.addEventListener ("pointerdown", (e) => {
+    // Only listen for LMB presses
+    if (e.which != 1) { return; }
+    
     if (EditableField.EditedField) {
         //Check whether pointer was over current field
         if (e.srcElement) {

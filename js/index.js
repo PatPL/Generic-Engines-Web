@@ -235,6 +235,9 @@ class EditableField {
 EditableField.EditedField = null;
 EditableField.IDCounter = 0;
 window.addEventListener("pointerdown", (e) => {
+    if (e.which != 1) {
+        return;
+    }
     if (EditableField.EditedField) {
         if (e.srcElement) {
             let currentElement = e.srcElement;
@@ -274,16 +277,19 @@ class HtmlTable {
     constructor(container) {
         this.Items = [];
         this.ColumnsDefinitions = {};
+        this.ColumnHeaders = {};
         this.Columns = {};
         this.Rows = {};
+        this.DisplayedRowOrder = [];
         this.SelectedRows = [];
         this.TableContainer = container;
+        console.log(this.DisplayedRowOrder);
         this.TableElement = document.createElement("div");
         this.TableElement.classList.add("content-table");
         this.TableContainer.innerHTML = "";
         this.TableContainer.appendChild(this.TableElement);
         window.addEventListener("pointerdown", (e) => {
-            if (e.button == 1) {
+            if (e.which != 1) {
                 return;
             }
             if (e.srcElement) {
@@ -305,21 +311,7 @@ class HtmlTable {
             }
         });
     }
-    static AutoGenerateColumns(exampleObject) {
-        let output = {};
-        for (let i in exampleObject) {
-            if (typeof exampleObject[i] == "function" ||
-                i == "EditableFieldMetadata") {
-                continue;
-            }
-            output[i] = {
-                Name: i.toUpperCase(),
-                DefaultWidth: 200
-            };
-        }
-        return output;
-    }
-    AddItem(newItem) {
+    RawAddItem(newItem) {
         this.Items.push(newItem);
         this.Rows[HtmlTable.RowCounter] = [Array(Object.getOwnPropertyNames(this.ColumnsDefinitions).length), newItem];
         let x = 0;
@@ -338,7 +330,21 @@ class HtmlTable {
         if (newItem.OnTableDraw && typeof newItem.OnTableDraw == "function") {
             newItem.OnTableDraw(this.Rows[HtmlTable.RowCounter][0]);
         }
+        this.DisplayedRowOrder.push(HtmlTable.RowCounter.toString());
         ++HtmlTable.RowCounter;
+    }
+    AddItems(newItem) {
+        if (Array.isArray(newItem)) {
+            newItem.forEach(item => {
+                this.RawAddItem(item);
+            });
+        }
+        else {
+            this.RawAddItem(newItem);
+        }
+        if (this.currentSort) {
+            this.SortItems();
+        }
     }
     RemoveSelectedItems() {
         this.SelectedRows.forEach(row => {
@@ -346,10 +352,16 @@ class HtmlTable {
                 element.remove();
             });
             this.Items.splice(this.Items.indexOf(this.Rows[row][1]), 1);
+            this.DisplayedRowOrder.splice(this.DisplayedRowOrder.findIndex(x => x == row.toString()), 1);
             delete this.Rows[row];
         });
         this.SelectedRows = [];
-        ApplyEngineToInfoPanel(new Engine(), true);
+        if (this.OnSelectedItemChange) {
+            this.OnSelectedItemChange(undefined);
+        }
+        if (this.currentSort) {
+            this.SortItems();
+        }
     }
     SelectRow(appendToggle, row, rangeSelect = false) {
         if (this.SelectedRows.length > 0) {
@@ -361,20 +373,19 @@ class HtmlTable {
             if (this.SelectedRows.length == 0) {
                 return;
             }
-            let lastSelectedID = this.SelectedRows[this.SelectedRows.length - 1];
-            for (let i = lastSelectedID;; i += (row > lastSelectedID ? 1 : -1)) {
-                if (!this.Rows[i]) {
-                    continue;
-                }
-                if (this.SelectedRows.some(x => x == i)) {
+            let lastSelectedID = this.DisplayedRowOrder.findIndex(x => x == this.SelectedRows[this.SelectedRows.length - 1].toString());
+            let currentSelectedID = this.DisplayedRowOrder.findIndex(x => x == row.toString());
+            for (let i = lastSelectedID;; i += (currentSelectedID > lastSelectedID ? 1 : -1)) {
+                let decodedI = parseInt(this.DisplayedRowOrder[i]);
+                if (this.SelectedRows.some(x => x == decodedI)) {
                 }
                 else {
-                    this.SelectedRows.push(i);
-                    this.Rows[i][0].forEach(cell => {
+                    this.SelectedRows.push(decodedI);
+                    this.Rows[decodedI][0].forEach(cell => {
                         cell.classList.add("selected");
                     });
                 }
-                if (i == row) {
+                if (decodedI == row) {
                     break;
                 }
             }
@@ -405,7 +416,9 @@ class HtmlTable {
             });
         }
         if (this.SelectedRows.length > 0) {
-            ApplyEngineToInfoPanel(this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][1]);
+            if (this.OnSelectedItemChange) {
+                this.OnSelectedItemChange(this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][1]);
+            }
             this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][0].forEach(cell => {
                 cell.classList.add("last");
             });
@@ -424,10 +437,12 @@ class HtmlTable {
             this.SelectedRows.push(parseInt(i));
         }
         this.RemoveSelectedItems();
+        this.currentSort = undefined;
         this.TableElement.remove();
         this.TableElement = document.createElement("div");
         this.TableElement.classList.add("content-table");
         this.TableContainer.appendChild(this.TableElement);
+        this.ColumnHeaders = {};
         this.Columns = {};
         let headerContainer = document.createElement("div");
         headerContainer.classList.add("content-header-container");
@@ -446,10 +461,21 @@ class HtmlTable {
             columnHeader.innerHTML = this.ColumnsDefinitions[columnID].Name;
             columnHeader.title = this.ColumnsDefinitions[columnID].Name;
             headerContainer.appendChild(columnHeader);
+            columnHeader.addEventListener("pointerdown", e => {
+                if (e.which != 1) {
+                    return;
+                }
+                this.Sort(columnID);
+            });
+            this.ColumnHeaders[columnID] = columnHeader;
             let columnResizer = document.createElement("div");
             columnResizer.classList.add("content-column-resizer");
             columnResizer.setAttribute("data-FieldID", "-1");
-            columnResizer.onpointerdown = () => {
+            columnResizer.addEventListener("pointerdown", e => {
+                if (e.which != 1) {
+                    return;
+                }
+                e.stopPropagation();
                 let originalX = Input.MouseX;
                 let originalWidth = column.style.width ? parseInt(column.style.width) : 400;
                 Dragger.Drag(() => {
@@ -458,12 +484,73 @@ class HtmlTable {
                     column.style.width = `${newWidth}px`;
                     columnHeader.style.width = `${newWidth}px`;
                 });
-            };
+            });
             columnHeader.appendChild(columnResizer);
             this.TableElement.appendChild(column);
         }
-        for (let i of ItemsBackup) {
-            this.AddItem(i);
+        this.AddItems(ItemsBackup);
+    }
+    Sort(columnID) {
+        if (columnID) {
+            if (this.currentSort && this.currentSort[0] != columnID) {
+                this.ColumnHeaders[this.currentSort[0]].classList.remove(this.currentSort[1] == 1 ? "sortAsc" : "sortDesc");
+                this.currentSort = undefined;
+            }
+            if (this.currentSort) {
+                if (this.currentSort[1] == 1) {
+                    this.currentSort[1] = -1;
+                    this.ColumnHeaders[columnID].classList.remove("sortAsc");
+                    this.ColumnHeaders[columnID].classList.add("sortDesc");
+                }
+                else {
+                    this.currentSort = undefined;
+                    this.ColumnHeaders[columnID].classList.remove("sortDesc");
+                }
+            }
+            else {
+                this.currentSort = [columnID, 1];
+                this.ColumnHeaders[columnID].classList.add("sortAsc");
+            }
+        }
+        else {
+            if (this.currentSort) {
+                this.ColumnHeaders[this.currentSort[0]].classList.remove(this.currentSort[1] == 1 ? "sortAsc" : "sortDesc");
+                this.currentSort = undefined;
+            }
+        }
+        this.SortItems();
+    }
+    SortItems() {
+        this.DisplayedRowOrder.length = 0;
+        if (this.currentSort && this.Items.length > 0) {
+            let sorts = this.Items[0].ColumnSorts();
+            if (sorts.hasOwnProperty(this.currentSort[0])) {
+                let sortFunction = sorts[this.currentSort[0]];
+                let map = [];
+                for (let i in this.Rows) {
+                    map.push([i, this.Rows[i][0], this.Rows[i][1]]);
+                }
+                map.sort((a, b) => {
+                    return sortFunction(a[2], b[2]) * this.currentSort[1];
+                });
+                map.forEach(row => {
+                    this.DisplayedRowOrder.push(row[0]);
+                    row[1].forEach(cell => {
+                        cell.parentNode.appendChild(cell);
+                    });
+                });
+                return;
+            }
+            else {
+            }
+        }
+        else {
+        }
+        for (let i in this.Rows) {
+            this.DisplayedRowOrder.push(i);
+            this.Rows[i][0].forEach(e => {
+                e.parentNode.appendChild(e);
+            });
         }
     }
 }
@@ -711,7 +798,10 @@ addEventListener("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     let infoPanel = document.getElementById("info-panel");
     let mainCSS = document.getElementById("main-css");
-    document.getElementById("info-panel-resize").addEventListener("pointerdown", () => {
+    document.getElementById("info-panel-resize").addEventListener("pointerdown", e => {
+        if (e.which != 1) {
+            return;
+        }
         let originalX = Input.MouseX;
         let originalWidth = parseFloat(document.documentElement.style.getPropertyValue("--infoPanelWidth"));
         originalWidth = isNaN(originalWidth) ? 200 : originalWidth;
@@ -742,9 +832,12 @@ addEventListener("DOMContentLoaded", () => {
             let reader = new FileReader();
             reader.onload = () => {
                 let data = new Uint8Array(reader.result);
-                let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-                MainEngineTable.RebuildTable();
-                Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
+                let newEngines = Serializer.DeserializeMany(data);
+                newEngines.forEach(e => {
+                    e.EngineList = MainEngineTable.Items;
+                });
+                MainEngineTable.AddItems(newEngines);
+                Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""} using drag&drop`);
             };
             reader.readAsArrayBuffer(files[i]);
         }
@@ -810,6 +903,14 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-append-clipboard-list").addEventListener("click", AppendClipboardButton_Click);
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
+    MainEngineTable.OnSelectedItemChange = selectedEngine => {
+        if (selectedEngine) {
+            ApplyEngineToInfoPanel(selectedEngine);
+        }
+        else {
+            ApplyEngineToInfoPanel(new Engine(), true);
+        }
+    };
     MainEngineTable.RebuildTable();
 });
 function NewButton_Click() {
@@ -828,11 +929,13 @@ function OpenUploadButton_Click() {
             if (data) {
                 filename = filename.replace(/\.enl$/, "");
                 ListNameDisplay.SetValue(filename);
-                MainEngineTable.Items = [];
-                let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
+                MainEngineTable.Items = Serializer.DeserializeMany(data);
                 MainEngineTable.RebuildTable();
+                MainEngineTable.Items.forEach(e => {
+                    e.EngineList = MainEngineTable.Items;
+                });
                 FullscreenWindows["open-box"].style.display = "none";
-                Notifier.Info(`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+                Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
             }
             else {
                 Notifier.Warn("You didn't choose any file");
@@ -843,10 +946,13 @@ function OpenUploadButton_Click() {
 function AppendUploadButton_Click() {
     FileIO.OpenBinary(".enl", (data) => {
         if (data) {
-            let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-            MainEngineTable.RebuildTable();
+            let newEngines = Serializer.DeserializeMany(data);
+            newEngines.forEach(e => {
+                e.EngineList = MainEngineTable.Items;
+            });
+            MainEngineTable.AddItems(newEngines);
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
         }
         else {
         }
@@ -861,11 +967,13 @@ function OpenCacheButton_Click() {
             if (newFilename) {
                 ListNameDisplay.SetValue(newFilename);
             }
-            MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
+            MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.RebuildTable();
+            MainEngineTable.Items.forEach(e => {
+                e.EngineList = MainEngineTable.Items;
+            });
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info(`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }, "Choose a list to open");
     }
 }
@@ -874,10 +982,13 @@ function AppendCacheButton_Click() {
         if (!data) {
             return;
         }
-        let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-        MainEngineTable.RebuildTable();
+        let newEngines = Serializer.DeserializeMany(data);
+        newEngines.forEach(e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems(newEngines);
         FullscreenWindows["open-box"].style.display = "none";
-        Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
     }, "Choose a list to append");
 }
 function OpenClipboardButton_Click() {
@@ -889,11 +1000,13 @@ function OpenClipboardButton_Click() {
         }
         try {
             let data = BitConverter.Base64ToByteArray(b64);
-            MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
+            MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.RebuildTable();
+            MainEngineTable.Items.forEach(e => {
+                e.EngineList = MainEngineTable.Items;
+            });
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info(`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }
         catch (e) {
             Notifier.Warn("There was an error while parsing the string");
@@ -909,10 +1022,13 @@ function AppendClipboardButton_Click() {
     }
     try {
         let data = BitConverter.Base64ToByteArray(b64);
-        let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-        MainEngineTable.RebuildTable();
+        let newEngines = Serializer.DeserializeMany(data);
+        newEngines.forEach(e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems(newEngines);
         FullscreenWindows["open-box"].style.display = "none";
-        Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
     }
     catch (e) {
         Notifier.Warn("There was an error while parsing the string");
@@ -1016,7 +1132,9 @@ function DuplicateButton_Click() {
     MainEngineTable.RebuildTable();
 }
 function AddButton_Click() {
-    MainEngineTable.AddItem(new Engine(MainEngineTable.Items));
+    let newEngine = new Engine();
+    newEngine.EngineList = MainEngineTable.Items;
+    MainEngineTable.AddItems(newEngine);
 }
 function RemoveButton_Click() {
     if (MainEngineTable.SelectedRows.length > 0 && confirm(`You are about to delete ${MainEngineTable.SelectedRows.length} items from the list.\n\nAre you sure?`)) {
@@ -7190,8 +7308,11 @@ class BrowserCacheDialog {
             appendButton.classList.add("option-button");
             appendButton.classList.add("cache-option-button");
             appendButton.addEventListener("click", () => {
-                Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable.Items);
-                MainEngineTable.RebuildTable();
+                let newEngines = Serializer.DeserializeMany(Store.GetBinary(i));
+                newEngines.forEach(e => {
+                    e.EngineList = MainEngineTable.Items;
+                });
+                MainEngineTable.AddItems(newEngines);
                 this.DialogBoxElement.style.display = "none";
             });
             listItem.appendChild(appendButton);
@@ -7203,9 +7324,11 @@ class BrowserCacheDialog {
             openButton.addEventListener("click", () => {
                 if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
                     ListNameDisplay.SetValue(i.replace(/\.enl$/, ""));
-                    MainEngineTable.Items = [];
-                    Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable.Items);
+                    MainEngineTable.Items = Serializer.DeserializeMany(Store.GetBinary(i));
                     MainEngineTable.RebuildTable();
+                    MainEngineTable.Items.forEach(e => {
+                        e.EngineList = MainEngineTable.Items;
+                    });
                     this.DialogBoxElement.style.display = "none";
                 }
             });
@@ -7350,7 +7473,7 @@ var PolymorphismType;
     PolymorphismType[PolymorphismType["MultiConfigSlave"] = 4] = "MultiConfigSlave";
 })(PolymorphismType || (PolymorphismType = {}));
 class Engine {
-    constructor(originList = []) {
+    constructor() {
         this.Spacer = false;
         this.EditableFieldMetadata = {
             Spacer: EngineEditableFieldMetadata.Spacer,
@@ -7378,6 +7501,7 @@ class Engine {
         };
         this.ListCols = [];
         this.EditableFields = [];
+        this.EngineList = [];
         this.Active = false;
         this.ID = "New-Engine";
         this.Mass = 1;
@@ -7431,7 +7555,36 @@ class Engine {
         this.OnEditEnd = () => {
             this.UpdateEveryDisplay();
         };
-        this.EngineList = originList;
+    }
+    static RegularSort(...args) {
+        for (let i = 0; i <= args.length - 2; i += 2) {
+            let a = args[i];
+            let b = args[i + 1];
+            a = typeof a == "string" ? a.toLowerCase() : a;
+            b = typeof b == "string" ? b.toLowerCase() : b;
+            if (a > b) {
+                return 1;
+            }
+            else if (a < b) {
+                return -1;
+            }
+            else {
+                continue;
+            }
+        }
+        return 0;
+    }
+    ColumnSorts() {
+        return Engine._ColumnSorts;
+    }
+    GetDisplayLabel() {
+        let isSlave = this.PolyType == PolymorphismType.MultiModeSlave || this.PolyType == PolymorphismType.MultiConfigSlave;
+        if (this.EngineName == "" || isSlave) {
+            return `${this.ID}`;
+        }
+        else {
+            return `${this.EngineName}`;
+        }
     }
     UpdateEveryDisplay() {
         this.EditableFields.forEach(f => {
@@ -7443,6 +7596,22 @@ class Engine {
         let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
         return targetEngine.Mass;
+    }
+    GetWidth() {
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            return this.EngineList.find(x => x.ID == this.MasterEngineName).Width;
+        }
+        else {
+            return this.Width;
+        }
+    }
+    GetHeight() {
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            return this.EngineList.find(x => x.ID == this.MasterEngineName).Height;
+        }
+        else {
+            return this.Height;
+        }
     }
     GetModelID() {
         if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
@@ -7871,9 +8040,9 @@ class Engine {
             ++x;
         }
     }
-    OnTableDraw(e) {
-        this.ListCols = e;
-        this.RehidePolyFields(e);
+    OnTableDraw(rowElements) {
+        this.ListCols = rowElements;
+        this.RehidePolyFields(rowElements);
     }
     EngineTypeConfig() {
         switch (this.EngineVariant) {
@@ -8173,6 +8342,100 @@ Engine.ColumnDefinitions = {
         DefaultWidth: 300,
         DisplayFlags: 0b00000
     }
+};
+Engine._ColumnSorts = {
+    Active: (a, b) => Engine.RegularSort(a.Active, b.Active, a.ID, b.ID),
+    ID: (a, b) => Engine.RegularSort(a.ID, b.ID),
+    Labels: (a, b) => Engine.RegularSort(a.GetDisplayLabel(), b.GetDisplayLabel(), a.ID, b.ID),
+    EngineVariant: (a, b) => Engine.RegularSort(a.EngineVariant, b.EngineVariant, a.ID, b.ID),
+    Mass: (a, b) => Engine.RegularSort(a.GetMass(), b.GetMass(), a.ID, b.ID),
+    Thrust: (a, b) => Engine.RegularSort(a.Thrust, b.Thrust, a.ID, b.ID),
+    MinThrust: (a, b) => Engine.RegularSort(a.MinThrust, b.MinThrust, a.ID, b.ID),
+    AtmIsp: (a, b) => Engine.RegularSort(a.AtmIsp, b.AtmIsp, a.ID, b.ID),
+    VacIsp: (a, b) => Engine.RegularSort(a.VacIsp, b.VacIsp, a.ID, b.ID),
+    PressureFed: (a, b) => Engine.RegularSort(a.PressureFed, b.PressureFed, a.ID, b.ID),
+    NeedsUllage: (a, b) => Engine.RegularSort(a.NeedsUllage, b.NeedsUllage, a.ID, b.ID),
+    TechUnlockNode: (a, b) => Engine.RegularSort(a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID),
+    EntryCost: (a, b) => Engine.RegularSort(a.EntryCost, b.EntryCost, a.ID, b.ID),
+    Cost: (a, b) => Engine.RegularSort(a.Cost, b.Cost, a.ID, b.ID),
+    AlternatorPower: (a, b) => Engine.RegularSort(a.AlternatorPower, b.AlternatorPower, a.ID, b.ID),
+    ThrustCurve: (a, b) => Engine.RegularSort(a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
+    Polymorphism: (a, b) => {
+        let output = Engine.RegularSort(a.PolyType, b.PolyType);
+        if (output) {
+            return output;
+        }
+        if (a.PolyType == PolymorphismType.MultiModeSlave ||
+            a.PolyType == PolymorphismType.MultiConfigSlave) {
+            output = Engine.RegularSort(a.MasterEngineName, b.MasterEngineName);
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    }, FuelRatios: (a, b) => {
+        let output = Engine.RegularSort(a.FuelRatioItems.length, b.FuelRatioItems.length);
+        if (output) {
+            return output;
+        }
+        for (let i = 0; i < a.FuelRatioItems.length; ++i) {
+            output = Engine.RegularSort(a.FuelRatioItems[i][0], b.FuelRatioItems[i][0]);
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    }, Ignitions: (a, b) => Engine.RegularSort(a.Ignitions <= 0 ? 999999999 : a.Ignitions, b.Ignitions <= 0 ? 999999999 : b.Ignitions, a.ID, b.ID), Visuals: (a, b) => Engine.RegularSort(a.GetModelID(), b.GetModelID(), a.PlumeID, b.PlumeID, a.ID, b.ID), Dimensions: (a, b) => Engine.RegularSort(a.GetWidth(), b.GetWidth(), a.GetHeight(), b.GetHeight(), a.ID, b.ID), Gimbal: (a, b) => {
+        let output = Engine.RegularSort(a.AdvancedGimbal, b.AdvancedGimbal);
+        if (output) {
+            return output;
+        }
+        if (a.AdvancedGimbal) {
+            let output = Engine.RegularSort(a.GimbalNX + a.GimbalNY + a.GimbalPX + a.GimbalPY, b.GimbalNX + b.GimbalNY + b.GimbalPX + b.GimbalPY);
+            if (output) {
+                return output;
+            }
+        }
+        else {
+            let output = Engine.RegularSort(a.Gimbal, b.Gimbal);
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    }, TestFlight: (a, b) => {
+        let output = Engine.RegularSort(a.EnableTestFlight, b.EnableTestFlight);
+        if (output) {
+            return output;
+        }
+        if (a.EnableTestFlight) {
+            output = Engine.RegularSort(a.RatedBurnTime / (1 - a.CycleReliability10k / 100), b.RatedBurnTime / (1 - b.CycleReliability10k / 100));
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    }, Tank: (a, b) => {
+        let output = Engine.RegularSort(a.UseTanks, b.UseTanks);
+        if (output) {
+            return output;
+        }
+        if (a.UseTanks) {
+            let aVolume = 0;
+            let bVolume = 0;
+            a.GetConstrainedTankContents().forEach(r => {
+                aVolume += r[1];
+            });
+            b.GetConstrainedTankContents().forEach(r => {
+                bVolume += r[1];
+            });
+            output = Engine.RegularSort(aVolume, bVolume);
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    },
 };
 Engine.PolymorphismTypeDropdown = Engine.BuildPolymorphismTypeDropdown();
 var EngineEditableFieldMetadata;
@@ -8572,13 +8835,7 @@ var EngineEditableFieldMetadata;
             tmp.classList.add("content-cell-content");
             return tmp;
         }, ApplyValueToDisplayElement: (e, engine) => {
-            let isSlave = engine.PolyType == PolymorphismType.MultiModeSlave || engine.PolyType == PolymorphismType.MultiConfigSlave;
-            if (engine.EngineName == "" || isSlave) {
-                e.innerHTML = `${engine.ID}`;
-            }
-            else {
-                e.innerHTML = `${engine.EngineName}`;
-            }
+            e.innerHTML = engine.GetDisplayLabel();
         }, GetEditElement: () => {
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
@@ -10513,7 +10770,8 @@ class Packager {
 }
 class Serializer {
     static Copy(engine) {
-        let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0, engine.EngineList);
+        let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0);
+        copiedEngine.EngineList = engine.EngineList;
         return copiedEngine;
     }
     static SerializeMany(engines) {
@@ -10531,19 +10789,18 @@ class Serializer {
         });
         return output;
     }
-    static DeserializeMany(data, appendToExisting) {
+    static DeserializeMany(data) {
         let offset = 0;
-        let engineCount = 0;
+        let deserializedEngines = [];
         while (offset < data.length) {
-            let [engine, addedOffset] = Serializer.Deserialize(data, offset, appendToExisting);
-            MainEngineTable.AddItem(engine);
+            let [engine, addedOffset] = Serializer.Deserialize(data, offset);
+            deserializedEngines.push(engine);
             offset += addedOffset;
-            ++engineCount;
         }
         if (offset != data.length) {
             console.warn("Possible data corruption?");
         }
-        return engineCount;
+        return deserializedEngines;
     }
     static Serialize(e) {
         let i = 0;
@@ -10742,8 +10999,8 @@ class Serializer {
         }
         return output;
     }
-    static Deserialize(input, startOffset, originList) {
-        let output = new Engine(originList);
+    static Deserialize(input, startOffset) {
+        let output = new Engine();
         let i = startOffset;
         let version = 0;
         version += input[i++];

@@ -5,13 +5,7 @@ namespace EngineEditableFieldMetadata {
             tmp.classList.add ("content-cell-content");
             return tmp;
         }, ApplyValueToDisplayElement: (e, engine) => {
-            let isSlave = engine.PolyType == PolymorphismType.MultiModeSlave || engine.PolyType == PolymorphismType.MultiConfigSlave;
-            
-            if (engine.EngineName == "" || isSlave) {
-                e.innerHTML = `${engine.ID}`;
-            } else {
-                e.innerHTML = `${engine.EngineName}`;
-            }
+            e.innerHTML = engine.GetDisplayLabel ();
         }, GetEditElement: () => {
             let tmp = document.createElement ("div");
             tmp.classList.add ("content-cell-content");

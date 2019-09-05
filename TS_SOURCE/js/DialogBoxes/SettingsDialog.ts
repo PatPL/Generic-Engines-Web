@@ -87,6 +87,10 @@ const Settings: ISettings = {
         return Store.GetText ("setting:prettify_config", "0") == "1";
     }, set prettify_config(value: boolean) {
         Store.SetText ("setting:prettify_config", value ? "1" : "0");
+    }, get async_sort(): boolean {
+        return Store.GetText ("setting:async_sort", "0") == "1";
+    }, set async_sort(value: boolean) {
+        Store.SetText ("setting:async_sort", value ? "1" : "0");
     }
 }
 
@@ -98,4 +102,5 @@ interface ISettings {
     dark_theme: boolean;
     show_info_panel: boolean;
     prettify_config: boolean;
+    async_sort: boolean;
 }

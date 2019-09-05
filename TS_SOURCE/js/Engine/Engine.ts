@@ -131,20 +131,38 @@ class Engine implements ITableElement<Engine> {
     public static readonly _ColumnSorts: { [columnID: string]: (a: Engine, b: Engine) => number } = {
         Active: (a, b) => Engine.RegularSort (a.Active, b.Active, a.ID, b.ID),
         ID: (a, b) => Engine.RegularSort (a.ID, b.ID),
-        Labels: (a, b) => Engine.RegularSort (a.GetDisplayLabel (), b.GetDisplayLabel (), a.ID, b.ID),
-        EngineVariant: (a, b) => Engine.RegularSort (a.EngineVariant, b.EngineVariant, a.ID, b.ID),
-        Mass: (a, b) => Engine.RegularSort (a.GetMass (), b.GetMass (), a.ID, b.ID),
+        Labels: (a, b) => Engine.RegularSort (
+            a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave,
+            a.GetDisplayLabel (), b.GetDisplayLabel (),
+            a.ID, b.ID
+        ), EngineVariant: (a, b) => Engine.RegularSort (
+            a.IsSlave (), b.IsSlave (),
+            a.EngineVariant, b.EngineVariant,
+            a.ID, b.ID
+        ), Mass: (a, b) => Engine.RegularSort (a.GetMass (), b.GetMass (), a.ID, b.ID),
         Thrust: (a, b) => Engine.RegularSort (a.Thrust, b.Thrust, a.ID, b.ID),
         MinThrust: (a, b) => Engine.RegularSort (a.MinThrust, b.MinThrust, a.ID, b.ID),
         AtmIsp: (a, b) => Engine.RegularSort (a.AtmIsp, b.AtmIsp, a.ID, b.ID),
         VacIsp: (a, b) => Engine.RegularSort (a.VacIsp, b.VacIsp, a.ID, b.ID),
         PressureFed: (a, b) => Engine.RegularSort (a.PressureFed, b.PressureFed, a.ID, b.ID),
         NeedsUllage: (a, b) => Engine.RegularSort (a.NeedsUllage, b.NeedsUllage, a.ID, b.ID),
-        TechUnlockNode: (a, b) => Engine.RegularSort (a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID),
-        EntryCost: (a, b) => Engine.RegularSort (a.EntryCost, b.EntryCost, a.ID, b.ID),
-        Cost: (a, b) => Engine.RegularSort (a.Cost, b.Cost, a.ID, b.ID),
-        AlternatorPower: (a, b) => Engine.RegularSort (a.AlternatorPower, b.AlternatorPower, a.ID, b.ID),
-        ThrustCurve: (a, b) => Engine.RegularSort (a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
+        TechUnlockNode: (a, b) => Engine.RegularSort (
+            a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave,
+            a.TechUnlockNode, b.TechUnlockNode,
+            a.ID, b.ID
+        ), EntryCost: (a, b) => Engine.RegularSort (
+            a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave,
+            a.EntryCost, b.EntryCost,
+            a.ID, b.ID
+        ), Cost: (a, b) => Engine.RegularSort (
+            a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave,
+            a.Cost, b.Cost,
+            a.ID, b.ID
+        ), AlternatorPower: (a, b) => Engine.RegularSort (
+            a.IsSlave (), b.IsSlave (),
+            a.AlternatorPower, b.AlternatorPower,
+            a.ID, b.ID
+        ), ThrustCurve: (a, b) => Engine.RegularSort (a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
         Polymorphism: (a, b) => {
             let output = Engine.RegularSort (a.PolyType, b.PolyType);
             
@@ -177,6 +195,7 @@ class Engine implements ITableElement<Engine> {
             // a & b have the same propellants, sort by ID, as a last resort
             return Engine.RegularSort (a.ID, b.ID);
         }, Ignitions: (a, b) => Engine.RegularSort (
+            a.IsMultiMode (), b.IsMultiMode (),
             a.Ignitions <= 0 ? 999999999 : a.Ignitions, b.Ignitions <= 0 ? 999999999 : b.Ignitions,
             a.ID, b.ID
         ), Visuals: (a, b) => Engine.RegularSort (
@@ -188,7 +207,11 @@ class Engine implements ITableElement<Engine> {
             a.GetHeight (), b.GetHeight (),
             a.ID, b.ID
         ), Gimbal: (a, b) => {
-            let output = Engine.RegularSort (a.AdvancedGimbal, b.AdvancedGimbal);
+            let output = Engine.RegularSort (a.IsSlave (), b.IsSlave ());
+            
+            if (output) { return output } // Return if non 0
+            
+            output = Engine.RegularSort (a.AdvancedGimbal, b.AdvancedGimbal);
             
             if (output) { return output } // Return if non 0
             
@@ -209,7 +232,11 @@ class Engine implements ITableElement<Engine> {
             // a & b have the same gimbal, sort by ID, as a last resort
             return Engine.RegularSort (a.ID, b.ID);
         }, TestFlight: (a, b) => {
-            let output = Engine.RegularSort (a.EnableTestFlight, b.EnableTestFlight);
+            let output = Engine.RegularSort (a.IsMultiMode (), b.IsMultiMode ());
+            
+            if (output) { return output } // Return if non 0
+            
+            output = Engine.RegularSort (a.EnableTestFlight, b.EnableTestFlight);
             
             if (output) { return output } // Return if non 0
             
@@ -226,7 +253,11 @@ class Engine implements ITableElement<Engine> {
             // a & b have the same gimbal, sort by ID, as a last resort
             return Engine.RegularSort (a.ID, b.ID);
         }, Tank: (a, b) => {
-            let output = Engine.RegularSort (a.UseTanks, b.UseTanks);
+            let output = Engine.RegularSort (a.IsSlave (), b.IsSlave ());
+            
+            if (output) { return output } // Return if non 0
+            
+            output = Engine.RegularSort (a.UseTanks, b.UseTanks);
             
             if (output) { return output } // Return if non 0
             
@@ -369,6 +400,20 @@ class Engine implements ITableElement<Engine> {
         });
         
         ApplyEngineToInfoPanel (this);
+    }
+    
+    public IsSlave (): boolean {
+        return (
+            this.PolyType == PolymorphismType.MultiModeSlave ||
+            this.PolyType == PolymorphismType.MultiConfigSlave
+        );
+    }
+    
+    public IsMultiMode (): boolean {
+        return (
+            this.PolyType == PolymorphismType.MultiModeSlave ||
+            this.PolyType == PolymorphismType.MultiModeMaster
+        );
     }
     
     public GetMass (): number {

@@ -58,6 +58,9 @@ class EditableField {
         }
         EditableField.EditedField = null;
         this.ShowEditMode(false);
+        if (this.OnSaveEdit && saveChanges) {
+            this.OnSaveEdit();
+        }
     }
     SetValue(newValue) {
         this.ValueOwner[this.ValueName] = newValue;
@@ -96,6 +99,9 @@ class EditableField {
             tmp.type = "checkbox";
             tmp.addEventListener("change", (e) => {
                 this.ValueOwner[this.ValueName] = tmp.checked;
+                if (this.OnSaveEdit) {
+                    this.OnSaveEdit();
+                }
             });
             output = tmp;
         }
@@ -283,7 +289,6 @@ class HtmlTable {
         this.DisplayedRowOrder = [];
         this.SelectedRows = [];
         this.TableContainer = container;
-        console.log(this.DisplayedRowOrder);
         this.TableElement = document.createElement("div");
         this.TableElement.classList.add("content-table");
         this.TableContainer.innerHTML = "";
@@ -320,6 +325,9 @@ class HtmlTable {
             columnCell.classList.add("content-cell");
             columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter).toString());
             let cellField = new EditableField(newItem, columnID, columnCell);
+            cellField.OnSaveEdit = () => {
+                this.SortItems();
+            };
             if (newItem.hasOwnProperty("EditableFields")) {
                 newItem.EditableFields.push(cellField);
             }
@@ -521,6 +529,15 @@ class HtmlTable {
         this.SortItems();
     }
     SortItems() {
+        console.log(Settings.async_sort);
+        if (Settings.async_sort) {
+            setTimeout(() => this._SortItems(), 0);
+        }
+        else {
+            this._SortItems();
+        }
+    }
+    _SortItems() {
         this.DisplayedRowOrder.length = 0;
         if (this.currentSort && this.Items.length > 0) {
             let sorts = this.Items[0].ColumnSorts();
@@ -737,6 +754,10 @@ const Settings = {
         return Store.GetText("setting:prettify_config", "0") == "1";
     }, set prettify_config(value) {
         Store.SetText("setting:prettify_config", value ? "1" : "0");
+    }, get async_sort() {
+        return Store.GetText("setting:async_sort", "0") == "1";
+    }, set async_sort(value) {
+        Store.SetText("setting:async_sort", value ? "1" : "0");
     }
 };
 var ListName = "Unnamed";
@@ -7592,6 +7613,14 @@ class Engine {
         });
         ApplyEngineToInfoPanel(this);
     }
+    IsSlave() {
+        return (this.PolyType == PolymorphismType.MultiModeSlave ||
+            this.PolyType == PolymorphismType.MultiConfigSlave);
+    }
+    IsMultiMode() {
+        return (this.PolyType == PolymorphismType.MultiModeSlave ||
+            this.PolyType == PolymorphismType.MultiModeMaster);
+    }
     GetMass() {
         let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
@@ -8346,20 +8375,14 @@ Engine.ColumnDefinitions = {
 Engine._ColumnSorts = {
     Active: (a, b) => Engine.RegularSort(a.Active, b.Active, a.ID, b.ID),
     ID: (a, b) => Engine.RegularSort(a.ID, b.ID),
-    Labels: (a, b) => Engine.RegularSort(a.GetDisplayLabel(), b.GetDisplayLabel(), a.ID, b.ID),
-    EngineVariant: (a, b) => Engine.RegularSort(a.EngineVariant, b.EngineVariant, a.ID, b.ID),
-    Mass: (a, b) => Engine.RegularSort(a.GetMass(), b.GetMass(), a.ID, b.ID),
+    Labels: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.GetDisplayLabel(), b.GetDisplayLabel(), a.ID, b.ID), EngineVariant: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.EngineVariant, b.EngineVariant, a.ID, b.ID), Mass: (a, b) => Engine.RegularSort(a.GetMass(), b.GetMass(), a.ID, b.ID),
     Thrust: (a, b) => Engine.RegularSort(a.Thrust, b.Thrust, a.ID, b.ID),
     MinThrust: (a, b) => Engine.RegularSort(a.MinThrust, b.MinThrust, a.ID, b.ID),
     AtmIsp: (a, b) => Engine.RegularSort(a.AtmIsp, b.AtmIsp, a.ID, b.ID),
     VacIsp: (a, b) => Engine.RegularSort(a.VacIsp, b.VacIsp, a.ID, b.ID),
     PressureFed: (a, b) => Engine.RegularSort(a.PressureFed, b.PressureFed, a.ID, b.ID),
     NeedsUllage: (a, b) => Engine.RegularSort(a.NeedsUllage, b.NeedsUllage, a.ID, b.ID),
-    TechUnlockNode: (a, b) => Engine.RegularSort(a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID),
-    EntryCost: (a, b) => Engine.RegularSort(a.EntryCost, b.EntryCost, a.ID, b.ID),
-    Cost: (a, b) => Engine.RegularSort(a.Cost, b.Cost, a.ID, b.ID),
-    AlternatorPower: (a, b) => Engine.RegularSort(a.AlternatorPower, b.AlternatorPower, a.ID, b.ID),
-    ThrustCurve: (a, b) => Engine.RegularSort(a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
+    TechUnlockNode: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID), EntryCost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.EntryCost, b.EntryCost, a.ID, b.ID), Cost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.Cost, b.Cost, a.ID, b.ID), AlternatorPower: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.AlternatorPower, b.AlternatorPower, a.ID, b.ID), ThrustCurve: (a, b) => Engine.RegularSort(a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
     Polymorphism: (a, b) => {
         let output = Engine.RegularSort(a.PolyType, b.PolyType);
         if (output) {
@@ -8385,8 +8408,12 @@ Engine._ColumnSorts = {
             }
         }
         return Engine.RegularSort(a.ID, b.ID);
-    }, Ignitions: (a, b) => Engine.RegularSort(a.Ignitions <= 0 ? 999999999 : a.Ignitions, b.Ignitions <= 0 ? 999999999 : b.Ignitions, a.ID, b.ID), Visuals: (a, b) => Engine.RegularSort(a.GetModelID(), b.GetModelID(), a.PlumeID, b.PlumeID, a.ID, b.ID), Dimensions: (a, b) => Engine.RegularSort(a.GetWidth(), b.GetWidth(), a.GetHeight(), b.GetHeight(), a.ID, b.ID), Gimbal: (a, b) => {
-        let output = Engine.RegularSort(a.AdvancedGimbal, b.AdvancedGimbal);
+    }, Ignitions: (a, b) => Engine.RegularSort(a.IsMultiMode(), b.IsMultiMode(), a.Ignitions <= 0 ? 999999999 : a.Ignitions, b.Ignitions <= 0 ? 999999999 : b.Ignitions, a.ID, b.ID), Visuals: (a, b) => Engine.RegularSort(a.GetModelID(), b.GetModelID(), a.PlumeID, b.PlumeID, a.ID, b.ID), Dimensions: (a, b) => Engine.RegularSort(a.GetWidth(), b.GetWidth(), a.GetHeight(), b.GetHeight(), a.ID, b.ID), Gimbal: (a, b) => {
+        let output = Engine.RegularSort(a.IsSlave(), b.IsSlave());
+        if (output) {
+            return output;
+        }
+        output = Engine.RegularSort(a.AdvancedGimbal, b.AdvancedGimbal);
         if (output) {
             return output;
         }
@@ -8404,7 +8431,11 @@ Engine._ColumnSorts = {
         }
         return Engine.RegularSort(a.ID, b.ID);
     }, TestFlight: (a, b) => {
-        let output = Engine.RegularSort(a.EnableTestFlight, b.EnableTestFlight);
+        let output = Engine.RegularSort(a.IsMultiMode(), b.IsMultiMode());
+        if (output) {
+            return output;
+        }
+        output = Engine.RegularSort(a.EnableTestFlight, b.EnableTestFlight);
         if (output) {
             return output;
         }
@@ -8416,7 +8447,11 @@ Engine._ColumnSorts = {
         }
         return Engine.RegularSort(a.ID, b.ID);
     }, Tank: (a, b) => {
-        let output = Engine.RegularSort(a.UseTanks, b.UseTanks);
+        let output = Engine.RegularSort(a.IsSlave(), b.IsSlave());
+        if (output) {
+            return output;
+        }
+        output = Engine.RegularSort(a.UseTanks, b.UseTanks);
         if (output) {
             return output;
         }
@@ -9810,6 +9845,7 @@ class DebugLists {
         let modelCount = Object.getOwnPropertyNames(Model).length / 2;
         for (let i = 0; i < modelCount; ++i) {
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo(i);
             if (!modelInfo.Exhaust) {
                 continue;
@@ -9844,14 +9880,14 @@ class DebugLists {
             newEngine.ExhaustPlumeID = exhaustPlumes[Math.floor(exhaustPlumes.length * Math.random())];
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForModelPreviews() {
         let toAppend = [];
         let modelCount = Object.getOwnPropertyNames(Model).length / 2;
         for (let i = 0; i < modelCount; ++i) {
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo(i);
             newEngine.Active = true;
             newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}`;
@@ -9876,14 +9912,14 @@ class DebugLists {
             newEngine.PlumeID = plumes[Math.floor(plumes.length * Math.random())];
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForPlumeTest() {
         let toAppend = [];
         let plumeCount = Object.getOwnPropertyNames(Plume).length / 2;
         for (let i = 0; i < plumeCount; ++i) {
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             let plumeInfo = PlumeInfo.GetPlumeInfo(i);
             newEngine.Active = true;
             newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUMETEST`;
@@ -9899,14 +9935,14 @@ class DebugLists {
             newEngine.PlumeID = i;
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForPlumePreviews() {
         let toAppend = [];
         let plumeCount = Object.getOwnPropertyNames(Plume).length / 2;
         for (let i = 0; i < plumeCount; ++i) {
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo(Model.RS25_2);
             let plumeInfo = PlumeInfo.GetPlumeInfo(i);
             newEngine.Active = true;
@@ -9926,8 +9962,7 @@ class DebugLists {
             newEngine.PlumeID = i;
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForModelTest() {
         let toAppend = [];
@@ -9936,6 +9971,7 @@ class DebugLists {
         let modelInfo;
         for (let i = 0; i < modelCount; ++i) {
             newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             modelInfo = ModelInfo.GetModelInfo(i);
             newEngine.Active = true;
             newEngine.ID = `MODEL-${("0000" + i).slice(-4)}-1`;
@@ -9978,8 +10014,7 @@ class DebugLists {
             newEngine.PlumeID = Plume.Solid_Lower;
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForTankTest() {
         let toAppend = [];
@@ -9990,6 +10025,7 @@ class DebugLists {
                 continue;
             }
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             newEngine.Active = true;
             newEngine.ID = `TANKTEST-${("0000" + i).slice(-4)}`;
             newEngine.EngineName = `(${("0000" + i).slice(-4)}) Tank volume test - ${modelInfo.ModelName}`;
@@ -10001,8 +10037,7 @@ class DebugLists {
             newEngine.TanksVolume = newEngine.GetTankSizeEstimate();
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
 }
 class Dragger {

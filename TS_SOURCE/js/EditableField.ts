@@ -12,6 +12,8 @@ class EditableField {
     static EditedField: EditableField | null = null;
     static IDCounter: number = 0;
     
+    OnSaveEdit?: () => void;
+    
     constructor (valueOwner: { [id: string]: any }, valueName: string, container: HTMLElement) {
         this.FieldID = EditableField.IDCounter++;
         
@@ -88,6 +90,10 @@ class EditableField {
         EditableField.EditedField = null;
         
         this.ShowEditMode (false);
+        
+        if (this.OnSaveEdit && saveChanges) {
+            this.OnSaveEdit ();
+        }
     }
     
     public SetValue (newValue: any) {
@@ -137,6 +143,7 @@ class EditableField {
             
             tmp.addEventListener ("change", (e) => {
                 this.ValueOwner[this.ValueName] = tmp.checked;
+                if (this.OnSaveEdit) { this.OnSaveEdit (); }
             })
             
             output = tmp;

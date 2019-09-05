@@ -20,7 +20,7 @@ class HtmlTable<T extends ITableElement<T>> {
     
     constructor (container: HTMLElement) {
         this.TableContainer = container;
-        console.log (this.DisplayedRowOrder);
+        
         this.TableElement = document.createElement ("div");
         this.TableElement.classList.add ("content-table");
         
@@ -65,6 +65,9 @@ class HtmlTable<T extends ITableElement<T>> {
             columnCell.classList.add ("content-cell");
             columnCell.setAttribute ("data-tableRow", (HtmlTable.RowCounter).toString ());
             let cellField = new EditableField (newItem, columnID, columnCell);
+            cellField.OnSaveEdit = () => {
+                this.SortItems ();
+            }
             
             if ((newItem as Object).hasOwnProperty ("EditableFields")) {
                 newItem.EditableFields.push (cellField);
@@ -311,6 +314,16 @@ class HtmlTable<T extends ITableElement<T>> {
     }
     
     private SortItems () {
+        // Call it according to the setting
+        console.log (Settings.async_sort);
+        if (Settings.async_sort) {
+            setTimeout (() => this._SortItems (), 0);
+        } else {
+            this._SortItems ();
+        }
+    }
+    
+    private _SortItems () {
         this.DisplayedRowOrder.length = 0;
         
         if (this.currentSort && this.Items.length > 0) {
@@ -351,5 +364,4 @@ class HtmlTable<T extends ITableElement<T>> {
             });
         }
     }
-    
 }

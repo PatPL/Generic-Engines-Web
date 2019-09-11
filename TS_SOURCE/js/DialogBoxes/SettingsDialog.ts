@@ -91,6 +91,10 @@ const Settings: ISettings = {
         return Store.GetText ("setting:async_sort", "0") == "1";
     }, set async_sort(value: boolean) {
         Store.SetText ("setting:async_sort", value ? "1" : "0");
+    }, get hide_disabled_fields_on_sort(): boolean {
+        return Store.GetText ("setting:hide_disabled_fields_on_sort", "1") == "1";
+    }, set hide_disabled_fields_on_sort(value: boolean) {
+        Store.SetText ("setting:hide_disabled_fields_on_sort", value ? "1" : "0");
     }
 }
 
@@ -103,4 +107,5 @@ interface ISettings {
     show_info_panel: boolean;
     prettify_config: boolean;
     async_sort: boolean;
+    hide_disabled_fields_on_sort: boolean;
 }

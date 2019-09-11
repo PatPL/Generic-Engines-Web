@@ -551,9 +551,21 @@ class HtmlTable {
                     return sortFunction(a[2], b[2]) * this.currentSort[1];
                 });
                 map.forEach(row => {
+                    let hideRow = null;
+                    if (Settings.hide_disabled_fields_on_sort && row[2] instanceof Engine) {
+                        hideRow = (this.ColumnsDefinitions[this.currentSort[0]].DisplayFlags & 1 << row[2].PolyType) != 0;
+                    }
                     this.DisplayedRowOrder.push(row[0]);
                     row[1].forEach(cell => {
-                        cell.parentNode.appendChild(cell);
+                        if (hideRow != null) {
+                            if (!hideRow) {
+                                cell.parentNode.appendChild(cell);
+                            }
+                            cell.style.display = hideRow ? "none" : "block";
+                        }
+                        else {
+                            cell.parentNode.appendChild(cell);
+                        }
                     });
                 });
                 return;
@@ -565,8 +577,9 @@ class HtmlTable {
         }
         for (let i in this.Rows) {
             this.DisplayedRowOrder.push(i);
-            this.Rows[i][0].forEach(e => {
-                e.parentNode.appendChild(e);
+            this.Rows[i][0].forEach(cell => {
+                cell.parentNode.appendChild(cell);
+                cell.style.display = "block";
             });
         }
     }
@@ -758,6 +771,10 @@ const Settings = {
         return Store.GetText("setting:async_sort", "0") == "1";
     }, set async_sort(value) {
         Store.SetText("setting:async_sort", value ? "1" : "0");
+    }, get hide_disabled_fields_on_sort() {
+        return Store.GetText("setting:hide_disabled_fields_on_sort", "1") == "1";
+    }, set hide_disabled_fields_on_sort(value) {
+        Store.SetText("setting:hide_disabled_fields_on_sort", value ? "1" : "0");
     }
 };
 var ListName = "Unnamed";

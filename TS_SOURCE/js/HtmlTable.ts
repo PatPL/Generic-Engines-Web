@@ -343,9 +343,24 @@ class HtmlTable<T extends ITableElement<T>> {
                 
                 // Apply the new item order
                 map.forEach (row => {
+                    let hideRow: boolean | null = null;
+                    // Special case for hide-able Engine fields
+                    if (Settings.hide_disabled_fields_on_sort && row[2] instanceof Engine) {
+                        hideRow = (this.ColumnsDefinitions[this.currentSort![0]].DisplayFlags! & 1 << row[2].PolyType) != 0;
+                    }
+                    
                     this.DisplayedRowOrder.push (row[0]);
                     row[1].forEach (cell => {
-                        cell.parentNode!.appendChild (cell);
+                        if (hideRow != null) {
+                            // Don't touch hidden ones to bump them to the top, and keep gray bgs' pattern correct
+                            if (!hideRow) {
+                                cell.parentNode!.appendChild (cell);
+                            }
+                            
+                            cell.style.display = hideRow ? "none" : "block";
+                        } else {
+                            cell.parentNode!.appendChild (cell);
+                        }
                     });
                 });
                 return; // Don't fall-through to regular item order
@@ -359,8 +374,9 @@ class HtmlTable<T extends ITableElement<T>> {
         // Regular item order
         for (let i in this.Rows) {
             this.DisplayedRowOrder.push (i);
-            this.Rows[i][0].forEach (e => {
-                e.parentNode!.appendChild (e);
+            this.Rows[i][0].forEach (cell => {
+                cell.parentNode!.appendChild (cell);
+                cell.style.display = "block";
             });
         }
     }

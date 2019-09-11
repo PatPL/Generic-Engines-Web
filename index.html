@@ -198,36 +198,39 @@
         </div>
         <div id="info-panel">
             <div id="info-panel-resize"></div>
-            <b>ID:</b> <span info-field="id"></span>
+            <div id="info-panel-content">
+                <b>ID:</b> <span info-field="id"></span>
             
-            <hr>
-            
-            <h6>Mass:</h6>
-            <b class="abbr" title="With empty tanks">Dry:</b> <span info-field="dry_mass"></span><br>
-            <b class="abbr" title="With full tanks">Wet:</b> <span info-field="wet_mass"></span>
-            
-            <hr>
-            
-            <h6 class="abbr" title="Range represents values between min and max throttle setting">Thrust:</h6>
-            
-            <b class="abbr" title="Vacuum">Vac:</b> <span info-field="thrust_min_vac"></span> - <span info-field="thrust_max_vac"></span><br>
-            <b class="abbr" title="Sea level">SL:</b> <span info-field="thrust_min_atm"></span> - <span info-field="thrust_max_atm"></span>
-            
-            <hr>
-            
-            <h6 class="abbr" title="Range represents TWR from wet mass to dry mass">TWR:</h6>
-            
-            <b><span class="abbr" title="Lowest throttle setting">Min</span> <span class="abbr" title="Vacuum">Vac:</span></b> <span info-field="twr_wet_vac_min"></span> - <span info-field="twr_dry_vac_min"></span><br>
-            <b><span class="abbr" title="Highest throttle setting">Max</span> <span class="abbr" title="Vacuum">Vac:</span></b> <span info-field="twr_wet_vac"></span> - <span info-field="twr_dry_vac"></span><br>
-            <b><span class="abbr" title="Lowest throttle setting">Min</span> <span class="abbr" title="Sea level">SL:</span></b> <span info-field="twr_wet_atm_min"></span> - <span info-field="twr_dry_atm_min"></span><br>
-            <b><span class="abbr" title="Highest throttle setting">Max</span> <span class="abbr" title="Sea level">SL:</span></b> <span info-field="twr_wet_atm"></span> - <span info-field="twr_dry_atm"></span>
-            
-            <hr>
-            
-            <h6 class="abbr" title="Range represents values between min and max throttle setting">Mass flow:</h6>
-            
-            <span info-field="min_mass_flow"></span> - <span info-field="max_mass_flow"></span>
-            
+                <hr>
+                
+                <h6>Mass:</h6>
+                <b class="abbr" title="With empty tanks">Dry:</b> <span info-field="dry_mass"></span><br>
+                <b class="abbr" title="With full tanks">Wet:</b> <span info-field="wet_mass"></span>
+                
+                <hr>
+                
+                <h6 class="abbr" title="Range represents values between min and max throttle setting">Thrust:</h6>
+                
+                <b class="abbr" title="Vacuum">Vac:</b> <span info-field="thrust_min_vac"></span> - <span info-field="thrust_max_vac"></span><br>
+                <b class="abbr" title="Sea level">SL:</b> <span info-field="thrust_min_atm"></span> - <span info-field="thrust_max_atm"></span>
+                
+                <hr>
+                
+                <h6 class="abbr" title="Range represents TWR from wet mass to dry mass">TWR:</h6>
+                
+                <b><span class="abbr" title="Lowest throttle setting">Min</span> <span class="abbr" title="Vacuum">Vac:</span></b> <span info-field="twr_wet_vac_min"></span> - <span info-field="twr_dry_vac_min"></span><br>
+                <b><span class="abbr" title="Highest throttle setting">Max</span> <span class="abbr" title="Vacuum">Vac:</span></b> <span info-field="twr_wet_vac"></span> - <span info-field="twr_dry_vac"></span><br>
+                <b><span class="abbr" title="Lowest throttle setting">Min</span> <span class="abbr" title="Sea level">SL:</span></b> <span info-field="twr_wet_atm_min"></span> - <span info-field="twr_dry_atm_min"></span><br>
+                <b><span class="abbr" title="Highest throttle setting">Max</span> <span class="abbr" title="Sea level">SL:</span></b> <span info-field="twr_wet_atm"></span> - <span info-field="twr_dry_atm"></span>
+                
+                <hr>
+                
+                <h6 class="abbr" title="Range represents values between min and max throttle setting">Mass flow:</h6>
+                
+                <span info-field="min_mass_flow"></span> - <span info-field="max_mass_flow"></span>
+                
+                <hr><!-- Doesn't scroll all the way down without that, no clue why -->
+            </div>
         </div>
     </div>
 </body>

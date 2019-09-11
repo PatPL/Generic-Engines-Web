@@ -301,10 +301,6 @@ span.checkbox-label {
     background: var(--sidePanelBackground);
     border-left: 1px var(--darkBorder) solid;
     z-index: 200;
-    padding: 8px;
-    
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
 #info-panel h6 {
@@ -321,6 +317,15 @@ span.checkbox-label {
     top: 0px;
     
     cursor: ew-resize;
+}
+
+#info-panel-content {
+    height: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .content-table {

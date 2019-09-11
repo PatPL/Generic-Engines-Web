@@ -60,8 +60,6 @@ namespace EngineEditableFieldMetadata {
             
             // Not an 'addEventListener' to replace current listener, not add another one
             e.querySelector ("img")!.onclick = () => {
-                console.log ("p");
-                
                 let modelInfo = ModelInfo.GetModelInfo (engine.GetModelID ());
                 inputs[2].value = Unit.Display (
                     Unit.Parse (inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth),

@@ -434,8 +434,8 @@ class HtmlTable {
     }
     RebuildTable() {
         if (Object.getOwnPropertyNames(this.ColumnsDefinitions).length == 0) {
-            console.log(this);
-            console.log("No columns were set.");
+            console.warn(this);
+            console.warn("No columns were set.");
             return;
         }
         let ItemsBackup = new Array().concat(this.Items);
@@ -529,7 +529,6 @@ class HtmlTable {
         this.SortItems();
     }
     SortItems() {
-        console.log(Settings.async_sort);
         if (Settings.async_sort) {
             setTimeout(() => this._SortItems(), 0);
         }
@@ -1123,7 +1122,6 @@ function ClipboardSelectionButton_Click() {
     MainEngineTable.SelectedRows.forEach(index => {
         Engines.push(MainEngineTable.Rows[index][1]);
     });
-    console.log(Engines);
     let data = Serializer.SerializeMany(Engines);
     let b64 = BitConverter.ByteArrayToBase64(data);
     let success = FileIO.ToClipboard(b64);
@@ -8587,7 +8585,6 @@ var EngineEditableFieldMetadata;
             inputs[1].value = Unit.Display(engine.Width, "m", false);
             inputs[2].value = Unit.Display(engine.Height, "m", false);
             e.querySelector("img").onclick = () => {
-                console.log("p");
                 let modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
                 inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false, 3);
             };
@@ -10604,7 +10601,7 @@ class FileIO {
         fileDialog.click();
         fileDialog.addEventListener("change", () => {
             if (!fileDialog.files || !fileDialog.files[0]) {
-                console.log("No file selected?");
+                console.warn("No file selected?");
                 if (callback) {
                     callback(null, "");
                 }
@@ -10760,7 +10757,7 @@ class Packager {
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date().getTime();
                 FileIO.ZipBlobs("GameData", blobs, zipData => {
-                    console.log(`Zipped in ${(new Date().getTime() - zipStart).toLocaleString("us").replace(/[^0-9]/g, "'")}ms`);
+                    console.info(`Zipped in ${(new Date().getTime() - zipStart).toLocaleString("us").replace(/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
                         latestData = zipData;
                         exportStatusElement.innerHTML = "Done. <button>Redownload finished zip</button>";

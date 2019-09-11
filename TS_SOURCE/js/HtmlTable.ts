@@ -195,8 +195,8 @@ class HtmlTable<T extends ITableElement<T>> {
     public RebuildTable () {
         
         if (Object.getOwnPropertyNames (this.ColumnsDefinitions).length == 0) {
-            console.log (this);
-            console.log ("No columns were set.");
+            console.warn (this);
+            console.warn ("No columns were set.");
             return
         }
         
@@ -315,7 +315,6 @@ class HtmlTable<T extends ITableElement<T>> {
     
     private SortItems () {
         // Call it according to the setting
-        console.log (Settings.async_sort);
         if (Settings.async_sort) {
             setTimeout (() => this._SortItems (), 0);
         } else {

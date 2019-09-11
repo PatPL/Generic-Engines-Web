@@ -465,8 +465,6 @@ function ClipboardSelectionButton_Click () {
         Engines.push (MainEngineTable.Rows[index][1]);
     });
     
-    console.log (Engines);
-    
     let data = Serializer.SerializeMany (Engines);
     
     let b64: string = BitConverter.ByteArrayToBase64 (data);

@@ -114,7 +114,7 @@ class Packager {
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date ().getTime ();
                 FileIO.ZipBlobs ("GameData", blobs, zipData => {
-                    console.log (`Zipped in ${(new Date ().getTime () - zipStart).toLocaleString ("us").replace (/[^0-9]/g, "'")}ms`);
+                    console.info (`Zipped in ${(new Date ().getTime () - zipStart).toLocaleString ("us").replace (/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
                         latestData = zipData;
                         exportStatusElement.innerHTML = "Done. <button>Redownload finished zip</button>";

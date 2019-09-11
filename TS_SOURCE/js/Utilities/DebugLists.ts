@@ -6,6 +6,7 @@ class DebugLists {
         
         for (let i = 0; i < modelCount; ++i) {
             let newEngine = new Engine ();
+            newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo (i);
             
             if (!modelInfo.Exhaust) {
@@ -48,8 +49,7 @@ class DebugLists {
             toAppend.push (newEngine);
         }
         
-        MainEngineTable.Items = MainEngineTable.Items.concat (toAppend);
-        MainEngineTable.RebuildTable ();
+        MainEngineTable.AddItems (toAppend);
     }
     
     public static AppendListForModelPreviews () {
@@ -58,6 +58,7 @@ class DebugLists {
         
         for (let i = 0; i < modelCount; ++i) {
             let newEngine = new Engine ();
+            newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo (i);
             newEngine.Active = true;
             newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}`;
@@ -87,8 +88,7 @@ class DebugLists {
             toAppend.push (newEngine);
         }
         
-        MainEngineTable.Items = MainEngineTable.Items.concat (toAppend);
-        MainEngineTable.RebuildTable ();
+        MainEngineTable.AddItems (toAppend);
     }
     
     public static AppendListForPlumeTest () {
@@ -97,6 +97,7 @@ class DebugLists {
         
         for (let i = 0; i < plumeCount; ++i) {
             let newEngine = new Engine ();
+            newEngine.EngineList = MainEngineTable.Items;
             let plumeInfo = PlumeInfo.GetPlumeInfo (i);
             newEngine.Active = true;
             newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUMETEST`;
@@ -114,8 +115,7 @@ class DebugLists {
             toAppend.push (newEngine);
         }
         
-        MainEngineTable.Items = MainEngineTable.Items.concat (toAppend);
-        MainEngineTable.RebuildTable ();
+        MainEngineTable.AddItems (toAppend);
     }
     
     public static AppendListForPlumePreviews () {
@@ -124,6 +124,7 @@ class DebugLists {
         
         for (let i = 0; i < plumeCount; ++i) {
             let newEngine = new Engine ();
+            newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo (Model.RS25_2);
             let plumeInfo = PlumeInfo.GetPlumeInfo (i);
             newEngine.Active = true;
@@ -147,8 +148,7 @@ class DebugLists {
             toAppend.push (newEngine);
         }
         
-        MainEngineTable.Items = MainEngineTable.Items.concat (toAppend);
-        MainEngineTable.RebuildTable ();
+        MainEngineTable.AddItems (toAppend);
     }
     
     public static AppendListForModelTest () {
@@ -159,6 +159,7 @@ class DebugLists {
         let modelInfo: IModelInfo;
         for (let i = 0; i < modelCount; ++i) {
             newEngine = new Engine ();
+            newEngine.EngineList = MainEngineTable.Items;
             modelInfo = ModelInfo.GetModelInfo (i);
             newEngine.Active = true;
             newEngine.ID = `MODEL-${("0000" + i).slice(-4)}-1`;
@@ -204,8 +205,7 @@ class DebugLists {
             toAppend.push (newEngine);
         }
         
-        MainEngineTable.Items = MainEngineTable.Items.concat (toAppend);
-        MainEngineTable.RebuildTable ();
+        MainEngineTable.AddItems (toAppend);
     }
     
     public static AppendListForTankTest () {
@@ -219,6 +219,7 @@ class DebugLists {
             }
             
             let newEngine = new Engine ();
+            newEngine.EngineList = MainEngineTable.Items;
             
             newEngine.Active = true;
             newEngine.ID = `TANKTEST-${("0000" + i).slice(-4)}`;
@@ -235,8 +236,7 @@ class DebugLists {
             toAppend.push (newEngine);
         }
         
-        MainEngineTable.Items = MainEngineTable.Items.concat (toAppend);
-        MainEngineTable.RebuildTable ();
+        MainEngineTable.AddItems (toAppend);
     }
     
 }

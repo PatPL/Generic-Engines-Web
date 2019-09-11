@@ -126,8 +126,12 @@ class BrowserCacheDialog {
             appendButton.classList.add ("cache-option-button");
             appendButton.addEventListener ("click", () => {
                 
-                Serializer.DeserializeMany (Store.GetBinary (i), MainEngineTable.Items);
-                MainEngineTable.RebuildTable ();
+                let newEngines = Serializer.DeserializeMany (Store.GetBinary (i));
+                newEngines.forEach (e => {
+                    e.EngineList = MainEngineTable.Items;
+                });
+                
+                MainEngineTable.AddItems (newEngines);
                 
                 this.DialogBoxElement.style.display = "none";
             });
@@ -142,9 +146,12 @@ class BrowserCacheDialog {
                 if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
                     ListNameDisplay.SetValue (i.replace (/\.enl$/, ""))
                     
-                    MainEngineTable.Items = [];
-                    Serializer.DeserializeMany (Store.GetBinary (i), MainEngineTable.Items);
+                    MainEngineTable.Items = Serializer.DeserializeMany (Store.GetBinary (i));
                     MainEngineTable.RebuildTable ();
+                    MainEngineTable.Items.forEach (e => {
+                        e.EngineList = MainEngineTable.Items;
+                    });
+                    
                     this.DialogBoxElement.style.display = "none";
                 }
             });

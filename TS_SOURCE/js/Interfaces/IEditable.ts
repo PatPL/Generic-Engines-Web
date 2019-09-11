@@ -1,11 +1,11 @@
-interface IEditable {
+interface IEditable<T> {
     
     GetDisplayElement?: () => HTMLElement;
     GetEditElement?: () => HTMLElement;
     
-    ApplyValueToDisplayElement?: (displayElement: HTMLElement) => void;
-    ApplyValueToEditElement?: (editElement: HTMLElement) => void;
+    ApplyValueToDisplayElement?: (displayElement: HTMLElement, valueHolder: T) => void;
+    ApplyValueToEditElement?: (editElement: HTMLElement, valueHolder: T) => void;
     
-    ApplyChangesToValue?: (editElement: HTMLElement) => void;
+    ApplyChangesToValue?: (editElement: HTMLElement, valueHolder: T) => void;
     
 }

@@ -1,8 +1,7 @@
 interface IColumnInfo {
     
-    Name: string;
-    //Width: number;
-    DefaultWidth: number;
-    DisplayFlags?: number;
+    readonly Name: string;
+    readonly DefaultWidth: number;
+    readonly DisplayFlags?: number;
     
 }

@@ -58,6 +58,9 @@ class EditableField {
         }
         EditableField.EditedField = null;
         this.ShowEditMode(false);
+        if (this.OnSaveEdit && saveChanges) {
+            this.OnSaveEdit();
+        }
     }
     SetValue(newValue) {
         this.ValueOwner[this.ValueName] = newValue;
@@ -96,6 +99,9 @@ class EditableField {
             tmp.type = "checkbox";
             tmp.addEventListener("change", (e) => {
                 this.ValueOwner[this.ValueName] = tmp.checked;
+                if (this.OnSaveEdit) {
+                    this.OnSaveEdit();
+                }
             });
             output = tmp;
         }
@@ -156,12 +162,12 @@ class EditableField {
             throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToDisplayElement(this.DisplayElement);
+            this.ValueOwner[this.ValueName].ApplyValueToDisplayElement(this.DisplayElement, this.ValueOwner);
         }
         else if (this.ValueOwner.EditableFieldMetadata &&
             this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
             "ApplyValueToDisplayElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]) {
-            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToDisplayElement(this.DisplayElement);
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToDisplayElement(this.DisplayElement, this.ValueOwner);
         }
         else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.DisplayElement.innerHTML = this.ValueOwner[this.ValueName];
@@ -183,12 +189,12 @@ class EditableField {
             throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToEditElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToEditElement(this.EditElement);
+            this.ValueOwner[this.ValueName].ApplyValueToEditElement(this.EditElement, this.ValueOwner);
         }
         else if (this.ValueOwner.EditableFieldMetadata &&
             this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
             "ApplyValueToEditElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]) {
-            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToEditElement(this.EditElement);
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToEditElement(this.EditElement, this.ValueOwner);
         }
         else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.EditElement.value = this.ValueOwner[this.ValueName];
@@ -210,12 +216,12 @@ class EditableField {
             throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
         }
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyChangesToValue(this.EditElement);
+            this.ValueOwner[this.ValueName].ApplyChangesToValue(this.EditElement, this.ValueOwner);
         }
         else if (this.ValueOwner.EditableFieldMetadata &&
             this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
             "ApplyChangesToValue" in this.ValueOwner.EditableFieldMetadata[this.ValueName]) {
-            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyChangesToValue(this.EditElement);
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyChangesToValue(this.EditElement, this.ValueOwner);
         }
         else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.ValueOwner[this.ValueName] = this.EditElement.value;
@@ -235,6 +241,9 @@ class EditableField {
 EditableField.EditedField = null;
 EditableField.IDCounter = 0;
 window.addEventListener("pointerdown", (e) => {
+    if (e.which != 1) {
+        return;
+    }
     if (EditableField.EditedField) {
         if (e.srcElement) {
             let currentElement = e.srcElement;
@@ -274,8 +283,10 @@ class HtmlTable {
     constructor(container) {
         this.Items = [];
         this.ColumnsDefinitions = {};
+        this.ColumnHeaders = {};
         this.Columns = {};
         this.Rows = {};
+        this.DisplayedRowOrder = [];
         this.SelectedRows = [];
         this.TableContainer = container;
         this.TableElement = document.createElement("div");
@@ -283,7 +294,7 @@ class HtmlTable {
         this.TableContainer.innerHTML = "";
         this.TableContainer.appendChild(this.TableElement);
         window.addEventListener("pointerdown", (e) => {
-            if (e.button == 1) {
+            if (e.which != 1) {
                 return;
             }
             if (e.srcElement) {
@@ -305,21 +316,7 @@ class HtmlTable {
             }
         });
     }
-    static AutoGenerateColumns(exampleObject) {
-        let output = {};
-        for (let i in exampleObject) {
-            if (typeof exampleObject[i] == "function" ||
-                i == "EditableFieldMetadata") {
-                continue;
-            }
-            output[i] = {
-                Name: i.toUpperCase(),
-                DefaultWidth: 200
-            };
-        }
-        return output;
-    }
-    AddItem(newItem) {
+    RawAddItem(newItem) {
         this.Items.push(newItem);
         this.Rows[HtmlTable.RowCounter] = [Array(Object.getOwnPropertyNames(this.ColumnsDefinitions).length), newItem];
         let x = 0;
@@ -328,6 +325,9 @@ class HtmlTable {
             columnCell.classList.add("content-cell");
             columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter).toString());
             let cellField = new EditableField(newItem, columnID, columnCell);
+            cellField.OnSaveEdit = () => {
+                this.SortItems();
+            };
             if (newItem.hasOwnProperty("EditableFields")) {
                 newItem.EditableFields.push(cellField);
             }
@@ -338,7 +338,21 @@ class HtmlTable {
         if (newItem.OnTableDraw && typeof newItem.OnTableDraw == "function") {
             newItem.OnTableDraw(this.Rows[HtmlTable.RowCounter][0]);
         }
+        this.DisplayedRowOrder.push(HtmlTable.RowCounter.toString());
         ++HtmlTable.RowCounter;
+    }
+    AddItems(newItem) {
+        if (Array.isArray(newItem)) {
+            newItem.forEach(item => {
+                this.RawAddItem(item);
+            });
+        }
+        else {
+            this.RawAddItem(newItem);
+        }
+        if (this.currentSort) {
+            this.SortItems();
+        }
     }
     RemoveSelectedItems() {
         this.SelectedRows.forEach(row => {
@@ -346,10 +360,16 @@ class HtmlTable {
                 element.remove();
             });
             this.Items.splice(this.Items.indexOf(this.Rows[row][1]), 1);
+            this.DisplayedRowOrder.splice(this.DisplayedRowOrder.findIndex(x => x == row.toString()), 1);
             delete this.Rows[row];
         });
         this.SelectedRows = [];
-        ApplyEngineToInfoPanel(new Engine(), true);
+        if (this.OnSelectedItemChange) {
+            this.OnSelectedItemChange(undefined);
+        }
+        if (this.currentSort) {
+            this.SortItems();
+        }
     }
     SelectRow(appendToggle, row, rangeSelect = false) {
         if (this.SelectedRows.length > 0) {
@@ -361,20 +381,19 @@ class HtmlTable {
             if (this.SelectedRows.length == 0) {
                 return;
             }
-            let lastSelectedID = this.SelectedRows[this.SelectedRows.length - 1];
-            for (let i = lastSelectedID;; i += (row > lastSelectedID ? 1 : -1)) {
-                if (!this.Rows[i]) {
-                    continue;
-                }
-                if (this.SelectedRows.some(x => x == i)) {
+            let lastSelectedID = this.DisplayedRowOrder.findIndex(x => x == this.SelectedRows[this.SelectedRows.length - 1].toString());
+            let currentSelectedID = this.DisplayedRowOrder.findIndex(x => x == row.toString());
+            for (let i = lastSelectedID;; i += (currentSelectedID > lastSelectedID ? 1 : -1)) {
+                let decodedI = parseInt(this.DisplayedRowOrder[i]);
+                if (this.SelectedRows.some(x => x == decodedI)) {
                 }
                 else {
-                    this.SelectedRows.push(i);
-                    this.Rows[i][0].forEach(cell => {
+                    this.SelectedRows.push(decodedI);
+                    this.Rows[decodedI][0].forEach(cell => {
                         cell.classList.add("selected");
                     });
                 }
-                if (i == row) {
+                if (decodedI == row) {
                     break;
                 }
             }
@@ -405,7 +424,9 @@ class HtmlTable {
             });
         }
         if (this.SelectedRows.length > 0) {
-            ApplyEngineToInfoPanel(this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][1]);
+            if (this.OnSelectedItemChange) {
+                this.OnSelectedItemChange(this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][1]);
+            }
             this.Rows[this.SelectedRows[this.SelectedRows.length - 1]][0].forEach(cell => {
                 cell.classList.add("last");
             });
@@ -413,8 +434,8 @@ class HtmlTable {
     }
     RebuildTable() {
         if (Object.getOwnPropertyNames(this.ColumnsDefinitions).length == 0) {
-            console.log(this);
-            console.log("No columns were set.");
+            console.warn(this);
+            console.warn("No columns were set.");
             return;
         }
         let ItemsBackup = new Array().concat(this.Items);
@@ -424,10 +445,12 @@ class HtmlTable {
             this.SelectedRows.push(parseInt(i));
         }
         this.RemoveSelectedItems();
+        this.currentSort = undefined;
         this.TableElement.remove();
         this.TableElement = document.createElement("div");
         this.TableElement.classList.add("content-table");
         this.TableContainer.appendChild(this.TableElement);
+        this.ColumnHeaders = {};
         this.Columns = {};
         let headerContainer = document.createElement("div");
         headerContainer.classList.add("content-header-container");
@@ -446,10 +469,21 @@ class HtmlTable {
             columnHeader.innerHTML = this.ColumnsDefinitions[columnID].Name;
             columnHeader.title = this.ColumnsDefinitions[columnID].Name;
             headerContainer.appendChild(columnHeader);
+            columnHeader.addEventListener("pointerdown", e => {
+                if (e.which != 1) {
+                    return;
+                }
+                this.Sort(columnID);
+            });
+            this.ColumnHeaders[columnID] = columnHeader;
             let columnResizer = document.createElement("div");
             columnResizer.classList.add("content-column-resizer");
             columnResizer.setAttribute("data-FieldID", "-1");
-            columnResizer.onpointerdown = () => {
+            columnResizer.addEventListener("pointerdown", e => {
+                if (e.which != 1) {
+                    return;
+                }
+                e.stopPropagation();
                 let originalX = Input.MouseX;
                 let originalWidth = column.style.width ? parseInt(column.style.width) : 400;
                 Dragger.Drag(() => {
@@ -458,12 +492,94 @@ class HtmlTable {
                     column.style.width = `${newWidth}px`;
                     columnHeader.style.width = `${newWidth}px`;
                 });
-            };
+            });
             columnHeader.appendChild(columnResizer);
             this.TableElement.appendChild(column);
         }
-        for (let i of ItemsBackup) {
-            this.AddItem(i);
+        this.AddItems(ItemsBackup);
+    }
+    Sort(columnID) {
+        if (columnID) {
+            if (this.currentSort && this.currentSort[0] != columnID) {
+                this.ColumnHeaders[this.currentSort[0]].classList.remove(this.currentSort[1] == 1 ? "sortAsc" : "sortDesc");
+                this.currentSort = undefined;
+            }
+            if (this.currentSort) {
+                if (this.currentSort[1] == 1) {
+                    this.currentSort[1] = -1;
+                    this.ColumnHeaders[columnID].classList.remove("sortAsc");
+                    this.ColumnHeaders[columnID].classList.add("sortDesc");
+                }
+                else {
+                    this.currentSort = undefined;
+                    this.ColumnHeaders[columnID].classList.remove("sortDesc");
+                }
+            }
+            else {
+                this.currentSort = [columnID, 1];
+                this.ColumnHeaders[columnID].classList.add("sortAsc");
+            }
+        }
+        else {
+            if (this.currentSort) {
+                this.ColumnHeaders[this.currentSort[0]].classList.remove(this.currentSort[1] == 1 ? "sortAsc" : "sortDesc");
+                this.currentSort = undefined;
+            }
+        }
+        this.SortItems();
+    }
+    SortItems() {
+        if (Settings.async_sort) {
+            setTimeout(() => this._SortItems(), 0);
+        }
+        else {
+            this._SortItems();
+        }
+    }
+    _SortItems() {
+        this.DisplayedRowOrder.length = 0;
+        if (this.currentSort && this.Items.length > 0) {
+            let sorts = this.Items[0].ColumnSorts();
+            if (sorts.hasOwnProperty(this.currentSort[0])) {
+                let sortFunction = sorts[this.currentSort[0]];
+                let map = [];
+                for (let i in this.Rows) {
+                    map.push([i, this.Rows[i][0], this.Rows[i][1]]);
+                }
+                map.sort((a, b) => {
+                    return sortFunction(a[2], b[2]) * this.currentSort[1];
+                });
+                map.forEach(row => {
+                    let hideRow = null;
+                    if (Settings.hide_disabled_fields_on_sort && row[2] instanceof Engine) {
+                        hideRow = (this.ColumnsDefinitions[this.currentSort[0]].DisplayFlags & 1 << row[2].PolyType) != 0;
+                    }
+                    this.DisplayedRowOrder.push(row[0]);
+                    row[1].forEach(cell => {
+                        if (hideRow != null) {
+                            if (!hideRow) {
+                                cell.parentNode.appendChild(cell);
+                            }
+                            cell.style.display = hideRow ? "none" : "block";
+                        }
+                        else {
+                            cell.parentNode.appendChild(cell);
+                        }
+                    });
+                });
+                return;
+            }
+            else {
+            }
+        }
+        else {
+        }
+        for (let i in this.Rows) {
+            this.DisplayedRowOrder.push(i);
+            this.Rows[i][0].forEach(cell => {
+                cell.parentNode.appendChild(cell);
+                cell.style.display = "block";
+            });
         }
     }
 }
@@ -521,7 +637,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.0";
+Version.CurrentVersion = "Web.0.9.1";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -650,6 +766,14 @@ const Settings = {
         return Store.GetText("setting:prettify_config", "0") == "1";
     }, set prettify_config(value) {
         Store.SetText("setting:prettify_config", value ? "1" : "0");
+    }, get async_sort() {
+        return Store.GetText("setting:async_sort", "0") == "1";
+    }, set async_sort(value) {
+        Store.SetText("setting:async_sort", value ? "1" : "0");
+    }, get hide_disabled_fields_on_sort() {
+        return Store.GetText("setting:hide_disabled_fields_on_sort", "1") == "1";
+    }, set hide_disabled_fields_on_sort(value) {
+        Store.SetText("setting:hide_disabled_fields_on_sort", value ? "1" : "0");
     }
 };
 var ListName = "Unnamed";
@@ -689,6 +813,10 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     engine.GetConstrainedTankContents().forEach(i => {
         propellantMass += i[1] * FuelInfo.GetFuelInfo(i[0]).Density;
     });
+    let massFlow = engine.VacIsp;
+    massFlow *= 9.8066;
+    massFlow = 1 / massFlow;
+    massFlow *= engine.Thrust;
     properties["id"] = engine.ID;
     properties["dry_mass"] = Unit.Display(engineMass, "t", Settings.classic_unit_display, 6);
     properties["wet_mass"] = Unit.Display(engineMass + propellantMass, "t", Settings.classic_unit_display, 6);
@@ -700,6 +828,12 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / gravity).toFixed(3);
     properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed(3);
     properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed(3);
+    properties["twr_wet_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass + propellantMass) / gravity).toFixed(3);
+    properties["twr_dry_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass) / gravity).toFixed(3);
+    properties["twr_wet_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed(3);
+    properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed(3);
+    properties["min_mass_flow"] = `${Unit.Display(massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
+    properties["max_mass_flow"] = `${Unit.Display(massFlow, "t", Settings.classic_unit_display, 3)}/s`;
     for (let i in properties) {
         let element = infoPanel.querySelector(`span[info-field="${i}"]`);
         if (element) {
@@ -711,7 +845,10 @@ addEventListener("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
     let infoPanel = document.getElementById("info-panel");
     let mainCSS = document.getElementById("main-css");
-    document.getElementById("info-panel-resize").addEventListener("pointerdown", () => {
+    document.getElementById("info-panel-resize").addEventListener("pointerdown", e => {
+        if (e.which != 1) {
+            return;
+        }
         let originalX = Input.MouseX;
         let originalWidth = parseFloat(document.documentElement.style.getPropertyValue("--infoPanelWidth"));
         originalWidth = isNaN(originalWidth) ? 200 : originalWidth;
@@ -742,9 +879,12 @@ addEventListener("DOMContentLoaded", () => {
             let reader = new FileReader();
             reader.onload = () => {
                 let data = new Uint8Array(reader.result);
-                let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-                MainEngineTable.RebuildTable();
-                Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
+                let newEngines = Serializer.DeserializeMany(data);
+                newEngines.forEach(e => {
+                    e.EngineList = MainEngineTable.Items;
+                });
+                MainEngineTable.AddItems(newEngines);
+                Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""} using drag&drop`);
             };
             reader.readAsArrayBuffer(files[i]);
         }
@@ -810,6 +950,14 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-append-clipboard-list").addEventListener("click", AppendClipboardButton_Click);
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
+    MainEngineTable.OnSelectedItemChange = selectedEngine => {
+        if (selectedEngine) {
+            ApplyEngineToInfoPanel(selectedEngine);
+        }
+        else {
+            ApplyEngineToInfoPanel(new Engine(), true);
+        }
+    };
     MainEngineTable.RebuildTable();
 });
 function NewButton_Click() {
@@ -828,11 +976,13 @@ function OpenUploadButton_Click() {
             if (data) {
                 filename = filename.replace(/\.enl$/, "");
                 ListNameDisplay.SetValue(filename);
-                MainEngineTable.Items = [];
-                let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
+                MainEngineTable.Items = Serializer.DeserializeMany(data);
                 MainEngineTable.RebuildTable();
+                MainEngineTable.Items.forEach(e => {
+                    e.EngineList = MainEngineTable.Items;
+                });
                 FullscreenWindows["open-box"].style.display = "none";
-                Notifier.Info(`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+                Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
             }
             else {
                 Notifier.Warn("You didn't choose any file");
@@ -843,10 +993,13 @@ function OpenUploadButton_Click() {
 function AppendUploadButton_Click() {
     FileIO.OpenBinary(".enl", (data) => {
         if (data) {
-            let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-            MainEngineTable.RebuildTable();
+            let newEngines = Serializer.DeserializeMany(data);
+            newEngines.forEach(e => {
+                e.EngineList = MainEngineTable.Items;
+            });
+            MainEngineTable.AddItems(newEngines);
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
         }
         else {
         }
@@ -861,11 +1014,13 @@ function OpenCacheButton_Click() {
             if (newFilename) {
                 ListNameDisplay.SetValue(newFilename);
             }
-            MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
+            MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.RebuildTable();
+            MainEngineTable.Items.forEach(e => {
+                e.EngineList = MainEngineTable.Items;
+            });
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info(`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }, "Choose a list to open");
     }
 }
@@ -874,10 +1029,13 @@ function AppendCacheButton_Click() {
         if (!data) {
             return;
         }
-        let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-        MainEngineTable.RebuildTable();
+        let newEngines = Serializer.DeserializeMany(data);
+        newEngines.forEach(e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems(newEngines);
         FullscreenWindows["open-box"].style.display = "none";
-        Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
     }, "Choose a list to append");
 }
 function OpenClipboardButton_Click() {
@@ -889,11 +1047,13 @@ function OpenClipboardButton_Click() {
         }
         try {
             let data = BitConverter.Base64ToByteArray(b64);
-            MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
+            MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.RebuildTable();
+            MainEngineTable.Items.forEach(e => {
+                e.EngineList = MainEngineTable.Items;
+            });
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info(`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }
         catch (e) {
             Notifier.Warn("There was an error while parsing the string");
@@ -909,10 +1069,13 @@ function AppendClipboardButton_Click() {
     }
     try {
         let data = BitConverter.Base64ToByteArray(b64);
-        let engineCount = Serializer.DeserializeMany(data, MainEngineTable.Items);
-        MainEngineTable.RebuildTable();
+        let newEngines = Serializer.DeserializeMany(data);
+        newEngines.forEach(e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems(newEngines);
         FullscreenWindows["open-box"].style.display = "none";
-        Notifier.Info(`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
     }
     catch (e) {
         Notifier.Warn("There was an error while parsing the string");
@@ -959,7 +1122,6 @@ function ClipboardSelectionButton_Click() {
     MainEngineTable.SelectedRows.forEach(index => {
         Engines.push(MainEngineTable.Rows[index][1]);
     });
-    console.log(Engines);
     let data = Serializer.SerializeMany(Engines);
     let b64 = BitConverter.ByteArrayToBase64(data);
     let success = FileIO.ToClipboard(b64);
@@ -1016,7 +1178,9 @@ function DuplicateButton_Click() {
     MainEngineTable.RebuildTable();
 }
 function AddButton_Click() {
-    MainEngineTable.AddItem(new Engine(MainEngineTable.Items));
+    let newEngine = new Engine();
+    newEngine.EngineList = MainEngineTable.Items;
+    MainEngineTable.AddItems(newEngine);
 }
 function RemoveButton_Click() {
     if (MainEngineTable.SelectedRows.length > 0 && confirm(`You are about to delete ${MainEngineTable.SelectedRows.length} items from the list.\n\nAre you sure?`)) {
@@ -7190,8 +7354,11 @@ class BrowserCacheDialog {
             appendButton.classList.add("option-button");
             appendButton.classList.add("cache-option-button");
             appendButton.addEventListener("click", () => {
-                Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable.Items);
-                MainEngineTable.RebuildTable();
+                let newEngines = Serializer.DeserializeMany(Store.GetBinary(i));
+                newEngines.forEach(e => {
+                    e.EngineList = MainEngineTable.Items;
+                });
+                MainEngineTable.AddItems(newEngines);
                 this.DialogBoxElement.style.display = "none";
             });
             listItem.appendChild(appendButton);
@@ -7203,9 +7370,11 @@ class BrowserCacheDialog {
             openButton.addEventListener("click", () => {
                 if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
                     ListNameDisplay.SetValue(i.replace(/\.enl$/, ""));
-                    MainEngineTable.Items = [];
-                    Serializer.DeserializeMany(Store.GetBinary(i), MainEngineTable.Items);
+                    MainEngineTable.Items = Serializer.DeserializeMany(Store.GetBinary(i));
                     MainEngineTable.RebuildTable();
+                    MainEngineTable.Items.forEach(e => {
+                        e.EngineList = MainEngineTable.Items;
+                    });
                     this.DialogBoxElement.style.display = "none";
                 }
             });
@@ -7350,993 +7519,35 @@ var PolymorphismType;
     PolymorphismType[PolymorphismType["MultiConfigSlave"] = 4] = "MultiConfigSlave";
 })(PolymorphismType || (PolymorphismType = {}));
 class Engine {
-    constructor(originList = []) {
+    constructor() {
         this.Spacer = false;
         this.EditableFieldMetadata = {
-            Spacer: {
-                GetDisplayElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    return tmp;
-                }
-            }, ID: {
-                ApplyChangesToValue: (e) => {
-                    let output = "";
-                    let rawInput = e.value;
-                    rawInput.replace(" ", "-");
-                    for (let i = 0; i < rawInput.length; ++i) {
-                        if (/[a-zA-Z0-9-]{1}/.test(rawInput[i])) {
-                            output += rawInput[i];
-                        }
-                    }
-                    if (output == "") {
-                        output = "EnterCorrectID";
-                    }
-                    this.ID = output;
-                }
-            }, Mass: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.Mass, "t", Settings.classic_unit_display, 9);
-                }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.Mass, "t", Settings.classic_unit_display);
-                }, ApplyChangesToValue: (e) => {
-                    this.Mass = Unit.Parse(e.value, "t");
-                }
-            }, Thrust: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.Thrust, "kN", Settings.classic_unit_display, 9);
-                }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.Thrust, "kN", Settings.classic_unit_display);
-                }, ApplyChangesToValue: (e) => {
-                    this.Thrust = Unit.Parse(e.value, "kN");
-                }
-            }, AtmIsp: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.AtmIsp, "s", true);
-                }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.AtmIsp, "s", true);
-                }, ApplyChangesToValue: (e) => {
-                    this.AtmIsp = Unit.Parse(e.value, "s");
-                }
-            }, VacIsp: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.VacIsp, "s", true);
-                }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.VacIsp, "s", true);
-                }, ApplyChangesToValue: (e) => {
-                    this.VacIsp = Unit.Parse(e.value, "s");
-                }
-            }, Cost: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.Cost, " VF", Settings.classic_unit_display);
-                }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.Cost, " VF", Settings.classic_unit_display);
-                }, ApplyChangesToValue: (e) => {
-                    this.Cost = Unit.Parse(e.value, " VF");
-                }
-            }, EntryCost: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.EntryCost, " VF", Settings.classic_unit_display);
-                }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.EntryCost, " VF", Settings.classic_unit_display);
-                }, ApplyChangesToValue: (e) => {
-                    this.EntryCost = Unit.Parse(e.value, " VF");
-                }
-            }, MinThrust: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `${this.MinThrust}%`;
-                }
-            }, AlternatorPower: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = Unit.Display(this.AlternatorPower, "kW", Settings.classic_unit_display, 9);
-                }, ApplyValueToEditElement: (e) => {
-                    e.value = Unit.Display(this.AlternatorPower, "kW", Settings.classic_unit_display);
-                }, ApplyChangesToValue: (e) => {
-                    this.AlternatorPower = Unit.Parse(e.value, "kW");
-                }
-            }, Ignitions: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = this.Ignitions <= 0 ? "Infinite" : this.Ignitions.toString();
-                }, ApplyChangesToValue: (e) => {
-                    this.Ignitions = parseInt(e.value);
-                }
-            }, TechUnlockNode: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = TechNodeNames.get(this.TechUnlockNode);
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("input");
-                    tmp.classList.add("content-cell-content");
-                    tmp.setAttribute("list", "techNodeItems");
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    e.value = TechNodeNames.get(this.TechUnlockNode);
-                }, ApplyChangesToValue: (e) => {
-                    let value = 0;
-                    TechNodeNames.forEach((name, node) => {
-                        if (e.value.trim() == name) {
-                            value = node;
-                        }
-                    });
-                    this.TechUnlockNode = value;
-                }
-            }, EngineVariant: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = EngineType[this.EngineVariant];
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("select");
-                    tmp.classList.add("content-cell-content");
-                    for (let i in EngineType) {
-                        let x = parseInt(i);
-                        if (isNaN(x)) {
-                            break;
-                        }
-                        let option = document.createElement("option");
-                        option.value = x.toString();
-                        option.text = EngineType[x];
-                        tmp.options.add(option);
-                    }
-                    return tmp;
-                }
-            }, ThrustCurve: {
-                ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = this.ThrustCurve.length > 0 ? "Custom" : "Default";
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    tmp.style.height = "150px";
-                    tmp.style.padding = "0";
-                    let grid = document.createElement("div");
-                    grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "24px 24px 24px auto";
-                    grid.style.gridTemplateRows = "24px 129px";
-                    grid.style.gridTemplateAreas = `
-                    "a b c d"
-                    "e e e e"
-                `;
-                    grid.innerHTML = `
-                    <div style="grid-area: a;"><img class="mini-button option-button" title="Add new entry" src="img/button/add-mini.png"></div>
-                    <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last entry" src="img/button/remove-mini.png"></div>
-                    <div style="grid-area: c;"><img class="mini-button option-button" title="Sort entries by Fuel% (Descending)" src="img/button/sort-mini.png"></div>
-                    <div class="content-cell-content" style="grid-area: d;"></div>
-                    <div class="content-cell-content" style="grid-area: e; overflow: auto;"><table><tr><th style="width: 50%;">Fuel%</th><th style="width: 50%;">Thrust%</th></tr></table></div>
-                `;
-                    let table = grid.querySelector("tbody");
-                    let imgs = grid.querySelectorAll("img");
-                    imgs[0].addEventListener("click", () => {
-                        let tr = document.createElement("tr");
-                        tr.innerHTML = `
-                        <td><input style="width: calc(100%);" value="0"></td>
-                        <td><input style="width: calc(100%);" value="0"></td>
-                    `;
-                        table.appendChild(tr);
-                    });
-                    imgs[1].addEventListener("click", () => {
-                        let tmp = grid.querySelectorAll("tr");
-                        if (tmp.length > 1) {
-                            tmp[tmp.length - 1].remove();
-                        }
-                    });
-                    imgs[2].addEventListener("click", () => {
-                        let tmpCurve = [];
-                        let inputs = tmp.querySelectorAll(`input`);
-                        for (let i = 0; i < inputs.length; i += 2) {
-                            tmpCurve.push([parseFloat(inputs[i].value.replace(",", ".")), parseFloat(inputs[i + 1].value.replace(",", "."))]);
-                        }
-                        tmpCurve = tmpCurve.sort((a, b) => {
-                            return b[0] - a[0];
-                        });
-                        let table = tmp.querySelector("tbody");
-                        let rows = tmp.querySelectorAll("tr");
-                        rows.forEach((v, i) => {
-                            if (i != 0) {
-                                v.remove();
-                            }
-                        });
-                        tmpCurve.forEach(v => {
-                            let tr = document.createElement("tr");
-                            tr.innerHTML = `
-                            <td><input style="width: calc(100%);" value="${v[0]}"></td>
-                            <td><input style="width: calc(100%);" value="${v[1]}"></td>
-                        `;
-                            table.appendChild(tr);
-                        });
-                    });
-                    tmp.appendChild(grid);
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    let table = e.querySelector("tbody");
-                    let rows = e.querySelectorAll("tr");
-                    this.ThrustCurve = this.ThrustCurve.sort((a, b) => {
-                        return b[0] - a[0];
-                    });
-                    rows.forEach((v, i) => {
-                        if (i != 0) {
-                            v.remove();
-                        }
-                    });
-                    this.ThrustCurve.forEach(v => {
-                        let tr = document.createElement("tr");
-                        tr.innerHTML = `
-                        <td><input style="width: calc(100%);" value="${v[0]}"></td>
-                        <td><input style="width: calc(100%);" value="${v[1]}"></td>
-                    `;
-                        table.appendChild(tr);
-                    });
-                }, ApplyChangesToValue: (e) => {
-                    let inputs = e.querySelectorAll(`input`);
-                    this.ThrustCurve = [];
-                    for (let i = 0; i < inputs.length; i += 2) {
-                        this.ThrustCurve.push([parseFloat(inputs[i].value.replace(",", ".")), parseFloat(inputs[i + 1].value.replace(",", "."))]);
-                    }
-                    this.ThrustCurve = this.ThrustCurve.sort((a, b) => {
-                        return b[0] - a[0];
-                    });
-                },
-            }, Dimensions: {
-                GetDisplayElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    return tmp;
-                }, ApplyValueToDisplayElement: (e) => {
-                    e.innerHTML = `↔${Unit.Display(this.Width, "m", false, 9)} x ↕${Unit.Display(this.Height, "m", false, 9)}`;
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    tmp.style.height = "76px";
-                    tmp.style.padding = "0";
-                    let grid = document.createElement("div");
-                    grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "62px auto 2px 24px 2px";
-                    grid.style.gridTemplateRows = "24px 24px 2px 24px";
-                    grid.style.gridTemplateAreas = `
-                    "a a a a z"
-                    "b c c c z"
-                    "x x x x x"
-                    "e f q g y"
-                `;
-                    grid.innerHTML = `
-                    <div class="content-cell-content" style="grid-area: a;"></div>
-                    <div class="content-cell-content" style="grid-area: b;">Width</div>
-                    <div style="grid-area: c;"><input style="width: calc(100%);"></div>
-                    <div class="content-cell-content" style="grid-area: e;">Height</div>
-                    <div style="grid-area: f;"><input style="width: calc(100%);"></div>
-                    <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="img/button/aspectRatio.png"></div>
-                `;
-                    let checkboxLabel = document.createElement("span");
-                    let checkbox = document.createElement("input");
-                    checkboxLabel.style.position = "relative";
-                    checkboxLabel.style.top = "-4px";
-                    checkboxLabel.style.left = "4px";
-                    checkbox.type = "checkbox";
-                    checkbox.addEventListener("change", e => {
-                        checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
-                    });
-                    grid.children[0].appendChild(checkbox);
-                    grid.children[0].appendChild(checkboxLabel);
-                    grid.querySelector("img").addEventListener("click", () => {
-                        let inputs = grid.querySelectorAll("input");
-                        let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
-                        inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false, 3);
-                    });
-                    tmp.appendChild(grid);
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    let inputs = e.querySelectorAll("input");
-                    inputs[0].checked = this.UseBaseWidth;
-                    inputs[1].value = Unit.Display(this.Width, "m", false);
-                    inputs[2].value = Unit.Display(this.Height, "m", false);
-                    e.querySelector("span").innerHTML = inputs[0].checked ? "Base width" : "Bell width";
-                }, ApplyChangesToValue: (e) => {
-                    let inputs = e.querySelectorAll("input");
-                    this.UseBaseWidth = inputs[0].checked;
-                    this.Width = Unit.Parse(inputs[1].value, "m");
-                    this.Height = Unit.Parse(inputs[2].value, "m");
-                }
-            }, FuelRatios: {
-                GetDisplayElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    return tmp;
-                }, ApplyValueToDisplayElement: (e) => {
-                    let fuels = [];
-                    let electric = 0;
-                    let output = "";
-                    this.FuelRatioItems.forEach(v => {
-                        if (v[0] == Fuel.ElectricCharge) {
-                            electric = v[1];
-                        }
-                        else {
-                            fuels.push(v);
-                        }
-                    });
-                    if (fuels.length == 0) {
-                        output += "Not set";
-                    }
-                    else if (fuels.length == 1) {
-                        output += FuelInfo.GetFuelInfo(fuels[0][0]).FuelName;
-                    }
-                    else {
-                        let ratios = "";
-                        let names = "";
-                        fuels.forEach(v => {
-                            ratios += `${v[1]}:`;
-                            names += `${FuelInfo.GetFuelInfo(v[0]).FuelName}:`;
-                        });
-                        ratios = ratios.substring(0, ratios.length - 1);
-                        names = names.substring(0, names.length - 1);
-                        output += `${ratios} ${names}`;
-                    }
-                    if (electric > 0) {
-                        output += ` | Electric: ${Unit.Display(electric, "kW", Settings.classic_unit_display, 9)}`;
-                    }
-                    e.innerHTML = output;
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    tmp.style.height = "126px";
-                    tmp.style.padding = "0";
-                    let grid = document.createElement("div");
-                    grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "24px 24px auto";
-                    grid.style.gridTemplateRows = "24px 105px";
-                    grid.style.gridTemplateAreas = `
-                    "a b c"
-                    "d d d"
-                `;
-                    grid.innerHTML = `
-                    <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
-                    <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
-                    <div class="content-cell-content" style="grid-area: c;"></div>
-                    <div class="content-cell-content" style="grid-area: d; overflow: auto;"><table><tr><th style="width: 65%;">Fuel</th><th style="width: 35%;">Ratio</th></tr></table></div>
-                `;
-                    let table = grid.querySelector("tbody");
-                    let imgs = grid.querySelectorAll("img");
-                    imgs[0].addEventListener("click", () => {
-                        let tr = document.createElement("tr");
-                        let select = FuelInfo.Dropdown.cloneNode(true);
-                        select.querySelector(`option[value="${Fuel.Hydrazine}"]`).selected = true;
-                        tr.innerHTML = `
-                        <td></td>
-                        <td><input style="width: calc(100%);" value="1"></td>
-                    `;
-                        tr.children[0].appendChild(select);
-                        table.appendChild(tr);
-                    });
-                    imgs[1].addEventListener("click", () => {
-                        let tmp = grid.querySelectorAll("tr");
-                        if (tmp.length > 1) {
-                            tmp[tmp.length - 1].remove();
-                        }
-                    });
-                    let checkboxLabel = document.createElement("span");
-                    let checkbox = document.createElement("input");
-                    checkboxLabel.style.position = "relative";
-                    checkboxLabel.style.top = "-4px";
-                    checkboxLabel.style.left = "4px";
-                    checkbox.type = "checkbox";
-                    checkbox.addEventListener("change", e => {
-                        checkboxLabel.innerHTML = checkbox.checked ? "Volume ratio" : "Mass ratio";
-                    });
-                    grid.children[2].appendChild(checkbox);
-                    grid.children[2].appendChild(checkboxLabel);
-                    tmp.appendChild(grid);
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    e.querySelector(`input[type="checkbox"]`).checked = this.FuelVolumeRatios;
-                    let table = e.querySelector("tbody");
-                    let rows = e.querySelectorAll("tr");
-                    rows.forEach((v, i) => {
-                        if (i != 0) {
-                            v.remove();
-                        }
-                    });
-                    this.FuelRatioItems.forEach(v => {
-                        let tr = document.createElement("tr");
-                        let select = FuelInfo.Dropdown.cloneNode(true);
-                        select.querySelector(`option[value="${v[0]}"]`).selected = true;
-                        tr.innerHTML = `
-                        <td></td>
-                        <td><input style="width: calc(100%);" value="${v[1]}"></td>
-                    `;
-                        tr.children[0].appendChild(select);
-                        table.appendChild(tr);
-                    });
-                    e.querySelector("span").innerHTML = this.FuelVolumeRatios ? "Volume ratio" : "Mass ratio";
-                }, ApplyChangesToValue: (e) => {
-                    let selects = e.querySelectorAll("select");
-                    let inputs = e.querySelectorAll(`input`);
-                    this.FuelVolumeRatios = inputs[0].checked;
-                    if (selects.length + 1 != inputs.length) {
-                        console.warn("table misaligned?");
-                    }
-                    this.FuelRatioItems = [];
-                    for (let i = 0; i < selects.length; ++i) {
-                        this.FuelRatioItems.push([parseInt(selects[i].value), parseFloat(inputs[i + 1].value.replace(",", "."))]);
-                    }
-                }
-            }, Gimbal: {
-                GetDisplayElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    return tmp;
-                }, ApplyValueToDisplayElement: (e) => {
-                    if (this.AdvancedGimbal) {
-                        e.innerHTML = `X:<-${this.GimbalNX}°:${this.GimbalPX}°>, Y:<-${this.GimbalNY}°:${this.GimbalPY}°>`;
-                    }
-                    else {
-                        e.innerHTML = `${this.Gimbal}°`;
-                    }
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    tmp.style.height = "75px";
-                    tmp.style.padding = "0";
-                    tmp.innerHTML = `
-                    <div class="content-cell-content" style="height: 24px"></div>
-                `;
-                    let baseDiv = document.createElement("div");
-                    let advDiv = document.createElement("div");
-                    let checkbox = document.createElement("input");
-                    let checkboxLabel = document.createElement("span");
-                    tmp.appendChild(baseDiv);
-                    tmp.appendChild(advDiv);
-                    checkbox.setAttribute("data-ref", "checkbox");
-                    checkbox.type = "checkbox";
-                    checkbox.addEventListener("change", (e) => {
-                        if (checkbox.checked) {
-                            baseDiv.style.display = "none";
-                            advDiv.style.display = "grid";
-                        }
-                        else {
-                            baseDiv.style.display = "grid";
-                            advDiv.style.display = "none";
-                        }
-                    });
-                    checkboxLabel.style.position = "relative";
-                    checkboxLabel.style.top = "-4px";
-                    checkboxLabel.style.left = "4px";
-                    checkboxLabel.innerHTML = "Advanced gimbal";
-                    tmp.children[0].appendChild(checkbox);
-                    tmp.children[0].appendChild(checkboxLabel);
-                    baseDiv.setAttribute("data-ref", "basediv");
-                    baseDiv.style.display = "grid";
-                    baseDiv.style.gridTemplateColumns = "94px auto 3px";
-                    baseDiv.style.gridTemplateRows = "24px";
-                    baseDiv.style.gridTemplateAreas = `
-                    "a b c"
-                `;
-                    baseDiv.innerHTML = `
-                    <div class="content-cell-content" style="grid-area: a;">Gimbal (°)</div>
-                    <div style="grid-area: b;"><input data-ref="gimbal" style="width: calc(100%);"></div>
-                `;
-                    advDiv.setAttribute("data-ref", "advdiv");
-                    advDiv.style.display = "grid";
-                    advDiv.style.gridTemplateColumns = "114px auto auto 3px";
-                    advDiv.style.gridTemplateRows = "24px 24px";
-                    advDiv.style.gridTemplateAreas = `
-                    "a b c d"
-                    "e f g h"
-                `;
-                    advDiv.innerHTML = `
-                    <div class="content-cell-content" style="grid-area: a;">X axis (-|+)°</div>
-                    <div style="grid-area: b;"><input data-ref="gimbalnx" style="width: calc(100%);"></div>
-                    <div style="grid-area: c;"><input data-ref="gimbalpx" style="width: calc(100%);"></div>
-                    
-                    <div class="content-cell-content" style="grid-area: e;">Y axis (-|+)°</div>
-                    <div style="grid-area: f;"><input data-ref="gimbalny" style="width: calc(100%);"></div>
-                    <div style="grid-area: g;"><input data-ref="gimbalpy" style="width: calc(100%);"></div>
-                `;
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    e.querySelector(`input[data-ref="checkbox"]`).checked = this.AdvancedGimbal;
-                    e.querySelector(`input[data-ref="gimbal"]`).value = this.Gimbal.toString();
-                    e.querySelector(`input[data-ref="gimbalnx"]`).value = this.GimbalNX.toString();
-                    e.querySelector(`input[data-ref="gimbalpx"]`).value = this.GimbalPX.toString();
-                    e.querySelector(`input[data-ref="gimbalny"]`).value = this.GimbalNY.toString();
-                    e.querySelector(`input[data-ref="gimbalpy"]`).value = this.GimbalPY.toString();
-                    if (this.AdvancedGimbal) {
-                        e.querySelector(`div[data-ref="basediv"]`).style.display = "none";
-                        e.querySelector(`div[data-ref="advdiv"]`).style.display = "grid";
-                    }
-                    else {
-                        e.querySelector(`div[data-ref="basediv"]`).style.display = "grid";
-                        e.querySelector(`div[data-ref="advdiv"]`).style.display = "none";
-                    }
-                }, ApplyChangesToValue: (e) => {
-                    this.AdvancedGimbal = e.querySelector(`input[data-ref="checkbox"]`).checked;
-                    this.Gimbal = parseFloat(e.querySelector(`input[data-ref="gimbal"]`).value.replace(",", "."));
-                    this.GimbalPX = parseFloat(e.querySelector(`input[data-ref="gimbalpx"]`).value.replace(",", "."));
-                    this.GimbalNY = parseFloat(e.querySelector(`input[data-ref="gimbalny"]`).value.replace(",", "."));
-                    this.GimbalPY = parseFloat(e.querySelector(`input[data-ref="gimbalpy"]`).value.replace(",", "."));
-                    this.GimbalNX = parseFloat(e.querySelector(`input[data-ref="gimbalnx"]`).value.replace(",", "."));
-                }
-            }, Labels: {
-                GetDisplayElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    return tmp;
-                }, ApplyValueToDisplayElement: (e) => {
-                    let isSlave = this.PolyType == PolymorphismType.MultiModeSlave || this.PolyType == PolymorphismType.MultiConfigSlave;
-                    if (this.EngineName == "" || isSlave) {
-                        e.innerHTML = `${this.ID}`;
-                    }
-                    else {
-                        e.innerHTML = `${this.EngineName}`;
-                    }
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    tmp.style.height = "192px";
-                    tmp.style.padding = "0";
-                    let grid = document.createElement("div");
-                    grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "116px auto";
-                    grid.style.gridTemplateRows = "24px 24px 24px 120px";
-                    grid.style.gridTemplateAreas = `
-                    "a b"
-                    "c d"
-                    "e e"
-                    "f f"
-                `;
-                    grid.innerHTML = `
-                    <div class="content-cell-content" style="grid-area: a;">Name</div>
-                    <div style="grid-area: b;"><input style="width: calc(100%);"></div>
-                    
-                    <div class="content-cell-content" style="grid-area: c;">Manufacturer</div>
-                    <div style="grid-area: d;"><input style="width: calc(100%);"></div>
-                    
-                    <div class="content-cell-content" style="grid-area: e;">Description</div>
-                    <div style="grid-area: f;"><textarea style="resize: none; width: calc(100%); height: 100%;"></textarea></div>
-                `;
-                    tmp.appendChild(grid);
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    let inputs = e.querySelectorAll("input");
-                    inputs[0].value = this.EngineName;
-                    inputs[1].value = this.EngineManufacturer;
-                    inputs[0].disabled = this.PolyType == PolymorphismType.MultiConfigSlave;
-                    inputs[1].disabled = this.PolyType == PolymorphismType.MultiConfigSlave;
-                    e.querySelector("textarea").value = this.EngineDescription;
-                }, ApplyChangesToValue: (e) => {
-                    let inputs = e.querySelectorAll("input");
-                    this.EngineName = inputs[0].value;
-                    this.EngineManufacturer = inputs[1].value;
-                    this.EngineDescription = e.querySelector("textarea").value;
-                }
-            }, Polymorphism: {
-                GetDisplayElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    return tmp;
-                }, ApplyValueToDisplayElement: (e) => {
-                    switch (this.PolyType) {
-                        case PolymorphismType.Single:
-                            e.innerHTML = `Single`;
-                            break;
-                        case PolymorphismType.MultiModeMaster:
-                            e.innerHTML = `Multimode master`;
-                            break;
-                        case PolymorphismType.MultiModeSlave:
-                            e.innerHTML = `Multimode slave to ${this.MasterEngineName}`;
-                            break;
-                        case PolymorphismType.MultiConfigMaster:
-                            e.innerHTML = `Multiconfig master`;
-                            break;
-                        case PolymorphismType.MultiConfigSlave:
-                            e.innerHTML = `Multiconfig slave to ${this.MasterEngineName}`;
-                            break;
-                    }
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    tmp.style.height = "48px";
-                    tmp.style.padding = "0";
-                    let grid = document.createElement("div");
-                    grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "auto";
-                    grid.style.gridTemplateRows = "24px 24px";
-                    grid.style.gridTemplateAreas = `
-                    "a"
-                    "b"
-                `;
-                    grid.innerHTML = `
-                    <div style="grid-area: a;">${Engine.PolymorphismTypeDropdown.outerHTML}</div>
-                    <div style="grid-area: b;"><select></select></div>
-                `;
-                    let selects = grid.querySelectorAll("select");
-                    selects[0].addEventListener("change", () => {
-                        this.RebuildMasterSelect(tmp);
-                    });
-                    tmp.appendChild(grid);
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    let selects = e.querySelectorAll("select");
-                    selects[0].value = this.PolyType.toString();
-                    this.RebuildMasterSelect(e);
-                }, ApplyChangesToValue: (e) => {
-                    let selects = e.querySelectorAll("select");
-                    this.PolyType = parseInt(selects[0].value);
-                    this.MasterEngineName = selects[1].value;
-                    this.RehidePolyFields(this.ListCols);
-                }
-            }, Tank: {
-                GetDisplayElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    return tmp;
-                }, ApplyValueToDisplayElement: (e) => {
-                    let output = "";
-                    if (this.UseTanks) {
-                        if (this.LimitTanks) {
-                            if (this.TanksVolume == 0) {
-                                output = "Enabled, but empty";
-                            }
-                            else {
-                                let usedVolume = 0;
-                                this.TanksContents.forEach(v => {
-                                    usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
-                                });
-                                usedVolume = Math.min(usedVolume, this.TanksVolume);
-                                output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display, 3)}/${Unit.Display(this.TanksVolume, "L", Settings.classic_unit_display, 3)}`;
-                            }
-                        }
-                        else {
-                            if (this.TanksContents.length == 0) {
-                                output = "Enabled, but empty";
-                            }
-                            else {
-                                let usedVolume = 0;
-                                this.TanksContents.forEach(v => {
-                                    usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
-                                });
-                                output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display, 3)}`;
-                            }
-                        }
-                    }
-                    else {
-                        output = "Disabled";
-                    }
-                    e.innerHTML = output;
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    tmp.style.height = "222px";
-                    tmp.style.padding = "0";
-                    tmp.innerHTML = `
-                    <div class="content-cell-content" style="height: 24px;"><input type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Add tank</span></div>
-                `;
-                    let grid = document.createElement("div");
-                    grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "24px 24px auto 3px";
-                    grid.style.gridTemplateRows = "24px 24px 24px 24px 105px";
-                    grid.style.gridTemplateAreas = `
-                    "c c c z"
-                    "d e e z"
-                    "f f f z"
-                    "g h i z"
-                    "j j j j"
-                `;
-                    tmp.querySelector("input").addEventListener("change", () => {
-                        grid.style.display = tmp.querySelector("input").checked ? "grid" : "none";
-                    });
-                    grid.innerHTML = `
-                    <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
-                    
-                    <div class="content-cell-content" style="grid-area: d"><input style="cursor: help;" title="Enable tank volume restriction" type="checkbox"></div>
-                    <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
-                    
-                    <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
-                    
-                    <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
-                    <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
-                    <div class="content-cell-content" style="grid-area: j; overflow: auto;"><table><tr><th style="width: 35%;">Fuel</th><th style="width: 35%;">Volume</th><th style="width: 30%;">Mass</th></tr></table></div>
-                `;
-                    let inputs = grid.querySelectorAll("input");
-                    inputs[0].addEventListener("change", () => {
-                        inputs[1].disabled = !inputs[0].checked;
-                    });
-                    let table = grid.querySelector("tbody");
-                    let imgs = grid.querySelectorAll("img");
-                    imgs[0].addEventListener("click", () => {
-                        let tr = document.createElement("tr");
-                        let select = FuelInfo.Dropdown.cloneNode(true);
-                        select.querySelector(`option[value="${Fuel.Hydrazine}"]`).selected = true;
-                        tr.innerHTML = `
-                        <td></td>
-                        <td><input style="width: calc(100%);" value="${Unit.Display(1, "L", Settings.classic_unit_display)}"></td>
-                        <td><input style="width: calc(100%);" value="${Unit.Display(1 * FuelInfo.GetFuelInfo(Fuel.Hydrazine).Density, "t", Settings.classic_unit_display)}"></td>
-                    `;
-                        let inputs = tr.querySelectorAll("input");
-                        select.addEventListener("change", () => {
-                            inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                        });
-                        inputs[0].addEventListener("keydown", (e) => {
-                            setTimeout(() => {
-                                inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                            }, 20);
-                        });
-                        inputs[1].addEventListener("keydown", (e) => {
-                            setTimeout(() => {
-                                inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
-                            }, 20);
-                        });
-                        tr.children[0].appendChild(select);
-                        table.appendChild(tr);
-                    });
-                    imgs[1].addEventListener("click", () => {
-                        let tmp = grid.querySelectorAll("tr");
-                        if (tmp.length > 1) {
-                            tmp[tmp.length - 1].remove();
-                        }
-                    });
-                    tmp.appendChild(grid);
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    let allInputs = e.querySelectorAll(`input`);
-                    allInputs[0].checked = this.UseTanks;
-                    allInputs[1].checked = this.LimitTanks;
-                    allInputs[2].value = Unit.Display(this.TanksVolume, "L", Settings.classic_unit_display);
-                    e.querySelectorAll("span")[1].innerHTML = Unit.Display(this.GetTankSizeEstimate(), "L", Settings.classic_unit_display, 3);
-                    e.children[1].style.display = this.UseTanks ? "grid" : "none";
-                    allInputs[2].disabled = !this.LimitTanks;
-                    let table = e.querySelector("tbody");
-                    let rows = e.querySelectorAll("tr");
-                    rows.forEach((v, i) => {
-                        if (i != 0) {
-                            v.remove();
-                        }
-                    });
-                    this.TanksContents.forEach(v => {
-                        let tr = document.createElement("tr");
-                        let select = FuelInfo.Dropdown.cloneNode(true);
-                        select.querySelector(`option[value="${v[0]}"]`).selected = true;
-                        tr.innerHTML = `
-                        <td></td>
-                        <td><input style="width: calc(100%);" value="${Unit.Display(v[1], "L", Settings.classic_unit_display)}"></td>
-                        <td><input style="width: calc(100%);" value="${Unit.Display(v[1] * FuelInfo.GetFuelInfo(v[0]).Density, "t", Settings.classic_unit_display)}"></td>
-                    `;
-                        let inputs = tr.querySelectorAll("input");
-                        select.addEventListener("change", () => {
-                            inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                        });
-                        inputs[0].addEventListener("keydown", (e) => {
-                            setTimeout(() => {
-                                inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                            }, 20);
-                        });
-                        inputs[1].addEventListener("keydown", (e) => {
-                            setTimeout(() => {
-                                inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
-                            }, 20);
-                        });
-                        tr.children[0].appendChild(select);
-                        table.appendChild(tr);
-                    });
-                }, ApplyChangesToValue: (e) => {
-                    let selects = e.querySelectorAll("select");
-                    let inputs = e.querySelector("table").querySelectorAll(`input`);
-                    let allInputs = e.querySelectorAll(`input`);
-                    this.UseTanks = allInputs[0].checked;
-                    this.LimitTanks = allInputs[1].checked;
-                    this.TanksVolume = Unit.Parse(allInputs[2].value, "L");
-                    if (selects.length * 2 != inputs.length) {
-                        console.warn("table misaligned?");
-                    }
-                    this.TanksContents = [];
-                    for (let i = 0; i < selects.length; ++i) {
-                        this.TanksContents.push([parseInt(selects[i].value), Unit.Parse(inputs[2 * i].value, "L")]);
-                    }
-                }
-            }, TestFlight: {
-                GetDisplayElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    return tmp;
-                }, ApplyValueToDisplayElement: (e) => {
-                    if (this.EnableTestFlight) {
-                        e.innerHTML = `Enabled | ${this.StartReliability0}% - ${this.StartReliability10k}% | ${Math.round((1 / (1 - (this.CycleReliability0 / 100))) * this.RatedBurnTime)}s - ${Math.round((1 / (1 - (this.CycleReliability10k / 100))) * this.RatedBurnTime)}s`;
-                    }
-                    else {
-                        if (this.IsTestFlightDefault()) {
-                            e.innerHTML = `Disabled`;
-                        }
-                        else {
-                            e.innerHTML = `Disabled, but configured`;
-                        }
-                    }
-                }, GetEditElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    tmp.style.height = "147px";
-                    tmp.style.padding = "0";
-                    tmp.innerHTML = `
-                    <div class="content-cell-content" style="height: 24px;"><input type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Enable Test Flight</span></div>
-                `;
-                    let grid = document.createElement("div");
-                    grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "310px auto 26px";
-                    grid.style.gridTemplateRows = "24px 24px 24px 24px 24px";
-                    grid.style.gridTemplateAreas = `
-                    "c d e"
-                    "f g h"
-                    "i j k"
-                    "l m n"
-                    "o p q"
-                `;
-                    let checkbox = tmp.querySelector("input");
-                    checkbox.addEventListener("change", () => {
-                        grid.style.display = checkbox.checked ? "grid" : "none";
-                    });
-                    grid.innerHTML = `
-                    <div class="content-cell-content" style="grid-area: c;">Rated burn time</div>
-                    <div style="grid-area: d;"><input style="width: calc(100%);"></div>
-                    <div class="content-cell-content" style="grid-area: e;">s</div>
-                    
-                    <div class="content-cell-content" style="grid-area: f;">Ignition success chance (0% data)</div>
-                    <div style="grid-area: g;"><input style="width: calc(100%);"></div>
-                    <div class="content-cell-content" style="grid-area: h;">%</div>
-                    
-                    <div class="content-cell-content" style="grid-area: i;">Ignition success chance (100% data)</div>
-                    <div style="grid-area: j;"><input style="width: calc(100%);"></div>
-                    <div class="content-cell-content" style="grid-area: k;">%</div>
-                    
-                    <div class="content-cell-content" style="grid-area: l;">Burn cycle reliability (0% data)</div>
-                    <div style="grid-area: m;"><input style="width: calc(100%);"></div>
-                    <div class="content-cell-content" style="grid-area: n;">%</div>
-                    
-                    <div class="content-cell-content" style="grid-area: o;">Burn cycle reliability (100% data)</div>
-                    <div style="grid-area: p;"><input style="width: calc(100%);"></div>
-                    <div class="content-cell-content" style="grid-area: q;">%</div>
-                `;
-                    tmp.appendChild(grid);
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    let inputs = e.querySelectorAll("input");
-                    e.children[1].style.display = this.EnableTestFlight ? "grid" : "none";
-                    inputs[0].checked = this.EnableTestFlight;
-                    inputs[1].value = this.RatedBurnTime.toString();
-                    inputs[2].value = this.StartReliability0.toString();
-                    inputs[3].value = this.StartReliability10k.toString();
-                    inputs[4].value = this.CycleReliability0.toString();
-                    inputs[5].value = this.CycleReliability10k.toString();
-                }, ApplyChangesToValue: (e) => {
-                    let inputs = e.querySelectorAll("input");
-                    this.EnableTestFlight = inputs[0].checked;
-                    this.RatedBurnTime = parseInt(inputs[1].value);
-                    this.StartReliability0 = parseFloat(inputs[2].value.replace(",", "."));
-                    this.StartReliability10k = parseFloat(inputs[3].value.replace(",", "."));
-                    this.CycleReliability0 = parseFloat(inputs[4].value.replace(",", "."));
-                    this.CycleReliability10k = parseFloat(inputs[5].value.replace(",", "."));
-                }
-            }, Visuals: {
-                GetDisplayElement: () => {
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    return tmp;
-                }, ApplyValueToDisplayElement: (e) => {
-                    let isSlave = this.PolyType == PolymorphismType.MultiModeSlave || this.PolyType == PolymorphismType.MultiConfigSlave;
-                    if (isSlave) {
-                        e.innerHTML = `${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeName}`;
-                    }
-                    else {
-                        e.innerHTML = `${ModelInfo.GetModelInfo(this.ModelID).ModelName}, ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeName}`;
-                    }
-                }, GetEditElement: () => {
-                    let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
-                        this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
-                    targetEngine = targetEngine != undefined ? targetEngine : this;
-                    let tmp = document.createElement("div");
-                    tmp.classList.add("content-cell-content");
-                    tmp.style.padding = "0";
-                    let grid = document.createElement("div");
-                    grid.style.display = "grid";
-                    grid.style.gridTemplateColumns = "60px auto";
-                    grid.style.gridTemplateAreas = `
-                    "a b"
-                    "c d"
-                    "e e"
-                `;
-                    tmp.style.height = "168px";
-                    grid.style.gridTemplateRows = "24px 24px 120px";
-                    grid.innerHTML = `
-                    <div class="content-cell-content" style="grid-area: a;">Model</div>
-                    <div style="grid-area: b;"><span class="clickable-text modelText" value="999">Placeholder</span></div>
-                    <div class="content-cell-content" style="grid-area: c;">Plume</div>
-                    <div style="grid-area: d;"><span class="clickable-text plumeText" value="999">Placeholder</span></div>
-                    <div class="exhaustBox" style="grid-area: e; display: grid; grid-template: 'ea ea' 24px 'eb eb' 96px / auto">
-                    <div class="content-cell-content" style="grid-area: ea;"><input class="enableExhaust" type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Enable exhaust effects</span></div>
-                    <div class="exhaustSettings" style="grid-area: eb; display: grid; grid-template: 'eba ebb' 24px 'ebc ebd' 24px 'ebe ebf' 24px 'ebg ebh' 24px / 140px auto">
-                    <div class="content-cell-content" style="grid-area: eba;">Exhaust plume</div>
-                    <div style="grid-area: ebb;"><span class="clickable-text exhaustPlumeText" value="999">Placeholder</span></div>
-                    <div class="content-cell-content" style="grid-area: ebc; cursor: help;" title="What fraction of engine's overall thrust is produced by this exhaust?">Exhaust thrust</div>
-                    <div style="grid-area: ebd;"><input class="exhaustThrust" style="width: calc(100% - 24px);">%</div>
-                    <div class="content-cell-content" style="grid-area: ebe; cursor: help;" title="Multiplier of exhaust's efficiency, compared to main engine">Exhaust impulse</div>
-                    <div style="grid-area: ebf;"><input class="exhaustImpulse" style="width: calc(100% - 24px);">%</div>
-                    <div class="content-cell-content" style="grid-area: ebg;">Exhaust gimbal</div>
-                    <div style="grid-area: ebh;"><input class="exhaustGimbal" style="width: calc(100% - 24px);"><input title="Restrict this gimbal to only roll control" class="exhaustGimbalRoll" type="checkbox" style="cursor: help; margin: -1px 0px 0px 0px; position: relative; top: 2px; left: 2px;"></div>
-                    </div>
-                    </div>
-                `;
-                    let modelText = grid.querySelector(".modelText");
-                    modelText.addEventListener("click", () => {
-                        ModelSelector.GetModel(m => {
-                            if (m != null) {
-                                modelText.setAttribute("value", m.toString());
-                                modelText.innerHTML = ModelInfo.GetModelInfo(m).ModelName;
-                                grid.querySelector(".exhaustBox").style.display = ModelInfo.GetModelInfo(m).Exhaust ? "grid" : "none";
-                            }
-                        });
-                    });
-                    let plumeText = grid.querySelector(".plumeText");
-                    plumeText.addEventListener("click", () => {
-                        PlumeSelector.GetPlume(m => {
-                            if (m != null) {
-                                plumeText.setAttribute("value", m.toString());
-                                plumeText.innerHTML = PlumeInfo.GetPlumeInfo(m).PlumeName;
-                            }
-                        });
-                    });
-                    let exhaustPlumeText = grid.querySelector(".exhaustPlumeText");
-                    exhaustPlumeText.addEventListener("click", () => {
-                        PlumeSelector.GetPlume(m => {
-                            if (m != null) {
-                                exhaustPlumeText.setAttribute("value", m.toString());
-                                exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo(m).PlumeName;
-                            }
-                        });
-                    });
-                    let exhaustCheckbox = grid.querySelector(".enableExhaust");
-                    exhaustCheckbox.addEventListener("change", () => {
-                        grid.querySelector(".exhaustSettings").style.display = exhaustCheckbox.checked ? "grid" : "none";
-                    });
-                    tmp.appendChild(grid);
-                    return tmp;
-                }, ApplyValueToEditElement: (e) => {
-                    let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
-                        this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
-                    targetEngine = targetEngine != undefined ? targetEngine : this;
-                    let isSlave = this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave;
-                    let select = e.querySelector("select");
-                    let modelText = e.querySelector(".modelText");
-                    let plumeText = e.querySelector(".plumeText");
-                    let exhaustPlumeText = e.querySelector(".exhaustPlumeText");
-                    modelText.setAttribute("value", targetEngine.ModelID.toString());
-                    modelText.innerHTML = ModelInfo.GetModelInfo(targetEngine.ModelID).ModelName;
-                    plumeText.setAttribute("value", this.PlumeID.toString());
-                    plumeText.innerHTML = PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeName;
-                    exhaustPlumeText.setAttribute("value", this.ExhaustPlumeID.toString());
-                    exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo(this.ExhaustPlumeID).PlumeName;
-                    e.querySelector(".exhaustBox").style.display = ModelInfo.GetModelInfo(this.ModelID).Exhaust ? "grid" : "none";
-                    e.querySelector(".enableExhaust").checked = targetEngine.UseExhaustEffect;
-                    e.querySelector(".exhaustSettings").style.display = targetEngine.UseExhaustEffect ? "grid" : "none";
-                    e.querySelector(".exhaustThrust").value = this.ExhaustThrustPercent.toString();
-                    e.querySelector(".exhaustImpulse").value = this.ExhaustIspPercent.toString();
-                    e.querySelector(".exhaustGimbal").value = targetEngine.ExhaustGimbal.toString();
-                    e.querySelector(".exhaustGimbalRoll").checked = targetEngine.ExhaustGimbalOnlyRoll;
-                    modelText.style.pointerEvents = isSlave ? "none" : "all";
-                    e.querySelector(".enableExhaust").disabled = isSlave;
-                    e.querySelector(".exhaustGimbal").disabled = isSlave;
-                    e.querySelector(".exhaustGimbalRoll").disabled = isSlave;
-                }, ApplyChangesToValue: (e) => {
-                    let modelText = e.querySelector(".modelText");
-                    let plumeText = e.querySelector(".plumeText");
-                    let exhaustPlumeText = e.querySelector(".exhaustPlumeText");
-                    let exhaustThrust = e.querySelector(".exhaustThrust");
-                    let exhaustImpulse = e.querySelector(".exhaustImpulse");
-                    let exhaustGimbal = e.querySelector(".exhaustGimbal");
-                    this.ModelID = parseInt(modelText.getAttribute("value"));
-                    this.PlumeID = parseInt(plumeText.getAttribute("value"));
-                    this.ExhaustPlumeID = parseInt(exhaustPlumeText.getAttribute("value"));
-                    this.UseExhaustEffect = e.querySelector(".enableExhaust").checked;
-                    this.ExhaustThrustPercent = parseFloat(exhaustThrust.value.replace(",", "."));
-                    this.ExhaustIspPercent = parseFloat(exhaustImpulse.value.replace(",", "."));
-                    this.ExhaustGimbal = parseFloat(exhaustGimbal.value.replace(",", "."));
-                    this.ExhaustGimbalOnlyRoll = e.querySelector(".exhaustGimbalRoll").checked;
-                }
-            }
+            Spacer: EngineEditableFieldMetadata.Spacer,
+            ID: EngineEditableFieldMetadata.ID,
+            Mass: EngineEditableFieldMetadata.Mass,
+            Thrust: EngineEditableFieldMetadata.Thrust,
+            AtmIsp: EngineEditableFieldMetadata.AtmIsp,
+            VacIsp: EngineEditableFieldMetadata.VacIsp,
+            Cost: EngineEditableFieldMetadata.Cost,
+            EntryCost: EngineEditableFieldMetadata.EntryCost,
+            MinThrust: EngineEditableFieldMetadata.MinThrust,
+            AlternatorPower: EngineEditableFieldMetadata.AlternatorPower,
+            Ignitions: EngineEditableFieldMetadata.Ignitions,
+            TechUnlockNode: EngineEditableFieldMetadata.TechUnlockNode,
+            EngineVariant: EngineEditableFieldMetadata.EngineVariant,
+            ThrustCurve: EngineEditableFieldMetadata.ThrustCurve,
+            Dimensions: EngineEditableFieldMetadata.Dimensions,
+            FuelRatios: EngineEditableFieldMetadata.FuelRatios,
+            Gimbal: EngineEditableFieldMetadata.Gimbal,
+            Labels: EngineEditableFieldMetadata.Labels,
+            Polymorphism: EngineEditableFieldMetadata.Polymorphism,
+            Tank: EngineEditableFieldMetadata.Tank,
+            TestFlight: EngineEditableFieldMetadata.TestFlight,
+            Visuals: EngineEditableFieldMetadata.Visuals,
         };
         this.ListCols = [];
         this.EditableFields = [];
+        this.EngineList = [];
         this.Active = false;
         this.ID = "New-Engine";
         this.Mass = 1;
@@ -8390,7 +7601,36 @@ class Engine {
         this.OnEditEnd = () => {
             this.UpdateEveryDisplay();
         };
-        this.EngineList = originList;
+    }
+    static RegularSort(...args) {
+        for (let i = 0; i <= args.length - 2; i += 2) {
+            let a = args[i];
+            let b = args[i + 1];
+            a = typeof a == "string" ? a.toLowerCase() : a;
+            b = typeof b == "string" ? b.toLowerCase() : b;
+            if (a > b) {
+                return 1;
+            }
+            else if (a < b) {
+                return -1;
+            }
+            else {
+                continue;
+            }
+        }
+        return 0;
+    }
+    ColumnSorts() {
+        return Engine._ColumnSorts;
+    }
+    GetDisplayLabel() {
+        let isSlave = this.PolyType == PolymorphismType.MultiModeSlave || this.PolyType == PolymorphismType.MultiConfigSlave;
+        if (this.EngineName == "" || isSlave) {
+            return `${this.ID}`;
+        }
+        else {
+            return `${this.EngineName}`;
+        }
     }
     UpdateEveryDisplay() {
         this.EditableFields.forEach(f => {
@@ -8398,10 +7638,34 @@ class Engine {
         });
         ApplyEngineToInfoPanel(this);
     }
+    IsSlave() {
+        return (this.PolyType == PolymorphismType.MultiModeSlave ||
+            this.PolyType == PolymorphismType.MultiConfigSlave);
+    }
+    IsMultiMode() {
+        return (this.PolyType == PolymorphismType.MultiModeSlave ||
+            this.PolyType == PolymorphismType.MultiModeMaster);
+    }
     GetMass() {
         let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
         return targetEngine.Mass;
+    }
+    GetWidth() {
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            return this.EngineList.find(x => x.ID == this.MasterEngineName).Width;
+        }
+        else {
+            return this.Width;
+        }
+    }
+    GetHeight() {
+        if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
+            return this.EngineList.find(x => x.ID == this.MasterEngineName).Height;
+        }
+        else {
+            return this.Height;
+        }
     }
     GetModelID() {
         if (this.PolyType == PolymorphismType.MultiConfigSlave || this.PolyType == PolymorphismType.MultiModeSlave) {
@@ -8653,7 +7917,9 @@ class Engine {
         option1.selected = "" == this.MasterEngineName;
         selects[1].options.add(option1.cloneNode(true));
         if (parseInt(selects[0].value) == PolymorphismType.MultiModeSlave) {
-            this.EngineList.filter(x => x.Active && x.PolyType == PolymorphismType.MultiModeMaster).forEach(e => {
+            this.EngineList.filter(x => x.ID != this.ID &&
+                x.Active &&
+                x.PolyType == PolymorphismType.MultiModeMaster).forEach(e => {
                 let option = document.createElement("option");
                 option.value = `${e.ID}`;
                 option.text = e.ID;
@@ -8662,7 +7928,9 @@ class Engine {
             });
         }
         else if (parseInt(selects[0].value) == PolymorphismType.MultiConfigSlave) {
-            this.EngineList.filter(x => x.Active && x.PolyType == PolymorphismType.MultiConfigMaster).forEach(e => {
+            this.EngineList.filter(x => x.ID != this.ID &&
+                x.Active &&
+                x.PolyType == PolymorphismType.MultiConfigMaster).forEach(e => {
                 let option = document.createElement("option");
                 option.value = `${e.ID}`;
                 option.text = e.ID;
@@ -8826,9 +8094,9 @@ class Engine {
             ++x;
         }
     }
-    OnTableDraw(e) {
-        this.ListCols = e;
-        this.RehidePolyFields(e);
+    OnTableDraw(rowElements) {
+        this.ListCols = rowElements;
+        this.RehidePolyFields(rowElements);
     }
     EngineTypeConfig() {
         switch (this.EngineVariant) {
@@ -9129,7 +8397,1164 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b00000
     }
 };
+Engine._ColumnSorts = {
+    Active: (a, b) => Engine.RegularSort(a.Active, b.Active, a.ID, b.ID),
+    ID: (a, b) => Engine.RegularSort(a.ID, b.ID),
+    Labels: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.GetDisplayLabel(), b.GetDisplayLabel(), a.ID, b.ID), EngineVariant: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.EngineVariant, b.EngineVariant, a.ID, b.ID), Mass: (a, b) => Engine.RegularSort(a.GetMass(), b.GetMass(), a.ID, b.ID),
+    Thrust: (a, b) => Engine.RegularSort(a.Thrust, b.Thrust, a.ID, b.ID),
+    MinThrust: (a, b) => Engine.RegularSort(a.MinThrust, b.MinThrust, a.ID, b.ID),
+    AtmIsp: (a, b) => Engine.RegularSort(a.AtmIsp, b.AtmIsp, a.ID, b.ID),
+    VacIsp: (a, b) => Engine.RegularSort(a.VacIsp, b.VacIsp, a.ID, b.ID),
+    PressureFed: (a, b) => Engine.RegularSort(a.PressureFed, b.PressureFed, a.ID, b.ID),
+    NeedsUllage: (a, b) => Engine.RegularSort(a.NeedsUllage, b.NeedsUllage, a.ID, b.ID),
+    TechUnlockNode: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID), EntryCost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.EntryCost, b.EntryCost, a.ID, b.ID), Cost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.Cost, b.Cost, a.ID, b.ID), AlternatorPower: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.AlternatorPower, b.AlternatorPower, a.ID, b.ID), ThrustCurve: (a, b) => Engine.RegularSort(a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
+    Polymorphism: (a, b) => {
+        let output = Engine.RegularSort(a.PolyType, b.PolyType);
+        if (output) {
+            return output;
+        }
+        if (a.PolyType == PolymorphismType.MultiModeSlave ||
+            a.PolyType == PolymorphismType.MultiConfigSlave) {
+            output = Engine.RegularSort(a.MasterEngineName, b.MasterEngineName);
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    }, FuelRatios: (a, b) => {
+        let output = Engine.RegularSort(a.FuelRatioItems.length, b.FuelRatioItems.length);
+        if (output) {
+            return output;
+        }
+        for (let i = 0; i < a.FuelRatioItems.length; ++i) {
+            output = Engine.RegularSort(a.FuelRatioItems[i][0], b.FuelRatioItems[i][0]);
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    }, Ignitions: (a, b) => Engine.RegularSort(a.IsMultiMode(), b.IsMultiMode(), a.Ignitions <= 0 ? 999999999 : a.Ignitions, b.Ignitions <= 0 ? 999999999 : b.Ignitions, a.ID, b.ID), Visuals: (a, b) => Engine.RegularSort(a.GetModelID(), b.GetModelID(), a.PlumeID, b.PlumeID, a.ID, b.ID), Dimensions: (a, b) => Engine.RegularSort(a.GetWidth(), b.GetWidth(), a.GetHeight(), b.GetHeight(), a.ID, b.ID), Gimbal: (a, b) => {
+        let output = Engine.RegularSort(a.IsSlave(), b.IsSlave());
+        if (output) {
+            return output;
+        }
+        output = Engine.RegularSort(a.AdvancedGimbal, b.AdvancedGimbal);
+        if (output) {
+            return output;
+        }
+        if (a.AdvancedGimbal) {
+            let output = Engine.RegularSort(a.GimbalNX + a.GimbalNY + a.GimbalPX + a.GimbalPY, b.GimbalNX + b.GimbalNY + b.GimbalPX + b.GimbalPY);
+            if (output) {
+                return output;
+            }
+        }
+        else {
+            let output = Engine.RegularSort(a.Gimbal, b.Gimbal);
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    }, TestFlight: (a, b) => {
+        let output = Engine.RegularSort(a.IsMultiMode(), b.IsMultiMode());
+        if (output) {
+            return output;
+        }
+        output = Engine.RegularSort(a.EnableTestFlight, b.EnableTestFlight);
+        if (output) {
+            return output;
+        }
+        if (a.EnableTestFlight) {
+            output = Engine.RegularSort(a.RatedBurnTime / (1 - a.CycleReliability10k / 100), b.RatedBurnTime / (1 - b.CycleReliability10k / 100));
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    }, Tank: (a, b) => {
+        let output = Engine.RegularSort(a.IsSlave(), b.IsSlave());
+        if (output) {
+            return output;
+        }
+        output = Engine.RegularSort(a.UseTanks, b.UseTanks);
+        if (output) {
+            return output;
+        }
+        if (a.UseTanks) {
+            let aVolume = 0;
+            let bVolume = 0;
+            a.GetConstrainedTankContents().forEach(r => {
+                aVolume += r[1];
+            });
+            b.GetConstrainedTankContents().forEach(r => {
+                bVolume += r[1];
+            });
+            output = Engine.RegularSort(aVolume, bVolume);
+            if (output) {
+                return output;
+            }
+        }
+        return Engine.RegularSort(a.ID, b.ID);
+    },
+};
 Engine.PolymorphismTypeDropdown = Engine.BuildPolymorphismTypeDropdown();
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.AlternatorPower = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = Unit.Display(engine.AlternatorPower, "kW", Settings.classic_unit_display, 9);
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.value = Unit.Display(engine.AlternatorPower, "kW", Settings.classic_unit_display);
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.AlternatorPower = Unit.Parse(e.value, "kW");
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.AtmIsp = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = Unit.Display(engine.AtmIsp, "s", true);
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.value = Unit.Display(engine.AtmIsp, "s", true);
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.AtmIsp = Unit.Parse(e.value, "s");
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Cost = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = Unit.Display(engine.Cost, " VF", Settings.classic_unit_display);
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.value = Unit.Display(engine.Cost, " VF", Settings.classic_unit_display);
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.Cost = Unit.Parse(e.value, " VF");
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Dimensions = {
+        GetDisplayElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            return tmp;
+        }, ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = `↔${Unit.Display(engine.Width, "m", false, 9)} x ↕${Unit.Display(engine.Height, "m", false, 9)}`;
+        }, GetEditElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            tmp.style.height = "76px";
+            tmp.style.padding = "0";
+            let grid = document.createElement("div");
+            grid.style.display = "grid";
+            grid.style.gridTemplateColumns = "62px auto 2px 24px 2px";
+            grid.style.gridTemplateRows = "24px 24px 2px 24px";
+            grid.style.gridTemplateAreas = `
+                "a a a a z"
+                "b c c c z"
+                "x x x x x"
+                "e f q g y"
+            `;
+            grid.innerHTML = `
+                <div class="content-cell-content" style="grid-area: a;"></div>
+                <div class="content-cell-content" style="grid-area: b;">Width</div>
+                <div style="grid-area: c;"><input style="width: calc(100%);"></div>
+                <div class="content-cell-content" style="grid-area: e;">Height</div>
+                <div style="grid-area: f;"><input style="width: calc(100%);"></div>
+                <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="img/button/aspectRatio.png"></div>
+            `;
+            let checkboxLabel = document.createElement("span");
+            let checkbox = document.createElement("input");
+            checkboxLabel.style.position = "relative";
+            checkboxLabel.style.top = "-4px";
+            checkboxLabel.style.left = "4px";
+            checkbox.type = "checkbox";
+            checkbox.addEventListener("change", e => {
+                checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
+            });
+            grid.children[0].appendChild(checkbox);
+            grid.children[0].appendChild(checkboxLabel);
+            tmp.appendChild(grid);
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            let inputs = e.querySelectorAll("input");
+            inputs[0].checked = engine.UseBaseWidth;
+            inputs[1].value = Unit.Display(engine.Width, "m", false);
+            inputs[2].value = Unit.Display(engine.Height, "m", false);
+            e.querySelector("img").onclick = () => {
+                let modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
+                inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false, 3);
+            };
+            e.querySelector("span").innerHTML = inputs[0].checked ? "Base width" : "Bell width";
+        }, ApplyChangesToValue: (e, engine) => {
+            let inputs = e.querySelectorAll("input");
+            engine.UseBaseWidth = inputs[0].checked;
+            engine.Width = Unit.Parse(inputs[1].value, "m");
+            engine.Height = Unit.Parse(inputs[2].value, "m");
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.EngineVariant = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = EngineType[engine.EngineVariant];
+        }, GetEditElement: () => {
+            let tmp = document.createElement("select");
+            tmp.classList.add("content-cell-content");
+            for (let i in EngineType) {
+                let x = parseInt(i);
+                if (isNaN(x)) {
+                    break;
+                }
+                let option = document.createElement("option");
+                option.value = x.toString();
+                option.text = EngineType[x];
+                tmp.options.add(option);
+            }
+            return tmp;
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.EntryCost = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = Unit.Display(engine.EntryCost, " VF", Settings.classic_unit_display);
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.value = Unit.Display(engine.EntryCost, " VF", Settings.classic_unit_display);
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.EntryCost = Unit.Parse(e.value, " VF");
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.FuelRatios = {
+        GetDisplayElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            return tmp;
+        }, ApplyValueToDisplayElement: (e, engine) => {
+            let fuels = [];
+            let electric = 0;
+            let output = "";
+            engine.FuelRatioItems.forEach(v => {
+                if (v[0] == Fuel.ElectricCharge) {
+                    electric = v[1];
+                }
+                else {
+                    fuels.push(v);
+                }
+            });
+            if (fuels.length == 0) {
+                output += "Not set";
+            }
+            else if (fuels.length == 1) {
+                output += FuelInfo.GetFuelInfo(fuels[0][0]).FuelName;
+            }
+            else {
+                let ratios = "";
+                let names = "";
+                fuels.forEach(v => {
+                    ratios += `${v[1]}:`;
+                    names += `${FuelInfo.GetFuelInfo(v[0]).FuelName}:`;
+                });
+                ratios = ratios.substring(0, ratios.length - 1);
+                names = names.substring(0, names.length - 1);
+                output += `${ratios} ${names}`;
+            }
+            if (electric > 0) {
+                output += ` | Electric: ${Unit.Display(electric, "kW", Settings.classic_unit_display, 9)}`;
+            }
+            e.innerHTML = output;
+        }, GetEditElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            tmp.style.height = "126px";
+            tmp.style.padding = "0";
+            let grid = document.createElement("div");
+            grid.style.display = "grid";
+            grid.style.gridTemplateColumns = "24px 24px auto";
+            grid.style.gridTemplateRows = "24px 105px";
+            grid.style.gridTemplateAreas = `
+                "a b c"
+                "d d d"
+            `;
+            grid.innerHTML = `
+                <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
+                <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
+                <div class="content-cell-content" style="grid-area: c;"></div>
+                <div class="content-cell-content" style="grid-area: d; overflow: auto;"><table><tr><th style="width: 65%;">Fuel</th><th style="width: 35%;">Ratio</th></tr></table></div>
+            `;
+            let table = grid.querySelector("tbody");
+            let imgs = grid.querySelectorAll("img");
+            imgs[0].addEventListener("click", () => {
+                let tr = document.createElement("tr");
+                let select = FuelInfo.Dropdown.cloneNode(true);
+                select.querySelector(`option[value="${Fuel.Hydrazine}"]`).selected = true;
+                tr.innerHTML = `
+                    <td></td>
+                    <td><input style="width: calc(100%);" value="1"></td>
+                `;
+                tr.children[0].appendChild(select);
+                table.appendChild(tr);
+            });
+            imgs[1].addEventListener("click", () => {
+                let tmp = grid.querySelectorAll("tr");
+                if (tmp.length > 1) {
+                    tmp[tmp.length - 1].remove();
+                }
+            });
+            let checkboxLabel = document.createElement("span");
+            let checkbox = document.createElement("input");
+            checkboxLabel.style.position = "relative";
+            checkboxLabel.style.top = "-4px";
+            checkboxLabel.style.left = "4px";
+            checkbox.type = "checkbox";
+            checkbox.addEventListener("change", e => {
+                checkboxLabel.innerHTML = checkbox.checked ? "Volume ratio" : "Mass ratio";
+            });
+            grid.children[2].appendChild(checkbox);
+            grid.children[2].appendChild(checkboxLabel);
+            tmp.appendChild(grid);
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.querySelector(`input[type="checkbox"]`).checked = engine.FuelVolumeRatios;
+            let table = e.querySelector("tbody");
+            let rows = e.querySelectorAll("tr");
+            rows.forEach((v, i) => {
+                if (i != 0) {
+                    v.remove();
+                }
+            });
+            engine.FuelRatioItems.forEach(v => {
+                let tr = document.createElement("tr");
+                let select = FuelInfo.Dropdown.cloneNode(true);
+                select.querySelector(`option[value="${v[0]}"]`).selected = true;
+                tr.innerHTML = `
+                    <td></td>
+                    <td><input style="width: calc(100%);" value="${v[1]}"></td>
+                `;
+                tr.children[0].appendChild(select);
+                table.appendChild(tr);
+            });
+            e.querySelector("span").innerHTML = engine.FuelVolumeRatios ? "Volume ratio" : "Mass ratio";
+        }, ApplyChangesToValue: (e, engine) => {
+            let selects = e.querySelectorAll("select");
+            let inputs = e.querySelectorAll(`input`);
+            engine.FuelVolumeRatios = inputs[0].checked;
+            if (selects.length + 1 != inputs.length) {
+                console.warn("table misaligned?");
+            }
+            engine.FuelRatioItems = [];
+            for (let i = 0; i < selects.length; ++i) {
+                engine.FuelRatioItems.push([parseInt(selects[i].value), parseFloat(inputs[i + 1].value.replace(",", "."))]);
+            }
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Gimbal = {
+        GetDisplayElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            return tmp;
+        }, ApplyValueToDisplayElement: (e, engine) => {
+            if (engine.AdvancedGimbal) {
+                e.innerHTML = `X:<-${engine.GimbalNX}°:${engine.GimbalPX}°>, Y:<-${engine.GimbalNY}°:${engine.GimbalPY}°>`;
+            }
+            else {
+                e.innerHTML = `${engine.Gimbal}°`;
+            }
+        }, GetEditElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            tmp.style.height = "75px";
+            tmp.style.padding = "0";
+            tmp.innerHTML = `
+                <div class="content-cell-content" style="height: 24px"></div>
+            `;
+            let baseDiv = document.createElement("div");
+            let advDiv = document.createElement("div");
+            let checkbox = document.createElement("input");
+            let checkboxLabel = document.createElement("span");
+            tmp.appendChild(baseDiv);
+            tmp.appendChild(advDiv);
+            checkbox.setAttribute("data-ref", "checkbox");
+            checkbox.type = "checkbox";
+            checkbox.addEventListener("change", (e) => {
+                if (checkbox.checked) {
+                    baseDiv.style.display = "none";
+                    advDiv.style.display = "grid";
+                }
+                else {
+                    baseDiv.style.display = "grid";
+                    advDiv.style.display = "none";
+                }
+            });
+            checkboxLabel.style.position = "relative";
+            checkboxLabel.style.top = "-4px";
+            checkboxLabel.style.left = "4px";
+            checkboxLabel.innerHTML = "Advanced gimbal";
+            tmp.children[0].appendChild(checkbox);
+            tmp.children[0].appendChild(checkboxLabel);
+            baseDiv.setAttribute("data-ref", "basediv");
+            baseDiv.style.display = "grid";
+            baseDiv.style.gridTemplateColumns = "94px auto 3px";
+            baseDiv.style.gridTemplateRows = "24px";
+            baseDiv.style.gridTemplateAreas = `
+                "a b c"
+            `;
+            baseDiv.innerHTML = `
+                <div class="content-cell-content" style="grid-area: a;">Gimbal (°)</div>
+                <div style="grid-area: b;"><input data-ref="gimbal" style="width: calc(100%);"></div>
+            `;
+            advDiv.setAttribute("data-ref", "advdiv");
+            advDiv.style.display = "grid";
+            advDiv.style.gridTemplateColumns = "114px auto auto 3px";
+            advDiv.style.gridTemplateRows = "24px 24px";
+            advDiv.style.gridTemplateAreas = `
+                "a b c d"
+                "e f g h"
+            `;
+            advDiv.innerHTML = `
+                <div class="content-cell-content" style="grid-area: a;">X axis (-|+)°</div>
+                <div style="grid-area: b;"><input data-ref="gimbalnx" style="width: calc(100%);"></div>
+                <div style="grid-area: c;"><input data-ref="gimbalpx" style="width: calc(100%);"></div>
+                
+                <div class="content-cell-content" style="grid-area: e;">Y axis (-|+)°</div>
+                <div style="grid-area: f;"><input data-ref="gimbalny" style="width: calc(100%);"></div>
+                <div style="grid-area: g;"><input data-ref="gimbalpy" style="width: calc(100%);"></div>
+            `;
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.querySelector(`input[data-ref="checkbox"]`).checked = engine.AdvancedGimbal;
+            e.querySelector(`input[data-ref="gimbal"]`).value = engine.Gimbal.toString();
+            e.querySelector(`input[data-ref="gimbalnx"]`).value = engine.GimbalNX.toString();
+            e.querySelector(`input[data-ref="gimbalpx"]`).value = engine.GimbalPX.toString();
+            e.querySelector(`input[data-ref="gimbalny"]`).value = engine.GimbalNY.toString();
+            e.querySelector(`input[data-ref="gimbalpy"]`).value = engine.GimbalPY.toString();
+            if (engine.AdvancedGimbal) {
+                e.querySelector(`div[data-ref="basediv"]`).style.display = "none";
+                e.querySelector(`div[data-ref="advdiv"]`).style.display = "grid";
+            }
+            else {
+                e.querySelector(`div[data-ref="basediv"]`).style.display = "grid";
+                e.querySelector(`div[data-ref="advdiv"]`).style.display = "none";
+            }
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.AdvancedGimbal = e.querySelector(`input[data-ref="checkbox"]`).checked;
+            engine.Gimbal = parseFloat(e.querySelector(`input[data-ref="gimbal"]`).value.replace(",", "."));
+            engine.GimbalPX = parseFloat(e.querySelector(`input[data-ref="gimbalpx"]`).value.replace(",", "."));
+            engine.GimbalNY = parseFloat(e.querySelector(`input[data-ref="gimbalny"]`).value.replace(",", "."));
+            engine.GimbalPY = parseFloat(e.querySelector(`input[data-ref="gimbalpy"]`).value.replace(",", "."));
+            engine.GimbalNX = parseFloat(e.querySelector(`input[data-ref="gimbalnx"]`).value.replace(",", "."));
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.ID = {
+        ApplyChangesToValue: (e, engine) => {
+            let output = "";
+            let rawInput = e.value;
+            rawInput.replace(" ", "-");
+            for (let i = 0; i < rawInput.length; ++i) {
+                if (/[a-zA-Z0-9-]{1}/.test(rawInput[i])) {
+                    output += rawInput[i];
+                }
+            }
+            if (output == "") {
+                output = "EnterCorrectID";
+            }
+            engine.ID = output;
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Ignitions = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = engine.Ignitions <= 0 ? "Infinite" : engine.Ignitions.toString();
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.Ignitions = parseInt(e.value);
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Labels = {
+        GetDisplayElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            return tmp;
+        }, ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = engine.GetDisplayLabel();
+        }, GetEditElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            tmp.style.height = "192px";
+            tmp.style.padding = "0";
+            let grid = document.createElement("div");
+            grid.style.display = "grid";
+            grid.style.gridTemplateColumns = "116px auto";
+            grid.style.gridTemplateRows = "24px 24px 24px 120px";
+            grid.style.gridTemplateAreas = `
+                "a b"
+                "c d"
+                "e e"
+                "f f"
+            `;
+            grid.innerHTML = `
+                <div class="content-cell-content" style="grid-area: a;">Name</div>
+                <div style="grid-area: b;"><input style="width: calc(100%);"></div>
+                
+                <div class="content-cell-content" style="grid-area: c;">Manufacturer</div>
+                <div style="grid-area: d;"><input style="width: calc(100%);"></div>
+                
+                <div class="content-cell-content" style="grid-area: e;">Description</div>
+                <div style="grid-area: f;"><textarea style="resize: none; width: calc(100%); height: 100%;"></textarea></div>
+            `;
+            tmp.appendChild(grid);
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            let inputs = e.querySelectorAll("input");
+            inputs[0].value = engine.EngineName;
+            inputs[1].value = engine.EngineManufacturer;
+            inputs[0].disabled = engine.PolyType == PolymorphismType.MultiConfigSlave;
+            inputs[1].disabled = engine.PolyType == PolymorphismType.MultiConfigSlave;
+            e.querySelector("textarea").value = engine.EngineDescription;
+        }, ApplyChangesToValue: (e, engine) => {
+            let inputs = e.querySelectorAll("input");
+            engine.EngineName = inputs[0].value;
+            engine.EngineManufacturer = inputs[1].value;
+            engine.EngineDescription = e.querySelector("textarea").value;
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Mass = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = Unit.Display(engine.Mass, "t", Settings.classic_unit_display, 9);
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.value = Unit.Display(engine.Mass, "t", Settings.classic_unit_display);
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.Mass = Unit.Parse(e.value, "t");
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.MinThrust = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = `${engine.MinThrust}%`;
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Polymorphism = {
+        GetDisplayElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            return tmp;
+        }, ApplyValueToDisplayElement: (e, engine) => {
+            switch (engine.PolyType) {
+                case PolymorphismType.Single:
+                    e.innerHTML = `Single`;
+                    break;
+                case PolymorphismType.MultiModeMaster:
+                    e.innerHTML = `Multimode master`;
+                    break;
+                case PolymorphismType.MultiModeSlave:
+                    e.innerHTML = `Multimode slave to ${engine.MasterEngineName}`;
+                    break;
+                case PolymorphismType.MultiConfigMaster:
+                    e.innerHTML = `Multiconfig master`;
+                    break;
+                case PolymorphismType.MultiConfigSlave:
+                    e.innerHTML = `Multiconfig slave to ${engine.MasterEngineName}`;
+                    break;
+            }
+        }, GetEditElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            tmp.style.height = "48px";
+            tmp.style.padding = "0";
+            let grid = document.createElement("div");
+            grid.style.display = "grid";
+            grid.style.gridTemplateColumns = "auto";
+            grid.style.gridTemplateRows = "24px 24px";
+            grid.style.gridTemplateAreas = `
+                "a"
+                "b"
+            `;
+            grid.innerHTML = `
+                <div style="grid-area: a;">${Engine.PolymorphismTypeDropdown.outerHTML}</div>
+                <div style="grid-area: b;"><select></select></div>
+            `;
+            tmp.appendChild(grid);
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            let selects = e.querySelectorAll("select");
+            selects[0].onchange = () => {
+                engine.RebuildMasterSelect(e);
+            };
+            selects[0].value = engine.PolyType.toString();
+            engine.RebuildMasterSelect(e);
+        }, ApplyChangesToValue: (e, engine) => {
+            let selects = e.querySelectorAll("select");
+            engine.PolyType = parseInt(selects[0].value);
+            engine.MasterEngineName = selects[1].value;
+            engine.RehidePolyFields(engine.ListCols);
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Spacer = {
+        GetDisplayElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            return tmp;
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Tank = {
+        GetDisplayElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            return tmp;
+        }, ApplyValueToDisplayElement: (e, engine) => {
+            let output = "";
+            if (engine.UseTanks) {
+                if (engine.LimitTanks) {
+                    if (engine.TanksVolume == 0) {
+                        output = "Enabled, but empty";
+                    }
+                    else {
+                        let usedVolume = 0;
+                        engine.TanksContents.forEach(v => {
+                            usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
+                        });
+                        usedVolume = Math.min(usedVolume, engine.TanksVolume);
+                        output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display, 3)}/${Unit.Display(engine.TanksVolume, "L", Settings.classic_unit_display, 3)}`;
+                    }
+                }
+                else {
+                    if (engine.TanksContents.length == 0) {
+                        output = "Enabled, but empty";
+                    }
+                    else {
+                        let usedVolume = 0;
+                        engine.TanksContents.forEach(v => {
+                            usedVolume += v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
+                        });
+                        output = `Enabled, ${Unit.Display(usedVolume, "L", Settings.classic_unit_display, 3)}`;
+                    }
+                }
+            }
+            else {
+                output = "Disabled";
+            }
+            e.innerHTML = output;
+        }, GetEditElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            tmp.style.height = "222px";
+            tmp.style.padding = "0";
+            tmp.innerHTML = `
+                <div class="content-cell-content" style="height: 24px;"><input type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Add tank</span></div>
+            `;
+            let grid = document.createElement("div");
+            grid.style.display = "grid";
+            grid.style.gridTemplateColumns = "24px 24px auto 3px";
+            grid.style.gridTemplateRows = "24px 24px 24px 24px 105px";
+            grid.style.gridTemplateAreas = `
+                "c c c z"
+                "d e e z"
+                "f f f z"
+                "g h i z"
+                "j j j j"
+            `;
+            tmp.querySelector("input").addEventListener("change", () => {
+                grid.style.display = tmp.querySelector("input").checked ? "grid" : "none";
+            });
+            grid.innerHTML = `
+                <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
+                
+                <div class="content-cell-content" style="grid-area: d"><input style="cursor: help;" title="Enable tank volume restriction" type="checkbox"></div>
+                <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
+                
+                <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
+                
+                <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
+                <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
+                <div class="content-cell-content" style="grid-area: j; overflow: auto;"><table><tr><th style="width: 35%;">Fuel</th><th style="width: 35%;">Volume</th><th style="width: 30%;">Mass</th></tr></table></div>
+            `;
+            let inputs = grid.querySelectorAll("input");
+            inputs[0].addEventListener("change", () => {
+                inputs[1].disabled = !inputs[0].checked;
+            });
+            let table = grid.querySelector("tbody");
+            let imgs = grid.querySelectorAll("img");
+            imgs[0].addEventListener("click", () => {
+                let tr = document.createElement("tr");
+                let select = FuelInfo.Dropdown.cloneNode(true);
+                select.querySelector(`option[value="${Fuel.Hydrazine}"]`).selected = true;
+                tr.innerHTML = `
+                    <td></td>
+                    <td><input style="width: calc(100%);" value="${Unit.Display(1, "L", Settings.classic_unit_display)}"></td>
+                    <td><input style="width: calc(100%);" value="${Unit.Display(1 * FuelInfo.GetFuelInfo(Fuel.Hydrazine).Density, "t", Settings.classic_unit_display)}"></td>
+                `;
+                let inputs = tr.querySelectorAll("input");
+                select.addEventListener("change", () => {
+                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
+                });
+                inputs[0].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
+                    }, 20);
+                });
+                inputs[1].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
+                    }, 20);
+                });
+                tr.children[0].appendChild(select);
+                table.appendChild(tr);
+            });
+            imgs[1].addEventListener("click", () => {
+                let tmp = grid.querySelectorAll("tr");
+                if (tmp.length > 1) {
+                    tmp[tmp.length - 1].remove();
+                }
+            });
+            tmp.appendChild(grid);
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            let allInputs = e.querySelectorAll(`input`);
+            allInputs[0].checked = engine.UseTanks;
+            allInputs[1].checked = engine.LimitTanks;
+            allInputs[2].value = Unit.Display(engine.TanksVolume, "L", Settings.classic_unit_display);
+            e.querySelectorAll("span")[1].innerHTML = Unit.Display(engine.GetTankSizeEstimate(), "L", Settings.classic_unit_display, 3);
+            e.children[1].style.display = engine.UseTanks ? "grid" : "none";
+            allInputs[2].disabled = !engine.LimitTanks;
+            let table = e.querySelector("tbody");
+            let rows = e.querySelectorAll("tr");
+            rows.forEach((v, i) => {
+                if (i != 0) {
+                    v.remove();
+                }
+            });
+            engine.TanksContents.forEach(v => {
+                let tr = document.createElement("tr");
+                let select = FuelInfo.Dropdown.cloneNode(true);
+                select.querySelector(`option[value="${v[0]}"]`).selected = true;
+                tr.innerHTML = `
+                    <td></td>
+                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1], "L", Settings.classic_unit_display)}"></td>
+                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1] * FuelInfo.GetFuelInfo(v[0]).Density, "t", Settings.classic_unit_display)}"></td>
+                `;
+                let inputs = tr.querySelectorAll("input");
+                select.addEventListener("change", () => {
+                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
+                });
+                inputs[0].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
+                    }, 20);
+                });
+                inputs[1].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
+                    }, 20);
+                });
+                tr.children[0].appendChild(select);
+                table.appendChild(tr);
+            });
+        }, ApplyChangesToValue: (e, engine) => {
+            let selects = e.querySelectorAll("select");
+            let inputs = e.querySelector("table").querySelectorAll(`input`);
+            let allInputs = e.querySelectorAll(`input`);
+            engine.UseTanks = allInputs[0].checked;
+            engine.LimitTanks = allInputs[1].checked;
+            engine.TanksVolume = Unit.Parse(allInputs[2].value, "L");
+            if (selects.length * 2 != inputs.length) {
+                console.warn("table misaligned?");
+            }
+            engine.TanksContents = [];
+            for (let i = 0; i < selects.length; ++i) {
+                engine.TanksContents.push([parseInt(selects[i].value), Unit.Parse(inputs[2 * i].value, "L")]);
+            }
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.TechUnlockNode = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = TechNodeNames.get(engine.TechUnlockNode);
+        }, GetEditElement: () => {
+            let tmp = document.createElement("input");
+            tmp.classList.add("content-cell-content");
+            tmp.setAttribute("list", "techNodeItems");
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.value = TechNodeNames.get(engine.TechUnlockNode);
+        }, ApplyChangesToValue: (e, engine) => {
+            let value = 0;
+            TechNodeNames.forEach((name, node) => {
+                if (e.value.trim() == name) {
+                    value = node;
+                }
+            });
+            engine.TechUnlockNode = value;
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.TestFlight = {
+        GetDisplayElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            return tmp;
+        }, ApplyValueToDisplayElement: (e, engine) => {
+            if (engine.EnableTestFlight) {
+                e.innerHTML = `Enabled | ${engine.StartReliability0}% - ${engine.StartReliability10k}% | ${Math.round((1 / (1 - (engine.CycleReliability0 / 100))) * engine.RatedBurnTime)}s - ${Math.round((1 / (1 - (engine.CycleReliability10k / 100))) * engine.RatedBurnTime)}s`;
+            }
+            else {
+                if (engine.IsTestFlightDefault()) {
+                    e.innerHTML = `Disabled`;
+                }
+                else {
+                    e.innerHTML = `Disabled, but configured`;
+                }
+            }
+        }, GetEditElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            tmp.style.height = "147px";
+            tmp.style.padding = "0";
+            tmp.innerHTML = `
+                <div class="content-cell-content" style="height: 24px;"><input type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Enable Test Flight</span></div>
+            `;
+            let grid = document.createElement("div");
+            grid.style.display = "grid";
+            grid.style.gridTemplateColumns = "310px auto 26px";
+            grid.style.gridTemplateRows = "24px 24px 24px 24px 24px";
+            grid.style.gridTemplateAreas = `
+                "c d e"
+                "f g h"
+                "i j k"
+                "l m n"
+                "o p q"
+            `;
+            let checkbox = tmp.querySelector("input");
+            checkbox.addEventListener("change", () => {
+                grid.style.display = checkbox.checked ? "grid" : "none";
+            });
+            grid.innerHTML = `
+                <div class="content-cell-content" style="grid-area: c;">Rated burn time</div>
+                <div style="grid-area: d;"><input style="width: calc(100%);"></div>
+                <div class="content-cell-content" style="grid-area: e;">s</div>
+                
+                <div class="content-cell-content" style="grid-area: f;">Ignition success chance (0% data)</div>
+                <div style="grid-area: g;"><input style="width: calc(100%);"></div>
+                <div class="content-cell-content" style="grid-area: h;">%</div>
+                
+                <div class="content-cell-content" style="grid-area: i;">Ignition success chance (100% data)</div>
+                <div style="grid-area: j;"><input style="width: calc(100%);"></div>
+                <div class="content-cell-content" style="grid-area: k;">%</div>
+                
+                <div class="content-cell-content" style="grid-area: l;">Burn cycle reliability (0% data)</div>
+                <div style="grid-area: m;"><input style="width: calc(100%);"></div>
+                <div class="content-cell-content" style="grid-area: n;">%</div>
+                
+                <div class="content-cell-content" style="grid-area: o;">Burn cycle reliability (100% data)</div>
+                <div style="grid-area: p;"><input style="width: calc(100%);"></div>
+                <div class="content-cell-content" style="grid-area: q;">%</div>
+            `;
+            tmp.appendChild(grid);
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            let inputs = e.querySelectorAll("input");
+            e.children[1].style.display = engine.EnableTestFlight ? "grid" : "none";
+            inputs[0].checked = engine.EnableTestFlight;
+            inputs[1].value = engine.RatedBurnTime.toString();
+            inputs[2].value = engine.StartReliability0.toString();
+            inputs[3].value = engine.StartReliability10k.toString();
+            inputs[4].value = engine.CycleReliability0.toString();
+            inputs[5].value = engine.CycleReliability10k.toString();
+        }, ApplyChangesToValue: (e, engine) => {
+            let inputs = e.querySelectorAll("input");
+            engine.EnableTestFlight = inputs[0].checked;
+            engine.RatedBurnTime = parseInt(inputs[1].value);
+            engine.StartReliability0 = parseFloat(inputs[2].value.replace(",", "."));
+            engine.StartReliability10k = parseFloat(inputs[3].value.replace(",", "."));
+            engine.CycleReliability0 = parseFloat(inputs[4].value.replace(",", "."));
+            engine.CycleReliability10k = parseFloat(inputs[5].value.replace(",", "."));
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Thrust = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 9);
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.value = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display);
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.Thrust = Unit.Parse(e.value, "kN");
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.ThrustCurve = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = engine.ThrustCurve.length > 0 ? "Custom" : "Default";
+        }, GetEditElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            tmp.style.height = "150px";
+            tmp.style.padding = "0";
+            let grid = document.createElement("div");
+            grid.style.display = "grid";
+            grid.style.gridTemplateColumns = "24px 24px 24px auto";
+            grid.style.gridTemplateRows = "24px 129px";
+            grid.style.gridTemplateAreas = `
+                "a b c d"
+                "e e e e"
+            `;
+            grid.innerHTML = `
+                <div style="grid-area: a;"><img class="mini-button option-button" title="Add new entry" src="img/button/add-mini.png"></div>
+                <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last entry" src="img/button/remove-mini.png"></div>
+                <div style="grid-area: c;"><img class="mini-button option-button" title="Sort entries by Fuel% (Descending)" src="img/button/sort-mini.png"></div>
+                <div class="content-cell-content" style="grid-area: d;"></div>
+                <div class="content-cell-content" style="grid-area: e; overflow: auto;"><table><tr><th style="width: 50%;">Fuel%</th><th style="width: 50%;">Thrust%</th></tr></table></div>
+            `;
+            let table = grid.querySelector("tbody");
+            let imgs = grid.querySelectorAll("img");
+            imgs[0].addEventListener("click", () => {
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><input style="width: calc(100%);" value="0"></td>
+                    <td><input style="width: calc(100%);" value="0"></td>
+                `;
+                table.appendChild(tr);
+            });
+            imgs[1].addEventListener("click", () => {
+                let tmp = grid.querySelectorAll("tr");
+                if (tmp.length > 1) {
+                    tmp[tmp.length - 1].remove();
+                }
+            });
+            imgs[2].addEventListener("click", () => {
+                let tmpCurve = [];
+                let inputs = tmp.querySelectorAll(`input`);
+                for (let i = 0; i < inputs.length; i += 2) {
+                    tmpCurve.push([parseFloat(inputs[i].value.replace(",", ".")), parseFloat(inputs[i + 1].value.replace(",", "."))]);
+                }
+                tmpCurve = tmpCurve.sort((a, b) => {
+                    return b[0] - a[0];
+                });
+                let table = tmp.querySelector("tbody");
+                let rows = tmp.querySelectorAll("tr");
+                rows.forEach((v, i) => {
+                    if (i != 0) {
+                        v.remove();
+                    }
+                });
+                tmpCurve.forEach(v => {
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><input style="width: calc(100%);" value="${v[0]}"></td>
+                        <td><input style="width: calc(100%);" value="${v[1]}"></td>
+                    `;
+                    table.appendChild(tr);
+                });
+            });
+            tmp.appendChild(grid);
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            let table = e.querySelector("tbody");
+            let rows = e.querySelectorAll("tr");
+            engine.ThrustCurve = engine.ThrustCurve.sort((a, b) => {
+                return b[0] - a[0];
+            });
+            rows.forEach((v, i) => {
+                if (i != 0) {
+                    v.remove();
+                }
+            });
+            engine.ThrustCurve.forEach(v => {
+                let tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><input style="width: calc(100%);" value="${v[0]}"></td>
+                    <td><input style="width: calc(100%);" value="${v[1]}"></td>
+                `;
+                table.appendChild(tr);
+            });
+        }, ApplyChangesToValue: (e, engine) => {
+            let inputs = e.querySelectorAll(`input`);
+            engine.ThrustCurve = [];
+            for (let i = 0; i < inputs.length; i += 2) {
+                engine.ThrustCurve.push([parseFloat(inputs[i].value.replace(",", ".")), parseFloat(inputs[i + 1].value.replace(",", "."))]);
+            }
+            engine.ThrustCurve = engine.ThrustCurve.sort((a, b) => {
+                return b[0] - a[0];
+            });
+        },
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.VacIsp = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = Unit.Display(engine.VacIsp, "s", true);
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.value = Unit.Display(engine.VacIsp, "s", true);
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.VacIsp = Unit.Parse(e.value, "s");
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Visuals = {
+        GetDisplayElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            return tmp;
+        }, ApplyValueToDisplayElement: (e, engine) => {
+            let isSlave = engine.PolyType == PolymorphismType.MultiModeSlave || engine.PolyType == PolymorphismType.MultiConfigSlave;
+            if (isSlave) {
+                e.innerHTML = `${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeName}`;
+            }
+            else {
+                e.innerHTML = `${ModelInfo.GetModelInfo(engine.ModelID).ModelName}, ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeName}`;
+            }
+        }, GetEditElement: () => {
+            let tmp = document.createElement("div");
+            tmp.classList.add("content-cell-content");
+            tmp.style.padding = "0";
+            let grid = document.createElement("div");
+            grid.style.display = "grid";
+            grid.style.gridTemplateColumns = "60px auto";
+            grid.style.gridTemplateAreas = `
+                "a b"
+                "c d"
+                "e e"
+            `;
+            tmp.style.height = "168px";
+            grid.style.gridTemplateRows = "24px 24px 120px";
+            grid.innerHTML = `
+                <div class="content-cell-content" style="grid-area: a;">Model</div>
+                <div style="grid-area: b;"><span class="clickable-text modelText" value="999">Placeholder</span></div>
+                <div class="content-cell-content" style="grid-area: c;">Plume</div>
+                <div style="grid-area: d;"><span class="clickable-text plumeText" value="999">Placeholder</span></div>
+                <div class="exhaustBox" style="grid-area: e; display: grid; grid-template: 'ea ea' 24px 'eb eb' 96px / auto">
+                <div class="content-cell-content" style="grid-area: ea;"><input class="enableExhaust" type="checkbox"><span style="position: relative; left: 4px; top: -4px;">Enable exhaust effects</span></div>
+                <div class="exhaustSettings" style="grid-area: eb; display: grid; grid-template: 'eba ebb' 24px 'ebc ebd' 24px 'ebe ebf' 24px 'ebg ebh' 24px / 140px auto">
+                <div class="content-cell-content" style="grid-area: eba;">Exhaust plume</div>
+                <div style="grid-area: ebb;"><span class="clickable-text exhaustPlumeText" value="999">Placeholder</span></div>
+                <div class="content-cell-content" style="grid-area: ebc; cursor: help;" title="What fraction of engine's overall thrust is produced by engine exhaust?">Exhaust thrust</div>
+                <div style="grid-area: ebd;"><input class="exhaustThrust" style="width: calc(100% - 24px);">%</div>
+                <div class="content-cell-content" style="grid-area: ebe; cursor: help;" title="Multiplier of exhaust's efficiency, compared to main engine">Exhaust impulse</div>
+                <div style="grid-area: ebf;"><input class="exhaustImpulse" style="width: calc(100% - 24px);">%</div>
+                <div class="content-cell-content" style="grid-area: ebg;">Exhaust gimbal</div>
+                <div style="grid-area: ebh;"><input class="exhaustGimbal" style="width: calc(100% - 24px);"><input title="Restrict engine gimbal to only roll control" class="exhaustGimbalRoll" type="checkbox" style="cursor: help; margin: -1px 0px 0px 0px; position: relative; top: 2px; left: 2px;"></div>
+                </div>
+                </div>
+            `;
+            let modelText = grid.querySelector(".modelText");
+            modelText.addEventListener("click", () => {
+                ModelSelector.GetModel(m => {
+                    if (m != null) {
+                        modelText.setAttribute("value", m.toString());
+                        modelText.innerHTML = ModelInfo.GetModelInfo(m).ModelName;
+                        grid.querySelector(".exhaustBox").style.display = ModelInfo.GetModelInfo(m).Exhaust ? "grid" : "none";
+                    }
+                });
+            });
+            let plumeText = grid.querySelector(".plumeText");
+            plumeText.addEventListener("click", () => {
+                PlumeSelector.GetPlume(m => {
+                    if (m != null) {
+                        plumeText.setAttribute("value", m.toString());
+                        plumeText.innerHTML = PlumeInfo.GetPlumeInfo(m).PlumeName;
+                    }
+                });
+            });
+            let exhaustPlumeText = grid.querySelector(".exhaustPlumeText");
+            exhaustPlumeText.addEventListener("click", () => {
+                PlumeSelector.GetPlume(m => {
+                    if (m != null) {
+                        exhaustPlumeText.setAttribute("value", m.toString());
+                        exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo(m).PlumeName;
+                    }
+                });
+            });
+            let exhaustCheckbox = grid.querySelector(".enableExhaust");
+            exhaustCheckbox.addEventListener("change", () => {
+                grid.querySelector(".exhaustSettings").style.display = exhaustCheckbox.checked ? "grid" : "none";
+            });
+            tmp.appendChild(grid);
+            return tmp;
+        }, ApplyValueToEditElement: (e, engine) => {
+            let targetEngine = (engine.PolyType == PolymorphismType.MultiModeSlave ||
+                engine.PolyType == PolymorphismType.MultiConfigSlave) ? engine.EngineList.find(x => x.ID == engine.MasterEngineName) : engine;
+            targetEngine = targetEngine != undefined ? targetEngine : engine;
+            let isSlave = engine.PolyType == PolymorphismType.MultiConfigSlave || engine.PolyType == PolymorphismType.MultiModeSlave;
+            let select = e.querySelector("select");
+            let modelText = e.querySelector(".modelText");
+            let plumeText = e.querySelector(".plumeText");
+            let exhaustPlumeText = e.querySelector(".exhaustPlumeText");
+            modelText.setAttribute("value", targetEngine.ModelID.toString());
+            modelText.innerHTML = ModelInfo.GetModelInfo(targetEngine.ModelID).ModelName;
+            plumeText.setAttribute("value", engine.PlumeID.toString());
+            plumeText.innerHTML = PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeName;
+            exhaustPlumeText.setAttribute("value", engine.ExhaustPlumeID.toString());
+            exhaustPlumeText.innerHTML = PlumeInfo.GetPlumeInfo(engine.ExhaustPlumeID).PlumeName;
+            e.querySelector(".exhaustBox").style.display = ModelInfo.GetModelInfo(engine.ModelID).Exhaust ? "grid" : "none";
+            e.querySelector(".enableExhaust").checked = targetEngine.UseExhaustEffect;
+            e.querySelector(".exhaustSettings").style.display = targetEngine.UseExhaustEffect ? "grid" : "none";
+            e.querySelector(".exhaustThrust").value = engine.ExhaustThrustPercent.toString();
+            e.querySelector(".exhaustImpulse").value = engine.ExhaustIspPercent.toString();
+            e.querySelector(".exhaustGimbal").value = targetEngine.ExhaustGimbal.toString();
+            e.querySelector(".exhaustGimbalRoll").checked = targetEngine.ExhaustGimbalOnlyRoll;
+            modelText.style.pointerEvents = isSlave ? "none" : "all";
+            e.querySelector(".enableExhaust").disabled = isSlave;
+            e.querySelector(".exhaustGimbal").disabled = isSlave;
+            e.querySelector(".exhaustGimbalRoll").disabled = isSlave;
+        }, ApplyChangesToValue: (e, engine) => {
+            let modelText = e.querySelector(".modelText");
+            let plumeText = e.querySelector(".plumeText");
+            let exhaustPlumeText = e.querySelector(".exhaustPlumeText");
+            let exhaustThrust = e.querySelector(".exhaustThrust");
+            let exhaustImpulse = e.querySelector(".exhaustImpulse");
+            let exhaustGimbal = e.querySelector(".exhaustGimbal");
+            engine.ModelID = parseInt(modelText.getAttribute("value"));
+            engine.PlumeID = parseInt(plumeText.getAttribute("value"));
+            engine.ExhaustPlumeID = parseInt(exhaustPlumeText.getAttribute("value"));
+            engine.UseExhaustEffect = e.querySelector(".enableExhaust").checked;
+            engine.ExhaustThrustPercent = parseFloat(exhaustThrust.value.replace(",", "."));
+            engine.ExhaustIspPercent = parseFloat(exhaustImpulse.value.replace(",", "."));
+            engine.ExhaustGimbal = parseFloat(exhaustGimbal.value.replace(",", "."));
+            engine.ExhaustGimbalOnlyRoll = e.querySelector(".exhaustGimbalRoll").checked;
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineType;
 (function (EngineType) {
     EngineType[EngineType["Liquid"] = 0] = "Liquid";
@@ -9444,6 +9869,7 @@ class DebugLists {
         let modelCount = Object.getOwnPropertyNames(Model).length / 2;
         for (let i = 0; i < modelCount; ++i) {
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo(i);
             if (!modelInfo.Exhaust) {
                 continue;
@@ -9478,14 +9904,14 @@ class DebugLists {
             newEngine.ExhaustPlumeID = exhaustPlumes[Math.floor(exhaustPlumes.length * Math.random())];
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForModelPreviews() {
         let toAppend = [];
         let modelCount = Object.getOwnPropertyNames(Model).length / 2;
         for (let i = 0; i < modelCount; ++i) {
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo(i);
             newEngine.Active = true;
             newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}`;
@@ -9510,14 +9936,14 @@ class DebugLists {
             newEngine.PlumeID = plumes[Math.floor(plumes.length * Math.random())];
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForPlumeTest() {
         let toAppend = [];
         let plumeCount = Object.getOwnPropertyNames(Plume).length / 2;
         for (let i = 0; i < plumeCount; ++i) {
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             let plumeInfo = PlumeInfo.GetPlumeInfo(i);
             newEngine.Active = true;
             newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUMETEST`;
@@ -9533,14 +9959,14 @@ class DebugLists {
             newEngine.PlumeID = i;
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForPlumePreviews() {
         let toAppend = [];
         let plumeCount = Object.getOwnPropertyNames(Plume).length / 2;
         for (let i = 0; i < plumeCount; ++i) {
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo(Model.RS25_2);
             let plumeInfo = PlumeInfo.GetPlumeInfo(i);
             newEngine.Active = true;
@@ -9560,8 +9986,7 @@ class DebugLists {
             newEngine.PlumeID = i;
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForModelTest() {
         let toAppend = [];
@@ -9570,6 +9995,7 @@ class DebugLists {
         let modelInfo;
         for (let i = 0; i < modelCount; ++i) {
             newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             modelInfo = ModelInfo.GetModelInfo(i);
             newEngine.Active = true;
             newEngine.ID = `MODEL-${("0000" + i).slice(-4)}-1`;
@@ -9612,8 +10038,7 @@ class DebugLists {
             newEngine.PlumeID = Plume.Solid_Lower;
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
     static AppendListForTankTest() {
         let toAppend = [];
@@ -9624,6 +10049,7 @@ class DebugLists {
                 continue;
             }
             let newEngine = new Engine();
+            newEngine.EngineList = MainEngineTable.Items;
             newEngine.Active = true;
             newEngine.ID = `TANKTEST-${("0000" + i).slice(-4)}`;
             newEngine.EngineName = `(${("0000" + i).slice(-4)}) Tank volume test - ${modelInfo.ModelName}`;
@@ -9635,8 +10061,7 @@ class DebugLists {
             newEngine.TanksVolume = newEngine.GetTankSizeEstimate();
             toAppend.push(newEngine);
         }
-        MainEngineTable.Items = MainEngineTable.Items.concat(toAppend);
-        MainEngineTable.RebuildTable();
+        MainEngineTable.AddItems(toAppend);
     }
 }
 class Dragger {
@@ -10176,7 +10601,7 @@ class FileIO {
         fileDialog.click();
         fileDialog.addEventListener("change", () => {
             if (!fileDialog.files || !fileDialog.files[0]) {
-                console.log("No file selected?");
+                console.warn("No file selected?");
                 if (callback) {
                     callback(null, "");
                 }
@@ -10224,6 +10649,7 @@ class FileIO {
 }
 class ImageOverflowPreview {
     static Hook(root) {
+        const deadzone = 16;
         if (!root.firstChild) {
             console.warn("Root has no child. Ignoring...");
             return;
@@ -10234,10 +10660,12 @@ class ImageOverflowPreview {
             if (child.clientHeight <= root.clientHeight && child.clientWidth <= root.clientWidth) {
                 return;
             }
-            let xPercent = e.layerX / root.clientWidth;
-            let yPercent = e.layerY / root.clientHeight;
-            child.style.left = `-${(child.clientWidth - root.clientWidth) * xPercent}px`;
-            child.style.top = `-${(child.clientHeight - root.clientHeight) * yPercent}px`;
+            let xOffset = (e.layerX - deadzone) / (root.clientWidth - deadzone * 2);
+            let yOffset = (e.layerY - deadzone) / (root.clientHeight - deadzone * 2);
+            xOffset = Math.min(Math.max(xOffset, 0.0), 1.0);
+            yOffset = Math.min(Math.max(yOffset, 0.0), 1.0);
+            child.style.left = `-${(child.clientWidth - root.clientWidth) * xOffset}px`;
+            child.style.top = `-${(child.clientHeight - root.clientHeight) * yOffset}px`;
         });
         root.addEventListener("mouseleave", () => {
             child.style.left = '0px';
@@ -10329,7 +10757,7 @@ class Packager {
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date().getTime();
                 FileIO.ZipBlobs("GameData", blobs, zipData => {
-                    console.log(`Zipped in ${(new Date().getTime() - zipStart).toLocaleString("us").replace(/[^0-9]/g, "'")}ms`);
+                    console.info(`Zipped in ${(new Date().getTime() - zipStart).toLocaleString("us").replace(/[^0-9]/g, "'")}ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
                         latestData = zipData;
                         exportStatusElement.innerHTML = "Done. <button>Redownload finished zip</button>";
@@ -10401,7 +10829,8 @@ class Packager {
 }
 class Serializer {
     static Copy(engine) {
-        let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0, engine.EngineList);
+        let [copiedEngine, _] = Serializer.Deserialize(Serializer.Serialize(engine), 0);
+        copiedEngine.EngineList = engine.EngineList;
         return copiedEngine;
     }
     static SerializeMany(engines) {
@@ -10419,19 +10848,18 @@ class Serializer {
         });
         return output;
     }
-    static DeserializeMany(data, appendToExisting) {
+    static DeserializeMany(data) {
         let offset = 0;
-        let engineCount = 0;
+        let deserializedEngines = [];
         while (offset < data.length) {
-            let [engine, addedOffset] = Serializer.Deserialize(data, offset, appendToExisting);
-            MainEngineTable.AddItem(engine);
+            let [engine, addedOffset] = Serializer.Deserialize(data, offset);
+            deserializedEngines.push(engine);
             offset += addedOffset;
-            ++engineCount;
         }
         if (offset != data.length) {
             console.warn("Possible data corruption?");
         }
-        return engineCount;
+        return deserializedEngines;
     }
     static Serialize(e) {
         let i = 0;
@@ -10630,8 +11058,8 @@ class Serializer {
         }
         return output;
     }
-    static Deserialize(input, startOffset, originList) {
-        let output = new Engine(originList);
+    static Deserialize(input, startOffset) {
+        let output = new Engine();
         let i = startOffset;
         let version = 0;
         version += input[i++];

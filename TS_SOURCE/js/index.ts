@@ -1,6 +1,6 @@
 ///<reference path="DialogBoxes/SettingsDialog.ts" />
 var ListName = "Unnamed";
-var EditableFieldMetadata: { [id: string]: IEditable } = {
+var EditableFieldMetadata: { [id: string]: IEditable<any> } = {
     ListName: {
         ApplyValueToDisplayElement: e => {
             e.innerHTML = `${ListName}.enl`;
@@ -8,12 +8,12 @@ var EditableFieldMetadata: { [id: string]: IEditable } = {
     }
 }
 let ListNameDisplay: EditableField;
-let MainEngineTable: HtmlTable;
+let MainEngineTable: HtmlTable<Engine>;
 
 let FullscreenWindows: { [id: string]: HTMLElement } = {};
 
 //Website exit confirmation
-window.onbeforeunload = (e) => {
+window.onbeforeunload = (e: any) => {
     if (MainEngineTable.Items.length != 0) {
         e.returnValue = "Are you sure that you want to leave this page? You will lose all unsaved data";
         return "Are you sure that you want to leave this page? You will lose all unsaved data";
@@ -48,6 +48,11 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
         propellantMass += i[1] * FuelInfo.GetFuelInfo (i[0]).Density;
     });
     
+    let massFlow = engine.VacIsp; // s
+    massFlow *= 9.8066; // N*s/kg
+    massFlow = 1 / massFlow; // kg/N*s -> t/kN*s
+    massFlow *= engine.Thrust // t/s
+    
     // ==
     
     properties["id"] = engine.ID;
@@ -64,6 +69,14 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / gravity).toFixed (3);
     properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed (3);
     properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed (3);
+    
+    properties["twr_wet_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass + propellantMass) / gravity).toFixed (3);
+    properties["twr_dry_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass) / gravity).toFixed (3);
+    properties["twr_wet_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed (3);
+    properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed (3);
+    
+    properties["min_mass_flow"] = `${Unit.Display (massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
+    properties["max_mass_flow"] = `${Unit.Display (massFlow, "t", Settings.classic_unit_display, 3)}/s`;
     
     // ==
     
@@ -82,7 +95,10 @@ addEventListener ("DOMContentLoaded", () => {
     //Info panel resize
     let infoPanel = document.getElementById ("info-panel")!;
     let mainCSS = document.getElementById ("main-css")!;
-    document.getElementById ("info-panel-resize")!.addEventListener ("pointerdown", () => {
+    document.getElementById ("info-panel-resize")!.addEventListener ("pointerdown", e => {
+        // Only listen for LMB presses
+        if (e.which != 1) { return; }
+        
         let originalX = Input.MouseX;
         let originalWidth = parseFloat (document.documentElement.style.getPropertyValue ("--infoPanelWidth"));
         originalWidth = isNaN (originalWidth) ? 200 : originalWidth;
@@ -121,10 +137,13 @@ addEventListener ("DOMContentLoaded", () => {
             reader.onload = () => {
                 let data = new Uint8Array (reader.result as ArrayBuffer);
                 
-                let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
-                MainEngineTable.RebuildTable ();
+                let newEngines = Serializer.DeserializeMany (data);
+                newEngines.forEach (e => {
+                    e.EngineList = MainEngineTable.Items;
+                });
+                MainEngineTable.AddItems (newEngines);
                 
-                Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""} using drag&drop`);
+                Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""} using drag&drop`);
             }
 
             reader.readAsArrayBuffer(files[i]);
@@ -216,6 +235,13 @@ addEventListener ("DOMContentLoaded", () => {
     
     MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
+    MainEngineTable.OnSelectedItemChange = selectedEngine => {
+        if (selectedEngine) {
+            ApplyEngineToInfoPanel (selectedEngine);
+        } else {
+            ApplyEngineToInfoPanel (new Engine (), true);
+        }
+    };
     MainEngineTable.RebuildTable ();
     
 });
@@ -259,12 +285,14 @@ function OpenUploadButton_Click () {
                 filename = filename.replace (/\.enl$/, "");
                 ListNameDisplay.SetValue (filename);
                 
-                MainEngineTable.Items = [];
-                let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
+                MainEngineTable.Items = Serializer.DeserializeMany (data);
                 MainEngineTable.RebuildTable ();
+                MainEngineTable.Items.forEach (e => {
+                    e.EngineList = MainEngineTable.Items;
+                });
                 
                 FullscreenWindows["open-box"].style.display = "none";
-                Notifier.Info (`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+                Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
             } else {
                 //No file chosen?
                 Notifier.Warn ("You didn't choose any file");
@@ -274,13 +302,16 @@ function OpenUploadButton_Click () {
 }
 
 function AppendUploadButton_Click () {
-    FileIO.OpenBinary (".enl", (data) => { //TODO: Multiple file input
+    FileIO.OpenBinary (".enl", (data) => {
         if (data) {
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
-            MainEngineTable.RebuildTable ();
+            let newEngines = Serializer.DeserializeMany (data);
+            newEngines.forEach (e => {
+                e.EngineList = MainEngineTable.Items;
+            });
+            MainEngineTable.AddItems (newEngines);
             
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
         } else {
             //No file chosen?
         }
@@ -299,12 +330,14 @@ function OpenCacheButton_Click () {
                 ListNameDisplay.SetValue (newFilename);
             }
             
-            MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
+            MainEngineTable.Items = Serializer.DeserializeMany (data);
             MainEngineTable.RebuildTable ();
+            MainEngineTable.Items.forEach (e => {
+                e.EngineList = MainEngineTable.Items;
+            });
             
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info (`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }, "Choose a list to open");
     }
 }
@@ -316,11 +349,14 @@ function AppendCacheButton_Click () {
             return;
         }
         
-        let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
-        MainEngineTable.RebuildTable ();
+        let newEngines = Serializer.DeserializeMany (data);
+        newEngines.forEach (e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems (newEngines);
         
         FullscreenWindows["open-box"].style.display = "none";
-        Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+        Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
     }, "Choose a list to append");
 }
 
@@ -335,12 +371,15 @@ function OpenClipboardButton_Click () {
         
         try {
             let data = BitConverter.Base64ToByteArray (b64);
-            MainEngineTable.Items = [];
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
+            
+            MainEngineTable.Items = Serializer.DeserializeMany (data);
             MainEngineTable.RebuildTable ();
+            MainEngineTable.Items.forEach (e => {
+                e.EngineList = MainEngineTable.Items;
+            });
             
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info (`Opened ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         } catch (e) {
             Notifier.Warn ("There was an error while parsing the string");
             return;
@@ -359,11 +398,14 @@ function AppendClipboardButton_Click () {
         try {
             let data = BitConverter.Base64ToByteArray (b64);
             
-            let engineCount = Serializer.DeserializeMany (data, MainEngineTable.Items);
-            MainEngineTable.RebuildTable ();
+            let newEngines = Serializer.DeserializeMany (data);
+            newEngines.forEach (e => {
+                e.EngineList = MainEngineTable.Items;
+            });
+            MainEngineTable.AddItems (newEngines);
             
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info (`Appended ${engineCount} engine${engineCount > 1 ? "s" : ""}`);
+            Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
         } catch (e) {
             Notifier.Warn ("There was an error while parsing the string");
             return;
@@ -422,8 +464,6 @@ function ClipboardSelectionButton_Click () {
     MainEngineTable.SelectedRows.forEach (index => {
         Engines.push (MainEngineTable.Rows[index][1]);
     });
-    
-    console.log (Engines);
     
     let data = Serializer.SerializeMany (Engines);
     
@@ -492,7 +532,9 @@ function DuplicateButton_Click () {
 }
 
 function AddButton_Click () {
-    MainEngineTable.AddItem (new Engine (MainEngineTable.Items));
+    let newEngine = new Engine ();
+    newEngine.EngineList = MainEngineTable.Items;
+    MainEngineTable.AddItems (newEngine);
 }
 
 function RemoveButton_Click () {

@@ -12,6 +12,8 @@ class EditableField {
     static EditedField: EditableField | null = null;
     static IDCounter: number = 0;
     
+    OnSaveEdit?: () => void;
+    
     constructor (valueOwner: { [id: string]: any }, valueName: string, container: HTMLElement) {
         this.FieldID = EditableField.IDCounter++;
         
@@ -88,6 +90,10 @@ class EditableField {
         EditableField.EditedField = null;
         
         this.ShowEditMode (false);
+        
+        if (this.OnSaveEdit && saveChanges) {
+            this.OnSaveEdit ();
+        }
     }
     
     public SetValue (newValue: any) {
@@ -137,6 +143,7 @@ class EditableField {
             
             tmp.addEventListener ("change", (e) => {
                 this.ValueOwner[this.ValueName] = tmp.checked;
+                if (this.OnSaveEdit) { this.OnSaveEdit (); }
             })
             
             output = tmp;
@@ -222,13 +229,13 @@ class EditableField {
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToDisplayElement (this.DisplayElement);
+            this.ValueOwner[this.ValueName].ApplyValueToDisplayElement (this.DisplayElement, this.ValueOwner);
         } else if (
             this.ValueOwner.EditableFieldMetadata &&
             this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
             "ApplyValueToDisplayElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]
         ) {
-            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToDisplayElement (this.DisplayElement);
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToDisplayElement (this.DisplayElement, this.ValueOwner);
         } else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.DisplayElement.innerHTML = this.ValueOwner[this.ValueName];
         } else if (typeof this.ValueOwner[this.ValueName] == "number") {
@@ -256,13 +263,13 @@ class EditableField {
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToEditElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyValueToEditElement (this.EditElement);
+            this.ValueOwner[this.ValueName].ApplyValueToEditElement (this.EditElement, this.ValueOwner);
         } else if (
             this.ValueOwner.EditableFieldMetadata &&
             this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
             "ApplyValueToEditElement" in this.ValueOwner.EditableFieldMetadata[this.ValueName]
         ) {
-            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToEditElement (this.EditElement);
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyValueToEditElement (this.EditElement, this.ValueOwner);
         } else if (typeof this.ValueOwner[this.ValueName] == "string") {
             (<HTMLInputElement> this.EditElement).value = this.ValueOwner[this.ValueName];
         } else if (typeof this.ValueOwner[this.ValueName] == "number") {
@@ -290,13 +297,13 @@ class EditableField {
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
-            this.ValueOwner[this.ValueName].ApplyChangesToValue (this.EditElement);
+            this.ValueOwner[this.ValueName].ApplyChangesToValue (this.EditElement, this.ValueOwner);
         } else if (
             this.ValueOwner.EditableFieldMetadata &&
             this.ValueOwner.EditableFieldMetadata[this.ValueName] &&
             "ApplyChangesToValue" in this.ValueOwner.EditableFieldMetadata[this.ValueName]
         ) {
-            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyChangesToValue (this.EditElement);
+            this.ValueOwner.EditableFieldMetadata[this.ValueName].ApplyChangesToValue (this.EditElement, this.ValueOwner);
         } else if (typeof this.ValueOwner[this.ValueName] == "string") {
             this.ValueOwner[this.ValueName] = (<HTMLInputElement> this.EditElement).value;
         } else if (typeof this.ValueOwner[this.ValueName] == "number") {
@@ -312,6 +319,9 @@ class EditableField {
 }
 
 window.addEventListener ("pointerdown", (e) => {
+    // Only listen for LMB presses
+    if (e.which != 1) { return; }
+    
     if (EditableField.EditedField) {
         //Check whether pointer was over current field
         if (e.srcElement) {

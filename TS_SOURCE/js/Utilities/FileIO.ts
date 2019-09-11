@@ -128,7 +128,7 @@ class FileIO {
 
         fileDialog.addEventListener("change", () => {
             if (!fileDialog.files || !fileDialog.files[0]) {
-                console.log("No file selected?");
+                console.warn("No file selected?");
 
                 if (callback) {
                     callback(null, "");

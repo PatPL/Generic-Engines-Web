@@ -15,6 +15,10 @@
     height: 100%;
 }
 
+.abbr {
+    cursor: help;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -297,10 +301,11 @@ span.checkbox-label {
     background: var(--sidePanelBackground);
     border-left: 1px var(--darkBorder) solid;
     z-index: 200;
-    padding: 8px;
-    
-    overflow-x: hidden;
-    overflow-y: auto;
+}
+
+#info-panel h6 {
+    margin: 2px 0px 8px 0px;
+    font-size: 20px;
 }
 
 #info-panel-resize {
@@ -312,6 +317,15 @@ span.checkbox-label {
     top: 0px;
     
     cursor: ew-resize;
+}
+
+#info-panel-content {
+    height: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .content-table {
@@ -373,9 +387,18 @@ span.checkbox-label {
     font-size: 16px;
     
     overflow: hidden;
+    cursor: pointer; /* Now you can click it to sort column */
     
     background: var(--grayBackground);
     color: var(--darkerText);
+}
+
+.sortAsc {
+    background: linear-gradient(180deg, var(--sortMin), var(--sortMax));
+}
+
+.sortDesc {
+    background: linear-gradient(0deg, var(--sortMin), var(--sortMax));
 }
 
 .content-cell {

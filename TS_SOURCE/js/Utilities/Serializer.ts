@@ -3,7 +3,8 @@ class Serializer {
     public static readonly Version = 14;
     
     public static Copy (engine: Engine): Engine {
-        let [copiedEngine, _] = Serializer.Deserialize (Serializer.Serialize (engine), 0, engine.EngineList);
+        let [copiedEngine, _] = Serializer.Deserialize (Serializer.Serialize (engine), 0);
+        copiedEngine.EngineList = engine.EngineList;
         return copiedEngine;
     }
     
@@ -26,22 +27,21 @@ class Serializer {
         return output;
     }
     
-    public static DeserializeMany (data: Uint8Array, appendToExisting: Engine[]): number {
+    public static DeserializeMany (data: Uint8Array): Engine[] {
         let offset = 0;
-        let engineCount = 0;
+        let deserializedEngines: Engine[] = [];
         
         while (offset < data.length) {
-            let [engine, addedOffset] = Serializer.Deserialize (data, offset, appendToExisting);
-            MainEngineTable.AddItem (engine);
+            let [engine, addedOffset] = Serializer.Deserialize (data, offset);
+            deserializedEngines.push (engine);
             offset += addedOffset;
-            ++engineCount;
         }
         
         if (offset != data.length) {
             console.warn ("Possible data corruption?");
         }
         
-        return engineCount;
+        return deserializedEngines;
     }
     
     public static Serialize(e: Engine): Uint8Array {
@@ -379,8 +379,8 @@ class Serializer {
         return output;
     }
     
-    public static Deserialize (input: Uint8Array, startOffset: number, originList: Engine[]): [Engine, number] {
-        let output = new Engine (originList);
+    public static Deserialize (input: Uint8Array, startOffset: number): [Engine, number] {
+        let output = new Engine ();
         let i = startOffset;
         
         //short - Version

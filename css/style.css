@@ -15,6 +15,10 @@
     height: 100%;
 }
 
+.abbr {
+    cursor: help;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -301,6 +305,11 @@ span.checkbox-label {
     
     overflow-x: hidden;
     overflow-y: auto;
+}
+
+#info-panel h6 {
+    margin: 2px 0px 8px 0px;
+    font-size: 20px;
 }
 
 #info-panel-resize {

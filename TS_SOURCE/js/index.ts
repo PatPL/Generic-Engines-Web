@@ -13,7 +13,7 @@ let MainEngineTable: HtmlTable<Engine>;
 let FullscreenWindows: { [id: string]: HTMLElement } = {};
 
 //Website exit confirmation
-window.onbeforeunload = (e) => {
+window.onbeforeunload = (e: any) => {
     if (MainEngineTable.Items.length != 0) {
         e.returnValue = "Are you sure that you want to leave this page? You will lose all unsaved data";
         return "Are you sure that you want to leave this page? You will lose all unsaved data";
@@ -48,6 +48,11 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
         propellantMass += i[1] * FuelInfo.GetFuelInfo (i[0]).Density;
     });
     
+    let massFlow = engine.VacIsp; // s
+    massFlow *= 9.8066; // N*s/kg
+    massFlow = 1 / massFlow; // kg/N*s -> t/kN*s
+    massFlow *= engine.Thrust // t/s
+    
     // ==
     
     properties["id"] = engine.ID;
@@ -64,6 +69,14 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / gravity).toFixed (3);
     properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed (3);
     properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed (3);
+    
+    properties["twr_wet_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass + propellantMass) / gravity).toFixed (3);
+    properties["twr_dry_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass) / gravity).toFixed (3);
+    properties["twr_wet_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed (3);
+    properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed (3);
+    
+    properties["min_mass_flow"] = `${Unit.Display (massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
+    properties["max_mass_flow"] = `${Unit.Display (massFlow, "t", Settings.classic_unit_display, 3)}/s`;
     
     // ==
     

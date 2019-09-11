@@ -814,6 +814,10 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     engine.GetConstrainedTankContents().forEach(i => {
         propellantMass += i[1] * FuelInfo.GetFuelInfo(i[0]).Density;
     });
+    let massFlow = engine.VacIsp;
+    massFlow *= 9.8066;
+    massFlow = 1 / massFlow;
+    massFlow *= engine.Thrust;
     properties["id"] = engine.ID;
     properties["dry_mass"] = Unit.Display(engineMass, "t", Settings.classic_unit_display, 6);
     properties["wet_mass"] = Unit.Display(engineMass + propellantMass, "t", Settings.classic_unit_display, 6);
@@ -825,6 +829,12 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / gravity).toFixed(3);
     properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed(3);
     properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed(3);
+    properties["twr_wet_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass + propellantMass) / gravity).toFixed(3);
+    properties["twr_dry_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass) / gravity).toFixed(3);
+    properties["twr_wet_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed(3);
+    properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed(3);
+    properties["min_mass_flow"] = `${Unit.Display(massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
+    properties["max_mass_flow"] = `${Unit.Display(massFlow, "t", Settings.classic_unit_display, 3)}/s`;
     for (let i in properties) {
         let element = infoPanel.querySelector(`span[info-field="${i}"]`);
         if (element) {

@@ -889,11 +889,11 @@ class Engine implements ITableElement<Engine> {
             
             averageDensity /= normalFuelRatios;
             
-            let x = this.VacIsp;
-            x *= 9.8066;
-            x = 1 / x;
-            x /= averageDensity;
-            x *= this.Thrust;
+            let x = this.VacIsp; // s
+            x *= 9.8066; // N*s/kg
+            x = 1 / x; // kg/N*s -> t/kN*s
+            x /= averageDensity; // l/kN*s
+            x *= this.Thrust; // l/s
             
             electricPower = electricPower * normalFuelRatios / x;
             

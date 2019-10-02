@@ -1,0 +1,64 @@
+<!-- This visualizes a given random function's distribution -->
+<center>
+    <canvas style="margin: 8px; float: left;" width="1000" height="1000"></canvas>
+    <div style="float: left;">
+        Roll count: <input id="rollCount" value="100000"><br>
+        Args: <br>
+        a: <input id="a" value="0"><br>
+        b: <input id="b" value="0"><br>
+        c: <input id="c" value="0"><br>
+        <button onclick="roll ()">Reroll</button>
+    </div>
+</center>
+<script>
+    let canvas = document.querySelector ("canvas").getContext ("2d");
+    
+    //const rollsPerCall = 1000;
+    // Write the function here
+    let random = (a, b, c) => {
+        let min = Math.log10 (a);
+        let max = Math.log10 (b);
+        
+        let rand = Math.random () * (max - min) + min;
+        
+        return 10 ** rand;
+    }
+    
+    let roll = () => {
+        canvas.fillStyle = "#BBB";
+        canvas.fillRect (
+            0,
+            0,
+            1000,
+            1000
+        );
+        canvas.fillStyle = "#F00";
+        let counter = {};
+        let rollCount = parseInt(document.querySelector ("#rollCount").value);
+        
+        let a = parseFloat(document.querySelector ("#a").value);
+        let b = parseFloat(document.querySelector ("#b").value);
+        let c = parseFloat(document.querySelector ("#c").value);
+        
+        for (let i = 0; i < rollCount; ++i) {
+            let newRandom = random (a, b, c);
+            
+            let x = Math.round (newRandom * 1000);
+            if (typeof counter[x] == "number") {
+                ++counter[x];
+            } else {
+                counter[x] = 0;
+            }
+            let y = counter[x]
+            
+            canvas.fillRect (
+                x,
+                y,
+                1,
+                1
+            );
+        }
+    };
+    
+    roll ();
+</script>

@@ -637,7 +637,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.1";
+Version.CurrentVersion = "Web.0.10.0 Dev";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -11436,4 +11436,153 @@ class Validator {
         return output;
     }
 }
+class WRand {
+    static Linear(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+    static Bell(min, max, passes = 3) {
+        let output = 0;
+        for (let i = 0; i < passes; ++i) {
+            output += Math.random();
+        }
+        output /= passes;
+        output *= max - min;
+        output += min;
+        return output;
+    }
+    static Logarithmic(min, max, bellPasses = 2) {
+        return Math.pow(Math.E, (this.Bell(Math.log(min), Math.log(max), bellPasses)));
+    }
+}
+class AgeRandomValue {
+    constructor(points, type, value, ends) {
+        this.points = points;
+        this.type = type;
+        this.value = value;
+        this.ends = ends;
+        if (points.length < 2) {
+            throw "AgeRandomValue needs at least two year range points";
+        }
+        points.sort((a, b) => {
+            if (a[0] > b[0]) {
+                return 1;
+            }
+            else if (a[0] < b[0]) {
+                return -1;
+            }
+            else {
+                console.warn("Age duplicate in this RNG: ", this);
+                return 0;
+            }
+        });
+    }
+    Get(year) {
+        let output = 0;
+        let min = 0;
+        let max = 0;
+        if (year < this.points[0][0] || year > this.points[this.points.length - 1][0]) {
+            switch (this.ends) {
+                case "flat":
+                    if (year < this.points[0][0]) {
+                        min = this.points[0][1];
+                        max = this.points[0][2];
+                    }
+                    else {
+                        min = this.points[this.points.length - 1][1];
+                        max = this.points[this.points.length - 1][2];
+                    }
+                    break;
+                case "continue":
+                    let p1;
+                    let p2;
+                    if (year < this.points[0][0]) {
+                        p1 = this.points[0];
+                        p2 = this.points[1];
+                    }
+                    else {
+                        p1 = this.points[this.points.length - 1];
+                        p2 = this.points[this.points.length - 2];
+                    }
+                    let dx = p2[0] - p1[0];
+                    let dmin = p2[1] - p1[1];
+                    let dmax = p2[2] - p1[2];
+                    min = ((year - p1[0]) / dx) * dmin + p1[1];
+                    max = ((year - p1[0]) / dx) * dmax + p1[2];
+                    break;
+            }
+        }
+        else {
+            let index = 0;
+            for (let i = 0; i < this.points.length - 1; ++i) {
+                if (this.points[i + 1][0] >= year) {
+                    index = i;
+                    break;
+                }
+            }
+            let p1 = this.points[index];
+            let p2 = this.points[index + 1];
+            let dx = p2[0] - p1[0];
+            let dmin = p2[1] - p1[1];
+            let dmax = p2[2] - p1[2];
+            min = ((year - p1[0]) / dx) * dmin + p1[1];
+            max = ((year - p1[0]) / dx) * dmax + p1[2];
+        }
+        switch (this.type) {
+            case "linear":
+                output = WRand.Linear(min, max);
+                break;
+            case "bell":
+                output = WRand.Bell(min, max, 3);
+                break;
+        }
+        if (this.value == "integer") {
+            output = Math.round(output);
+        }
+        return output;
+    }
+}
+for (let i = 0; i < 10; ++i) {
+    console.log(WRand.Linear(10, 10000));
+}
+console.log("=== === ===");
+for (let i = 0; i < 10; ++i) {
+    console.log(WRand.Bell(10, 10000));
+}
+console.log("=== === ===");
+for (let i = 0; i < 10; ++i) {
+    console.log(WRand.Logarithmic(10, 10000));
+}
+class RandomValue {
+    constructor(minimum, maximum, type, value) {
+        this.minimum = minimum;
+        this.maximum = maximum;
+        this.type = type;
+        this.value = value;
+    }
+    Get() {
+        let output = 0;
+        switch (this.type) {
+            case "linear":
+                output = WRand.Linear(this.minimum, this.maximum);
+                break;
+            case "bell":
+                output = WRand.Bell(this.minimum, this.maximum, 3);
+                break;
+        }
+        if (this.value == "integer") {
+            output = Math.round(output);
+        }
+        return output;
+    }
+}
+class Wernher {
+}
+class WernherHelper {
+}
+var EngineCycle;
+(function (EngineCycle) {
+})(EngineCycle || (EngineCycle = {}));
+var PropellantMix;
+(function (PropellantMix) {
+})(PropellantMix || (PropellantMix = {}));
 //# sourceMappingURL=index.js.map

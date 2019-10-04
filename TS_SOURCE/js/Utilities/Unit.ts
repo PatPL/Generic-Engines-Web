@@ -70,10 +70,10 @@ class Unit {
     }
     
     public static Parse (value: string, baseUnit: string): number {
-        let rawInputNumber = /^[0-9,.]+/.exec (value);
+        let rawInputNumber = /^[0-9,.]+/.exec (value.replace (/ /g, ""));
         let inputNumber = rawInputNumber ? parseFloat (rawInputNumber[0].replace (",", ".")) : 0;
         
-        let rawInputUnit = /[^0-9,.]+$/.exec (value);
+        let rawInputUnit = /[^0-9,.]+$/.exec (value.replace (/ /g, ""));
         let inputUnit: [number, string] = this.ParseUnit (rawInputUnit ? rawInputUnit[0] : baseUnit);
         let targetUnit: [number, string] = this.ParseUnit (baseUnit);
         

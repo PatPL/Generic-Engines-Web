@@ -53,6 +53,8 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     massFlow = 1 / massFlow; // kg/N*s -> t/kN*s
     massFlow *= engine.Thrust // t/s
     
+    let detailedMassFlow = engine.GetEngineMassFlow ();
+    
     // ==
     
     properties["id"] = engine.ID;
@@ -77,6 +79,13 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     
     properties["min_mass_flow"] = `${Unit.Display (massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
     properties["max_mass_flow"] = `${Unit.Display (massFlow, "t", Settings.classic_unit_display, 3)}/s`;
+    
+    properties["mass_flow_detail"] = "<ul>";
+    detailedMassFlow.forEach (([fuel, flow]) => {
+        properties["mass_flow_detail"] += `<li>${FuelInfo.GetFuelInfo (fuel).FuelName}: ${Unit.Display (flow, "t", Settings.classic_unit_display, 3)}/s</li>`
+    })
+    properties["mass_flow_detail"] += "</ul>";
+    
     
     // ==
     

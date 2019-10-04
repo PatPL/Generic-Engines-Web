@@ -817,6 +817,7 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     massFlow *= 9.8066;
     massFlow = 1 / massFlow;
     massFlow *= engine.Thrust;
+    let detailedMassFlow = engine.GetEngineMassFlow();
     properties["id"] = engine.ID;
     properties["dry_mass"] = Unit.Display(engineMass, "t", Settings.classic_unit_display, 6);
     properties["wet_mass"] = Unit.Display(engineMass + propellantMass, "t", Settings.classic_unit_display, 6);
@@ -834,6 +835,11 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed(3);
     properties["min_mass_flow"] = `${Unit.Display(massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
     properties["max_mass_flow"] = `${Unit.Display(massFlow, "t", Settings.classic_unit_display, 3)}/s`;
+    properties["mass_flow_detail"] = "<ul>";
+    detailedMassFlow.forEach(([fuel, flow]) => {
+        properties["mass_flow_detail"] += `<li>${FuelInfo.GetFuelInfo(fuel).FuelName}: ${Unit.Display(flow, "t", Settings.classic_unit_display, 3)}/s</li>`;
+    });
+    properties["mass_flow_detail"] += "</ul>";
     for (let i in properties) {
         let element = infoPanel.querySelector(`span[info-field="${i}"]`);
         if (element) {
@@ -8047,6 +8053,30 @@ class Engine {
                 }
             `;
             firstPropellant = false;
+        });
+        return output;
+    }
+    GetEngineMassFlow() {
+        let massFlow = this.VacIsp;
+        massFlow *= 9.8066;
+        massFlow = 1 / massFlow;
+        massFlow *= this.Thrust;
+        let propellantMassRatios = [];
+        if (this.FuelVolumeRatios) {
+            this.FuelRatioItems.forEach(([fuel, ratio]) => {
+                propellantMassRatios.push([fuel, ratio * FuelInfo.GetFuelInfo(fuel).Density]);
+            });
+        }
+        else {
+            propellantMassRatios = this.FuelRatioItems;
+        }
+        let overallRatio = 0;
+        propellantMassRatios.forEach(([_, ratio]) => {
+            overallRatio += ratio;
+        });
+        let output = [];
+        propellantMassRatios.forEach(([fuel, ratio]) => {
+            output.push([fuel, massFlow * ratio / overallRatio]);
         });
         return output;
     }

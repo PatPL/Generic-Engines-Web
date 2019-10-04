@@ -919,6 +919,37 @@ class Engine implements ITableElement<Engine> {
         return output;
     }
     
+    public GetEngineMassFlow (): [Fuel, number][] {
+        let massFlow = this.VacIsp; // s
+        massFlow *= 9.8066; // N*s/kg
+        massFlow = 1 / massFlow; // kg/N*s -> t/kN*s
+        massFlow *= this.Thrust // t/s
+        
+        let propellantMassRatios: [Fuel, number][] = [];
+        
+        if (this.FuelVolumeRatios) {
+            // Propellant volume ratios need to be converted
+            this.FuelRatioItems.forEach (([fuel, ratio]) => {
+                propellantMassRatios.push ([fuel, ratio * FuelInfo.GetFuelInfo (fuel).Density]);
+            });
+        } else {
+            // Mass ratios are already set
+            propellantMassRatios = this.FuelRatioItems
+        }
+        
+        let overallRatio = 0;
+        propellantMassRatios.forEach (([_, ratio]) => {
+            overallRatio += ratio;
+        })
+        
+        let output: [Fuel, number][] = [];
+        propellantMassRatios.forEach (([fuel, ratio]) => {
+            output.push ([fuel, massFlow * ratio / overallRatio]);
+        });
+        
+        return output;
+    }
+    
     public GetBaseWidth (): number {
         if (this.UseBaseWidth) {
             return this.Width;

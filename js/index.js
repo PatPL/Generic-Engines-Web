@@ -637,7 +637,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.1";
+Version.CurrentVersion = "Web.0.9.2 Dev";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -1210,7 +1210,8 @@ class FuelInfo {
     static BuildDropdown() {
         let output = document.createElement("select");
         let groups = {};
-        for (let i in FuelType) {
+        for (let type in FuelType) {
+            let i = type;
             let group = document.createElement("optgroup");
             group.label = FuelType[i];
             output.appendChild(group);
@@ -1570,23 +1571,6 @@ var EngineGroupType;
 class ModelInfo {
     static GetModelInfo(id) {
         return ModelInfo.models[id];
-    }
-    static BuildDropdown() {
-        let output = document.createElement("select");
-        let groups = {};
-        for (let i in EngineGroupType) {
-            let group = document.createElement("optgroup");
-            group.label = EngineGroupType[i];
-            output.appendChild(group);
-            groups[EngineGroupType[i]] = group;
-        }
-        ModelInfo.models.forEach((v, i) => {
-            let option = document.createElement("option");
-            option.value = i.toString();
-            option.text = v.ModelName;
-            groups[v.ModelType].appendChild(option);
-        });
-        return output;
     }
 }
 ModelInfo.models = [
@@ -6037,7 +6021,6 @@ ModelInfo.models = [
         HeatAnimations: []
     }
 ];
-ModelInfo.Dropdown = ModelInfo.BuildDropdown();
 class PlumeInfo {
     static GetPlumeInfo(id) {
         return PlumeInfo.plumes[id];
@@ -10656,7 +10639,8 @@ class ImageOverflowPreview {
         }
         let child = root.firstChild;
         child.style.position = "relative";
-        root.addEventListener("mousemove", e => {
+        root.addEventListener("mousemove", event => {
+            let e = event;
             if (child.clientHeight <= root.clientHeight && child.clientWidth <= root.clientWidth) {
                 return;
             }

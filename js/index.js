@@ -11288,6 +11288,10 @@ class Unit {
             console.error("Bad input unit");
             return [0, ""];
         }
+        let imperial = ImperialUnits[rawUnit];
+        if (imperial) {
+            return imperial;
+        }
         if (rawUnit.length == 1) {
             return [1, rawUnit];
         }
@@ -11305,9 +11309,9 @@ class Unit {
         }
     }
     static Parse(value, baseUnit) {
-        let rawInputNumber = /^[0-9,.]+/.exec(value);
+        let rawInputNumber = /^[0-9,.]+/.exec(value.replace(/ /g, ""));
         let inputNumber = rawInputNumber ? parseFloat(rawInputNumber[0].replace(",", ".")) : 0;
-        let rawInputUnit = /[^0-9,.]+$/.exec(value);
+        let rawInputUnit = /[^0-9,.]+$/.exec(value.replace(/ /g, ""));
         let inputUnit = this.ParseUnit(rawInputUnit ? rawInputUnit[0] : baseUnit);
         let targetUnit = this.ParseUnit(baseUnit);
         if (inputUnit[1] == "g" && targetUnit[1] == "t") {
@@ -11325,6 +11329,30 @@ class Unit {
         return inputNumber * inputUnit[0] / targetUnit[0];
     }
 }
+const ImperialUnits = {
+    "th": [0.0000254, "m"],
+    "in": [0.0254, "m"],
+    "''": [0.0254, "m"],
+    "ft": [0.3048, "m"],
+    "'": [0.3048, "m"],
+    "yd": [0.9144, "m"],
+    "ch": [20.1168, "m"],
+    "fur": [201.168, "m"],
+    "mi": [1609.344, "m"],
+    "nm": [1852, "m"],
+    "gi": [0.1420653125, "l"],
+    "pt": [0.56826125, "l"],
+    "qt": [1.1365225, "l"],
+    "gal": [4.54609, "l"],
+    "gr": [0.06479891, "g"],
+    "dr": [1.7718451953125, "g"],
+    "oz": [28.349523125, "g"],
+    "lb": [453.59237, "g"],
+    "st": [6350.29318, "g"],
+    "qr": [12700.58636, "g"],
+    "qtr": [12700.58636, "g"],
+    "cwt": [50802.34544, "g"],
+};
 const MetricPrefix = [
     ["Y", 1e+24],
     ["Z", 1e+21],

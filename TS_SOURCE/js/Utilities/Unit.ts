@@ -50,6 +50,12 @@ class Unit {
             return [0, ""];
         }
         
+        // Special cases for imperial units
+        let imperial = ImperialUnits[rawUnit];
+        if (imperial) {
+            return imperial;
+        }
+        
         if (rawUnit.length == 1) {
             //Stuff like m
             return [1, rawUnit];
@@ -93,6 +99,37 @@ class Unit {
         return inputNumber * inputUnit[0] / targetUnit[0];
     }
     
+}
+
+// https://en.wikipedia.org/wiki/Imperial_units#Units
+const ImperialUnits: { [unit: string]: [number, string] } = {
+    // Length
+    "th": [0.0000254, "m"],
+    "in": [0.0254, "m"],
+    "''": [0.0254, "m"],
+    "ft": [0.3048, "m"],
+    "'": [0.3048, "m"],
+    "yd": [0.9144, "m"],
+    "ch": [20.1168, "m"],
+    "fur": [201.168, "m"],
+    "mi": [1609.344, "m"],
+    "nm": [1852, "m"], // RIP nanometre
+    
+    // Volume
+    "gi": [0.1420653125, "l"],
+    "pt": [0.56826125, "l"], // RIP picotonne
+    "qt": [1.1365225, "l"],
+    "gal": [4.54609, "l"],
+    
+    // Mass
+    "gr": [0.06479891, "g"],
+    "dr": [1.7718451953125, "g"],
+    "oz": [28.349523125, "g"],
+    "lb": [453.59237, "g"],
+    "st": [6350.29318, "g"],
+    "qr": [12700.58636, "g"],
+    "qtr": [12700.58636, "g"],
+    "cwt": [50802.34544, "g"],
 }
 
 const MetricPrefix: [string, number][] = [

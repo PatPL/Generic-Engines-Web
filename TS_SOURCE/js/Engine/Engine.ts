@@ -927,6 +927,9 @@ class Engine implements ITableElement<Engine> {
         
         let propellantMassRatios: [Fuel, number][] = [];
         
+        let electricRatio = this.FuelRatioItems.find (x => x[0] == Fuel.ElectricCharge);
+        let electric = electricRatio ? electricRatio[1] : null;
+        
         if (this.FuelVolumeRatios) {
             // Propellant volume ratios need to be converted
             this.FuelRatioItems.forEach (([fuel, ratio]) => {
@@ -938,14 +941,26 @@ class Engine implements ITableElement<Engine> {
         }
         
         let overallRatio = 0;
-        propellantMassRatios.forEach (([_, ratio]) => {
+        propellantMassRatios.forEach (([fuel, ratio]) => {
+            if (fuel == Fuel.ElectricCharge) {
+                return; // continue;
+            }
+            
             overallRatio += ratio;
         })
         
         let output: [Fuel, number][] = [];
         propellantMassRatios.forEach (([fuel, ratio]) => {
+            if (fuel == Fuel.ElectricCharge) {
+                return; // continue;
+            }
+            
             output.push ([fuel, massFlow * ratio / overallRatio]);
         });
+        
+        if (electric) {
+            output.push ([Fuel.ElectricCharge, electric]);
+        }
         
         return output;
     }

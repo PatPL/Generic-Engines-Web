@@ -17,6 +17,8 @@
 
 .abbr {
     cursor: help;
+    /* Useful but doesn't look that good */
+    /* text-decoration: underline dotted var(--darkBorder); */
 }
 
 body {
@@ -46,6 +48,11 @@ textarea {
 select {
     width: 100%;
     height: 100%;
+}
+
+ul {
+    margin: 6px 0px 6px 0px;
+    padding-left: 24px;
 }
 
 table {

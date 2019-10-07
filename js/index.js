@@ -837,7 +837,14 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     properties["max_mass_flow"] = `${Unit.Display(massFlow, "t", Settings.classic_unit_display, 3)}/s`;
     properties["mass_flow_detail"] = "<ul>";
     detailedMassFlow.forEach(([fuel, flow]) => {
-        properties["mass_flow_detail"] += `<li>${FuelInfo.GetFuelInfo(fuel).FuelName}: ${Unit.Display(flow, "t", Settings.classic_unit_display, 3)}/s</li>`;
+        if (fuel == Fuel.ElectricCharge) {
+            properties["mass_flow_detail"] += `<li><span class='abbr' title='1 kilowatt (kW) is equal to 1 unit of Electric Charge per second (u/s) in game'>Electricity: ${Unit.Display(flow, "kW", Settings.classic_unit_display, 3)}</span></li>`;
+        }
+        else {
+            let fuelInfo = FuelInfo.GetFuelInfo(fuel);
+            properties["mass_flow_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display(flow, "t", Settings.classic_unit_display, 3)}/s<br>`;
+            properties["mass_flow_detail"] += `<span class='abbr' title='1 litre per second (L/s) is equal to 1 unit per second (u/s) in game'>${Unit.Display(flow / fuelInfo.Density, "L", Settings.classic_unit_display, 3)}/s</li>`;
+        }
     });
     properties["mass_flow_detail"] += "</ul>";
     for (let i in properties) {
@@ -8062,6 +8069,8 @@ class Engine {
         massFlow = 1 / massFlow;
         massFlow *= this.Thrust;
         let propellantMassRatios = [];
+        let electricRatio = this.FuelRatioItems.find(x => x[0] == Fuel.ElectricCharge);
+        let electric = electricRatio ? electricRatio[1] : null;
         if (this.FuelVolumeRatios) {
             this.FuelRatioItems.forEach(([fuel, ratio]) => {
                 propellantMassRatios.push([fuel, ratio * FuelInfo.GetFuelInfo(fuel).Density]);
@@ -8071,13 +8080,22 @@ class Engine {
             propellantMassRatios = this.FuelRatioItems;
         }
         let overallRatio = 0;
-        propellantMassRatios.forEach(([_, ratio]) => {
+        propellantMassRatios.forEach(([fuel, ratio]) => {
+            if (fuel == Fuel.ElectricCharge) {
+                return;
+            }
             overallRatio += ratio;
         });
         let output = [];
         propellantMassRatios.forEach(([fuel, ratio]) => {
+            if (fuel == Fuel.ElectricCharge) {
+                return;
+            }
             output.push([fuel, massFlow * ratio / overallRatio]);
         });
+        if (electric) {
+            output.push([Fuel.ElectricCharge, electric]);
+        }
         return output;
     }
     GetBaseWidth() {

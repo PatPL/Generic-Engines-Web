@@ -130,6 +130,10 @@ const ImperialUnits: { [unit: string]: [number, string] } = {
     "qr": [12700.58636, "g"],
     "qtr": [12700.58636, "g"],
     "cwt": [50802.34544, "g"],
+    
+    // Force
+    "lbf": [4.4482216152605, "N"],
+    "klbf": [4448.2216152605, "N"], // This one is common enough to warrant an exception
 }
 
 const MetricPrefix: [string, number][] = [

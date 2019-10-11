@@ -21,15 +21,16 @@
     
     --confirm: #262;
     
-    --textSelection: #B44;
-    --selection: #336;
+    --textSelection: #F22;
+    --selection: #446;
     --selectionMajor: #226;
+    --selectionCell: #336;
     
     --info: #228;
     --warn: #842;
     --error: #822;
     
     --sortMin: #222;
-    --sortMax: #822;
+    --sortMax: #B22;
     
 }

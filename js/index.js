@@ -8949,7 +8949,7 @@ var EngineEditableFieldMetadata;
                 <div style="grid-area: d;"><input style="width: calc(100%);"></div>
                 
                 <div class="content-cell-content" style="grid-area: e;">Description</div>
-                <div style="grid-area: f;"><textarea style="resize: none; width: calc(100%); height: 100%;"></textarea></div>
+                <div style="grid-area: f;"><textarea style="resize: none; width: calc(100% - 6px); height: calc(100% - 3px);"></textarea></div>
             `;
             tmp.appendChild(grid);
             return tmp;
@@ -9016,12 +9016,12 @@ var EngineEditableFieldMetadata;
         }, GetEditElement: () => {
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
-            tmp.style.height = "48px";
+            tmp.style.height = "46px";
             tmp.style.padding = "0";
             let grid = document.createElement("div");
             grid.style.display = "grid";
             grid.style.gridTemplateColumns = "auto";
-            grid.style.gridTemplateRows = "24px 24px";
+            grid.style.gridTemplateRows = "23px 23px";
             grid.style.gridTemplateAreas = `
                 "a"
                 "b"
@@ -9122,7 +9122,7 @@ var EngineEditableFieldMetadata;
             grid.innerHTML = `
                 <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
                 
-                <div class="content-cell-content" style="grid-area: d"><input style="cursor: help;" title="Enable tank volume restriction" type="checkbox"></div>
+                <div class="content-cell-content" style="grid-area: d"><input style="position: relative; top: -1px; left: -1px;" class="abbr" title="Enable tank volume restriction" type="checkbox"></div>
                 <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
                 
                 <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>

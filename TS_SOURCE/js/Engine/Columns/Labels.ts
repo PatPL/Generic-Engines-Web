@@ -31,7 +31,7 @@ namespace EngineEditableFieldMetadata {
                 <div style="grid-area: d;"><input style="width: calc(100%);"></div>
                 
                 <div class="content-cell-content" style="grid-area: e;">Description</div>
-                <div style="grid-area: f;"><textarea style="resize: none; width: calc(100%); height: 100%;"></textarea></div>
+                <div style="grid-area: f;"><textarea style="resize: none; width: calc(100% - 6px); height: calc(100% - 3px);"></textarea></div>
             `;
             
             tmp.appendChild (grid);

@@ -45,14 +45,14 @@ textarea {
     word-break: keep-all;
 }
 
-select {
-    width: 100%;
-    height: 100%;
-}
-
 ul {
     margin: 6px 0px 6px 0px;
     padding-left: 24px;
+}
+
+hr {
+    border: none;
+    border-top: var(--darkBorder) solid 1px;
 }
 
 table {
@@ -76,6 +76,10 @@ img.mini-button {
 }
 
 select {
+    width: 100%;
+    height: 23px;
+    -webkit-appearance: menulist;
+    
     background: var(--lighterGrayBackground);
     color: var(--darkText);
     
@@ -98,6 +102,7 @@ input {
     font-size: inherit;
     font-family: inherit;
     
+    box-sizing: border-box;
     padding-left: 3px;
     height: 100%;
     background: var(--lighterGrayBackground);
@@ -137,10 +142,15 @@ textarea {
     font-family: inherit;
     
     padding-left: 3px;
-    height: 100%;
+    height: calc(100% - 1px);
     background: var(--lighterGrayBackground);
     color: var(--darkText);
     border: 1px var(--darkerBorder) solid;
+}
+
+textarea::selection {
+    background: var(--textSelection);
+    color: var(--darkerText);
 }
 
 input:disabled {
@@ -442,6 +452,10 @@ span.checkbox-label {
 
 .content-cell-edit {
     white-space: normal;
+}
+
+div.content-cell-edit {
+    background: var(--selectionCell);
 }
 
 input.content-cell-content {

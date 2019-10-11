@@ -69,7 +69,7 @@ namespace EngineEditableFieldMetadata {
             grid.innerHTML = `
                 <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
                 
-                <div class="content-cell-content" style="grid-area: d"><input style="cursor: help;" title="Enable tank volume restriction" type="checkbox"></div>
+                <div class="content-cell-content" style="grid-area: d"><input style="position: relative; top: -1px; left: -1px;" class="abbr" title="Enable tank volume restriction" type="checkbox"></div>
                 <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
                 
                 <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>

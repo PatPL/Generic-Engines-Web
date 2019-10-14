@@ -336,6 +336,9 @@ class Engine implements ITableElement<Engine> {
     AlternatorPower: number = 0;
     TechUnlockNode: TechNode = TechNode.start;
     EngineVariant: EngineType = EngineType.Liquid;
+    /**
+     * [Fuel%, Thrust%]
+     */
     ThrustCurve: [number, number][] = [];
     
     UseBaseWidth: boolean = true; //Dimensions
@@ -961,6 +964,92 @@ class Engine implements ITableElement<Engine> {
         if (electric) {
             output.push ([Fuel.ElectricCharge, electric]);
         }
+        
+        return output;
+    }
+    
+    public GetThrustCurveBurnTimeMultiplier (): number {
+        if (this.ThrustCurve.length == 0) {
+            // No thrust curve, 100% thrust all the way through
+            return 1;
+        }
+        
+        if (this.ThrustCurve.length == 1) {
+            // Only one point, so the thrust curve is flat, with its thrust at the value of this point
+            // 200% thrust -> 0.5 * burn time
+            // 25% thrust -> 4 * burn time
+            return 100 / this.ThrustCurve[0][1];
+        }
+        
+        // Integral of 1 / ( x / a + b ) = a ln (|x + ab|)
+        // or x / b when a is 0
+        // 
+        // GE's thrust curves are linear
+        // 
+        // First, define ranges, and their a, b values
+        
+        // The curve has to be sorted descending by fuel%
+        let curve = this.ThrustCurve.sort ((a, b) => b[0] - a[0]);
+        let ranges: [number, number, number, number][] = [];
+        
+        let previousFuelPoint = 100;
+        let previousThrustPoint = curve[0][1];
+        
+        curve.forEach (point => {
+            if (point[0] == 100) {
+                // Skip the first point, as it just sets the start values
+                return; // continue;
+            }
+            
+            let a: number;
+            let b: number;
+            
+            if (point[1] - previousThrustPoint == 0) {
+                // Flat line, different calculation. Just b is needed
+                a = Infinity;
+                b = previousThrustPoint / 100;
+            } else {
+                a = (previousFuelPoint - point[0]) / (previousThrustPoint - point[1]);
+                b = (point[1] - point[0] * (1 / a)) / 100;
+            }
+            
+            ranges.push ([
+                point[0] / 100,
+                previousFuelPoint / 100,
+                a,
+                b
+            ]);
+            
+            previousFuelPoint = point[0];
+            previousThrustPoint = point[1];
+        });
+        
+        let lastPoint = curve[curve.length - 1];
+        if (lastPoint[0] != 100) {
+            ranges.push ([
+                0,
+                lastPoint[0] / 100,
+                Infinity,
+                lastPoint[1] / 100
+            ]);
+        }
+        
+        const antiderivative = (x: number, a: number, b: number): number => {
+            if (a == Infinity) {
+                // Flat line
+                return x / b;
+            } else {
+                // Curve
+                return a * Math.log (Math.abs (x + a * b));
+            }
+        }
+        
+        let output = 0;
+        ranges.forEach (range => {
+            if (range[0] != range[1]) {
+                output += antiderivative (range[1], range[2], range[3]) - antiderivative (range[0], range[2], range[3]);
+            }
+        });
         
         return output;
     }

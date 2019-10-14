@@ -818,6 +818,7 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     massFlow = 1 / massFlow;
     massFlow *= engine.Thrust;
     let detailedMassFlow = engine.GetEngineMassFlow();
+    console.log(engine.GetThrustCurveBurnTimeMultiplier());
     properties["id"] = engine.ID;
     properties["dry_mass"] = Unit.Display(engineMass, "t", Settings.classic_unit_display, 6);
     properties["wet_mass"] = Unit.Display(engineMass + propellantMass, "t", Settings.classic_unit_display, 6);
@@ -8096,6 +8097,65 @@ class Engine {
         if (electric) {
             output.push([Fuel.ElectricCharge, electric]);
         }
+        return output;
+    }
+    GetThrustCurveBurnTimeMultiplier() {
+        if (this.ThrustCurve.length == 0) {
+            return 1;
+        }
+        if (this.ThrustCurve.length == 1) {
+            return 100 / this.ThrustCurve[0][1];
+        }
+        let curve = this.ThrustCurve.sort((a, b) => b[0] - a[0]);
+        let ranges = [];
+        let previousFuelPoint = 100;
+        let previousThrustPoint = curve[0][1];
+        curve.forEach(point => {
+            if (point[0] == 100) {
+                return;
+            }
+            let a;
+            let b;
+            if (point[1] - previousThrustPoint == 0) {
+                a = Infinity;
+                b = previousThrustPoint / 100;
+            }
+            else {
+                a = (previousFuelPoint - point[0]) / (previousThrustPoint - point[1]);
+                b = (point[1] - point[0] * (1 / a)) / 100;
+            }
+            ranges.push([
+                point[0] / 100,
+                previousFuelPoint / 100,
+                a,
+                b
+            ]);
+            previousFuelPoint = point[0];
+            previousThrustPoint = point[1];
+        });
+        let lastPoint = curve[curve.length - 1];
+        if (lastPoint[0] != 100) {
+            ranges.push([
+                0,
+                lastPoint[0] / 100,
+                Infinity,
+                lastPoint[1] / 100
+            ]);
+        }
+        const antiderivative = (x, a, b) => {
+            if (a == Infinity) {
+                return x / b;
+            }
+            else {
+                return a * Math.log(Math.abs(x + a * b));
+            }
+        };
+        let output = 0;
+        ranges.forEach(range => {
+            if (range[0] != range[1]) {
+                output += antiderivative(range[1], range[2], range[3]) - antiderivative(range[0], range[2], range[3]);
+            }
+        });
         return output;
     }
     GetBaseWidth() {

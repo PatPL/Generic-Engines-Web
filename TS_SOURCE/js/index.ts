@@ -55,6 +55,9 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     
     let detailedMassFlow = engine.GetEngineMassFlow ();
     
+    // Debug
+    console.log (engine.GetThrustCurveBurnTimeMultiplier ());
+    
     // ==
     
     properties["id"] = engine.ID;

@@ -818,7 +818,7 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     massFlow = 1 / massFlow;
     massFlow *= engine.Thrust;
     let detailedMassFlow = engine.GetEngineMassFlow();
-    console.log(engine.GetThrustCurveBurnTimeMultiplier());
+    let detailedBurnTime = engine.GetEngineBurnTime();
     properties["id"] = engine.ID;
     properties["dry_mass"] = Unit.Display(engineMass, "t", Settings.classic_unit_display, 6);
     properties["wet_mass"] = Unit.Display(engineMass + propellantMass, "t", Settings.classic_unit_display, 6);
@@ -848,6 +848,16 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
         }
     });
     properties["mass_flow_detail"] += "</ul>";
+    properties["burn_time_detail"] = "<ul>";
+    detailedBurnTime.forEach(([fuel, time]) => {
+        if (fuel == Fuel.ElectricCharge) {
+        }
+        else {
+            let fuelInfo = FuelInfo.GetFuelInfo(fuel);
+            properties["burn_time_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display(time, "", true, 2)}s<br>`;
+        }
+    });
+    properties["burn_time_detail"] += "</ul>";
     for (let i in properties) {
         let element = infoPanel.querySelector(`span[info-field="${i}"]`);
         if (element) {
@@ -8097,6 +8107,21 @@ class Engine {
         if (electric) {
             output.push([Fuel.ElectricCharge, electric]);
         }
+        return output;
+    }
+    GetEngineBurnTime() {
+        let output = [];
+        const thrustCurveMultiplier = this.GetThrustCurveBurnTimeMultiplier();
+        let tankContents = this.GetConstrainedTankContents();
+        let massFlow = this.GetEngineMassFlow();
+        massFlow.forEach(fuel => {
+            let fuelReserves = tankContents.find(x => x[0] == fuel[0]);
+            let fuelMass = fuelReserves ? fuelReserves[1] * FuelInfo.GetFuelInfo(fuelReserves[0]).Density : 0;
+            output.push([
+                fuel[0],
+                thrustCurveMultiplier * fuelMass / fuel[1]
+            ]);
+        });
         return output;
     }
     GetThrustCurveBurnTimeMultiplier() {

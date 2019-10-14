@@ -54,9 +54,7 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     massFlow *= engine.Thrust // t/s
     
     let detailedMassFlow = engine.GetEngineMassFlow ();
-    
-    // Debug
-    console.log (engine.GetThrustCurveBurnTimeMultiplier ());
+    let detailedBurnTime = engine.GetEngineBurnTime ();
     
     // ==
     
@@ -95,6 +93,16 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     })
     properties["mass_flow_detail"] += "</ul>";
     
+    properties["burn_time_detail"] = "<ul>";
+    detailedBurnTime.forEach (([fuel, time]) => {
+        if (fuel == Fuel.ElectricCharge) {
+            // Don't include Electric Charge
+        } else {
+            let fuelInfo = FuelInfo.GetFuelInfo (fuel);
+            properties["burn_time_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display (time, "", true, 2)}s<br>`;
+        }
+    })
+    properties["burn_time_detail"] += "</ul>";
     
     // ==
     

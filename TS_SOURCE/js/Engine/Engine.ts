@@ -365,6 +365,9 @@ class Engine implements ITableElement<Engine> {
     UseTanks: boolean = false; //Tank
     LimitTanks: boolean = true;
     TanksVolume: number = 0;
+    /**
+     * [fuel ID, fuel volume in L]
+     */
     TanksContents: [Fuel, number][] = [];
     
     EnableTestFlight: boolean = false; //TestFlight
@@ -704,6 +707,9 @@ class Engine implements ITableElement<Engine> {
         return output;
     }
     
+    /**
+     * Returns fuel ID and fuel volume in L
+     */
     public GetConstrainedTankContents (): [Fuel, number][] {
         let targetEngine = (
             this.PolyType == PolymorphismType.MultiModeSlave ||
@@ -922,6 +928,9 @@ class Engine implements ITableElement<Engine> {
         return output;
     }
     
+    /**
+     * Returns fuel ID and propellant flow in t/s
+     */
     public GetEngineMassFlow (): [Fuel, number][] {
         let massFlow = this.VacIsp; // s
         massFlow *= 9.8066; // N*s/kg
@@ -964,6 +973,30 @@ class Engine implements ITableElement<Engine> {
         if (electric) {
             output.push ([Fuel.ElectricCharge, electric]);
         }
+        
+        return output;
+    }
+    
+    /**
+     * Returns fuel reserves per propellant, taking thrust curve into consideration
+     */
+    public GetEngineBurnTime (): [Fuel, number][] {
+        let output: [Fuel, number][] = [];
+        const thrustCurveMultiplier = this.GetThrustCurveBurnTimeMultiplier ();
+        
+        let tankContents = this.GetConstrainedTankContents ();
+        let massFlow = this.GetEngineMassFlow ();
+        
+        massFlow.forEach (fuel => {
+            let fuelReserves = tankContents.find (x => x[0] == fuel[0]);
+            let fuelMass = fuelReserves ? fuelReserves[1] * FuelInfo.GetFuelInfo (fuelReserves[0]).Density : 0;
+            
+            output.push ([
+                fuel[0],
+                thrustCurveMultiplier * fuelMass / fuel[1]
+            ]);
+            
+        });
         
         return output;
     }

@@ -7905,13 +7905,29 @@ class Engine {
             this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
         if (!targetEngine.LimitTanks) {
-            return new Array().concat(targetEngine.TanksContents);
+            let output = [];
+            targetEngine.TanksContents.forEach(v => {
+                let currentVolume = output.findIndex(x => v[0] == x[0]);
+                if (currentVolume == -1) {
+                    output.push([v[0], v[1]]);
+                }
+                else {
+                    output[currentVolume][1] += v[1];
+                }
+            });
+            return output;
         }
         let output = [];
         let usedVolume = 0;
         targetEngine.TanksContents.forEach(v => {
             let thisVol = Math.min(v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation, targetEngine.TanksVolume - usedVolume);
-            output.push([v[0], thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
+            let currentVolume = output.findIndex(x => v[0] == x[0]);
+            if (currentVolume == -1) {
+                output.push([v[0], thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
+            }
+            else {
+                output[currentVolume][1] += thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
+            }
         });
         return output;
     }
@@ -8501,7 +8517,7 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b10100
     }, Tank: {
         Name: "Tank",
-        DefaultWidth: 320,
+        DefaultWidth: 420,
         DisplayFlags: 0b10100
     }, ThrustCurve: {
         Name: "Thrust curve",
@@ -9214,40 +9230,22 @@ var EngineEditableFieldMetadata;
                 
                 <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
                 <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
-                <div class="content-cell-content" style="grid-area: j; overflow: auto;"><table><tr><th style="width: 35%;">Fuel</th><th style="width: 35%;">Volume</th><th style="width: 30%;">Mass</th></tr></table></div>
+                <div class="content-cell-content" style="grid-area: j; overflow: auto; white-space: unset;">
+                    <table>
+                        <tr>
+                            <th style="width: 25%;">Fuel</th>
+                            <th style="width: 25%;">Volume</th>
+                            <th style="width: 25%;">Mass</th>
+                            <th class="abbr" title="Engine burn time using only the in-part tank and full throttle" style="width: 25%;">Time</th>
+                        </tr>
+                    </table>
+                </div>
             `;
             let inputs = grid.querySelectorAll("input");
             inputs[0].addEventListener("change", () => {
                 inputs[1].disabled = !inputs[0].checked;
             });
-            let table = grid.querySelector("tbody");
             let imgs = grid.querySelectorAll("img");
-            imgs[0].addEventListener("click", () => {
-                let tr = document.createElement("tr");
-                let select = FuelInfo.Dropdown.cloneNode(true);
-                select.querySelector(`option[value="${Fuel.Hydrazine}"]`).selected = true;
-                tr.innerHTML = `
-                    <td></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display(1, "L", Settings.classic_unit_display)}"></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display(1 * FuelInfo.GetFuelInfo(Fuel.Hydrazine).Density, "t", Settings.classic_unit_display)}"></td>
-                `;
-                let inputs = tr.querySelectorAll("input");
-                select.addEventListener("change", () => {
-                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                });
-                inputs[0].addEventListener("keydown", (e) => {
-                    setTimeout(() => {
-                        inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                    }, 20);
-                });
-                inputs[1].addEventListener("keydown", (e) => {
-                    setTimeout(() => {
-                        inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
-                    }, 20);
-                });
-                tr.children[0].appendChild(select);
-                table.appendChild(tr);
-            });
             imgs[1].addEventListener("click", () => {
                 let tmp = grid.querySelectorAll("tr");
                 if (tmp.length > 1) {
@@ -9257,10 +9255,78 @@ var EngineEditableFieldMetadata;
             tmp.appendChild(grid);
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
+            const addRow = (tableElement, v) => {
+                let thisRawMassFlow = massFlow.find(x => v[0] == x[0]);
+                let fuelInfo = FuelInfo.GetFuelInfo(v[0]);
+                let thisMassFlow = thisRawMassFlow ? thisRawMassFlow[1] / thrustCurveMultiplier : 0;
+                let thisBurnTime = thisRawMassFlow ? ((v[1] * fuelInfo.Density) / thisRawMassFlow[1]) * thrustCurveMultiplier : 0;
+                let tr = document.createElement("tr");
+                let select = FuelInfo.Dropdown.cloneNode(true);
+                select.querySelector(`option[value="${v[0]}"]`).selected = true;
+                tr.innerHTML = `
+                    <td></td>
+                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1], "L", Settings.classic_unit_display, 3)}"></td>
+                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1] * fuelInfo.Density, "t", Settings.classic_unit_display, 3)}"></td>
+                    <td><input style="width: calc(100%);" ${thisBurnTime == 0 ? "disabled" : ""} value="${Unit.Display(thisBurnTime, "s", true, 3)}"></td>
+                `;
+                let inputs = tr.querySelectorAll("input");
+                select.addEventListener("change", () => {
+                    let newFuel = parseInt(select.value);
+                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(newFuel).Density, "t", Settings.classic_unit_display, 3);
+                    thisRawMassFlow = massFlow.find(x => newFuel == x[0]);
+                    fuelInfo = FuelInfo.GetFuelInfo(newFuel);
+                    thisMassFlow = thisRawMassFlow ? thisRawMassFlow[1] / thrustCurveMultiplier : 0;
+                    thisBurnTime = thisRawMassFlow ? ((parseFloat(inputs[0].value) * fuelInfo.Density) / thisRawMassFlow[1]) * thrustCurveMultiplier : 0;
+                    inputs[2].disabled = thisBurnTime == 0;
+                    newVolume();
+                });
+                const newVolume = () => {
+                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display, 3);
+                    if (!inputs[2].disabled) {
+                        inputs[2].value = Unit.Display((Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density) / thisMassFlow, "s", true, 3);
+                    }
+                    else {
+                        inputs[2].value = Unit.Display(0, "s", true, 3);
+                    }
+                };
+                const newMass = () => {
+                    inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display, 3);
+                    if (!inputs[2].disabled) {
+                        inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / thisMassFlow, "s", true, 3);
+                    }
+                };
+                const newTime = () => {
+                    inputs[0].value = Unit.Display((Unit.Parse(inputs[2].value, "s") * thisMassFlow) / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display, 3);
+                    inputs[1].value = Unit.Display(Unit.Parse(inputs[2].value, "s") * thisMassFlow, "t", Settings.classic_unit_display, 3);
+                };
+                inputs[0].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        newVolume();
+                    }, 20);
+                });
+                inputs[1].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        newMass();
+                    }, 20);
+                });
+                inputs[2].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        newTime();
+                    }, 20);
+                });
+                tr.children[0].appendChild(select);
+                tableElement.appendChild(tr);
+            };
             let allInputs = e.querySelectorAll(`input`);
+            let addElementButton = e.querySelector("img");
+            addElementButton.onclick = () => {
+                addRow(table, [Fuel.Hydrazine, 1]);
+            };
+            let massFlow = engine.GetEngineMassFlow();
+            let thrustCurveMultiplier = engine.GetThrustCurveBurnTimeMultiplier();
             allInputs[0].checked = engine.UseTanks;
             allInputs[1].checked = engine.LimitTanks;
-            allInputs[2].value = Unit.Display(engine.TanksVolume, "L", Settings.classic_unit_display);
+            allInputs[2].value = Unit.Display(engine.TanksVolume, "L", Settings.classic_unit_display, 3);
             e.querySelectorAll("span")[1].innerHTML = Unit.Display(engine.GetTankSizeEstimate(), "L", Settings.classic_unit_display, 3);
             e.children[1].style.display = engine.UseTanks ? "grid" : "none";
             allInputs[2].disabled = !engine.LimitTanks;
@@ -9272,30 +9338,7 @@ var EngineEditableFieldMetadata;
                 }
             });
             engine.TanksContents.forEach(v => {
-                let tr = document.createElement("tr");
-                let select = FuelInfo.Dropdown.cloneNode(true);
-                select.querySelector(`option[value="${v[0]}"]`).selected = true;
-                tr.innerHTML = `
-                    <td></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1], "L", Settings.classic_unit_display)}"></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1] * FuelInfo.GetFuelInfo(v[0]).Density, "t", Settings.classic_unit_display)}"></td>
-                `;
-                let inputs = tr.querySelectorAll("input");
-                select.addEventListener("change", () => {
-                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                });
-                inputs[0].addEventListener("keydown", (e) => {
-                    setTimeout(() => {
-                        inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                    }, 20);
-                });
-                inputs[1].addEventListener("keydown", (e) => {
-                    setTimeout(() => {
-                        inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
-                    }, 20);
-                });
-                tr.children[0].appendChild(select);
-                table.appendChild(tr);
+                addRow(table, v);
             });
         }, ApplyChangesToValue: (e, engine) => {
             let selects = e.querySelectorAll("select");
@@ -9304,12 +9347,12 @@ var EngineEditableFieldMetadata;
             engine.UseTanks = allInputs[0].checked;
             engine.LimitTanks = allInputs[1].checked;
             engine.TanksVolume = Unit.Parse(allInputs[2].value, "L");
-            if (selects.length * 2 != inputs.length) {
+            if (selects.length * 3 != inputs.length) {
                 console.warn("table misaligned?");
             }
             engine.TanksContents = [];
             for (let i = 0; i < selects.length; ++i) {
-                engine.TanksContents.push([parseInt(selects[i].value), Unit.Parse(inputs[2 * i].value, "L")]);
+                engine.TanksContents.push([parseInt(selects[i].value), Unit.Parse(inputs[3 * i].value, "L")]);
             }
         }
     };

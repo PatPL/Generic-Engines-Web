@@ -92,7 +92,7 @@ class Engine implements ITableElement<Engine> {
             DisplayFlags: 0b10100
         }, Tank: {
             Name: "Tank",
-            DefaultWidth: 320,
+            DefaultWidth: 420,
             DisplayFlags: 0b10100
         }, ThrustCurve: {
             Name: "Thrust curve",
@@ -718,7 +718,21 @@ class Engine implements ITableElement<Engine> {
         targetEngine = targetEngine != undefined ? targetEngine : this;
         
         if (!targetEngine.LimitTanks) { //Returns a copy, just like the code below
-            return new Array<[Fuel, number]> ().concat (targetEngine.TanksContents);
+            let output: [Fuel, number][] = [];
+            
+            targetEngine.TanksContents.forEach (v => {
+                let currentVolume = output.findIndex (x => v[0] == x[0]);
+                if (currentVolume == -1) {
+                    // New entry for this propellant
+                    output.push ([v[0], v[1]]);
+                } else {
+                    // Entry already exists, add the volume
+                    output[currentVolume][1] += v[1];
+                }
+            });
+            
+            return output;
+            // return new Array<[Fuel, number]> ().concat (targetEngine.TanksContents);
         }
         
         let output: [Fuel, number][] = [];
@@ -730,7 +744,14 @@ class Engine implements ITableElement<Engine> {
                 targetEngine!.TanksVolume - usedVolume //Remaining volume
             );
             
-            output.push ([v[0], thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation]);
+            let currentVolume = output.findIndex (x => v[0] == x[0]);
+            if (currentVolume == -1) {
+                // New entry for this propellant
+                output.push ([v[0], thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation]);
+            } else {
+                // Entry already exists, add the volume
+                output[currentVolume][1] += thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation;
+            }
         });
         
         return output;

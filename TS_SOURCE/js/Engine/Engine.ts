@@ -717,9 +717,9 @@ class Engine implements ITableElement<Engine> {
         ) ? this.EngineList.find (x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
         
-        if (!targetEngine.LimitTanks) { //Returns a copy, just like the code below
-            let output: [Fuel, number][] = [];
-            
+        let output: [Fuel, number][] = [];
+        
+        if (!targetEngine.LimitTanks) {
             targetEngine.TanksContents.forEach (v => {
                 let currentVolume = output.findIndex (x => v[0] == x[0]);
                 if (currentVolume == -1) {
@@ -730,29 +730,26 @@ class Engine implements ITableElement<Engine> {
                     output[currentVolume][1] += v[1];
                 }
             });
-            
-            return output;
-            // return new Array<[Fuel, number]> ().concat (targetEngine.TanksContents);
+        } else {
+            let usedVolume = 0;
+            targetEngine.TanksContents.forEach (v => {
+                let thisVol = Math.min (
+                    v[1] / FuelInfo.GetFuelInfo (v[0]).TankUtilisation, //This entry's volume
+                    targetEngine!.TanksVolume - usedVolume //Remaining volume
+                );
+                
+                let currentVolume = output.findIndex (x => v[0] == x[0]);
+                if (currentVolume == -1) {
+                    // New entry for this propellant
+                    output.push ([v[0], thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation]);
+                } else {
+                    // Entry already exists, add the volume
+                    output[currentVolume][1] += thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation;
+                }
+                
+                usedVolume += thisVol;
+            });
         }
-        
-        let output: [Fuel, number][] = [];
-        
-        let usedVolume = 0;
-        targetEngine.TanksContents.forEach (v => {
-            let thisVol = Math.min (
-                v[1] / FuelInfo.GetFuelInfo (v[0]).TankUtilisation, //This entry's volume
-                targetEngine!.TanksVolume - usedVolume //Remaining volume
-            );
-            
-            let currentVolume = output.findIndex (x => v[0] == x[0]);
-            if (currentVolume == -1) {
-                // New entry for this propellant
-                output.push ([v[0], thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation]);
-            } else {
-                // Entry already exists, add the volume
-                output[currentVolume][1] += thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation;
-            }
-        });
         
         return output;
     }

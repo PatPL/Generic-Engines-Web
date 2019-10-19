@@ -7904,8 +7904,8 @@ class Engine {
         let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
             this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
+        let output = [];
         if (!targetEngine.LimitTanks) {
-            let output = [];
             targetEngine.TanksContents.forEach(v => {
                 let currentVolume = output.findIndex(x => v[0] == x[0]);
                 if (currentVolume == -1) {
@@ -7915,20 +7915,21 @@ class Engine {
                     output[currentVolume][1] += v[1];
                 }
             });
-            return output;
         }
-        let output = [];
-        let usedVolume = 0;
-        targetEngine.TanksContents.forEach(v => {
-            let thisVol = Math.min(v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation, targetEngine.TanksVolume - usedVolume);
-            let currentVolume = output.findIndex(x => v[0] == x[0]);
-            if (currentVolume == -1) {
-                output.push([v[0], thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
-            }
-            else {
-                output[currentVolume][1] += thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
-            }
-        });
+        else {
+            let usedVolume = 0;
+            targetEngine.TanksContents.forEach(v => {
+                let thisVol = Math.min(v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation, targetEngine.TanksVolume - usedVolume);
+                let currentVolume = output.findIndex(x => v[0] == x[0]);
+                if (currentVolume == -1) {
+                    output.push([v[0], thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
+                }
+                else {
+                    output[currentVolume][1] += thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
+                }
+                usedVolume += thisVol;
+            });
+        }
         return output;
     }
     RebuildMasterSelect(e) {

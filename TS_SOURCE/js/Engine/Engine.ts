@@ -96,7 +96,7 @@ class Engine implements ITableElement<Engine> {
             DisplayFlags: 0b10100
         }, ThrustCurve: {
             Name: "Thrust curve",
-            DefaultWidth: 466,
+            DefaultWidth: 416,
             DisplayFlags: 0b00000
         }, Spacer: {
             Name: "",

@@ -8522,7 +8522,7 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b10100
     }, ThrustCurve: {
         Name: "Thrust curve",
-        DefaultWidth: 466,
+        DefaultWidth: 416,
         DisplayFlags: 0b00000
     }, Spacer: {
         Name: "",
@@ -9485,18 +9485,20 @@ var EngineEditableFieldMetadata;
             e.innerHTML = engine.ThrustCurve.length > 0 ? `Custom: ${engine.GetThrustCurveBurnTimeMultiplier().toFixed(3)} * Burn time` : "Default";
         }, GetEditElement: () => {
             let tmp = document.createElement("div");
-            tmp.style.width = "466px";
+            tmp.style.width = "416px";
             tmp.style.height = "500px";
             let chartElement = document.createElement("div");
-            chartElement.style.width = "466px";
-            chartElement.style.height = "467px";
+            chartElement.style.width = "416px";
+            chartElement.style.height = "417px";
             chartElement.style.padding = "8px";
             chartElement.style.boxSizing = "border-box";
             chartElement.style.borderBottom = "var(--darkBorder) solid 1px";
             let chartBackground = document.createElement("canvas");
-            chartBackground.height = 450;
-            chartBackground.width = 450;
+            chartBackground.height = 400;
+            chartBackground.width = 400;
             chartElement.appendChild(chartBackground);
+            let canvas = chartBackground.getContext("2d");
+            CanvasHelper.DrawGrid(0, 0, 399, 399, 9, 3, true, canvas, "#666", 1, { 5: { Color: "#444", Label: "50%" } }, { 2: { Color: "#F00", Width: 1.66, Label: "100%" }, 3: { Color: "#444", Label: "50%" } }, { Color: "#444", Width: 4 });
             tmp.appendChild(chartElement);
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
@@ -9950,6 +9952,72 @@ BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
+const DEFAULT_STROKE_COLOR = "#444";
+const DEFAULT_STROKE_WIDTH = 1;
+class CanvasHelper {
+    static DrawLine(x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) {
+        x1 = Math.round(x1 + 0.5) - 0.5;
+        x2 = Math.round(x2 + 0.5) - 0.5;
+        y1 = Math.round(y1 + 0.5) - 0.5;
+        y2 = Math.round(y2 + 0.5) - 0.5;
+        canvas.beginPath();
+        canvas.moveTo(x1, y1);
+        canvas.lineTo(x2, y2);
+        canvas.strokeStyle = color;
+        canvas.lineWidth = width;
+        canvas.lineCap = "square";
+        canvas.stroke();
+    }
+    static DrawRectangle(x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) {
+        this.DrawLine(x1, y1, x2, y1, canvas, color, width);
+        this.DrawLine(x2, y1, x2, y2, canvas, color, width);
+        this.DrawLine(x2, y2, x1, y2, canvas, color, width);
+        this.DrawLine(x1, y2, x1, y1, canvas, color, width);
+    }
+    static DrawGrid(originX, originY, sizeX, sizeY, linesX, linesY, outline, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH, styleX, styleY, styleOutline) {
+        if (outline) {
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleOutline && styleOutline.Color) {
+                currentColor = styleOutline.Color;
+            }
+            if (styleOutline && styleOutline.Width) {
+                currentWidth = styleOutline.Width;
+            }
+            this.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
+        }
+        for (let x = 1; x <= linesX; ++x) {
+            let currentX = originX + (x * (originX + sizeX) / (linesX + 1));
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleX && styleX[x] && styleX[x].Color) {
+                currentColor = styleX[x].Color;
+            }
+            if (styleX && styleX[x] && styleX[x].Width) {
+                currentWidth = styleX[x].Width;
+            }
+            if (styleX && styleX[x] && styleX[x].Label) {
+                canvas.fillText(styleX[x].Label, currentX + 1, originY + sizeY - 2, sizeX / (linesX + 1) - 2);
+            }
+            this.DrawLine(currentX, originY, currentX, originY + sizeY, canvas, currentColor, currentWidth);
+        }
+        for (let y = 1; y <= linesY; ++y) {
+            let currentY = originY + (y * (originY + sizeY) / (linesY + 1));
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleY && styleY[y] && styleY[y].Color) {
+                currentColor = styleY[y].Color;
+            }
+            if (styleY && styleY[y] && styleY[y].Width) {
+                currentWidth = styleY[y].Width;
+            }
+            if (styleY && styleY[y] && styleY[y].Label) {
+                canvas.fillText(styleY[y].Label, originX + 2, currentY - 1);
+            }
+            this.DrawLine(originX, currentY, originX + sizeX, currentY, canvas, currentColor, currentWidth);
+        }
+    }
+}
 class DebugLists {
     static AppendListForExhaustPreviews() {
         let toAppend = [];

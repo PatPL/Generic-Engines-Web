@@ -33,4 +33,10 @@
     --sortMin: #222;
     --sortMax: #B22;
     
+    --tableBackground: #555;
+    --tableBorder: #000;
+    --tableDistinct: #000;
+    --tableRegular: #444;
+    --tableRed: #F00;
+    
 }

@@ -9493,13 +9493,35 @@ var EngineEditableFieldMetadata;
             chartElement.style.padding = "8px";
             chartElement.style.boxSizing = "border-box";
             chartElement.style.borderBottom = "var(--darkBorder) solid 1px";
+            chartElement.style.background = "var(--tableBackground)";
             let chartBackground = document.createElement("canvas");
+            chartBackground.classList.add("chartBackground");
             chartBackground.height = 400;
             chartBackground.width = 400;
+            chartBackground.style.position = "absolute";
+            chartBackground.style.top = "8px";
+            chartBackground.style.left = "8px";
             chartElement.appendChild(chartBackground);
             let canvas = chartBackground.getContext("2d");
-            CanvasHelper.DrawGrid(0, 0, 399, 399, 9, 3, true, canvas, "#666", 1, { 5: { Color: "#444", Label: "50%" } }, { 2: { Color: "#F00", Width: 1.66, Label: "100%" }, 3: { Color: "#444", Label: "50%" } }, { Color: "#444", Width: 4 });
+            let style = getComputedStyle(document.body);
+            CanvasHelper.DrawGrid(0, 0, 399, 399, 9, 3, true, canvas, style.getPropertyValue("--tableRegular"), 1, { 5: { Color: style.getPropertyValue("--tableDistinct"), Label: "50%" } }, { 2: { Color: style.getPropertyValue("--tableRed"), Width: 1, Label: "100%" }, 3: { Color: style.getPropertyValue("--tableDistinct"), Label: "50%" } }, { Color: style.getPropertyValue("--tableBorder"), Width: 3 }, "Fuel", "Thrust");
             tmp.appendChild(chartElement);
+            let chartLines = document.createElement("canvas");
+            chartBackground.classList.add("chartLines");
+            chartLines.height = 400;
+            chartLines.width = 400;
+            chartLines.style.position = "absolute";
+            chartLines.style.top = "8px";
+            chartLines.style.left = "8px";
+            chartElement.appendChild(chartLines);
+            let chartPoints = document.createElement("div");
+            chartPoints.classList.add("chartPoints");
+            chartPoints.style.position = "absolute";
+            chartPoints.style.top = "8px";
+            chartPoints.style.left = "8px";
+            chartPoints.style.width = "400px";
+            chartPoints.style.height = "400px";
+            chartElement.appendChild(chartPoints);
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
         }, ApplyChangesToValue: (e, engine) => {
@@ -9974,7 +9996,7 @@ class CanvasHelper {
         this.DrawLine(x2, y2, x1, y2, canvas, color, width);
         this.DrawLine(x1, y2, x1, y1, canvas, color, width);
     }
-    static DrawGrid(originX, originY, sizeX, sizeY, linesX, linesY, outline, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH, styleX, styleY, styleOutline) {
+    static DrawGrid(originX, originY, sizeX, sizeY, linesX, linesY, outline, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH, styleX, styleY, styleOutline, labelX, labelY) {
         if (outline) {
             let currentColor = color;
             let currentWidth = width;
@@ -10015,6 +10037,16 @@ class CanvasHelper {
                 canvas.fillText(styleY[y].Label, originX + 2, currentY - 1);
             }
             this.DrawLine(originX, currentY, originX + sizeX, currentY, canvas, currentColor, currentWidth);
+        }
+        if (labelX) {
+            canvas.textAlign = "end";
+            canvas.fillText(labelX, originX + sizeX - 2, originY + sizeY - 2);
+            canvas.textAlign = "start";
+        }
+        if (labelY) {
+            canvas.textBaseline = "top";
+            canvas.fillText(labelY, originX + 2, originY + 2);
+            canvas.textBaseline = "alphabetic";
         }
     }
 }

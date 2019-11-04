@@ -62,7 +62,9 @@ class CanvasHelper {
         width: number = DEFAULT_STROKE_WIDTH,
         styleX?: { [num: string]: LineData | undefined },
         styleY?: { [num: string]: LineData | undefined },
-        styleOutline?: LineData
+        styleOutline?: LineData,
+        labelX?: string,
+        labelY?: string
     ): void {
         if (outline) {
             let currentColor = color;
@@ -142,6 +144,22 @@ class CanvasHelper {
                 currentColor,
                 currentWidth,
             );
+        }
+        
+        if (labelX) {
+            canvas.textAlign = "end";
+            
+            canvas.fillText (labelX, originX + sizeX - 2, originY + sizeY - 2);
+            
+            canvas.textAlign = "start";
+        }
+        
+        if (labelY) {
+            canvas.textBaseline = "top";
+            
+            canvas.fillText (labelY, originX + 2, originY + 2);
+            
+            canvas.textBaseline = "alphabetic";
         }
         
     }

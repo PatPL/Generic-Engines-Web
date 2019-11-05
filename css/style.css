@@ -836,3 +836,57 @@ input.content-cell-content {
     background: var(--error);
     border: var(--darkBorder) 2px solid;
 }
+
+/**/
+
+.chartElement {
+    width: 416px;
+    height: 417px;
+    
+    padding: 8px;
+    box-sizing: border-box;
+    
+    border-bottom: var(--darkBorder) solid 1px;
+    background: var(--tableBackground);
+}
+
+.chartBackground {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    
+    z-index: 1;
+}
+
+.chartLines {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    
+    z-index: 2;
+}
+
+.chartPoints {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    
+    width: 400px;
+    height: 400px;
+    
+    z-index: 3;
+    overflow: hidden;
+}
+
+.chartPoint {
+    position: absolute;
+    box-sizing: border-box;
+    
+    width: 10px;
+    height: 10px;
+    
+    border: 1px solid var(--tableBorder);
+    border-radius: 9999px;
+    
+    cursor: pointer;
+}

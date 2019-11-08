@@ -8141,14 +8141,14 @@ class Engine {
         });
         return output;
     }
-    GetThrustCurveBurnTimeMultiplier() {
-        if (this.ThrustCurve.length == 0) {
+    static CalculateBurnTimeMultiplier(thrustCurve) {
+        if (thrustCurve.length == 0) {
             return 1;
         }
-        if (this.ThrustCurve.length == 1) {
-            return 100 / this.ThrustCurve[0][1];
+        if (thrustCurve.length == 1) {
+            return 100 / thrustCurve[0][1];
         }
-        let curve = this.ThrustCurve.sort((a, b) => b[0] - a[0]);
+        let curve = thrustCurve.sort((a, b) => b[0] - a[0]);
         let ranges = [];
         let previousFuelPoint = 100;
         let previousThrustPoint = curve[0][1];
@@ -8199,6 +8199,9 @@ class Engine {
             }
         });
         return output;
+    }
+    GetThrustCurveBurnTimeMultiplier() {
+        return Engine.CalculateBurnTimeMultiplier(this.ThrustCurve);
     }
     GetBaseWidth() {
         if (this.UseBaseWidth) {
@@ -9488,7 +9491,7 @@ var EngineEditableFieldMetadata;
         }, GetEditElement: () => {
             let tmp = document.createElement("div");
             tmp.style.width = "416px";
-            tmp.style.height = "500px";
+            tmp.style.height = `${417 + 200}px`;
             let chartElement = document.createElement("div");
             chartElement.classList.add("chartElement");
             let chartBackground = document.createElement("canvas");
@@ -9509,23 +9512,93 @@ var EngineEditableFieldMetadata;
             chartPoints.classList.add("chartPoints");
             chartElement.appendChild(chartPoints);
             const updateLines = () => {
-                updateLineChart(chartLines.getContext("2d"), getCurve(chartPoints));
+                updateLineChart(chartLines.getContext("2d"), getCurve(chartPoints), style.getPropertyValue("--tableLine"));
             };
+            chartPoints.addEventListener("pointerdown", () => {
+                setActivePoint(chartPoints, null);
+            });
             chartPoints.addEventListener("dblclick", (e) => {
                 addPoint(chartPoints, e.layerX, e.layerY, updateLines);
                 updateLines();
             });
-            chartPoints.addEventListener("pointerdown", e => {
-                if (e.which == 1) {
-                    console.log(getCurve(chartPoints));
+            let detailsElement = document.createElement("div");
+            detailsElement.classList.add("chartDetails");
+            tmp.appendChild(detailsElement);
+            let chartNormalizeButton = document.createElement("button");
+            chartNormalizeButton.classList.add("abbr");
+            chartNormalizeButton.classList.add("chartNormalizeButton");
+            chartNormalizeButton.style.gridArea = "a";
+            chartNormalizeButton.innerHTML = "Normalize";
+            chartNormalizeButton.title = "Move the points on the chart to change burn time multiplier to 1, keeping current curve shape";
+            chartNormalizeButton.addEventListener("click", () => {
+                let points = chartPoints.querySelectorAll(".chartPoint");
+                for (let i = 0; i < 5; ++i) {
+                    let burnTimeMultiplier = Engine.CalculateBurnTimeMultiplier(getCurve(chartPoints).map(([fuel, thrust]) => {
+                        return [fuel * 100, thrust * 100];
+                    }));
+                    points.forEach(p => {
+                        p.style.top = `${Math.round(chartHeight - ((chartHeight - parseInt(p.style.top)) * burnTimeMultiplier))}px`;
+                    });
+                }
+                updateLines();
+            });
+            detailsElement.appendChild(chartNormalizeButton);
+            let chartRemovePointButton = document.createElement("button");
+            chartRemovePointButton.classList.add("chartRemovePointButton");
+            chartRemovePointButton.style.gridArea = "b";
+            chartRemovePointButton.innerHTML = "Delete selected point";
+            chartRemovePointButton.addEventListener("click", () => {
+                let point = getActivePoint(chartPoints);
+                if (point) {
+                    point.remove();
+                    updateLines();
                 }
             });
-            updateLines();
+            detailsElement.appendChild(chartRemovePointButton);
+            let upperBoundInput = document.createElement("input");
+            upperBoundInput.classList.add("content-cell-content");
+            upperBoundInput.classList.add("upperBoundInput");
+            upperBoundInput.style.gridArea = "c";
+            upperBoundInput.value = "200";
+            detailsElement.appendChild(upperBoundInput);
+            let upperBoundLabel = document.createElement("span");
+            upperBoundLabel.classList.add("abbr");
+            upperBoundInput.classList.add("upperBoundLabel");
+            upperBoundLabel.innerHTML = "% Thrust upper bound";
+            upperBoundLabel.title = "Highest thrust value on the chart";
+            upperBoundLabel.style.gridArea = "d";
+            detailsElement.appendChild(upperBoundLabel);
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
+            let container = e.querySelector(".chartPoints");
+            let chartLines = e.querySelector(".chartLines");
+            let style = getComputedStyle(document.body);
+            container.innerHTML = "";
+            const updateLines = () => {
+                updateLineChart(chartLines.getContext("2d"), getCurve(container), style.getPropertyValue("--tableLine"));
+            };
+            engine.ThrustCurve.forEach(([fuel, thrust]) => {
+                addPoint(container, chartWidth * fuel / 100, chartHeight - chartHeight * thrust / 200, updateLines);
+            });
+            updateLines();
         }, ApplyChangesToValue: (e, engine) => {
+            engine.ThrustCurve = getCurve(e.querySelector(".chartPoints")).map(([fuel, thrust]) => [fuel * 100, thrust * 100]);
         },
     };
+    const setActivePoint = (container, activePoint) => {
+        if (activePoint && activePoint.parentElement != container) {
+            console.warn("This point isn't a direct child to given container", activePoint, container);
+        }
+        container.querySelectorAll(".chartPointActive").forEach(p => {
+            p.classList.remove("chartPointActive");
+        });
+        if (activePoint) {
+            activePoint.classList.add("chartPointActive");
+        }
+    };
+    function getActivePoint(container) {
+        return container.querySelector(".chartPointActive");
+    }
     const pointRadius = 5;
     const addPoint = (container, startX, startY, onDrag) => {
         let newPoint = document.createElement("div");
@@ -9533,11 +9606,14 @@ var EngineEditableFieldMetadata;
         newPoint.style.left = `${startX - pointRadius}px`;
         newPoint.style.top = `${startY - pointRadius}px`;
         container.appendChild(newPoint);
+        setActivePoint(container, newPoint);
         newPoint.addEventListener("pointerdown", e => {
+            e.stopImmediatePropagation();
             let startX = Input.MouseX;
             let startY = Input.MouseY;
             let originalX = parseInt(newPoint.style.left);
             let originalY = parseInt(newPoint.style.top);
+            setActivePoint(container, newPoint);
             Dragger.Drag(() => {
                 let newX = Math.min(Math.max(originalX + Input.MouseX - startX, -pointRadius), chartWidth - pointRadius);
                 let newY = Math.min(Math.max(originalY + Input.MouseY - startY, -pointRadius), chartHeight - pointRadius);
@@ -9570,19 +9646,22 @@ var EngineEditableFieldMetadata;
         output = output.sort((a, b) => a[0] - b[0]);
         return output;
     }
-    const updateLineChart = (lineChart, points) => {
+    const updateLineChart = (lineChart, points, color) => {
         lineChart.clearRect(0, 0, chartWidth, chartHeight);
+        lineChart.beginPath();
+        lineChart.strokeStyle = color;
         if (points.length == 0) {
             lineChart.moveTo(0, chartHeight / 2);
             lineChart.lineTo(chartWidth, chartHeight / 2);
             return;
         }
-        lineChart.beginPath();
-        lineChart.moveTo(0, chartHeight - points[0][1] * chartHeight / 2);
-        for (let i = 0; i < points.length; ++i) {
-            lineChart.lineTo(points[i][0] * chartWidth, chartHeight - points[i][1] * chartHeight / 2);
+        else {
+            lineChart.moveTo(0, chartHeight - points[0][1] * chartHeight / 2);
+            for (let i = 0; i < points.length; ++i) {
+                lineChart.lineTo(points[i][0] * chartWidth, chartHeight - points[i][1] * chartHeight / 2);
+            }
+            lineChart.lineTo(chartWidth, chartHeight - points[points.length - 1][1] * chartHeight / 2);
         }
-        lineChart.lineTo(chartWidth, chartHeight - points[points.length - 1][1] * chartHeight / 2);
         lineChart.stroke();
         lineChart.closePath();
     };

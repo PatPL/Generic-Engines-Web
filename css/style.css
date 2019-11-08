@@ -840,6 +840,7 @@ input.content-cell-content {
 /**/
 
 .chartElement {
+    position: relative;
     width: 416px;
     height: 417px;
     
@@ -885,8 +886,49 @@ input.content-cell-content {
     width: 10px;
     height: 10px;
     
+    background: rgba(128, 64, 255, 0.25);
     border: 1px solid var(--tableBorder);
     border-radius: 9999px;
     
     cursor: pointer;
+}
+
+.chartPoint.chartPointActive {
+    border: 2px solid var(--tableRed);
+    background: rgba(255, 128, 64, 0.25);
+}
+
+.chartDetails {
+    display: grid;
+    width: 100%;
+    height: 200px;
+    box-sizing: border-box;
+    
+    padding: 4px;
+    
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 24px 4px 24px 4px 24px 24px auto;
+    grid-template-areas:
+        "a b"
+        ". ."
+        "c d"
+        ". ."
+        "e f"
+        "g h"
+        "i i"
+    ;
+}
+
+.chartDetails span {
+    margin: 3px;
+}
+
+.chartNormalizeButton {
+    padding: 0;
+    margin-right: 2px;
+}
+
+.chartRemovePointButton {
+    padding: 0;
+    margin-left: 2px;
 }

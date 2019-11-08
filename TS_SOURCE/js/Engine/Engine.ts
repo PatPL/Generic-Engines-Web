@@ -1019,17 +1019,17 @@ class Engine implements ITableElement<Engine> {
         return output;
     }
     
-    public GetThrustCurveBurnTimeMultiplier (): number {
-        if (this.ThrustCurve.length == 0) {
+    public static CalculateBurnTimeMultiplier (thrustCurve: [number, number][]): number {
+        if (thrustCurve.length == 0) {
             // No thrust curve, 100% thrust all the way through
             return 1;
         }
         
-        if (this.ThrustCurve.length == 1) {
+        if (thrustCurve.length == 1) {
             // Only one point, so the thrust curve is flat, with its thrust at the value of this point
             // 200% thrust -> 0.5 * burn time
             // 25% thrust -> 4 * burn time
-            return 100 / this.ThrustCurve[0][1];
+            return 100 / thrustCurve[0][1];
         }
         
         // Integral of 1 / ( x / a + b ) = a ln (|x + ab|)
@@ -1040,7 +1040,7 @@ class Engine implements ITableElement<Engine> {
         // First, define ranges, and their a, b values
         
         // The curve has to be sorted descending by fuel%
-        let curve = this.ThrustCurve.sort ((a, b) => b[0] - a[0]);
+        let curve = thrustCurve.sort ((a, b) => b[0] - a[0]);
         let ranges: [number, number, number, number][] = [];
         
         let previousFuelPoint = 100;
@@ -1103,6 +1103,10 @@ class Engine implements ITableElement<Engine> {
         });
         
         return output;
+    }
+    
+    public GetThrustCurveBurnTimeMultiplier (): number {
+        return Engine.CalculateBurnTimeMultiplier (this.ThrustCurve);
     }
     
     public GetBaseWidth (): number {

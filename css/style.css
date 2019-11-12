@@ -876,7 +876,7 @@ input.content-cell-content {
     height: 400px;
     
     z-index: 3;
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 
 .chartPoint {

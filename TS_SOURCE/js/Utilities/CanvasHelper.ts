@@ -2,6 +2,7 @@ const DEFAULT_STROKE_COLOR: string = "#444" as const;
 const DEFAULT_STROKE_WIDTH: number = 1 as const;
 
 type LineData = {
+    Position?: number;
     Label?: string;
     Color?: string;
     Width?: number;
@@ -64,8 +65,12 @@ class CanvasHelper {
         styleY?: { [num: string]: LineData | undefined },
         styleOutline?: LineData,
         labelX?: string,
-        labelY?: string
+        labelY?: string,
+        lineOverrideX?: LineData[],
+        lineOverrideY?: LineData[],
     ): void {
+        canvas.clearRect (0, 0, sizeX, sizeY);
+        
         if (outline) {
             let currentColor = color;
             let currentWidth = width;
@@ -144,6 +149,66 @@ class CanvasHelper {
                 currentColor,
                 currentWidth,
             );
+        }
+        
+        if (lineOverrideX) {
+            lineOverrideX.forEach (l => {
+                if (!l.Position) {
+                    console.warn ("Position is mandatory for line override. Skipping...");
+                    return; // continue;
+                }
+                
+                let currentColor = color;
+                let currentWidth = width;
+                
+                if (l.Color) {
+                    currentColor = l.Color;
+                }
+                
+                if (l.Width) {
+                    currentWidth = l.Width;
+                }
+                
+                if (l.Label) {
+                    canvas.fillText (l.Label!, l.Position + 1, sizeY - 1);
+                }
+                
+                this.DrawLine (
+                    l.Position, 0,
+                    l.Position, sizeY,
+                    canvas, currentColor, currentWidth
+                );
+            });
+        }
+        
+        if (lineOverrideY) {
+            lineOverrideY.forEach (l => {
+                if (!l.Position) {
+                    console.warn ("Position is mandatory for line override. Skipping...");
+                    return; // continue;
+                }
+                
+                let currentColor = color;
+                let currentWidth = width;
+                
+                if (l.Color) {
+                    currentColor = l.Color;
+                }
+                
+                if (l.Width) {
+                    currentWidth = l.Width;
+                }
+                
+                if (l.Label) {
+                    canvas.fillText (l.Label!, 0, l.Position - 1);
+                }
+                
+                this.DrawLine (
+                    0, l.Position,
+                    sizeX, l.Position,
+                    canvas, currentColor, currentWidth
+                );
+            });
         }
         
         if (labelX) {

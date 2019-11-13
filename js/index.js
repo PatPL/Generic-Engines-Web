@@ -9489,6 +9489,7 @@ var EngineEditableFieldMetadata;
     const chartWidth = 400;
     const chartHeight = 400;
     const defaultUpperBound = 150;
+    let pointerIDcounter = 1;
     EngineEditableFieldMetadata.ThrustCurve = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = engine.ThrustCurve.length > 0 ? `Custom: ${engine.GetThrustCurveBurnTimeMultiplier().toFixed(3)} * Burn time` : "Default";
@@ -9496,7 +9497,7 @@ var EngineEditableFieldMetadata;
             let style = getComputedStyle(document.body);
             let tmp = document.createElement("div");
             tmp.style.width = "416px";
-            tmp.style.height = `${417 + 200}px`;
+            tmp.style.height = `${417 + 238}px`;
             let chartElement = document.createElement("div");
             chartElement.classList.add("chartElement");
             let chartBackground = document.createElement("canvas");
@@ -9520,7 +9521,7 @@ var EngineEditableFieldMetadata;
                 setActivePoint(chartPoints, null);
             });
             chartPoints.addEventListener("dblclick", (e) => {
-                addPoint(chartPoints, e.layerX, e.layerY, false, updateLines, upperBoundInput);
+                addPoint(chartPoints, chartTable, e.layerX, e.layerY, false, updateLines, upperBoundInput);
                 updateLines();
             });
             let detailsElement = document.createElement("div");
@@ -9606,6 +9607,9 @@ var EngineEditableFieldMetadata;
             chartTable.classList.add("chartTable");
             chartTableContainer.appendChild(chartTable);
             chartTable.innerHTML = `
+                <col width="*">
+                <col width="*">
+                <col width="84">
                 <tr>
                     <th>Fuel%</th>
                     <th>Thrust%</th>
@@ -9618,6 +9622,7 @@ var EngineEditableFieldMetadata;
             let chartBackground = e.querySelector(".chartBackground");
             let chartLines = e.querySelector(".chartLines");
             let upperBoundInput = e.querySelector(".upperBoundInput");
+            let chartTable = e.querySelector(".chartTable");
             let style = getComputedStyle(document.body);
             let upperBound = defaultUpperBound;
             engine.ThrustCurve.forEach(([fuel, thrust]) => {
@@ -9633,7 +9638,7 @@ var EngineEditableFieldMetadata;
                 updateLineChart(chartLines.getContext("2d"), getCurve(container, parseInt(upperBoundInput.value)), style.getPropertyValue("--tableLine"), parseInt(upperBoundInput.value));
             };
             engine.ThrustCurve.forEach(([fuel, thrust]) => {
-                addPoint(container, fuel, thrust, true, updateLines, upperBoundInput);
+                addPoint(container, chartTable, fuel, thrust, true, updateLines, upperBoundInput);
             });
             updateLines();
         }, ApplyChangesToValue: (e, engine) => {
@@ -9695,9 +9700,10 @@ var EngineEditableFieldMetadata;
         return container.querySelector(".chartPointActive");
     }
     const pointRadius = 5;
-    const addPoint = (container, startX, startY, startIsExactValue, onDrag, upperBoundInput) => {
+    const addPoint = (container, tableContainer, startX, startY, startIsExactValue, onDrag, upperBoundInput) => {
         let newPoint = document.createElement("div");
         newPoint.classList.add("chartPoint");
+        newPoint.setAttribute("pointID", pointerIDcounter.toString());
         movePoint(newPoint, startX, startY, startIsExactValue, upperBoundInput);
         container.appendChild(newPoint);
         setActivePoint(container, newPoint);
@@ -9721,6 +9727,19 @@ var EngineEditableFieldMetadata;
             e.preventDefault();
             e.stopImmediatePropagation();
         });
+        let newRow = document.createElement("tr");
+        newRow.setAttribute("pointID", pointerIDcounter.toString());
+        newRow.innerHTML = `
+            <td><input class="content-cell-content"></td>
+            <td><input class="content-cell-content"></td>
+            <td style="font-size: 0;">
+                <img src="img/button/select-mid.png" class="medium-button option-button">
+                <img src="img/button/swap-mid.png"   class="medium-button option-button">
+                <img src="img/button/remove-mid.png" class="medium-button option-button">
+            </td>
+        `;
+        tableContainer.children[1].appendChild(newRow);
+        ++pointerIDcounter;
     };
     function getCurve(pointContainer, upperBound) {
         let pointElements = pointContainer.querySelectorAll("div.chartPoint");

@@ -3,6 +3,7 @@ namespace EngineEditableFieldMetadata {
     const chartWidth = 400 as const;
     const chartHeight = 400 as const;
     const defaultUpperBound = 150 as const;
+    let pointerIDcounter = 1;
     
     export const ThrustCurve: IEditable<Engine> = {
         ApplyValueToDisplayElement: (e, engine) => {
@@ -12,7 +13,7 @@ namespace EngineEditableFieldMetadata {
             let tmp = document.createElement ("div");
             
             tmp.style.width = "416px";
-            tmp.style.height = `${ /* Chart element */ 417 + /* Details element */ 200 }px`;
+            tmp.style.height = `${ /* Chart element */ 417 + /* Details element */ 238 }px`;
             
             let chartElement = document.createElement ("div");
             chartElement.classList.add ("chartElement");
@@ -52,7 +53,7 @@ namespace EngineEditableFieldMetadata {
             });
             
             chartPoints.addEventListener ("dblclick", (e: any) => {
-                addPoint (chartPoints, e.layerX, e.layerY, false, updateLines, upperBoundInput);
+                addPoint (chartPoints, chartTable, e.layerX, e.layerY, false, updateLines, upperBoundInput);
                 updateLines ();
             });
             // !== Point container
@@ -163,6 +164,9 @@ namespace EngineEditableFieldMetadata {
             chartTableContainer.appendChild (chartTable);
             
             chartTable.innerHTML = `
+                <col width="*">
+                <col width="*">
+                <col width="84">
                 <tr>
                     <th>Fuel%</th>
                     <th>Thrust%</th>
@@ -176,6 +180,7 @@ namespace EngineEditableFieldMetadata {
             let chartBackground = e.querySelector<HTMLCanvasElement> (".chartBackground")!;
             let chartLines = e.querySelector<HTMLCanvasElement> (".chartLines")!;
             let upperBoundInput = e.querySelector<HTMLInputElement> (".upperBoundInput")!;
+            let chartTable = e.querySelector<HTMLTableElement> (".chartTable")!;
             let style = getComputedStyle (document.body);
             
             let upperBound = defaultUpperBound as number;
@@ -204,6 +209,7 @@ namespace EngineEditableFieldMetadata {
             engine.ThrustCurve.forEach (([fuel, thrust]) => {
                 addPoint (
                     container,
+                    chartTable,
                     fuel,
                     thrust,
                     true,
@@ -325,6 +331,7 @@ namespace EngineEditableFieldMetadata {
     const pointRadius = 5;
     const addPoint = (
         container: HTMLElement,
+        tableContainer: HTMLElement,
         startX: number,
         startY: number,
         startIsExactValue: boolean,
@@ -334,6 +341,7 @@ namespace EngineEditableFieldMetadata {
         let newPoint = document.createElement ("div");
         newPoint.classList.add ("chartPoint");
         
+        newPoint.setAttribute ("pointID", pointerIDcounter.toString ());
         movePoint (newPoint, startX, startY, startIsExactValue, upperBoundInput);
         
         container.appendChild (newPoint);
@@ -365,7 +373,30 @@ namespace EngineEditableFieldMetadata {
         newPoint.addEventListener ("dblclick", e => {
             e.preventDefault ();
             e.stopImmediatePropagation ();
-        })
+        });
+        
+        // Table row
+        
+        let newRow = document.createElement ("tr");
+        newRow.setAttribute ("pointID", pointerIDcounter.toString ());
+        
+        newRow.innerHTML = `
+            <td><input class="content-cell-content"></td>
+            <td><input class="content-cell-content"></td>
+            <td style="font-size: 0;">
+                <img src="img/button/select-mid.png" class="medium-button option-button">
+                <img src="img/button/swap-mid.png"   class="medium-button option-button">
+                <img src="img/button/remove-mid.png" class="medium-button option-button">
+            </td>
+        `;
+        
+        // children[0] because of the hidden <colgroup> and <tbody> elements
+        // (insert into <tbody>)
+        tableContainer.children[1].appendChild (newRow);
+        
+        //
+        
+        ++pointerIDcounter
     }
     
     function getCurve (pointContainer: HTMLElement, upperBound: number): [number, number][] {

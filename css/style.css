@@ -75,6 +75,12 @@ img.mini-button {
     margin: 4px 0px 0px 4px;
 }
 
+img.medium-button {
+    width: 24px;
+    height: 24px;
+    margin: 0px 0px 0px 4px;
+}
+
 select {
     width: 100%;
     height: 23px;
@@ -429,7 +435,8 @@ span.checkbox-label {
     width: 100%;
     height: 24px;
     
-    line-height: 19px;
+    /* Somehow this one screws up input height, even when it's overridden */
+    /* line-height: 19px; */
     font-size: 16px;
     overflow: hidden;
     color: var(--darkerText);
@@ -901,7 +908,7 @@ input.content-cell-content {
 .chartDetails {
     display: grid;
     width: 100%;
-    height: 200px;
+    height: 238px;
     box-sizing: border-box;
     
     padding: 4px 5px 4px 4px;

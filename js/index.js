@@ -588,7 +588,7 @@ addEventListener("DOMContentLoaded", () => {
     Notifier.Container = document.querySelector(".notify-container");
 });
 class Notifier {
-    static Info(text, lifetime = this.NotificationLifetime) {
+    static Info(text, lifetimeMS = this.NotificationLifetime) {
         let box = document.createElement("div");
         box.classList.add("notify-box");
         box.classList.add("info");
@@ -597,13 +597,13 @@ class Notifier {
         box.addEventListener("click", () => {
             box.remove();
         });
-        if (lifetime > 0) {
+        if (lifetimeMS > 0) {
             setTimeout(() => {
                 box.remove();
-            }, lifetime);
+            }, lifetimeMS);
         }
     }
-    static Warn(text, lifetime = this.NotificationLifetime) {
+    static Warn(text, lifetimeMS = this.NotificationLifetime) {
         let box = document.createElement("div");
         box.classList.add("notify-box");
         box.classList.add("warn");
@@ -612,13 +612,13 @@ class Notifier {
         box.addEventListener("click", () => {
             box.remove();
         });
-        if (lifetime > 0) {
+        if (lifetimeMS > 0) {
             setTimeout(() => {
                 box.remove();
-            }, lifetime);
+            }, lifetimeMS);
         }
     }
-    static Error(text, lifetime = this.NotificationLifetime) {
+    static Error(text, lifetimeMS = this.NotificationLifetime) {
         let box = document.createElement("div");
         box.classList.add("notify-box");
         box.classList.add("error");
@@ -627,10 +627,10 @@ class Notifier {
         box.addEventListener("click", () => {
             box.remove();
         });
-        if (lifetime > 0) {
+        if (lifetimeMS > 0) {
             setTimeout(() => {
                 box.remove();
-            }, lifetime);
+            }, lifetimeMS);
         }
     }
 }
@@ -8198,6 +8198,9 @@ class Engine {
                 output += antiderivative(range[1], range[2], range[3]) - antiderivative(range[0], range[2], range[3]);
             }
         });
+        if (isNaN(output)) {
+            return Infinity;
+        }
         return output;
     }
     GetThrustCurveBurnTimeMultiplier() {
@@ -9534,25 +9537,22 @@ var EngineEditableFieldMetadata;
                 let burnTimeMultiplier = Engine.CalculateBurnTimeMultiplier(getCurve(chartPoints, parseInt(upperBoundInput.value)).map(([fuel, thrust]) => {
                     return [fuel * 100, thrust * 100];
                 }));
+                if (burnTimeMultiplier == Infinity) {
+                    Notifier.Warn("Curve that achieves 0% thrust at any point can't be normalized (Infinite burn time)", 5000);
+                    return;
+                }
                 let upperBound = parseInt(upperBoundInput.value);
                 points.forEach(p => {
-                    if (p.hasAttribute("valueY")) {
-                        let thrust = parseFloat(p.getAttribute("valueY"));
-                        thrust *= burnTimeMultiplier;
-                        upperBound = Math.max(upperBound, thrust * 1.05);
-                        p.setAttribute("valueY", thrust.toString());
-                        p.style.top = `${chartHeight - (chartHeight * thrust / parseInt(upperBoundInput.value)) - pointRadius}px`;
-                    }
-                    else {
-                        p.style.top = `${Math.round(chartHeight - ((chartHeight - parseInt(p.style.top)) * burnTimeMultiplier))}px`;
-                    }
+                    let thrust = parseFloat(p.getAttribute("valueY"));
+                    thrust *= burnTimeMultiplier;
+                    upperBound = Math.max(upperBound, thrust * 1.05);
+                    movePoint(p, parseFloat(p.getAttribute("valueX")), thrust, true, upperBoundInput);
                 });
                 upperBound = Math.round(upperBound);
-                drawGrid(chartBackground.getContext("2d"), upperBound);
-                repositionPointsAfterResize(chartPoints, parseInt(upperBoundInput.getAttribute("previousValue")), upperBound);
-                updateLines();
-                upperBoundInput.setAttribute("previousValue", upperBound.toString());
+                upperBoundInput.setAttribute("previousValue", upperBoundInput.value);
                 upperBoundInput.value = upperBound.toString();
+                drawGrid(chartBackground.getContext("2d"), upperBound);
+                repositionPointsAfterResize(chartPoints, upperBoundInput);
                 updateLines();
             });
             detailsElement.appendChild(chartNormalizeButton);
@@ -9576,25 +9576,20 @@ var EngineEditableFieldMetadata;
             upperBoundInput.style.gridArea = "c";
             detailsElement.appendChild(upperBoundInput);
             upperBoundInput.addEventListener("keyup", () => {
-                if (parseInt(upperBoundInput.value) <= 0) {
+                if (isNaN(parseInt(upperBoundInput.value)) || parseInt(upperBoundInput.value) <= 0) {
                     return;
                 }
                 drawGrid(chartBackground.getContext("2d"), parseInt(upperBoundInput.value));
-                repositionPointsAfterResize(chartPoints, parseInt(upperBoundInput.getAttribute("previousValue")), parseInt(upperBoundInput.value));
+                repositionPointsAfterResize(chartPoints, upperBoundInput);
                 updateLines();
-                upperBoundInput.setAttribute("previousValue", upperBoundInput.value);
             });
             upperBoundInput.addEventListener("change", () => {
-                if (parseInt(upperBoundInput.value) <= 0) {
+                if (isNaN(parseInt(upperBoundInput.value)) || parseInt(upperBoundInput.value) <= 0) {
                     upperBoundInput.value = defaultUpperBound.toString();
                 }
                 drawGrid(chartBackground.getContext("2d"), parseInt(upperBoundInput.value));
-                repositionPointsAfterResize(chartPoints, parseInt(upperBoundInput.getAttribute("previousValue")), parseInt(upperBoundInput.value));
+                repositionPointsAfterResize(chartPoints, upperBoundInput);
                 updateLines();
-                upperBoundInput.setAttribute("previousValue", upperBoundInput.value);
-            });
-            upperBoundInput.addEventListener("input", () => {
-                upperBoundInput.setCustomValidity("");
             });
             let upperBoundLabel = document.createElement("span");
             upperBoundLabel.classList.add("abbr");
@@ -9603,6 +9598,20 @@ var EngineEditableFieldMetadata;
             upperBoundLabel.title = "Highest thrust value on the chart";
             upperBoundLabel.style.gridArea = "d";
             detailsElement.appendChild(upperBoundLabel);
+            let chartTableContainer = document.createElement("div");
+            chartTableContainer.classList.add("chartTableContainer");
+            chartTableContainer.style.gridArea = "e";
+            detailsElement.appendChild(chartTableContainer);
+            let chartTable = document.createElement("table");
+            chartTable.classList.add("chartTable");
+            chartTableContainer.appendChild(chartTable);
+            chartTable.innerHTML = `
+                <tr>
+                    <th>Fuel%</th>
+                    <th>Thrust%</th>
+                    <th>Actions</th>
+                </tr>
+            `;
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
             let container = e.querySelector(".chartPoints");
@@ -9631,15 +9640,27 @@ var EngineEditableFieldMetadata;
             engine.ThrustCurve = getCurve(e.querySelector(".chartPoints"), parseInt(e.querySelector(".upperBoundInput").value)).map(([fuel, thrust]) => [fuel * 100, thrust * 100]);
         },
     };
-    const repositionPointsAfterResize = (container, oldUpperBound, newUpperBound) => {
+    const movePoint = (point, x, y, xyIsValue, upperBoundInput) => {
+        if (xyIsValue) {
+            let xPos = x * chartWidth / 100;
+            let yPos = chartHeight - y * chartHeight / parseInt(upperBoundInput.value);
+            point.style.left = `${xPos - pointRadius}px`;
+            point.style.top = `${yPos - pointRadius}px`;
+            point.setAttribute("valueX", x.toString());
+            point.setAttribute("valueY", y.toString());
+        }
+        else {
+            point.style.left = `${x - pointRadius}px`;
+            point.style.top = `${y - pointRadius}px`;
+            point.setAttribute("valueX", (100 * (x) / chartWidth).toString());
+            point.setAttribute("valueY", ((chartHeight - y) * parseInt(upperBoundInput.value) / chartHeight).toString());
+        }
+    };
+    const repositionPointsAfterResize = (container, upperBoundInput) => {
         container.querySelectorAll(".chartPoint").forEach(p => {
-            if (p.hasAttribute("valueY")) {
-                p.style.top = `${Math.round(chartHeight - chartHeight * parseFloat(p.getAttribute("valueY")) / newUpperBound) - pointRadius}px`;
-            }
-            else {
-                p.style.top = `${Math.round(chartHeight - ((chartHeight - parseInt(p.style.top)) * oldUpperBound / newUpperBound))}px`;
-            }
+            movePoint(p, parseFloat(p.getAttribute("valueX")), parseFloat(p.getAttribute("valueY")), true, upperBoundInput);
         });
+        upperBoundInput.setAttribute("previousValue", upperBoundInput.value);
     };
     const drawGrid = (canvas, upperBound) => {
         let style = getComputedStyle(document.body);
@@ -9675,42 +9696,24 @@ var EngineEditableFieldMetadata;
     }
     const pointRadius = 5;
     const addPoint = (container, startX, startY, startIsExactValue, onDrag, upperBoundInput) => {
-        const saveAccurateValue = (x, y) => {
-            newPoint.setAttribute("valueX", (100 * (x + pointRadius) / chartWidth).toString());
-            newPoint.setAttribute("valueY", ((chartHeight - y - pointRadius) * parseInt(upperBoundInput.value) / chartHeight).toString());
-        };
         let newPoint = document.createElement("div");
         newPoint.classList.add("chartPoint");
-        if (startIsExactValue) {
-            let xPos = startX * chartWidth / 100;
-            let yPos = chartHeight - startY * chartHeight / parseInt(upperBoundInput.value);
-            newPoint.style.left = `${xPos - pointRadius}px`;
-            newPoint.style.top = `${yPos - pointRadius}px`;
-            newPoint.setAttribute("valueX", startX.toString());
-            newPoint.setAttribute("valueY", startY.toString());
-        }
-        else {
-            newPoint.style.left = `${startX - pointRadius}px`;
-            newPoint.style.top = `${startY - pointRadius}px`;
-            saveAccurateValue(startX - pointRadius, startY - pointRadius);
-        }
+        movePoint(newPoint, startX, startY, startIsExactValue, upperBoundInput);
         container.appendChild(newPoint);
         setActivePoint(container, newPoint);
         newPoint.addEventListener("pointerdown", e => {
             e.stopImmediatePropagation();
-            let startX = Input.MouseX;
-            let startY = Input.MouseY;
+            let startX = Input.MouseX - pointRadius;
+            let startY = Input.MouseY - pointRadius;
             let originalX = parseInt(newPoint.style.left);
             let originalY = parseInt(newPoint.style.top);
             setActivePoint(container, newPoint);
             Dragger.Drag(() => {
-                let newX = Math.min(Math.max(originalX + Input.MouseX - startX, -pointRadius), chartWidth - pointRadius);
-                let newY = Math.min(Math.max(originalY + Input.MouseY - startY, -pointRadius), chartHeight - pointRadius);
+                let newX = Math.min(Math.max(originalX + Input.MouseX - startX, 0), chartWidth);
+                let newY = Math.min(Math.max(originalY + Input.MouseY - startY, 0), chartHeight);
                 if (newX != originalX || newY != originalY) {
-                    saveAccurateValue(newX, newY);
+                    movePoint(newPoint, newX, newY, false, upperBoundInput);
                 }
-                newPoint.style.left = `${newX}px`;
-                newPoint.style.top = `${newY}px`;
                 onDrag();
             });
         });

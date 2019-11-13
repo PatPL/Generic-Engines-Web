@@ -1102,6 +1102,10 @@ class Engine implements ITableElement<Engine> {
             }
         });
         
+        if (isNaN (output)) {
+            return Infinity;
+        }
+        
         return output;
     }
     

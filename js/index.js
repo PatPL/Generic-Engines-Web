@@ -9641,12 +9641,14 @@ var EngineEditableFieldMetadata;
                 updateLineChart(chartLines.getContext("2d"), getCurve(container, parseInt(upperBoundInput.value)), style.getPropertyValue("--tableLine"), parseInt(upperBoundInput.value));
             };
             engine.ThrustCurve.forEach(([fuel, thrust]) => {
+                const FLOATING_POINT_FIX_ACCURACY = 8;
+                fuel = Math.round(fuel * (Math.pow(10, FLOATING_POINT_FIX_ACCURACY))) / (Math.pow(10, FLOATING_POINT_FIX_ACCURACY));
+                thrust = Math.round(thrust * (Math.pow(10, FLOATING_POINT_FIX_ACCURACY))) / (Math.pow(10, FLOATING_POINT_FIX_ACCURACY));
                 addPoint(container, chartTable, fuel, thrust, true, updateLines, upperBoundInput);
             });
             updateLines();
         }, ApplyChangesToValue: (e, engine) => {
             engine.ThrustCurve = getCurve(e.querySelector(".chartPoints"), parseInt(e.querySelector(".upperBoundInput").value)).map(([fuel, thrust]) => [fuel * 100, thrust * 100]);
-            console.log(engine.ThrustCurve);
         },
     };
     const movePoint = (point, x, y, xyIsValue, upperBoundInput, chartTableRow, updateTableRowInput) => {
@@ -9722,8 +9724,19 @@ var EngineEditableFieldMetadata;
         let linesY = [];
         linesY.push(getLine(50, style.getPropertyValue("--tableDistinct")));
         linesY.push(getLine(100, style.getPropertyValue("--tableRed")));
-        for (let i = 200; i < upperBound; i += 100) {
-            linesY.push(getLine(i, style.getPropertyValue("--tableRegular")));
+        linesY.push(getLine(150, style.getPropertyValue("--tableRegular")));
+        if (upperBound <= 200) {
+            for (let i = 10; i < 200; i += 10) {
+                if (i == 50 || i == 100 || i == 150) {
+                    continue;
+                }
+                linesY.push(getLine(i, style.getPropertyValue("--tableRegular")));
+            }
+        }
+        else {
+            for (let i = 200; i < upperBound; i += 100) {
+                linesY.push(getLine(i, style.getPropertyValue("--tableRegular")));
+            }
         }
         CanvasHelper.DrawGrid(0, 0, chartWidth - 1, chartHeight - 1, 9, 0, true, canvas, style.getPropertyValue("--tableRegular"), 1, { 5: { Color: style.getPropertyValue("--tableDistinct"), Label: "50%" } }, undefined, { Color: style.getPropertyValue("--tableBorder"), Width: 1 }, "Fuel", "Thrust", undefined, linesY);
     };
@@ -9791,9 +9804,7 @@ var EngineEditableFieldMetadata;
             }
         });
         fuelInput.addEventListener("focusin", () => { setActivePoint(container, newPoint, chartTable); });
-        fuelInput.addEventListener("focusout", () => { setActivePoint(container, null, chartTable); });
         thrustInput.addEventListener("focusin", () => { setActivePoint(container, newPoint, chartTable); });
-        thrustInput.addEventListener("focusout", () => { setActivePoint(container, null, chartTable); });
         removeButton.addEventListener("click", () => {
             removePoint(newPoint, chartTable);
             onValueUpdate();
@@ -10352,17 +10363,6 @@ class CanvasHelper {
     }
     static DrawGrid(originX, originY, sizeX, sizeY, linesX, linesY, outline, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH, styleX, styleY, styleOutline, labelX, labelY, lineOverrideX, lineOverrideY) {
         canvas.clearRect(0, 0, sizeX, sizeY);
-        if (outline) {
-            let currentColor = color;
-            let currentWidth = width;
-            if (styleOutline && styleOutline.Color) {
-                currentColor = styleOutline.Color;
-            }
-            if (styleOutline && styleOutline.Width) {
-                currentWidth = styleOutline.Width;
-            }
-            this.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
-        }
         for (let x = 1; x <= linesX; ++x) {
             let currentX = originX + (x * (originX + sizeX) / (linesX + 1));
             let currentColor = color;
@@ -10395,7 +10395,7 @@ class CanvasHelper {
         }
         if (lineOverrideX) {
             lineOverrideX.forEach(l => {
-                if (!l.Position) {
+                if (!l.Position && l.Position != 0) {
                     console.warn("Position is mandatory for line override. Skipping...");
                     return;
                 }
@@ -10415,7 +10415,7 @@ class CanvasHelper {
         }
         if (lineOverrideY) {
             lineOverrideY.forEach(l => {
-                if (!l.Position) {
+                if (!l.Position && l.Position != 0) {
                     console.warn("Position is mandatory for line override. Skipping...");
                     return;
                 }
@@ -10442,6 +10442,17 @@ class CanvasHelper {
             canvas.textBaseline = "top";
             canvas.fillText(labelY, originX + 2, originY + 2);
             canvas.textBaseline = "alphabetic";
+        }
+        if (outline) {
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleOutline && styleOutline.Color) {
+                currentColor = styleOutline.Color;
+            }
+            if (styleOutline && styleOutline.Width) {
+                currentWidth = styleOutline.Width;
+            }
+            this.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
         }
     }
 }

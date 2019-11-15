@@ -71,30 +71,6 @@ class CanvasHelper {
     ): void {
         canvas.clearRect (0, 0, sizeX, sizeY);
         
-        if (outline) {
-            let currentColor = color;
-            let currentWidth = width;
-            
-            // TS 3.7 can't come soon enough
-            if (styleOutline && styleOutline.Color) {
-                currentColor = styleOutline.Color;
-            }
-            
-            if (styleOutline && styleOutline.Width) {
-                currentWidth = styleOutline.Width;
-            }
-            
-            this.DrawRectangle (
-                originX,
-                originY,
-                originX + sizeX,
-                originY + sizeY,
-                canvas,
-                currentColor,
-                currentWidth
-            );
-        }
-        
         for (let x = 1; x <= linesX; ++x) {
             let currentX = originX + (x * (originX + sizeX) / (linesX + 1));
             let currentColor = color;
@@ -153,7 +129,7 @@ class CanvasHelper {
         
         if (lineOverrideX) {
             lineOverrideX.forEach (l => {
-                if (!l.Position) {
+                if (!l.Position && l.Position != 0) {
                     console.warn ("Position is mandatory for line override. Skipping...");
                     return; // continue;
                 }
@@ -183,7 +159,7 @@ class CanvasHelper {
         
         if (lineOverrideY) {
             lineOverrideY.forEach (l => {
-                if (!l.Position) {
+                if (!l.Position && l.Position != 0) {
                     console.warn ("Position is mandatory for line override. Skipping...");
                     return; // continue;
                 }
@@ -225,6 +201,30 @@ class CanvasHelper {
             canvas.fillText (labelY, originX + 2, originY + 2);
             
             canvas.textBaseline = "alphabetic";
+        }
+        
+        if (outline) {
+            let currentColor = color;
+            let currentWidth = width;
+            
+            // TS 3.7 can't come soon enough
+            if (styleOutline && styleOutline.Color) {
+                currentColor = styleOutline.Color;
+            }
+            
+            if (styleOutline && styleOutline.Width) {
+                currentWidth = styleOutline.Width;
+            }
+            
+            this.DrawRectangle (
+                originX,
+                originY,
+                originX + sizeX,
+                originY + sizeY,
+                canvas,
+                currentColor,
+                currentWidth
+            );
         }
         
     }

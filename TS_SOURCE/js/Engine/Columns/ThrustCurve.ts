@@ -212,6 +212,10 @@ namespace EngineEditableFieldMetadata {
             }
             
             engine.ThrustCurve.forEach (([fuel, thrust]) => {
+                // fix the 0.30000000000000004 kind of stuff for display
+                const FLOATING_POINT_FIX_ACCURACY = 8;
+                fuel = Math.round (fuel * (10 ** FLOATING_POINT_FIX_ACCURACY)) / (10 ** FLOATING_POINT_FIX_ACCURACY);
+                thrust = Math.round (thrust * (10 ** FLOATING_POINT_FIX_ACCURACY)) / (10 ** FLOATING_POINT_FIX_ACCURACY);
                 addPoint (
                     container,
                     chartTable,
@@ -231,8 +235,6 @@ namespace EngineEditableFieldMetadata {
             ).map (
                 ([fuel, thrust]) => [fuel * 100, thrust * 100]
             );
-            
-            console.log (engine.ThrustCurve);
         },
     };
     
@@ -361,9 +363,18 @@ namespace EngineEditableFieldMetadata {
         
         linesY.push (getLine (50, style.getPropertyValue ("--tableDistinct")));
         linesY.push (getLine (100, style.getPropertyValue ("--tableRed")));
+        linesY.push (getLine (150, style.getPropertyValue ("--tableRegular")));
         
-        for (let i = 200; i < upperBound; i += 100) {
-            linesY.push (getLine (i, style.getPropertyValue ("--tableRegular")));
+        if (upperBound <= 200) {
+            for (let i = 10; i < 200; i += 10) {
+                if (i == 50 || i == 100 || i == 150) { continue; }
+                
+                linesY.push (getLine (i, style.getPropertyValue ("--tableRegular")));
+            }
+        } else {
+            for (let i = 200; i < upperBound; i += 100) {
+                linesY.push (getLine (i, style.getPropertyValue ("--tableRegular")));
+            }
         }
         
         CanvasHelper.DrawGrid (
@@ -499,9 +510,9 @@ namespace EngineEditableFieldMetadata {
         });
         
         fuelInput.addEventListener ("focusin", () => { setActivePoint (container, newPoint, chartTable); });
-        fuelInput.addEventListener ("focusout", () => { setActivePoint (container, null, chartTable); });
+        // fuelInput.addEventListener ("focusout", () => { setActivePoint (container, null, chartTable); });
         thrustInput.addEventListener ("focusin", () => { setActivePoint (container, newPoint, chartTable); });
-        thrustInput.addEventListener ("focusout", () => { setActivePoint (container, null, chartTable); });
+        // thrustInput.addEventListener ("focusout", () => { setActivePoint (container, null, chartTable); });
         
         removeButton.addEventListener ("click", () => {
             removePoint (newPoint, chartTable);

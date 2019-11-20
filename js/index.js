@@ -972,6 +972,8 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-append-cache-list").addEventListener("click", AppendCacheButton_Click);
     document.getElementById("option-button-open-clipboard-list").addEventListener("click", OpenClipboardButton_Click);
     document.getElementById("option-button-append-clipboard-list").addEventListener("click", AppendClipboardButton_Click);
+    document.getElementById("option-button-open-autosave-list").addEventListener("click", OpenAutosaveButton_Click);
+    document.getElementById("option-button-append-autosave-list").addEventListener("click", AppendAutosaveButton_Click);
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
     MainEngineTable.OnSelectedItemChange = selectedEngine => {
@@ -983,6 +985,9 @@ addEventListener("DOMContentLoaded", () => {
         }
     };
     MainEngineTable.RebuildTable();
+    setInterval(() => {
+        Autosave.Save(MainEngineTable.Items, ListName);
+    }, 1000 * 60 * 2);
 });
 function NewButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to clear current list?")) {
@@ -1031,7 +1036,7 @@ function AppendUploadButton_Click() {
 }
 function OpenCacheButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
-        BrowserCacheDialog.GetEngineListData((data, newFilename) => {
+        BrowserCacheDialog.GetListFromCache((data, newFilename) => {
             if (!data) {
                 return;
             }
@@ -1049,7 +1054,7 @@ function OpenCacheButton_Click() {
     }
 }
 function AppendCacheButton_Click() {
-    BrowserCacheDialog.GetEngineListData(data => {
+    BrowserCacheDialog.GetListFromCache(data => {
         if (!data) {
             return;
         }
@@ -1105,6 +1110,39 @@ function AppendClipboardButton_Click() {
         Notifier.Warn("There was an error while parsing the string");
         return;
     }
+}
+function OpenAutosaveButton_Click() {
+    if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
+        BrowserCacheDialog.GetListFromAutosave((data, newFilename) => {
+            if (!data) {
+                return;
+            }
+            if (newFilename) {
+                ListNameDisplay.SetValue(newFilename);
+            }
+            MainEngineTable.Items = Serializer.DeserializeMany(data);
+            MainEngineTable.RebuildTable();
+            MainEngineTable.Items.forEach(e => {
+                e.EngineList = MainEngineTable.Items;
+            });
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
+        }, "Open autosave:");
+    }
+}
+function AppendAutosaveButton_Click() {
+    BrowserCacheDialog.GetListFromAutosave(data => {
+        if (!data) {
+            return;
+        }
+        let newEngines = Serializer.DeserializeMany(data);
+        newEngines.forEach(e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems(newEngines);
+        FullscreenWindows["open-box"].style.display = "none";
+        Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
+    }, "Append autosave:");
 }
 function SaveButton_Click() {
     FullscreenWindows["save-box"].style.display = "flex";
@@ -7286,7 +7324,7 @@ class BrowserCacheDialog {
         this.DialogBoxElement.style.display = "none";
         this.CurrentTransaction = null;
     }
-    static GetEngineListData(callback, message = "Browser cache") {
+    static GetListFromCache(callback, message = "Browser cache") {
         this.SetTransaction(callback);
         this.DialogBoxElement.querySelector("span").innerHTML = message;
         let container = document.getElementById("cache-box-content");
@@ -7304,7 +7342,37 @@ class BrowserCacheDialog {
             listItem.addEventListener("click", () => {
                 this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl$/, ""));
             });
+            listItem.title = i;
             listItem.innerHTML = i;
+            container.appendChild(listItem);
+        });
+    }
+    static GetListFromAutosave(callback, message = "Browser cache") {
+        this.SetTransaction(callback);
+        this.DialogBoxElement.querySelector("span").innerHTML = message;
+        let container = document.getElementById("cache-box-content");
+        container.innerHTML = "";
+        let lists = [];
+        for (let i in localStorage) {
+            if (/^(.)+\.enl.autosave$/.test(i)) {
+                lists.push(i);
+            }
+        }
+        lists = lists.sort((a, b) => a < b ? 1 : -1);
+        lists.forEach(i => {
+            let listItem = document.createElement("div");
+            listItem.classList.add("option-button");
+            listItem.addEventListener("click", () => {
+                this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl.autosave$/, ""));
+            });
+            let tmp = i.replace(/\.enl.autosave$/, "").split("-");
+            for (let i = 2; i < tmp.length; ++i) {
+                tmp[1] += `-${tmp[i]}`;
+            }
+            tmp.length = 2;
+            let time = new Date(parseInt(tmp[0]));
+            listItem.title = `@${time.toLocaleString()} | ${tmp[1]}`;
+            listItem.innerHTML = `@${time.toLocaleString()} | ${tmp[1]}`;
             container.appendChild(listItem);
         });
     }
@@ -7322,10 +7390,12 @@ class BrowserCacheDialog {
         lists = lists.sort();
         lists.forEach(i => {
             let listItem = document.createElement("div");
+            listItem.title = i;
             listItem.innerHTML = i;
             let removeButton = document.createElement("img");
             removeButton.src = "img/button/remove-cache.png";
             removeButton.title = "Remove this list from cache";
+            removeButton.style.right = "0px";
             removeButton.classList.add("option-button");
             removeButton.classList.add("cache-option-button");
             removeButton.addEventListener("click", () => {
@@ -7339,6 +7409,7 @@ class BrowserCacheDialog {
             let renameButton = document.createElement("img");
             renameButton.src = "img/button/rename-cache.png";
             renameButton.title = "Rename this list";
+            renameButton.style.right = "26px";
             renameButton.classList.add("option-button");
             renameButton.classList.add("cache-option-button");
             renameButton.addEventListener("click", () => {
@@ -7358,6 +7429,7 @@ class BrowserCacheDialog {
             let appendButton = document.createElement("img");
             appendButton.src = "img/button/append-cache.png";
             appendButton.title = "Append this list";
+            appendButton.style.right = "52px";
             appendButton.classList.add("option-button");
             appendButton.classList.add("cache-option-button");
             appendButton.addEventListener("click", () => {
@@ -7372,6 +7444,7 @@ class BrowserCacheDialog {
             let openButton = document.createElement("img");
             openButton.src = "img/button/open-cache.png";
             openButton.title = "Open this list";
+            openButton.style.right = "78px";
             openButton.classList.add("option-button");
             openButton.classList.add("cache-option-button");
             openButton.addEventListener("click", () => {
@@ -10303,6 +10376,29 @@ class AllTankDefinition {
         `);
     }
 }
+class Autosave {
+    static Save(list, name) {
+        let data = Serializer.SerializeMany(list);
+        let timestamp = new Date().getTime().toString();
+        timestamp = "0".repeat(24 - timestamp.length) + timestamp;
+        let autosaveName = `${timestamp}-${name}.enl.autosave`;
+        Store.SetBinary(autosaveName, data);
+        this.Trim();
+    }
+    static Trim() {
+        let autosaves = [];
+        for (let i in localStorage) {
+            if (/^(.)+\.enl.autosave$/.test(i)) {
+                autosaves.push(i);
+            }
+        }
+        autosaves = autosaves.sort((a, b) => a < b ? 1 : -1);
+        for (let i = autosaves.length - 1; i >= this.AUTOSAVE_LIMIT; --i) {
+            localStorage.removeItem(autosaves[i]);
+        }
+    }
+}
+Autosave.AUTOSAVE_LIMIT = 128;
 class BitConverter {
     static ByteArrayToBase64(data) {
         return btoa(String.fromCharCode.apply(null, data));
@@ -10455,6 +10551,27 @@ class CanvasHelper {
             this.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
         }
     }
+}
+function Debug_AutosaveImmediately() {
+    Autosave.Save(MainEngineTable.Items, ListName);
+}
+function Debug_LogLocalStorageUsage() {
+    let usedB = 0;
+    for (var k in localStorage) {
+        if (k == "key" ||
+            k == "getItem" ||
+            k == "setItem" ||
+            k == "removeItem" ||
+            k == "clear" ||
+            k == "length") {
+            continue;
+        }
+        usedB += (k.length + localStorage[k].length) * 2;
+    }
+    console.log(`Used bytes: ${usedB}`);
+    console.log(`Used chars: ${usedB / 2}`);
+    console.log("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
+    console.log("Maximum should be around 5MB");
 }
 class DebugLists {
     static AppendListForExhaustPreviews() {

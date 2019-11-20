@@ -243,14 +243,18 @@ span.checkbox-label {
     padding: 4px;
     box-sizing: border-box;
     background: var(--lighterGrayBackground);
-}
-
-.option-container {
-    display: flex;
+    
+    display: grid;
+    grid-template-columns: 36px 36px 36px 36px 36px 36px 36px 36px 36px auto 4px 36px 32px;
+    grid-template-rows: 32px;
+    grid-template-areas:
+        "la lb lc ld le lf lg lh li ss .  ra rb"
+    ;
 }
 
 .flex-spacer {
-    flex: auto;
+    /* Site width - padding - other grid fields */
+    max-width: calc(100vw - 8px - 396px);
     background: var(--lightGrayBackground);
     line-height: 28px;
     font-size: 20px;
@@ -260,22 +264,6 @@ span.checkbox-label {
 .option-container > img {
     width: 32px;
     height: 32px;
-}
-
-#option-container-left {
-    flex-direction: row;
-}
-
-#option-container-left > img {
-    margin-right: 4px;
-}
-
-#option-container-right {
-    flex-direction: row-reverse;
-}
-
-#option-container-right > img {
-    margin-left: 4px;
 }
 
 /**/
@@ -618,7 +606,9 @@ input.content-cell-content {
 #cache-box > div.fullscreen-content > div div {
     width: calc(100% - 4px);
     height: 32px;
+    min-height: 32px;
     
+    position: relative;
     margin: 0px 2px 2px 2px;
     
     line-height: 28px;
@@ -627,12 +617,16 @@ input.content-cell-content {
     box-sizing: border-box;
     background: var(--lightGrayBackground);
     border: var(--darkBorder) 2px solid;
+    
+    word-break: break-all;
+    white-space: pre;
+    overflow: hidden;
 }
 
 .cache-option-button {
+    position: absolute;
     width: 24px;
     height: 24px;
-    float: right;
     margin: 2px 2px 0px 0px;
 }
 

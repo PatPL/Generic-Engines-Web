@@ -149,6 +149,11 @@
                 <div>(Open/Append) list from base64 string</div>
             </div>
             <div>
+                <img id="option-button-open-autosave-list" src="img/button/autosave-open-large.png" class="option-button">
+                <img id="option-button-append-autosave-list" src="img/button/autosave-append-large.png" class="option-button">
+                <div>(Open/Append) list from autosave</div>
+            </div>
+            <div>
                 <div>(Append) You can also try drag&dropping .enl files on this website</div>
             </div>
         </div>
@@ -175,22 +180,18 @@
         </div>
     </div>
     <div class="option-container" id="option-row">
-        <div class="option-container" id="option-container-left">
-            <img id="option-button-new" title="Clear the current list" class="option-button" src="img/button/clear.png">
-            <img id="option-button-open" title="Open/Append an existing list" class="option-button" src="img/button/open.png">
-            <img id="option-button-save" title="Save current list" class="option-button" src="img/button/save.png">
-            <img id="option-button-cache" title="Open browser cache" class="option-button browser-relevant" src="img/button/cache-().png">
-            <img id="option-button-validate" title="Check current list for inconsistencies" class="option-button" src="img/button/validate.png">
-            <img id="option-button-export" title="Export current list as KSP mod" class="option-button" src="img/button/export.png">
-            <img id="option-button-duplicate" title="Duplicate selected engines" class="option-button" src="img/button/duplicate.png">
-            <img id="option-button-add" title="Add a new engine to current list" class="option-button" src="img/button/add.png">
-            <img id="option-button-remove" title="Delete selected engines from current list" class="option-button" src="img/button/remove.png">
-        </div>
-        <div class="flex-spacer" id="list-name"></div>
-        <div class="option-container" id="option-container-right">
-            <img id="option-button-settings" title="Settings" class="option-button" src="img/button/settings.png">
-            <img id="option-button-help" title="Help & About" class="option-button" src="img/button/help.png">
-        </div>
+        <img style="grid-area: la;" id="option-button-new" title="Clear the current list" class="option-button" src="img/button/clear.png">
+        <img style="grid-area: lb;" id="option-button-open" title="Open/Append an existing list" class="option-button" src="img/button/open.png">
+        <img style="grid-area: lc;" id="option-button-save" title="Save current list" class="option-button" src="img/button/save.png">
+        <img style="grid-area: ld;" id="option-button-cache" title="Open browser cache" class="option-button browser-relevant" src="img/button/cache-().png">
+        <img style="grid-area: le;" id="option-button-validate" title="Check current list for inconsistencies" class="option-button" src="img/button/validate.png">
+        <img style="grid-area: lf;" id="option-button-export" title="Export current list as KSP mod" class="option-button" src="img/button/export.png">
+        <img style="grid-area: lg;" id="option-button-duplicate" title="Duplicate selected engines" class="option-button" src="img/button/duplicate.png">
+        <img style="grid-area: lh;" id="option-button-add" title="Add a new engine to current list" class="option-button" src="img/button/add.png">
+        <img style="grid-area: li;" id="option-button-remove" title="Delete selected engines from current list" class="option-button" src="img/button/remove.png">
+        <div style="grid-area: ss;" class="flex-spacer" id="list-name"></div>
+        <img style="grid-area: ra;" id="option-button-settings" title="Settings" class="option-button" src="img/button/settings.png">
+        <img style="grid-area: rb;" id="option-button-help" title="Help & About" class="option-button" src="img/button/help.png">
     </div>
     <div id="content-container">
         <div id="list-container">

@@ -258,6 +258,8 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-append-cache-list")!.addEventListener ("click", AppendCacheButton_Click);
     document.getElementById ("option-button-open-clipboard-list")!.addEventListener ("click", OpenClipboardButton_Click);
     document.getElementById ("option-button-append-clipboard-list")!.addEventListener ("click", AppendClipboardButton_Click);
+    document.getElementById ("option-button-open-autosave-list")!.addEventListener ("click", OpenAutosaveButton_Click);
+    document.getElementById ("option-button-append-autosave-list")!.addEventListener ("click", AppendAutosaveButton_Click);
     
     MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
@@ -269,6 +271,14 @@ addEventListener ("DOMContentLoaded", () => {
         }
     };
     MainEngineTable.RebuildTable ();
+    
+    // Autosave
+    setInterval (
+        () => {
+            Autosave.Save (MainEngineTable.Items, ListName);
+        },
+        1000 * 60 * 2
+    );
     
 });
 
@@ -346,7 +356,7 @@ function AppendUploadButton_Click () {
 
 function OpenCacheButton_Click () {
     if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
-        BrowserCacheDialog.GetEngineListData ((data, newFilename) => {
+        BrowserCacheDialog.GetListFromCache ((data, newFilename) => {
             if (!data) {
                 // Maybe send a notification?
                 return;
@@ -369,7 +379,7 @@ function OpenCacheButton_Click () {
 }
 
 function AppendCacheButton_Click () {
-    BrowserCacheDialog.GetEngineListData (data => {
+    BrowserCacheDialog.GetListFromCache (data => {
         if (!data) {
             // Maybe send a notification?
             return;
@@ -436,6 +446,48 @@ function AppendClipboardButton_Click () {
             Notifier.Warn ("There was an error while parsing the string");
             return;
         }
+}
+
+function OpenAutosaveButton_Click () {
+    if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
+        BrowserCacheDialog.GetListFromAutosave ((data, newFilename) => {
+            if (!data) {
+                // Maybe send a notification?
+                return;
+            }
+            
+            if (newFilename) {
+                ListNameDisplay.SetValue (newFilename);
+            }
+            
+            MainEngineTable.Items = Serializer.DeserializeMany (data);
+            MainEngineTable.RebuildTable ();
+            MainEngineTable.Items.forEach (e => {
+                e.EngineList = MainEngineTable.Items;
+            });
+            
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
+        }, "Open autosave:");
+    }
+}
+
+function AppendAutosaveButton_Click () {
+    BrowserCacheDialog.GetListFromAutosave (data => {
+        if (!data) {
+            // Maybe send a notification?
+            return;
+        }
+        
+        let newEngines = Serializer.DeserializeMany (data);
+        newEngines.forEach (e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems (newEngines);
+        
+        FullscreenWindows["open-box"].style.display = "none";
+        Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
+    }, "Append autosave:");
 }
 
 /* /Open dialog */

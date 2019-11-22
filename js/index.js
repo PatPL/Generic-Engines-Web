@@ -7605,6 +7605,7 @@ class Engine {
             Spacer: EngineEditableFieldMetadata.Spacer,
             ID: EngineEditableFieldMetadata.ID,
             Mass: EngineEditableFieldMetadata.Mass,
+            Propulsion: EngineEditableFieldMetadata.Propulsion,
             Thrust: EngineEditableFieldMetadata.Thrust,
             AtmIsp: EngineEditableFieldMetadata.AtmIsp,
             VacIsp: EngineEditableFieldMetadata.VacIsp,
@@ -8531,6 +8532,10 @@ Engine.ColumnDefinitions = {
         Name: "Mass",
         DefaultWidth: 80,
         DisplayFlags: 0b00100
+    }, Propulsion: {
+        Name: "Propulsion",
+        DefaultWidth: 240,
+        DisplayFlags: 0b00000
     }, Thrust: {
         Name: "Vacuum thrust",
         DefaultWidth: 120,
@@ -8613,6 +8618,7 @@ Engine._ColumnSorts = {
     Active: (a, b) => Engine.RegularSort(a.Active, b.Active, a.ID, b.ID),
     ID: (a, b) => Engine.RegularSort(a.ID, b.ID),
     Labels: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.GetDisplayLabel(), b.GetDisplayLabel(), a.ID, b.ID), EngineVariant: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.EngineVariant, b.EngineVariant, a.ID, b.ID), Mass: (a, b) => Engine.RegularSort(a.GetMass(), b.GetMass(), a.ID, b.ID),
+    Propulsion: (a, b) => Engine.RegularSort(a.Thrust, b.Thrust, a.ID, b.ID),
     Thrust: (a, b) => Engine.RegularSort(a.Thrust, b.Thrust, a.ID, b.ID),
     MinThrust: (a, b) => Engine.RegularSort(a.MinThrust, b.MinThrust, a.ID, b.ID),
     AtmIsp: (a, b) => Engine.RegularSort(a.AtmIsp, b.AtmIsp, a.ID, b.ID),
@@ -9225,6 +9231,75 @@ var EngineEditableFieldMetadata;
             engine.PolyType = parseInt(selects[0].value);
             engine.MasterEngineName = selects[1].value;
             engine.RehidePolyFields(engine.ListCols);
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    EngineEditableFieldMetadata.Propulsion = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = `${Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 6)} | ${Unit.Display(engine.AtmIsp, "s", true, 3)}-${Unit.Display(engine.VacIsp, "s", true, 3)}`;
+        }, GetEditElement: () => {
+            let output = document.createElement("div");
+            output.classList.add("propulsionContainer");
+            output.classList.add("content-cell-content");
+            output.style.height = "100px";
+            output.style.padding = "0";
+            let thrustLabel = document.createElement("div");
+            let vacImpulseLabel = document.createElement("div");
+            let massFlowLabel = document.createElement("div");
+            let slImpulseLabel = document.createElement("div");
+            let thrustInput = document.createElement("input");
+            let vacImpulseInput = document.createElement("input");
+            let massFlowInput = document.createElement("input");
+            let slImpulseInput = document.createElement("input");
+            let thrustCheckbox = document.createElement("input");
+            let vacImpulseCheckbox = document.createElement("input");
+            let massFlowCheckbox = document.createElement("input");
+            let slImpulseCheckbox = document.createElement("input");
+            {
+                thrustLabel.classList.add("thrustLabel");
+                vacImpulseLabel.classList.add("vacImpulseLabel");
+                massFlowLabel.classList.add("massFlowLabel");
+                slImpulseLabel.classList.add("slImpulseLabel");
+                thrustInput.classList.add("thrustInput");
+                vacImpulseInput.classList.add("vacImpulseInput");
+                massFlowInput.classList.add("massFlowInput");
+                slImpulseInput.classList.add("slImpulseInput");
+                thrustCheckbox.classList.add("thrustCheckbox");
+                vacImpulseCheckbox.classList.add("vacImpulseCheckbox");
+                massFlowCheckbox.classList.add("massFlowCheckbox");
+                slImpulseCheckbox.classList.add("slImpulseCheckbox");
+            }
+            {
+                thrustLabel.style.gridArea = "tl";
+                vacImpulseLabel.style.gridArea = "vl";
+                massFlowLabel.style.gridArea = "ml";
+                slImpulseLabel.style.gridArea = "sl";
+                thrustInput.style.gridArea = "ti";
+                vacImpulseInput.style.gridArea = "vi";
+                massFlowInput.style.gridArea = "mi";
+                slImpulseInput.style.gridArea = "si";
+                thrustCheckbox.style.gridArea = "tc";
+                vacImpulseCheckbox.style.gridArea = "vc";
+                massFlowCheckbox.style.gridArea = "mc";
+                slImpulseCheckbox.style.gridArea = "sc";
+            }
+            {
+                thrustLabel.innerHTML = "Thrust";
+                vacImpulseLabel.innerHTML = "Vac Isp";
+                massFlowLabel.innerHTML = "Mass flow";
+                slImpulseLabel.innerHTML = "SL Isp";
+                vacImpulseLabel.classList.add("abbr");
+                vacImpulseLabel.title = "Vacuum specific impulse";
+                slImpulseLabel.classList.add("abbr");
+                slImpulseLabel.title = "Sea level specific impulse";
+            }
+            return output;
+        }, ApplyValueToEditElement: (e, engine) => {
+            e.value = Unit.Display(engine.VacIsp, "s", true);
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.VacIsp = Unit.Parse(e.value, "s");
         }
     };
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));

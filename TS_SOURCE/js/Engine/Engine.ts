@@ -26,6 +26,10 @@ class Engine implements ITableElement<Engine> {
             Name: "Mass",
             DefaultWidth: 80,
             DisplayFlags: 0b00100
+        }, Propulsion: {
+            Name: "Propulsion",
+            DefaultWidth: 240,
+            DisplayFlags: 0b00000
         }, Thrust: {
             Name: "Vacuum thrust",
             DefaultWidth: 120,
@@ -140,6 +144,7 @@ class Engine implements ITableElement<Engine> {
             a.EngineVariant, b.EngineVariant,
             a.ID, b.ID
         ), Mass: (a, b) => Engine.RegularSort (a.GetMass (), b.GetMass (), a.ID, b.ID),
+        Propulsion: (a, b) => Engine.RegularSort (a.Thrust, b.Thrust, a.ID, b.ID),
         Thrust: (a, b) => Engine.RegularSort (a.Thrust, b.Thrust, a.ID, b.ID),
         MinThrust: (a, b) => Engine.RegularSort (a.MinThrust, b.MinThrust, a.ID, b.ID),
         AtmIsp: (a, b) => Engine.RegularSort (a.AtmIsp, b.AtmIsp, a.ID, b.ID),
@@ -296,6 +301,7 @@ class Engine implements ITableElement<Engine> {
         Spacer: EngineEditableFieldMetadata.Spacer,
         ID: EngineEditableFieldMetadata.ID,
         Mass: EngineEditableFieldMetadata.Mass,
+        Propulsion: EngineEditableFieldMetadata.Propulsion,
         Thrust: EngineEditableFieldMetadata.Thrust,
         AtmIsp: EngineEditableFieldMetadata.AtmIsp,
         VacIsp: EngineEditableFieldMetadata.VacIsp,

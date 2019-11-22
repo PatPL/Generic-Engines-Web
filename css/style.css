@@ -956,3 +956,19 @@ input.content-cell-content {
 .chartTableRowButton {
     margin: 0 !important;
 }
+
+/**/
+
+.propulsionContainer {
+    display: grid;
+    
+    grid-template-columns: 120px auto 24px;
+    grid-template-rows: 24px 24px 24px 4px 24px;
+    grid-template-areas: 
+        "tl ti tc"
+        "vl vi vc"
+        "ml mi mc"
+        ".  .  . "
+        "sl si sc"
+    ;
+}

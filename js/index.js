@@ -8598,7 +8598,7 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b10100
     }, ThrustCurve: {
         Name: "Thrust curve",
-        DefaultWidth: 416,
+        DefaultWidth: 417,
         DisplayFlags: 0b00000
     }, Spacer: {
         Name: "",
@@ -9776,8 +9776,8 @@ var EngineEditableFieldMetadata;
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineEditableFieldMetadata;
 (function (EngineEditableFieldMetadata) {
-    const chartWidth = 400;
-    const chartHeight = 400;
+    let chartWidth = 400;
+    let chartHeight = 400;
     const defaultUpperBound = 150;
     let pointerIDcounter = 1;
     EngineEditableFieldMetadata.ThrustCurve = {
@@ -9786,8 +9786,16 @@ var EngineEditableFieldMetadata;
         }, GetEditElement: () => {
             let style = getComputedStyle(document.body);
             let tmp = document.createElement("div");
-            tmp.style.width = "416px";
+            tmp.style.width = "100%";
             tmp.style.height = `${417 + 232}px`;
+            new ResizeObserver(() => {
+                chartWidth = tmp.offsetWidth - 16;
+                chartBackground.width = chartWidth;
+                chartLines.width = chartWidth;
+                drawGrid(chartBackground.getContext("2d"), parseInt(upperBoundInput.value));
+                repositionPointsAfterResize(chartPoints, upperBoundInput, chartTable);
+                updateLines();
+            }).observe(tmp);
             let chartElement = document.createElement("div");
             chartElement.classList.add("chartElement");
             let chartBackground = document.createElement("canvas");

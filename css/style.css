@@ -844,7 +844,7 @@ input.content-cell-content {
 
 .chartElement {
     position: relative;
-    width: 416px;
+    width: 100%;
     height: 417px;
     
     padding: 8px;
@@ -875,7 +875,7 @@ input.content-cell-content {
     top: 8px;
     left: 8px;
     
-    width: 400px;
+    width: calc(100% - 16px);
     height: 400px;
     
     z-index: 3;

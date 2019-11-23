@@ -1,7 +1,7 @@
 namespace EngineEditableFieldMetadata {
     
-    const chartWidth = 400 as const;
-    const chartHeight = 400 as const;
+    let chartWidth = 400;
+    let chartHeight = 400;
     const defaultUpperBound = 150 as const;
     let pointerIDcounter = 1;
     
@@ -12,8 +12,22 @@ namespace EngineEditableFieldMetadata {
             let style = getComputedStyle (document.body);
             let tmp = document.createElement ("div");
             
-            tmp.style.width = "416px";
+            tmp.style.width = "100%";
             tmp.style.height = `${ /* Chart element */ 417 + /* Details element */ 232 }px`;
+            
+            // Typescript doesn't know what ResizeObserver is
+            // @ts-ignore
+            new ResizeObserver (() => {
+                chartWidth = tmp.offsetWidth - 16;
+                
+                chartBackground.width = chartWidth;
+                chartLines.width = chartWidth;
+                
+                drawGrid (chartBackground.getContext ("2d")!, parseInt (upperBoundInput.value));
+                repositionPointsAfterResize (chartPoints, upperBoundInput, chartTable);
+                
+                updateLines ();
+            }).observe (tmp);
             
             let chartElement = document.createElement ("div");
             chartElement.classList.add ("chartElement");

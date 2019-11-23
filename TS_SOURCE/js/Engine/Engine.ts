@@ -1196,11 +1196,11 @@ class Engine implements ITableElement<Engine> {
             newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0]);
             
             if (newTangent == Infinity) {
-                newTangent = 999999999;
+                newTangent = 999999;
             }
             
             if (newTangent == -Infinity) {
-                newTangent = -999999999;
+                newTangent = -999999;
             }
             
             keys += `
@@ -1308,7 +1308,7 @@ class Engine implements ITableElement<Engine> {
                 maxThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust}
                 minThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeEffectName}
-                heatProduction = 100
+                heatProduction = 10
                 massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.MasterEngineName].Cost : 0)}
@@ -1344,7 +1344,7 @@ class Engine implements ITableElement<Engine> {
                 maxThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust}
                 minThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeEffectName}
-                heatProduction = 100
+                heatProduction = 10
                 massMult = 1
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = 0

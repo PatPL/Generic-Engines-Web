@@ -37,7 +37,7 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
         return;
     }
     
-    let gravity = 9.80665;
+    let gravity = 9.8066;
     let infoPanel = document.getElementById ("info-panel")!;    
     let properties: { [id: string]: string } = {};
     

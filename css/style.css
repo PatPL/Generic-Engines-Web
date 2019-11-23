@@ -114,6 +114,8 @@ input {
     background: var(--lighterGrayBackground);
     color: var(--darkText);
     border: 1px var(--darkerBorder) solid;
+    
+    min-width: 12px;
 }
 
 button {
@@ -961,14 +963,26 @@ input.content-cell-content {
 
 .propulsionContainer {
     display: grid;
+    height: 99px;
+    padding: 0px;
+    text-align: right;
+    line-height: 23px;
     
-    grid-template-columns: 120px auto 24px;
-    grid-template-rows: 24px 24px 24px 4px 24px;
+    grid-template-columns: 87px 3px auto 24px;
+    grid-template-rows: 24px 24px 3px 24px 24px;
     grid-template-areas: 
-        "tl ti tc"
-        "vl vi vc"
-        "ml mi mc"
-        ".  .  . "
-        "sl si sc"
+        "tl .  ti tc"
+        "ml .  mi mc"
+        ".  .  .  . "
+        "vl .  vi sc"
+        "sl .  si sc"
     ;
+}
+
+.propulsionContainer input[type="checkbox"] {
+    height: 100%;
+    width: 100%;
+    
+    margin: 0;
+    cursor: pointer;
 }

@@ -805,7 +805,7 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     if (!Settings.show_info_panel) {
         return;
     }
-    let gravity = 9.80665;
+    let gravity = 9.8066;
     let infoPanel = document.getElementById("info-panel");
     let properties = {};
     let engineMass = engine.GetMass();
@@ -7606,9 +7606,6 @@ class Engine {
             ID: EngineEditableFieldMetadata.ID,
             Mass: EngineEditableFieldMetadata.Mass,
             Propulsion: EngineEditableFieldMetadata.Propulsion,
-            Thrust: EngineEditableFieldMetadata.Thrust,
-            AtmIsp: EngineEditableFieldMetadata.AtmIsp,
-            VacIsp: EngineEditableFieldMetadata.VacIsp,
             Cost: EngineEditableFieldMetadata.Cost,
             EntryCost: EngineEditableFieldMetadata.EntryCost,
             MinThrust: EngineEditableFieldMetadata.MinThrust,
@@ -8165,6 +8162,13 @@ class Engine {
         });
         return output;
     }
+    GetCumulativeEngineMassFlow() {
+        let output = 0;
+        this.GetEngineMassFlow().forEach(([_, flow]) => {
+            output += flow;
+        });
+        return output;
+    }
     GetEngineMassFlow() {
         let massFlow = this.VacIsp;
         massFlow *= 9.8066;
@@ -8534,23 +8538,11 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b00100
     }, Propulsion: {
         Name: "Propulsion",
-        DefaultWidth: 240,
-        DisplayFlags: 0b00000
-    }, Thrust: {
-        Name: "Vacuum thrust",
-        DefaultWidth: 120,
+        DefaultWidth: 300,
         DisplayFlags: 0b00000
     }, MinThrust: {
         Name: "Minimum thrust",
         DefaultWidth: 60,
-        DisplayFlags: 0b00000
-    }, AtmIsp: {
-        Name: "Sea level Isp",
-        DefaultWidth: 80,
-        DisplayFlags: 0b00000
-    }, VacIsp: {
-        Name: "Vacuum Isp",
-        DefaultWidth: 80,
         DisplayFlags: 0b00000
     }, PressureFed: {
         Name: "Pressure fed",
@@ -8619,10 +8611,7 @@ Engine._ColumnSorts = {
     ID: (a, b) => Engine.RegularSort(a.ID, b.ID),
     Labels: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.GetDisplayLabel(), b.GetDisplayLabel(), a.ID, b.ID), EngineVariant: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.EngineVariant, b.EngineVariant, a.ID, b.ID), Mass: (a, b) => Engine.RegularSort(a.GetMass(), b.GetMass(), a.ID, b.ID),
     Propulsion: (a, b) => Engine.RegularSort(a.Thrust, b.Thrust, a.ID, b.ID),
-    Thrust: (a, b) => Engine.RegularSort(a.Thrust, b.Thrust, a.ID, b.ID),
     MinThrust: (a, b) => Engine.RegularSort(a.MinThrust, b.MinThrust, a.ID, b.ID),
-    AtmIsp: (a, b) => Engine.RegularSort(a.AtmIsp, b.AtmIsp, a.ID, b.ID),
-    VacIsp: (a, b) => Engine.RegularSort(a.VacIsp, b.VacIsp, a.ID, b.ID),
     PressureFed: (a, b) => Engine.RegularSort(a.PressureFed, b.PressureFed, a.ID, b.ID),
     NeedsUllage: (a, b) => Engine.RegularSort(a.NeedsUllage, b.NeedsUllage, a.ID, b.ID),
     TechUnlockNode: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID), EntryCost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.EntryCost, b.EntryCost, a.ID, b.ID), Cost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.Cost, b.Cost, a.ID, b.ID), AlternatorPower: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.AlternatorPower, b.AlternatorPower, a.ID, b.ID), ThrustCurve: (a, b) => Engine.RegularSort(a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
@@ -9236,15 +9225,19 @@ var EngineEditableFieldMetadata;
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineEditableFieldMetadata;
 (function (EngineEditableFieldMetadata) {
+    const g = 9.8066;
+    const MF_GetFlow_t = (thrust_kN, impulse_s) => thrust_kN / g / impulse_s;
+    const MF_GetThrust_kN = (massflow_t, impulse_s) => massflow_t * g * impulse_s;
+    const MF_GetIsp_s = (thrust_kN, massflow_t) => thrust_kN / g / massflow_t;
     EngineEditableFieldMetadata.Propulsion = {
         ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = `${Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 6)} | ${Unit.Display(engine.AtmIsp, "s", true, 3)}-${Unit.Display(engine.VacIsp, "s", true, 3)}`;
+            e.innerHTML = `${Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 6)} | ${Unit.Display(engine.VacIsp, "s", true, 3)}-${Unit.Display(engine.AtmIsp, "s", true, 3)}`;
         }, GetEditElement: () => {
             let output = document.createElement("div");
-            output.classList.add("propulsionContainer");
-            output.classList.add("content-cell-content");
-            output.style.height = "100px";
-            output.style.padding = "0";
+            let container = document.createElement("div");
+            container.classList.add("propulsionContainer");
+            container.classList.add("content-cell-content");
+            output.appendChild(container);
             let thrustLabel = document.createElement("div");
             let vacImpulseLabel = document.createElement("div");
             let massFlowLabel = document.createElement("div");
@@ -9254,7 +9247,6 @@ var EngineEditableFieldMetadata;
             let massFlowInput = document.createElement("input");
             let slImpulseInput = document.createElement("input");
             let thrustCheckbox = document.createElement("input");
-            let vacImpulseCheckbox = document.createElement("input");
             let massFlowCheckbox = document.createElement("input");
             let slImpulseCheckbox = document.createElement("input");
             {
@@ -9267,7 +9259,6 @@ var EngineEditableFieldMetadata;
                 massFlowInput.classList.add("massFlowInput");
                 slImpulseInput.classList.add("slImpulseInput");
                 thrustCheckbox.classList.add("thrustCheckbox");
-                vacImpulseCheckbox.classList.add("vacImpulseCheckbox");
                 massFlowCheckbox.classList.add("massFlowCheckbox");
                 slImpulseCheckbox.classList.add("slImpulseCheckbox");
             }
@@ -9281,9 +9272,21 @@ var EngineEditableFieldMetadata;
                 massFlowInput.style.gridArea = "mi";
                 slImpulseInput.style.gridArea = "si";
                 thrustCheckbox.style.gridArea = "tc";
-                vacImpulseCheckbox.style.gridArea = "vc";
                 massFlowCheckbox.style.gridArea = "mc";
                 slImpulseCheckbox.style.gridArea = "sc";
+            }
+            {
+                container.appendChild(thrustLabel);
+                container.appendChild(vacImpulseLabel);
+                container.appendChild(massFlowLabel);
+                container.appendChild(slImpulseLabel);
+                container.appendChild(thrustInput);
+                container.appendChild(vacImpulseInput);
+                container.appendChild(massFlowInput);
+                container.appendChild(slImpulseInput);
+                container.appendChild(thrustCheckbox);
+                container.appendChild(massFlowCheckbox);
+                container.appendChild(slImpulseCheckbox);
             }
             {
                 thrustLabel.innerHTML = "Thrust";
@@ -9294,12 +9297,151 @@ var EngineEditableFieldMetadata;
                 vacImpulseLabel.title = "Vacuum specific impulse";
                 slImpulseLabel.classList.add("abbr");
                 slImpulseLabel.title = "Sea level specific impulse";
+                massFlowLabel.classList.add("abbr");
+                massFlowLabel.title = "Fuel mass consumed per second at 100% thrust";
+                thrustCheckbox.type = "checkbox";
+                massFlowCheckbox.type = "checkbox";
+                slImpulseCheckbox.type = "checkbox";
+                thrustCheckbox.title = "Lock";
+                massFlowCheckbox.title = "Lock";
+                slImpulseCheckbox.title = "Keep the Vac/SL Isp ratio";
+            }
+            {
+                const clearLock = () => {
+                    thrustInput.disabled = false;
+                    vacImpulseInput.disabled = false;
+                    massFlowInput.disabled = false;
+                    slImpulseInput.disabled = false;
+                    thrustCheckbox.checked = false;
+                    massFlowCheckbox.checked = false;
+                };
+                thrustCheckbox.addEventListener("change", () => {
+                    if (thrustCheckbox.checked) {
+                        thrustInput.disabled = true;
+                        vacImpulseInput.disabled = false;
+                        massFlowInput.disabled = false;
+                        slImpulseInput.disabled = false;
+                        massFlowCheckbox.checked = false;
+                    }
+                    else {
+                        clearLock();
+                    }
+                });
+                massFlowCheckbox.addEventListener("change", () => {
+                    if (massFlowCheckbox.checked) {
+                        thrustInput.disabled = false;
+                        vacImpulseInput.disabled = false;
+                        massFlowInput.disabled = true;
+                        slImpulseInput.disabled = false;
+                        thrustCheckbox.checked = false;
+                    }
+                    else {
+                        clearLock();
+                    }
+                });
+            }
+            {
+                const getCurrentInputValues = () => ({
+                    thrust: Unit.Parse(thrustInput.value, "kN"),
+                    vacIsp: Unit.Parse(vacImpulseInput.value, "s"),
+                    massFlow: Unit.Parse(massFlowInput.value, "t"),
+                    slIsp: Unit.Parse(slImpulseInput.value, "s")
+                });
+                const setDerivedThrust = () => {
+                    let currentValues = getCurrentInputValues();
+                    thrustInput.value = Unit.Display(MF_GetThrust_kN(currentValues.massFlow, currentValues.vacIsp), "kN", Settings.classic_unit_display);
+                };
+                const setDerivedIsp = () => {
+                    let currentValues = getCurrentInputValues();
+                    vacImpulseInput.value = Unit.Display(MF_GetIsp_s(currentValues.thrust, currentValues.massFlow), "s", true);
+                    handlePossibleIspChange();
+                };
+                const setDerivedMassFlow = () => {
+                    let currentValues = getCurrentInputValues();
+                    massFlowInput.value = Unit.Display(MF_GetFlow_t(currentValues.thrust, currentValues.vacIsp), "t", Settings.classic_unit_display);
+                };
+                const handlePossibleIspChange = () => {
+                    let currentValues = getCurrentInputValues();
+                    let previousVacIsp = Unit.Parse(vacImpulseInput.getAttribute("previousValue"), "s");
+                    let previousSLIsp = Unit.Parse(slImpulseInput.getAttribute("previousValue"), "s");
+                    if (slImpulseCheckbox.checked && currentValues.vacIsp && currentValues.slIsp) {
+                        if (currentValues.vacIsp != previousVacIsp) {
+                            slImpulseInput.value = Unit.Display(previousSLIsp * currentValues.vacIsp / previousVacIsp, "s", true);
+                        }
+                        else if (currentValues.slIsp != previousSLIsp) {
+                            vacImpulseInput.value = Unit.Display(previousVacIsp * currentValues.slIsp / previousSLIsp, "s", true);
+                        }
+                    }
+                    if (currentValues.vacIsp && currentValues.slIsp) {
+                        vacImpulseInput.setAttribute("previousValue", vacImpulseInput.value);
+                        slImpulseInput.setAttribute("previousValue", slImpulseInput.value);
+                    }
+                };
+                thrustInput.addEventListener("input", () => {
+                    if (massFlowCheckbox.checked) {
+                        setDerivedIsp();
+                    }
+                    else {
+                        setDerivedMassFlow();
+                    }
+                });
+                vacImpulseInput.addEventListener("input", () => {
+                    if (massFlowCheckbox.checked) {
+                        setDerivedThrust();
+                    }
+                    else {
+                        setDerivedMassFlow();
+                    }
+                    handlePossibleIspChange();
+                });
+                massFlowInput.addEventListener("input", () => {
+                    if (thrustCheckbox.checked) {
+                        setDerivedIsp();
+                    }
+                    else {
+                        setDerivedThrust();
+                    }
+                });
+                slImpulseInput.addEventListener("input", () => {
+                    handlePossibleIspChange();
+                    if (massFlowCheckbox.checked) {
+                        setDerivedThrust();
+                    }
+                    else {
+                        setDerivedMassFlow();
+                    }
+                    handlePossibleIspChange();
+                });
             }
             return output;
         }, ApplyValueToEditElement: (e, engine) => {
-            e.value = Unit.Display(engine.VacIsp, "s", true);
+            let thrustInput = e.querySelector(".thrustInput");
+            let vacImpulseInput = e.querySelector(".vacImpulseInput");
+            let massFlowInput = e.querySelector(".massFlowInput");
+            let slImpulseInput = e.querySelector(".slImpulseInput");
+            let thrustCheckbox = e.querySelector(".thrustCheckbox");
+            let massFlowCheckbox = e.querySelector(".massFlowCheckbox");
+            let slImpulseCheckbox = e.querySelector(".slImpulseCheckbox");
+            thrustCheckbox.checked = false;
+            massFlowCheckbox.checked = false;
+            slImpulseCheckbox.checked = false;
+            thrustInput.disabled = false;
+            vacImpulseInput.disabled = false;
+            massFlowInput.disabled = false;
+            slImpulseInput.disabled = false;
+            thrustInput.value = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display);
+            vacImpulseInput.value = Unit.Display(engine.VacIsp, "s", true);
+            massFlowInput.value = Unit.Display(MF_GetFlow_t(engine.Thrust, engine.VacIsp), "t", Settings.classic_unit_display);
+            slImpulseInput.value = Unit.Display(engine.AtmIsp, "s", true);
+            vacImpulseInput.setAttribute("previousValue", vacImpulseInput.value);
+            slImpulseInput.setAttribute("previousValue", slImpulseInput.value);
         }, ApplyChangesToValue: (e, engine) => {
-            engine.VacIsp = Unit.Parse(e.value, "s");
+            let thrustInput = e.querySelector(".thrustInput");
+            let vacImpulseInput = e.querySelector(".vacImpulseInput");
+            let slImpulseInput = e.querySelector(".slImpulseInput");
+            engine.Thrust = Unit.Parse(thrustInput.value, "kN");
+            engine.VacIsp = Unit.Parse(vacImpulseInput.value, "s");
+            engine.AtmIsp = Unit.Parse(slImpulseInput.value, "s");
         }
     };
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));

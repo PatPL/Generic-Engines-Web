@@ -28,23 +28,11 @@ class Engine implements ITableElement<Engine> {
             DisplayFlags: 0b00100
         }, Propulsion: {
             Name: "Propulsion",
-            DefaultWidth: 240,
-            DisplayFlags: 0b00000
-        }, Thrust: {
-            Name: "Vacuum thrust",
-            DefaultWidth: 120,
+            DefaultWidth: 300,
             DisplayFlags: 0b00000
         }, MinThrust: {
             Name: "Minimum thrust",
             DefaultWidth: 60,
-            DisplayFlags: 0b00000
-        }, AtmIsp: {
-            Name: "Sea level Isp",
-            DefaultWidth: 80,
-            DisplayFlags: 0b00000
-        }, VacIsp: {
-            Name: "Vacuum Isp",
-            DefaultWidth: 80,
             DisplayFlags: 0b00000
         }, PressureFed: {
             Name: "Pressure fed",
@@ -145,10 +133,7 @@ class Engine implements ITableElement<Engine> {
             a.ID, b.ID
         ), Mass: (a, b) => Engine.RegularSort (a.GetMass (), b.GetMass (), a.ID, b.ID),
         Propulsion: (a, b) => Engine.RegularSort (a.Thrust, b.Thrust, a.ID, b.ID),
-        Thrust: (a, b) => Engine.RegularSort (a.Thrust, b.Thrust, a.ID, b.ID),
         MinThrust: (a, b) => Engine.RegularSort (a.MinThrust, b.MinThrust, a.ID, b.ID),
-        AtmIsp: (a, b) => Engine.RegularSort (a.AtmIsp, b.AtmIsp, a.ID, b.ID),
-        VacIsp: (a, b) => Engine.RegularSort (a.VacIsp, b.VacIsp, a.ID, b.ID),
         PressureFed: (a, b) => Engine.RegularSort (a.PressureFed, b.PressureFed, a.ID, b.ID),
         NeedsUllage: (a, b) => Engine.RegularSort (a.NeedsUllage, b.NeedsUllage, a.ID, b.ID),
         TechUnlockNode: (a, b) => Engine.RegularSort (
@@ -302,9 +287,6 @@ class Engine implements ITableElement<Engine> {
         ID: EngineEditableFieldMetadata.ID,
         Mass: EngineEditableFieldMetadata.Mass,
         Propulsion: EngineEditableFieldMetadata.Propulsion,
-        Thrust: EngineEditableFieldMetadata.Thrust,
-        AtmIsp: EngineEditableFieldMetadata.AtmIsp,
-        VacIsp: EngineEditableFieldMetadata.VacIsp,
         Cost: EngineEditableFieldMetadata.Cost,
         EntryCost: EngineEditableFieldMetadata.EntryCost,
         MinThrust: EngineEditableFieldMetadata.MinThrust,
@@ -947,6 +929,19 @@ class Engine implements ITableElement<Engine> {
             `;
             
             firstPropellant = false;
+        });
+        
+        return output;
+    }
+    
+    /**
+     * Returns the mass flow in t/s
+     */
+    public GetCumulativeEngineMassFlow (): number {
+        let output = 0;
+        
+        this.GetEngineMassFlow ().forEach (([_, flow]) => {
+            output += flow;
         });
         
         return output;

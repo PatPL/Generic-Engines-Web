@@ -1193,7 +1193,16 @@ class Engine implements ITableElement<Engine> {
         this.ThrustCurve.push ([Number.MIN_VALUE, this.ThrustCurve[this.ThrustCurve.length - 1][1]]);
         
         for (let i = 0; i < this.ThrustCurve.length - 1; ++i) {
-            newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0])
+            newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0]);
+            
+            if (newTangent == Infinity) {
+                newTangent = 999999999;
+            }
+            
+            if (newTangent == -Infinity) {
+                newTangent = -999999999;
+            }
+            
             keys += `
                 key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
             `;

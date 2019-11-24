@@ -225,11 +225,11 @@ namespace EngineEditableFieldMetadata {
                 );
             }
             
-            engine.ThrustCurve.forEach (([fuel, thrust]) => {
+            for (let i = 0; i < engine.ThrustCurve.length; ++i) {
                 // fix the 0.30000000000000004 kind of stuff for display
                 const FLOATING_POINT_FIX_ACCURACY = 8;
-                fuel = Math.round (fuel * (10 ** FLOATING_POINT_FIX_ACCURACY)) / (10 ** FLOATING_POINT_FIX_ACCURACY);
-                thrust = Math.round (thrust * (10 ** FLOATING_POINT_FIX_ACCURACY)) / (10 ** FLOATING_POINT_FIX_ACCURACY);
+                let fuel = Math.round (engine.ThrustCurve[i][0] * (10 ** FLOATING_POINT_FIX_ACCURACY)) / (10 ** FLOATING_POINT_FIX_ACCURACY);
+                let thrust = Math.round (engine.ThrustCurve[i][1] * (10 ** FLOATING_POINT_FIX_ACCURACY)) / (10 ** FLOATING_POINT_FIX_ACCURACY);
                 addPoint (
                     container,
                     chartTable,
@@ -239,7 +239,7 @@ namespace EngineEditableFieldMetadata {
                     updateLines,
                     upperBoundInput
                 );
-            });
+            }
             
             updateLines ();
         }, ApplyChangesToValue: (e, engine) => {
@@ -262,7 +262,7 @@ namespace EngineEditableFieldMetadata {
         updateTableRowInput: boolean
     ) => {
         if (xyIsValue) {
-            let xPos = x * chartWidth / 100;
+            let xPos = chartWidth - x * chartWidth / 100;
             let yPos = chartHeight - y * chartHeight / parseInt (upperBoundInput.value);
             
             point.style.left = `${ xPos - pointRadius }px`;
@@ -276,7 +276,7 @@ namespace EngineEditableFieldMetadata {
             point.style.left = `${ x - pointRadius }px`;
             point.style.top = `${ y - pointRadius }px`;
             
-            let actualValueX = (100 * (x) / chartWidth);
+            let actualValueX = (100 - 100 * (x) / chartWidth);
             let actualValueY = ((chartHeight - y) * parseInt (upperBoundInput.value) / chartHeight);
             
             point.setAttribute ("valueX", actualValueX.toString ());
@@ -323,7 +323,7 @@ namespace EngineEditableFieldMetadata {
         });
         
         rows.sort ((a, b) =>  {
-            let output = a[1] - b[1];
+            let output = b[1] - a[1];
             
             if (output == 0) {
                 output = parseInt (a[0].getAttribute ("pointID")!) - parseInt (b[0].getAttribute ("pointID")!)
@@ -396,7 +396,11 @@ namespace EngineEditableFieldMetadata {
             chartWidth - 1, chartHeight - 1,
             9, 0, true,
             canvas, style.getPropertyValue ("--tableRegular"), 1,
-            { 5: { Color: style.getPropertyValue ("--tableDistinct"), Label: "50%" } },
+            {
+                2: { Color: style.getPropertyValue ("--tableRegular"), Label: "80%" },
+                5: { Color: style.getPropertyValue ("--tableDistinct"), Label: "50%" },
+                8: { Color: style.getPropertyValue ("--tableRegular"), Label: "20%" }
+            },
             undefined,
             { Color: style.getPropertyValue ("--tableBorder"), Width: 1 },
             "Fuel", "Thrust",
@@ -592,12 +596,13 @@ namespace EngineEditableFieldMetadata {
             e.stopImmediatePropagation ();
         });
         
-        ++pointerIDcounter
+        ++pointerIDcounter;
     }
     
     function getCurve (pointContainer: HTMLElement, upperBound: number): [number, number][] {
         let pointElements = pointContainer.querySelectorAll<HTMLDivElement> ("div.chartPoint");
-        let points: [boolean, number, number][] = [];
+        let points: [boolean, number, number, number][] = [];
+        let finalPoints: [number, number, number][] = [];
         let output: [number, number][] = [];
         
         pointElements.forEach (e => {
@@ -605,33 +610,43 @@ namespace EngineEditableFieldMetadata {
                 points.push ([
                     true,
                     parseFloat (e.getAttribute ("valueX")!),
-                    parseFloat (e.getAttribute ("valueY")!)
+                    parseFloat (e.getAttribute ("valueY")!),
+                    parseInt (e.getAttribute ("pointID")!)
                 ]);
             } else {
                 points.push ([
                     false,
                     parseInt (e.style.left!),
-                    parseInt (e.style.top!)
+                    parseInt (e.style.top!),
+                    parseInt (e.getAttribute ("pointID")!)
                 ]);
             }
         });
         
-        points.forEach (([final, rawFuel, rawThrust]) => {
+        points.forEach (([final, rawFuel, rawThrust, pointID]) => {
             if (final) {
-                output.push ([
+                finalPoints.push ([
                     rawFuel / 100,
-                    rawThrust / 100
+                    rawThrust / 100,
+                    pointID
                 ]);
                 return; // continue
             }
             
-            output.push ([
+            finalPoints.push ([
                 (rawFuel + pointRadius) / chartWidth,
-                (1 - (rawThrust + pointRadius) / chartHeight) * upperBound / 100
+                (1 - (rawThrust + pointRadius) / chartHeight) * upperBound / 100,
+                pointID
             ]);
         });
         
-        output = output.sort ((a, b) => a[0] - b[0]);
+        output = finalPoints.sort ((a, b) => {
+            if (a[0] - b[0] != 0) {
+                return b[0] - a[0];
+            } else {
+                return a[2] - b[2];
+            }
+        }).map (([fuel, thrust, _]) => [fuel, thrust]);
         
         return output;
     }
@@ -655,7 +670,7 @@ namespace EngineEditableFieldMetadata {
             lineChart.moveTo (0, chartHeight - points[0][1] * chartHeight / (upperBound / 100));
             
             for (let i = 0; i < points.length; ++i) {
-                lineChart.lineTo (points [i][0] * chartWidth, chartHeight - points[i][1] * chartHeight / (upperBound / 100));
+                lineChart.lineTo (chartWidth - points [i][0] * chartWidth, chartHeight - points[i][1] * chartHeight / (upperBound / 100));
             }
             
             lineChart.lineTo (chartWidth, chartHeight - points[points.length - 1][1] * chartHeight / (upperBound / 100));

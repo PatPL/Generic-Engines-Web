@@ -637,7 +637,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.2 Dev";
+Version.CurrentVersion = "Web.0.9.2";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -8226,7 +8226,7 @@ class Engine {
         if (thrustCurve.length == 1) {
             return 100 / thrustCurve[0][1];
         }
-        let curve = thrustCurve.sort((a, b) => b[0] - a[0]);
+        let curve = thrustCurve;
         let ranges = [];
         let previousFuelPoint = 100;
         let previousThrustPoint = curve[0][1];
@@ -8336,9 +8336,6 @@ class Engine {
         }
     }
     GetThrustCurveConfig() {
-        this.ThrustCurve = this.ThrustCurve.sort((a, b) => {
-            return b[0] - a[0];
-        });
         if (this.ThrustCurve.length == 0) {
             return "";
         }
@@ -8346,12 +8343,31 @@ class Engine {
         let lastTangent = 0;
         let newTangent = 0;
         this.ThrustCurve.push([Number.MIN_VALUE, this.ThrustCurve[this.ThrustCurve.length - 1][1]]);
+        const antiSquareOffsetDelta = -0.0001;
+        let antiSquareOffset = 0;
+        let wasSquare = false;
+        let isSquare = false;
         for (let i = 0; i < this.ThrustCurve.length - 1; ++i) {
-            newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0]);
+            let deltaThrust = this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1];
+            let deltaFuel = (this.ThrustCurve[i + 1][0] + antiSquareOffset) - (this.ThrustCurve[i][0] + antiSquareOffset);
+            if (deltaFuel == 0) {
+                isSquare = true;
+                deltaFuel = (this.ThrustCurve[i + 1][0] + antiSquareOffset) - (this.ThrustCurve[i][0] + antiSquareOffset + antiSquareOffsetDelta);
+            }
+            else {
+                isSquare = false;
+            }
+            newTangent = deltaThrust / deltaFuel;
             keys += `
-                key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
+                key = ${(this.ThrustCurve[i][0] + antiSquareOffset) / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
             `;
             lastTangent = newTangent;
+            if (isSquare) {
+                antiSquareOffset += antiSquareOffsetDelta;
+            }
+            if (!isSquare && wasSquare) {
+                antiSquareOffset = 0;
+            }
         }
         this.ThrustCurve.pop();
         return `
@@ -8449,7 +8465,7 @@ class Engine {
                 maxThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust}
                 minThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeEffectName}
-                heatProduction = 100
+                heatProduction = 10
                 massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.MasterEngineName].Cost : 0)}
@@ -8484,7 +8500,7 @@ class Engine {
                 maxThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust}
                 minThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.ExhaustPlumeID).PlumeEffectName}
-                heatProduction = 100
+                heatProduction = 10
                 massMult = 1
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = 0
@@ -9938,12 +9954,12 @@ var EngineEditableFieldMetadata;
             const updateLines = () => {
                 updateLineChart(chartLines.getContext("2d"), getCurve(container, parseInt(upperBoundInput.value)), style.getPropertyValue("--tableLine"), parseInt(upperBoundInput.value));
             };
-            engine.ThrustCurve.forEach(([fuel, thrust]) => {
+            for (let i = 0; i < engine.ThrustCurve.length; ++i) {
                 const FLOATING_POINT_FIX_ACCURACY = 8;
-                fuel = Math.round(fuel * (Math.pow(10, FLOATING_POINT_FIX_ACCURACY))) / (Math.pow(10, FLOATING_POINT_FIX_ACCURACY));
-                thrust = Math.round(thrust * (Math.pow(10, FLOATING_POINT_FIX_ACCURACY))) / (Math.pow(10, FLOATING_POINT_FIX_ACCURACY));
+                let fuel = Math.round(engine.ThrustCurve[i][0] * (Math.pow(10, FLOATING_POINT_FIX_ACCURACY))) / (Math.pow(10, FLOATING_POINT_FIX_ACCURACY));
+                let thrust = Math.round(engine.ThrustCurve[i][1] * (Math.pow(10, FLOATING_POINT_FIX_ACCURACY))) / (Math.pow(10, FLOATING_POINT_FIX_ACCURACY));
                 addPoint(container, chartTable, fuel, thrust, true, updateLines, upperBoundInput);
-            });
+            }
             updateLines();
         }, ApplyChangesToValue: (e, engine) => {
             engine.ThrustCurve = getCurve(e.querySelector(".chartPoints"), parseInt(e.querySelector(".upperBoundInput").value)).map(([fuel, thrust]) => [fuel * 100, thrust * 100]);
@@ -9951,7 +9967,7 @@ var EngineEditableFieldMetadata;
     };
     const movePoint = (point, x, y, xyIsValue, upperBoundInput, chartTableRow, updateTableRowInput) => {
         if (xyIsValue) {
-            let xPos = x * chartWidth / 100;
+            let xPos = chartWidth - x * chartWidth / 100;
             let yPos = chartHeight - y * chartHeight / parseInt(upperBoundInput.value);
             point.style.left = `${xPos - pointRadius}px`;
             point.style.top = `${yPos - pointRadius}px`;
@@ -9962,7 +9978,7 @@ var EngineEditableFieldMetadata;
         else {
             point.style.left = `${x - pointRadius}px`;
             point.style.top = `${y - pointRadius}px`;
-            let actualValueX = (100 * (x) / chartWidth);
+            let actualValueX = (100 - 100 * (x) / chartWidth);
             let actualValueY = ((chartHeight - y) * parseInt(upperBoundInput.value) / chartHeight);
             point.setAttribute("valueX", actualValueX.toString());
             point.setAttribute("valueY", actualValueY.toString());
@@ -9989,7 +10005,7 @@ var EngineEditableFieldMetadata;
             rows.push([r, value]);
         });
         rows.sort((a, b) => {
-            let output = a[1] - b[1];
+            let output = b[1] - a[1];
             if (output == 0) {
                 output = parseInt(a[0].getAttribute("pointID")) - parseInt(b[0].getAttribute("pointID"));
             }
@@ -10036,7 +10052,11 @@ var EngineEditableFieldMetadata;
                 linesY.push(getLine(i, style.getPropertyValue("--tableRegular")));
             }
         }
-        CanvasHelper.DrawGrid(0, 0, chartWidth - 1, chartHeight - 1, 9, 0, true, canvas, style.getPropertyValue("--tableRegular"), 1, { 5: { Color: style.getPropertyValue("--tableDistinct"), Label: "50%" } }, undefined, { Color: style.getPropertyValue("--tableBorder"), Width: 1 }, "Fuel", "Thrust", undefined, linesY);
+        CanvasHelper.DrawGrid(0, 0, chartWidth - 1, chartHeight - 1, 9, 0, true, canvas, style.getPropertyValue("--tableRegular"), 1, {
+            2: { Color: style.getPropertyValue("--tableRegular"), Label: "80%" },
+            5: { Color: style.getPropertyValue("--tableDistinct"), Label: "50%" },
+            8: { Color: style.getPropertyValue("--tableRegular"), Label: "20%" }
+        }, undefined, { Color: style.getPropertyValue("--tableBorder"), Width: 1 }, "Fuel", "Thrust", undefined, linesY);
     };
     const setActivePoint = (container, activePoint, chartTable) => {
         if (activePoint && activePoint.parentElement != container) {
@@ -10138,37 +10158,49 @@ var EngineEditableFieldMetadata;
     function getCurve(pointContainer, upperBound) {
         let pointElements = pointContainer.querySelectorAll("div.chartPoint");
         let points = [];
+        let finalPoints = [];
         let output = [];
         pointElements.forEach(e => {
             if (e.hasAttribute("valueX") && e.hasAttribute("valueY")) {
                 points.push([
                     true,
                     parseFloat(e.getAttribute("valueX")),
-                    parseFloat(e.getAttribute("valueY"))
+                    parseFloat(e.getAttribute("valueY")),
+                    parseInt(e.getAttribute("pointID"))
                 ]);
             }
             else {
                 points.push([
                     false,
                     parseInt(e.style.left),
-                    parseInt(e.style.top)
+                    parseInt(e.style.top),
+                    parseInt(e.getAttribute("pointID"))
                 ]);
             }
         });
-        points.forEach(([final, rawFuel, rawThrust]) => {
+        points.forEach(([final, rawFuel, rawThrust, pointID]) => {
             if (final) {
-                output.push([
+                finalPoints.push([
                     rawFuel / 100,
-                    rawThrust / 100
+                    rawThrust / 100,
+                    pointID
                 ]);
                 return;
             }
-            output.push([
+            finalPoints.push([
                 (rawFuel + pointRadius) / chartWidth,
-                (1 - (rawThrust + pointRadius) / chartHeight) * upperBound / 100
+                (1 - (rawThrust + pointRadius) / chartHeight) * upperBound / 100,
+                pointID
             ]);
         });
-        output = output.sort((a, b) => a[0] - b[0]);
+        output = finalPoints.sort((a, b) => {
+            if (a[0] - b[0] != 0) {
+                return b[0] - a[0];
+            }
+            else {
+                return a[2] - b[2];
+            }
+        }).map(([fuel, thrust, _]) => [fuel, thrust]);
         return output;
     }
     const updateLineChart = (lineChart, points, color, upperBound) => {
@@ -10183,7 +10215,7 @@ var EngineEditableFieldMetadata;
         else {
             lineChart.moveTo(0, chartHeight - points[0][1] * chartHeight / (upperBound / 100));
             for (let i = 0; i < points.length; ++i) {
-                lineChart.lineTo(points[i][0] * chartWidth, chartHeight - points[i][1] * chartHeight / (upperBound / 100));
+                lineChart.lineTo(chartWidth - points[i][0] * chartWidth, chartHeight - points[i][1] * chartHeight / (upperBound / 100));
             }
             lineChart.lineTo(chartWidth, chartHeight - points[points.length - 1][1] * chartHeight / (upperBound / 100));
         }
@@ -11102,7 +11134,7 @@ class Exporter {
                     ignitionThreshold = 0.1
                     minThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
                     maxThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust}
-                    heatProduction = 180
+                    heatProduction = 10
                     EngineType = ${engine.EngineTypeConfig()}
                     exhaustDamageDistanceOffset = 0.79
                     useThrustCurve = ${engine.ThrustCurve.length > 0}
@@ -11132,7 +11164,7 @@ class Exporter {
                     ignitionThreshold = 0.1
                     minThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
                     maxThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust}
-                    heatProduction = 180
+                    heatProduction = 10
                     EngineType = ${engine.EngineTypeConfig()}
                     exhaustDamageDistanceOffset = 0.79
                     useThrustCurve = ${engine.ThrustCurve.length > 0}
@@ -11165,7 +11197,7 @@ class Exporter {
                     ignitionThreshold = 0.1
                     minThrust = ${engine.Thrust * engine.MinThrust / 100}
                     maxThrust = ${engine.Thrust}
-                    heatProduction = 180
+                    heatProduction = 10
                     EngineType = ${engine.EngineTypeConfig()}
                     exhaustDamageDistanceOffset = 0.79
                     useThrustCurve = ${engine.ThrustCurve.length > 0}

@@ -1040,8 +1040,7 @@ class Engine implements ITableElement<Engine> {
         // 
         // First, define ranges, and their a, b values
         
-        // The curve has to be sorted descending by fuel%
-        let curve = thrustCurve.sort ((a, b) => b[0] - a[0]);
+        let curve = thrustCurve;
         let ranges: [number, number, number, number][] = [];
         
         let previousFuelPoint = 100;
@@ -1179,10 +1178,6 @@ class Engine implements ITableElement<Engine> {
     }
     
     public GetThrustCurveConfig (): string {
-        this.ThrustCurve = this.ThrustCurve.sort ((a, b) => {
-            return b[0] - a[0];
-        });
-        
         if (this.ThrustCurve.length == 0) {
             return "";
         }
@@ -1192,21 +1187,36 @@ class Engine implements ITableElement<Engine> {
         let newTangent: number = 0;
         this.ThrustCurve.push ([Number.MIN_VALUE, this.ThrustCurve[this.ThrustCurve.length - 1][1]]);
         
+        const antiSquareOffsetDelta = -0.0001;
+        let antiSquareOffset = 0;
+        let wasSquare = false;
+        let isSquare = false;
         for (let i = 0; i < this.ThrustCurve.length - 1; ++i) {
-            newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0]);
+            let deltaThrust = this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1];
+            let deltaFuel = (this.ThrustCurve[i + 1][0] + antiSquareOffset) - (this.ThrustCurve[i][0] + antiSquareOffset);
             
-            if (newTangent == Infinity) {
-                newTangent = 999999;
+            if (deltaFuel == 0) {
+                isSquare = true;
+                deltaFuel = (this.ThrustCurve[i + 1][0] + antiSquareOffset) - (this.ThrustCurve[i][0] + antiSquareOffset + antiSquareOffsetDelta);
+            } else {
+                isSquare = false;
             }
             
-            if (newTangent == -Infinity) {
-                newTangent = -999999;
-            }
+            newTangent = deltaThrust / deltaFuel;
             
             keys += `
-                key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
+                key = ${(this.ThrustCurve[i][0] + antiSquareOffset) / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
             `;
+            
             lastTangent = newTangent;
+            
+            if (isSquare) {
+                antiSquareOffset += antiSquareOffsetDelta;
+            }
+            
+            if (!isSquare && wasSquare) {
+                antiSquareOffset = 0;
+            }
         }
         
         this.ThrustCurve.pop ();

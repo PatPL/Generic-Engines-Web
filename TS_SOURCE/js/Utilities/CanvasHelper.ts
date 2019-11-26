@@ -176,7 +176,7 @@ class CanvasHelper {
                 }
                 
                 if (l.Label) {
-                    canvas.fillText (l.Label!, 0, l.Position - 1);
+                    canvas.fillText (l.Label!, 1, l.Position - 1);
                 }
                 
                 this.DrawLine (

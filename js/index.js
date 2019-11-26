@@ -10781,7 +10781,7 @@ class CanvasHelper {
                     currentWidth = l.Width;
                 }
                 if (l.Label) {
-                    canvas.fillText(l.Label, 0, l.Position - 1);
+                    canvas.fillText(l.Label, 1, l.Position - 1);
                 }
                 this.DrawLine(0, l.Position, sizeX, l.Position, canvas, currentColor, currentWidth);
             });

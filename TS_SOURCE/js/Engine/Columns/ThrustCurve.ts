@@ -480,7 +480,7 @@ namespace EngineEditableFieldMetadata {
             <td><input class="chartTableRowInput content-cell-content"></td>
             <td><input class="chartTableRowInput content-cell-content"></td>
             <td style="font-size: 0;">
-                <img src="img/button/remove-mid.png" class="chartTableRowButton medium-button option-button">
+                <img src="svg/button/remove-mid.svg" class="chartTableRowButton medium-button option-button">
             </td>
         `;
         

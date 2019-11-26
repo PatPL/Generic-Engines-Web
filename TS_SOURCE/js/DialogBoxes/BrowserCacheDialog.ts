@@ -129,7 +129,7 @@ class BrowserCacheDialog {
             listItem.innerHTML = i;
             
             let removeButton = document.createElement ("img");
-            removeButton.src = "img/button/remove-cache.png";
+            removeButton.src = "svg/button/remove-cache.svg";
             removeButton.title = "Remove this list from cache";
             removeButton.style.right = "0px";
             removeButton.classList.add ("option-button");
@@ -144,7 +144,7 @@ class BrowserCacheDialog {
             listItem.appendChild (removeButton);
             
             let renameButton = document.createElement ("img");
-            renameButton.src = "img/button/rename-cache.png";
+            renameButton.src = "svg/button/rename-cache.svg";
             renameButton.title = "Rename this list";
             renameButton.style.right = "26px";
             renameButton.classList.add ("option-button");
@@ -167,7 +167,7 @@ class BrowserCacheDialog {
             listItem.appendChild (renameButton);
             
             let appendButton = document.createElement ("img");
-            appendButton.src = "img/button/append-cache.png";
+            appendButton.src = "svg/button/append-cache.svg";
             appendButton.title = "Append this list";
             appendButton.style.right = "52px";
             appendButton.classList.add ("option-button");
@@ -186,7 +186,7 @@ class BrowserCacheDialog {
             listItem.appendChild (appendButton);
             
             let openButton = document.createElement ("img");
-            openButton.src = "img/button/open-cache.png";
+            openButton.src = "svg/button/open-cache.svg";
             openButton.title = "Open this list";
             openButton.style.right = "78px";
             openButton.classList.add ("option-button");

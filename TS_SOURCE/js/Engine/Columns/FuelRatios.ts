@@ -57,8 +57,8 @@ namespace EngineEditableFieldMetadata {
             `;
             
             grid.innerHTML = `
-                <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
-                <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
+                <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="svg/button/add-mini.svg"></div>
+                <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="svg/button/remove-mini.svg"></div>
                 <div class="content-cell-content" style="grid-area: c;"></div>
                 <div class="content-cell-content" style="grid-area: d; overflow: auto;"><table><tr><th style="width: 65%;">Fuel</th><th style="width: 35%;">Ratio</th></tr></table></div>
             `;

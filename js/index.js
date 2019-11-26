@@ -7393,7 +7393,7 @@ class BrowserCacheDialog {
             listItem.title = i;
             listItem.innerHTML = i;
             let removeButton = document.createElement("img");
-            removeButton.src = "img/button/remove-cache.png";
+            removeButton.src = "svg/button/remove-cache.svg";
             removeButton.title = "Remove this list from cache";
             removeButton.style.right = "0px";
             removeButton.classList.add("option-button");
@@ -7407,7 +7407,7 @@ class BrowserCacheDialog {
             });
             listItem.appendChild(removeButton);
             let renameButton = document.createElement("img");
-            renameButton.src = "img/button/rename-cache.png";
+            renameButton.src = "svg/button/rename-cache.svg";
             renameButton.title = "Rename this list";
             renameButton.style.right = "26px";
             renameButton.classList.add("option-button");
@@ -7427,7 +7427,7 @@ class BrowserCacheDialog {
             });
             listItem.appendChild(renameButton);
             let appendButton = document.createElement("img");
-            appendButton.src = "img/button/append-cache.png";
+            appendButton.src = "svg/button/append-cache.svg";
             appendButton.title = "Append this list";
             appendButton.style.right = "52px";
             appendButton.classList.add("option-button");
@@ -7442,7 +7442,7 @@ class BrowserCacheDialog {
             });
             listItem.appendChild(appendButton);
             let openButton = document.createElement("img");
-            openButton.src = "img/button/open-cache.png";
+            openButton.src = "svg/button/open-cache.svg";
             openButton.title = "Open this list";
             openButton.style.right = "78px";
             openButton.classList.add("option-button");
@@ -8787,7 +8787,7 @@ var EngineEditableFieldMetadata;
                 <div style="grid-area: c;"><input style="width: calc(100%);"></div>
                 <div class="content-cell-content" style="grid-area: e;">Height</div>
                 <div style="grid-area: f;"><input style="width: calc(100%);"></div>
-                <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="img/button/aspectRatio.png"></div>
+                <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="svg/button/aspectRatio.svg"></div>
             `;
             let checkboxLabel = document.createElement("span");
             let checkbox = document.createElement("input");
@@ -8908,8 +8908,8 @@ var EngineEditableFieldMetadata;
                 "d d d"
             `;
             grid.innerHTML = `
-                <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
-                <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
+                <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="svg/button/add-mini.svg"></div>
+                <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="svg/button/remove-mini.svg"></div>
                 <div class="content-cell-content" style="grid-area: c;"></div>
                 <div class="content-cell-content" style="grid-area: d; overflow: auto;"><table><tr><th style="width: 65%;">Fuel</th><th style="width: 35%;">Ratio</th></tr></table></div>
             `;
@@ -9541,8 +9541,8 @@ var EngineEditableFieldMetadata;
                 
                 <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
                 
-                <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
-                <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
+                <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="svg/button/add-mini.svg"></div>
+                <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="svg/button/remove-mini.svg"></div>
                 <div class="content-cell-content" style="grid-area: j; overflow: auto; white-space: unset;">
                     <table>
                         <tr>
@@ -10099,7 +10099,7 @@ var EngineEditableFieldMetadata;
             <td><input class="chartTableRowInput content-cell-content"></td>
             <td><input class="chartTableRowInput content-cell-content"></td>
             <td style="font-size: 0;">
-                <img src="img/button/remove-mid.png" class="chartTableRowButton medium-button option-button">
+                <img src="svg/button/remove-mid.svg" class="chartTableRowButton medium-button option-button">
             </td>
         `;
         let tableInputs = newRow.querySelectorAll("input");

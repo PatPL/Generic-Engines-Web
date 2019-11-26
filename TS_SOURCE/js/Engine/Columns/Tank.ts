@@ -74,8 +74,8 @@ namespace EngineEditableFieldMetadata {
                 
                 <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
                 
-                <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
-                <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
+                <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="svg/button/add-mini.svg"></div>
+                <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="svg/button/remove-mini.svg"></div>
                 <div class="content-cell-content" style="grid-area: j; overflow: auto; white-space: unset;">
                     <table>
                         <tr>

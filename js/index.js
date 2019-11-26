@@ -8735,18 +8735,6 @@ var EngineEditableFieldMetadata;
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineEditableFieldMetadata;
 (function (EngineEditableFieldMetadata) {
-    EngineEditableFieldMetadata.AtmIsp = {
-        ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = Unit.Display(engine.AtmIsp, "s", true);
-        }, ApplyValueToEditElement: (e, engine) => {
-            e.value = Unit.Display(engine.AtmIsp, "s", true);
-        }, ApplyChangesToValue: (e, engine) => {
-            engine.AtmIsp = Unit.Parse(e.value, "s");
-        }
-    };
-})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
-var EngineEditableFieldMetadata;
-(function (EngineEditableFieldMetadata) {
     EngineEditableFieldMetadata.Cost = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = Unit.Display(engine.Cost, " VF", Settings.classic_unit_display);
@@ -9780,18 +9768,6 @@ var EngineEditableFieldMetadata;
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineEditableFieldMetadata;
 (function (EngineEditableFieldMetadata) {
-    EngineEditableFieldMetadata.Thrust = {
-        ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 9);
-        }, ApplyValueToEditElement: (e, engine) => {
-            e.value = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display);
-        }, ApplyChangesToValue: (e, engine) => {
-            engine.Thrust = Unit.Parse(e.value, "kN");
-        }
-    };
-})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
-var EngineEditableFieldMetadata;
-(function (EngineEditableFieldMetadata) {
     let chartWidth = 400;
     let chartHeight = 400;
     const defaultUpperBound = 150;
@@ -10221,18 +10197,6 @@ var EngineEditableFieldMetadata;
         }
         lineChart.stroke();
         lineChart.closePath();
-    };
-})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
-var EngineEditableFieldMetadata;
-(function (EngineEditableFieldMetadata) {
-    EngineEditableFieldMetadata.VacIsp = {
-        ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = Unit.Display(engine.VacIsp, "s", true);
-        }, ApplyValueToEditElement: (e, engine) => {
-            e.value = Unit.Display(engine.VacIsp, "s", true);
-        }, ApplyChangesToValue: (e, engine) => {
-            engine.VacIsp = Unit.Parse(e.value, "s");
-        }
     };
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineEditableFieldMetadata;
@@ -11720,7 +11684,7 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files <progress />`;
+                exportStatusElement.innerHTML = `<img src="svg/load16.svg"> Zipping all files <progress />`;
                 let progressElement = exportStatusElement.querySelector("progress");
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date().getTime();

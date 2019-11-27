@@ -29,7 +29,7 @@ namespace EngineEditableFieldMetadata {
                 <div style="grid-area: c;"><input style="width: calc(100%);"></div>
                 <div class="content-cell-content" style="grid-area: e;">Height</div>
                 <div style="grid-area: f;"><input style="width: calc(100%);"></div>
-                <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="img/button/aspectRatio.png"></div>
+                <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="svg/button/aspectRatio.svg"></div>
             `;
             
             let checkboxLabel = document.createElement ("span");

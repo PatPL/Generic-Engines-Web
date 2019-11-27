@@ -134,19 +134,24 @@
         <div class="fullscreen-grayout"></div>
         <div class="fullscreen-content">
             <div>
-                <img id="option-button-open-upload-list" src="img/button/upload-large.png" class="option-button">
-                <img id="option-button-append-upload-list" src="img/button/upload-append-large.png" class="option-button">
+                <img id="option-button-open-upload-list" src="svg/button/upload-large.svg" class="option-button">
+                <img id="option-button-append-upload-list" src="svg/button/upload-append-large.svg" class="option-button">
                 <div>(Open/Append) list from a file</div>
             </div>
             <div>
-                <img id="option-button-open-cache-list" src="img/button/cache-open-().png" class="option-button browser-relevant">
-                <img id="option-button-append-cache-list" src="img/button/cache-append-().png" class="option-button browser-relevant">
+                <img id="option-button-open-cache-list" src="svg/button/cache-open-().svg" class="option-button browser-relevant">
+                <img id="option-button-append-cache-list" src="svg/button/cache-append-().svg" class="option-button browser-relevant">
                 <div>(Open/Append) list from browser cache</div>
             </div>
             <div>
-                <img id="option-button-open-clipboard-list" src="img/button/base64-open.png" class="option-button">
-                <img id="option-button-append-clipboard-list" src="img/button/base64-append.png" class="option-button">
+                <img id="option-button-open-clipboard-list" src="svg/button/base64-open.svg" class="option-button">
+                <img id="option-button-append-clipboard-list" src="svg/button/base64-append.svg" class="option-button">
                 <div>(Open/Append) list from base64 string</div>
+            </div>
+            <div>
+                <img id="option-button-open-autosave-list" src="svg/button/autosave-open-large.svg" class="option-button">
+                <img id="option-button-append-autosave-list" src="svg/button/autosave-append-large.svg" class="option-button">
+                <div>(Open/Append) list from autosave</div>
             </div>
             <div>
                 <div>(Append) You can also try drag&dropping .enl files on this website</div>
@@ -157,40 +162,36 @@
         <div class="fullscreen-grayout"></div>
         <div class="fullscreen-content">
             <div>
-                <img id="option-button-download-list" src="img/button/download-large.png" class="option-button">
+                <img id="option-button-download-list" src="svg/button/download-large.svg" class="option-button">
                 <div>Download the list as .enl file</div>
             </div>
             <div>
-                <img id="option-button-cache-list" src="img/button/cache-save-().png" class="option-button browser-relevant">
+                <img id="option-button-cache-list" src="svg/button/cache-save-().svg" class="option-button browser-relevant">
                 <div>Store the list in broser cache</div>
             </div>
             <div>
-                <img id="option-button-clipboard-list" src="img/button/base64-save.png" class="option-button">
+                <img id="option-button-clipboard-list" src="svg/button/base64-save.svg" class="option-button">
                 <div>Copy the list as a base64 string</div>
             </div>
             <div>
-                <img id="option-button-clipboard-selection" src="img/button/base64-save.png" class="option-button">
+                <img id="option-button-clipboard-selection" src="svg/button/base64-save.svg" class="option-button">
                 <div>Copy selected engines as a base64 string</div>
             </div>
         </div>
     </div>
     <div class="option-container" id="option-row">
-        <div class="option-container" id="option-container-left">
-            <img id="option-button-new" title="Clear the current list" class="option-button" src="img/button/clear.png">
-            <img id="option-button-open" title="Open/Append an existing list" class="option-button" src="img/button/open.png">
-            <img id="option-button-save" title="Save current list" class="option-button" src="img/button/save.png">
-            <img id="option-button-cache" title="Open browser cache" class="option-button browser-relevant" src="img/button/cache-().png">
-            <img id="option-button-validate" title="Check current list for inconsistencies" class="option-button" src="img/button/validate.png">
-            <img id="option-button-export" title="Export current list as KSP mod" class="option-button" src="img/button/export.png">
-            <img id="option-button-duplicate" title="Duplicate selected engines" class="option-button" src="img/button/duplicate.png">
-            <img id="option-button-add" title="Add a new engine to current list" class="option-button" src="img/button/add.png">
-            <img id="option-button-remove" title="Delete selected engines from current list" class="option-button" src="img/button/remove.png">
-        </div>
-        <div class="flex-spacer" id="list-name"></div>
-        <div class="option-container" id="option-container-right">
-            <img id="option-button-settings" title="Settings" class="option-button" src="img/button/settings.png">
-            <img id="option-button-help" title="Help & About" class="option-button" src="img/button/help.png">
-        </div>
+        <img style="grid-area: la;" id="option-button-new" title="Clear the current list" class="option-button" src="svg/button/clear.svg">
+        <img style="grid-area: lb;" id="option-button-open" title="Open/Append an existing list" class="option-button" src="svg/button/open.svg">
+        <img style="grid-area: lc;" id="option-button-save" title="Save current list" class="option-button" src="svg/button/save.svg">
+        <img style="grid-area: ld;" id="option-button-cache" title="Open browser cache" class="option-button browser-relevant" src="svg/button/cache-().svg">
+        <img style="grid-area: le;" id="option-button-validate" title="Check current list for inconsistencies" class="option-button" src="svg/button/validate.svg">
+        <img style="grid-area: lf;" id="option-button-export" title="Export current list as KSP mod" class="option-button" src="svg/button/export.svg">
+        <img style="grid-area: lg;" id="option-button-duplicate" title="Duplicate selected engines" class="option-button" src="svg/button/duplicate.svg">
+        <img style="grid-area: lh;" id="option-button-add" title="Add a new engine to current list" class="option-button" src="svg/button/add.svg">
+        <img style="grid-area: li;" id="option-button-remove" title="Delete selected engines from current list" class="option-button" src="svg/button/remove.svg">
+        <div style="grid-area: ss;" class="flex-spacer" id="list-name"></div>
+        <img style="grid-area: ra;" id="option-button-help" title="Help & About" class="option-button" src="svg/button/help.svg">
+        <img style="grid-area: rb;" id="option-button-settings" title="Settings" class="option-button" src="svg/button/settings.svg">
     </div>
     <div id="content-container">
         <div id="list-container">
@@ -198,7 +199,7 @@
         </div>
         <div id="info-panel">
             <div id="info-panel-resize"></div>
-            <div id="info-panel-content">
+            <div id="info-panel-content" tabindex="-1">
                 <b>ID:</b> <span info-field="id"></span>
             
                 <hr>
@@ -227,7 +228,16 @@
                 
                 <h6 class="abbr" title="Range represents values between min and max throttle setting">Mass flow:</h6>
                 
-                <span info-field="min_mass_flow"></span> - <span info-field="max_mass_flow"></span>
+                <span info-field="min_mass_flow"></span> - <span info-field="max_mass_flow"></span><br><br>
+                
+                <b class="abbr" title="At 100% thrust">Per fuel:</b>
+                <span info-field="mass_flow_detail"></span>
+                
+                <hr>
+                
+                <h6 class="abbr" title="Burn time of the engine, with current thrust, Isp, thrust curve and tank settings, per used propellant">Burn time:</h6>
+                
+                <span info-field="burn_time_detail"></span>
                 
                 <hr><!-- Doesn't scroll all the way down without that, no clue why -->
             </div>

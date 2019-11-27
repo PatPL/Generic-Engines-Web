@@ -5,7 +5,7 @@ class Input {
     
 }
 
-window.onpointermove = (event) => {
+window.onpointermove = (event: PointerEvent) => {
     Input.MouseX = event.clientX;
     Input.MouseY = event.clientY;
 }

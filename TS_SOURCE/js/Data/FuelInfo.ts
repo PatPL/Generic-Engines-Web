@@ -344,7 +344,9 @@ class FuelInfo {
         let output = document.createElement("select");
 
         let groups: { [id: string]: HTMLOptGroupElement } = {};
-        for (let i in FuelType) {
+        
+        for (let type in FuelType) {
+            let i = (type as keyof typeof FuelType);
             let group = document.createElement("optgroup");
             group.label = FuelType[i];
             output.appendChild(group);

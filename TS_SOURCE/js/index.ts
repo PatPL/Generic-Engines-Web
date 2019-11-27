@@ -37,7 +37,7 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
         return;
     }
     
-    let gravity = 9.80665;
+    let gravity = 9.8066;
     let infoPanel = document.getElementById ("info-panel")!;    
     let properties: { [id: string]: string } = {};
     
@@ -52,6 +52,9 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     massFlow *= 9.8066; // N*s/kg
     massFlow = 1 / massFlow; // kg/N*s -> t/kN*s
     massFlow *= engine.Thrust // t/s
+    
+    let detailedMassFlow = engine.GetEngineMassFlow ();
+    let detailedBurnTime = engine.GetEngineBurnTime ();
     
     // ==
     
@@ -77,6 +80,29 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     
     properties["min_mass_flow"] = `${Unit.Display (massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
     properties["max_mass_flow"] = `${Unit.Display (massFlow, "t", Settings.classic_unit_display, 3)}/s`;
+    
+    properties["mass_flow_detail"] = "<ul>";
+    detailedMassFlow.forEach (([fuel, flow]) => {
+        if (fuel == Fuel.ElectricCharge) {
+            properties["mass_flow_detail"] += `<li><span class='abbr' title='1 kilowatt (kW) is equal to 1 unit of Electric Charge per second (u/s) in game'>Electricity: ${Unit.Display (flow, "kW", Settings.classic_unit_display, 3)}</span></li>`
+        } else {
+            let fuelInfo = FuelInfo.GetFuelInfo (fuel);
+            properties["mass_flow_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display (flow, "t", Settings.classic_unit_display, 3)}/s<br>`;
+            properties["mass_flow_detail"] += `<span class='abbr' title='1 litre per second (L/s) is equal to 1 unit per second (u/s) in game'>${Unit.Display (flow / fuelInfo.Density, "L", Settings.classic_unit_display, 3)}/s</li>`;
+        }
+    })
+    properties["mass_flow_detail"] += "</ul>";
+    
+    properties["burn_time_detail"] = "<ul>";
+    detailedBurnTime.forEach (([fuel, time]) => {
+        if (fuel == Fuel.ElectricCharge) {
+            // Don't include Electric Charge
+        } else {
+            let fuelInfo = FuelInfo.GetFuelInfo (fuel);
+            properties["burn_time_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display (time, "", true, 2)}s<br>`;
+        }
+    })
+    properties["burn_time_detail"] += "</ul>";
     
     // ==
     
@@ -232,6 +258,8 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-append-cache-list")!.addEventListener ("click", AppendCacheButton_Click);
     document.getElementById ("option-button-open-clipboard-list")!.addEventListener ("click", OpenClipboardButton_Click);
     document.getElementById ("option-button-append-clipboard-list")!.addEventListener ("click", AppendClipboardButton_Click);
+    document.getElementById ("option-button-open-autosave-list")!.addEventListener ("click", OpenAutosaveButton_Click);
+    document.getElementById ("option-button-append-autosave-list")!.addEventListener ("click", AppendAutosaveButton_Click);
     
     MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
@@ -243,6 +271,14 @@ addEventListener ("DOMContentLoaded", () => {
         }
     };
     MainEngineTable.RebuildTable ();
+    
+    // Autosave
+    setInterval (
+        () => {
+            Autosave.Save (MainEngineTable.Items, ListName);
+        },
+        1000 * 60 * 2
+    );
     
 });
 
@@ -320,7 +356,7 @@ function AppendUploadButton_Click () {
 
 function OpenCacheButton_Click () {
     if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
-        BrowserCacheDialog.GetEngineListData ((data, newFilename) => {
+        BrowserCacheDialog.GetListFromCache ((data, newFilename) => {
             if (!data) {
                 // Maybe send a notification?
                 return;
@@ -343,7 +379,7 @@ function OpenCacheButton_Click () {
 }
 
 function AppendCacheButton_Click () {
-    BrowserCacheDialog.GetEngineListData (data => {
+    BrowserCacheDialog.GetListFromCache (data => {
         if (!data) {
             // Maybe send a notification?
             return;
@@ -410,6 +446,48 @@ function AppendClipboardButton_Click () {
             Notifier.Warn ("There was an error while parsing the string");
             return;
         }
+}
+
+function OpenAutosaveButton_Click () {
+    if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
+        BrowserCacheDialog.GetListFromAutosave ((data, newFilename) => {
+            if (!data) {
+                // Maybe send a notification?
+                return;
+            }
+            
+            if (newFilename) {
+                ListNameDisplay.SetValue (newFilename);
+            }
+            
+            MainEngineTable.Items = Serializer.DeserializeMany (data);
+            MainEngineTable.RebuildTable ();
+            MainEngineTable.Items.forEach (e => {
+                e.EngineList = MainEngineTable.Items;
+            });
+            
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
+        }, "Open autosave:");
+    }
+}
+
+function AppendAutosaveButton_Click () {
+    BrowserCacheDialog.GetListFromAutosave (data => {
+        if (!data) {
+            // Maybe send a notification?
+            return;
+        }
+        
+        let newEngines = Serializer.DeserializeMany (data);
+        newEngines.forEach (e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems (newEngines);
+        
+        FullscreenWindows["open-box"].style.display = "none";
+        Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
+    }, "Append autosave:");
 }
 
 /* /Open dialog */

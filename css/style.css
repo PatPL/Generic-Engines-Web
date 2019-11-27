@@ -17,6 +17,8 @@
 
 .abbr {
     cursor: help;
+    /* Useful but doesn't look that good */
+    /* text-decoration: underline dotted var(--darkBorder); */
 }
 
 body {
@@ -43,9 +45,14 @@ textarea {
     word-break: keep-all;
 }
 
-select {
-    width: 100%;
-    height: 100%;
+ul {
+    margin: 6px 0px 6px 0px;
+    padding-left: 24px;
+}
+
+hr {
+    border: none;
+    border-top: var(--darkBorder) solid 1px;
 }
 
 table {
@@ -68,7 +75,17 @@ img.mini-button {
     margin: 4px 0px 0px 4px;
 }
 
+img.medium-button {
+    width: 24px;
+    height: 24px;
+    margin: 0px 0px 0px 4px;
+}
+
 select {
+    width: 100%;
+    height: 23px;
+    -webkit-appearance: menulist;
+    
     background: var(--lighterGrayBackground);
     color: var(--darkText);
     
@@ -91,11 +108,14 @@ input {
     font-size: inherit;
     font-family: inherit;
     
+    box-sizing: border-box;
     padding-left: 3px;
     height: 100%;
     background: var(--lighterGrayBackground);
     color: var(--darkText);
     border: 1px var(--darkerBorder) solid;
+    
+    min-width: 12px;
 }
 
 button {
@@ -130,10 +150,15 @@ textarea {
     font-family: inherit;
     
     padding-left: 3px;
-    height: 100%;
+    height: calc(100% - 1px);
     background: var(--lighterGrayBackground);
     color: var(--darkText);
     border: 1px var(--darkerBorder) solid;
+}
+
+textarea::selection {
+    background: var(--textSelection);
+    color: var(--darkerText);
 }
 
 input:disabled {
@@ -220,14 +245,18 @@ span.checkbox-label {
     padding: 4px;
     box-sizing: border-box;
     background: var(--lighterGrayBackground);
-}
-
-.option-container {
-    display: flex;
+    
+    display: grid;
+    grid-template-columns: 36px 36px 36px 36px 36px 36px 36px 36px 36px auto 4px 36px 32px;
+    grid-template-rows: 32px;
+    grid-template-areas:
+        "la lb lc ld le lf lg lh li ss .  ra rb"
+    ;
 }
 
 .flex-spacer {
-    flex: auto;
+    /* Site width - padding - other grid fields */
+    max-width: calc(100vw - 8px - 396px);
     background: var(--lightGrayBackground);
     line-height: 28px;
     font-size: 20px;
@@ -237,22 +266,6 @@ span.checkbox-label {
 .option-container > img {
     width: 32px;
     height: 32px;
-}
-
-#option-container-left {
-    flex-direction: row;
-}
-
-#option-container-left > img {
-    margin-right: 4px;
-}
-
-#option-container-right {
-    flex-direction: row-reverse;
-}
-
-#option-container-right > img {
-    margin-left: 4px;
 }
 
 /**/
@@ -412,7 +425,8 @@ span.checkbox-label {
     width: 100%;
     height: 24px;
     
-    line-height: 19px;
+    /* Somehow this one screws up input height, even when it's overridden */
+    /* line-height: 19px; */
     font-size: 16px;
     overflow: hidden;
     color: var(--darkerText);
@@ -435,6 +449,10 @@ span.checkbox-label {
 
 .content-cell-edit {
     white-space: normal;
+}
+
+div.content-cell-edit {
+    background: var(--selectionCell);
 }
 
 input.content-cell-content {
@@ -590,7 +608,9 @@ input.content-cell-content {
 #cache-box > div.fullscreen-content > div div {
     width: calc(100% - 4px);
     height: 32px;
+    min-height: 32px;
     
+    position: relative;
     margin: 0px 2px 2px 2px;
     
     line-height: 28px;
@@ -599,12 +619,16 @@ input.content-cell-content {
     box-sizing: border-box;
     background: var(--lightGrayBackground);
     border: var(--darkBorder) 2px solid;
+    
+    word-break: break-all;
+    white-space: pre;
+    overflow: hidden;
 }
 
 .cache-option-button {
+    position: absolute;
     width: 24px;
     height: 24px;
-    float: right;
     margin: 2px 2px 0px 0px;
 }
 
@@ -814,4 +838,151 @@ input.content-cell-content {
     color: var(--darkerText);
     background: var(--error);
     border: var(--darkBorder) 2px solid;
+}
+
+/**/
+
+.chartElement {
+    position: relative;
+    width: 100%;
+    height: 417px;
+    
+    padding: 8px;
+    box-sizing: border-box;
+    
+    border-bottom: var(--darkBorder) solid 1px;
+    background: var(--tableBackground);
+}
+
+.chartBackground {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    
+    z-index: 1;
+}
+
+.chartLines {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    
+    z-index: 2;
+}
+
+.chartPoints {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    
+    width: calc(100% - 16px);
+    height: 400px;
+    
+    z-index: 3;
+    /* overflow: hidden; */
+}
+
+.chartPoint {
+    position: absolute;
+    box-sizing: border-box;
+    
+    width: 10px;
+    height: 10px;
+    
+    background: rgba(128, 64, 255, 0.25);
+    border: 1px solid var(--tableBorder);
+    border-radius: 9999px;
+    
+    cursor: pointer;
+}
+
+.chartPoint.chartPointActive {
+    border: 2px solid var(--tableRed);
+    background: rgba(255, 128, 64, 0.25);
+}
+
+.chartDetails {
+    display: grid;
+    width: 100%;
+    height: 232px;
+    box-sizing: border-box;
+    
+    padding: 4px 5px 4px 4px;
+    
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 24px 4px 24px 4px auto;
+    grid-template-areas:
+        "a b"
+        ". ."
+        "c d"
+        ". ."
+        "e e"
+    ;
+}
+
+.chartDetails span {
+    margin: 3px;
+}
+
+.chartNormalizeButton {
+    padding: 0;
+    margin-right: 2px;
+}
+
+.chartRemovePointButton {
+    padding: 0;
+    margin-left: 2px;
+}
+
+.chartTableContainer {
+    width: 100%;
+    height: 100%;
+    
+    padding-right: 4px;
+    overflow-y: auto;
+}
+
+.chartTable {
+    width: 100%;
+    height: auto;
+}
+
+.chartTableRowActive {
+    filter: brightness(0.8);
+}
+
+.chartTableRowInput {
+    height: 24px;
+}
+
+.chartTableRowButton {
+    margin: 0 !important;
+}
+
+/**/
+
+.propulsionContainer {
+    display: grid;
+    height: 99px;
+    padding: 0px;
+    text-align: right;
+    line-height: 23px;
+    
+    grid-template-columns: 87px 3px auto 24px;
+    grid-template-rows: 24px 24px 3px 24px 24px;
+    grid-template-areas: 
+        "tl .  ti tc"
+        "ml .  mi mc"
+        ".  .  .  . "
+        "vl .  vi sc"
+        "sl .  si sc"
+    ;
+}
+
+.propulsionContainer input[type="checkbox"] {
+    height: 100%;
+    width: 100%;
+    
+    margin: 0;
+    cursor: pointer;
 }

@@ -588,7 +588,7 @@ addEventListener("DOMContentLoaded", () => {
     Notifier.Container = document.querySelector(".notify-container");
 });
 class Notifier {
-    static Info(text, lifetime = this.NotificationLifetime) {
+    static Info(text, lifetimeMS = this.NotificationLifetime) {
         let box = document.createElement("div");
         box.classList.add("notify-box");
         box.classList.add("info");
@@ -597,13 +597,13 @@ class Notifier {
         box.addEventListener("click", () => {
             box.remove();
         });
-        if (lifetime > 0) {
+        if (lifetimeMS > 0) {
             setTimeout(() => {
                 box.remove();
-            }, lifetime);
+            }, lifetimeMS);
         }
     }
-    static Warn(text, lifetime = this.NotificationLifetime) {
+    static Warn(text, lifetimeMS = this.NotificationLifetime) {
         let box = document.createElement("div");
         box.classList.add("notify-box");
         box.classList.add("warn");
@@ -612,13 +612,13 @@ class Notifier {
         box.addEventListener("click", () => {
             box.remove();
         });
-        if (lifetime > 0) {
+        if (lifetimeMS > 0) {
             setTimeout(() => {
                 box.remove();
-            }, lifetime);
+            }, lifetimeMS);
         }
     }
-    static Error(text, lifetime = this.NotificationLifetime) {
+    static Error(text, lifetimeMS = this.NotificationLifetime) {
         let box = document.createElement("div");
         box.classList.add("notify-box");
         box.classList.add("error");
@@ -627,17 +627,17 @@ class Notifier {
         box.addEventListener("click", () => {
             box.remove();
         });
-        if (lifetime > 0) {
+        if (lifetimeMS > 0) {
             setTimeout(() => {
                 box.remove();
-            }, lifetime);
+            }, lifetimeMS);
         }
     }
 }
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.1";
+Version.CurrentVersion = "Web.0.9.2";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -805,7 +805,7 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     if (!Settings.show_info_panel) {
         return;
     }
-    let gravity = 9.80665;
+    let gravity = 9.8066;
     let infoPanel = document.getElementById("info-panel");
     let properties = {};
     let engineMass = engine.GetMass();
@@ -817,6 +817,8 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     massFlow *= 9.8066;
     massFlow = 1 / massFlow;
     massFlow *= engine.Thrust;
+    let detailedMassFlow = engine.GetEngineMassFlow();
+    let detailedBurnTime = engine.GetEngineBurnTime();
     properties["id"] = engine.ID;
     properties["dry_mass"] = Unit.Display(engineMass, "t", Settings.classic_unit_display, 6);
     properties["wet_mass"] = Unit.Display(engineMass + propellantMass, "t", Settings.classic_unit_display, 6);
@@ -834,6 +836,28 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed(3);
     properties["min_mass_flow"] = `${Unit.Display(massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
     properties["max_mass_flow"] = `${Unit.Display(massFlow, "t", Settings.classic_unit_display, 3)}/s`;
+    properties["mass_flow_detail"] = "<ul>";
+    detailedMassFlow.forEach(([fuel, flow]) => {
+        if (fuel == Fuel.ElectricCharge) {
+            properties["mass_flow_detail"] += `<li><span class='abbr' title='1 kilowatt (kW) is equal to 1 unit of Electric Charge per second (u/s) in game'>Electricity: ${Unit.Display(flow, "kW", Settings.classic_unit_display, 3)}</span></li>`;
+        }
+        else {
+            let fuelInfo = FuelInfo.GetFuelInfo(fuel);
+            properties["mass_flow_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display(flow, "t", Settings.classic_unit_display, 3)}/s<br>`;
+            properties["mass_flow_detail"] += `<span class='abbr' title='1 litre per second (L/s) is equal to 1 unit per second (u/s) in game'>${Unit.Display(flow / fuelInfo.Density, "L", Settings.classic_unit_display, 3)}/s</li>`;
+        }
+    });
+    properties["mass_flow_detail"] += "</ul>";
+    properties["burn_time_detail"] = "<ul>";
+    detailedBurnTime.forEach(([fuel, time]) => {
+        if (fuel == Fuel.ElectricCharge) {
+        }
+        else {
+            let fuelInfo = FuelInfo.GetFuelInfo(fuel);
+            properties["burn_time_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display(time, "", true, 2)}s<br>`;
+        }
+    });
+    properties["burn_time_detail"] += "</ul>";
     for (let i in properties) {
         let element = infoPanel.querySelector(`span[info-field="${i}"]`);
         if (element) {
@@ -948,6 +972,8 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-append-cache-list").addEventListener("click", AppendCacheButton_Click);
     document.getElementById("option-button-open-clipboard-list").addEventListener("click", OpenClipboardButton_Click);
     document.getElementById("option-button-append-clipboard-list").addEventListener("click", AppendClipboardButton_Click);
+    document.getElementById("option-button-open-autosave-list").addEventListener("click", OpenAutosaveButton_Click);
+    document.getElementById("option-button-append-autosave-list").addEventListener("click", AppendAutosaveButton_Click);
     MainEngineTable = new HtmlTable(document.getElementById("list-container"));
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
     MainEngineTable.OnSelectedItemChange = selectedEngine => {
@@ -959,6 +985,9 @@ addEventListener("DOMContentLoaded", () => {
         }
     };
     MainEngineTable.RebuildTable();
+    setInterval(() => {
+        Autosave.Save(MainEngineTable.Items, ListName);
+    }, 1000 * 60 * 2);
 });
 function NewButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to clear current list?")) {
@@ -1007,7 +1036,7 @@ function AppendUploadButton_Click() {
 }
 function OpenCacheButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
-        BrowserCacheDialog.GetEngineListData((data, newFilename) => {
+        BrowserCacheDialog.GetListFromCache((data, newFilename) => {
             if (!data) {
                 return;
             }
@@ -1025,7 +1054,7 @@ function OpenCacheButton_Click() {
     }
 }
 function AppendCacheButton_Click() {
-    BrowserCacheDialog.GetEngineListData(data => {
+    BrowserCacheDialog.GetListFromCache(data => {
         if (!data) {
             return;
         }
@@ -1081,6 +1110,39 @@ function AppendClipboardButton_Click() {
         Notifier.Warn("There was an error while parsing the string");
         return;
     }
+}
+function OpenAutosaveButton_Click() {
+    if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
+        BrowserCacheDialog.GetListFromAutosave((data, newFilename) => {
+            if (!data) {
+                return;
+            }
+            if (newFilename) {
+                ListNameDisplay.SetValue(newFilename);
+            }
+            MainEngineTable.Items = Serializer.DeserializeMany(data);
+            MainEngineTable.RebuildTable();
+            MainEngineTable.Items.forEach(e => {
+                e.EngineList = MainEngineTable.Items;
+            });
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
+        }, "Open autosave:");
+    }
+}
+function AppendAutosaveButton_Click() {
+    BrowserCacheDialog.GetListFromAutosave(data => {
+        if (!data) {
+            return;
+        }
+        let newEngines = Serializer.DeserializeMany(data);
+        newEngines.forEach(e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems(newEngines);
+        FullscreenWindows["open-box"].style.display = "none";
+        Notifier.Info(`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
+    }, "Append autosave:");
 }
 function SaveButton_Click() {
     FullscreenWindows["save-box"].style.display = "flex";
@@ -1210,7 +1272,8 @@ class FuelInfo {
     static BuildDropdown() {
         let output = document.createElement("select");
         let groups = {};
-        for (let i in FuelType) {
+        for (let type in FuelType) {
+            let i = type;
             let group = document.createElement("optgroup");
             group.label = FuelType[i];
             output.appendChild(group);
@@ -1570,23 +1633,6 @@ var EngineGroupType;
 class ModelInfo {
     static GetModelInfo(id) {
         return ModelInfo.models[id];
-    }
-    static BuildDropdown() {
-        let output = document.createElement("select");
-        let groups = {};
-        for (let i in EngineGroupType) {
-            let group = document.createElement("optgroup");
-            group.label = EngineGroupType[i];
-            output.appendChild(group);
-            groups[EngineGroupType[i]] = group;
-        }
-        ModelInfo.models.forEach((v, i) => {
-            let option = document.createElement("option");
-            option.value = i.toString();
-            option.text = v.ModelName;
-            groups[v.ModelType].appendChild(option);
-        });
-        return output;
     }
 }
 ModelInfo.models = [
@@ -6037,7 +6083,6 @@ ModelInfo.models = [
         HeatAnimations: []
     }
 ];
-ModelInfo.Dropdown = ModelInfo.BuildDropdown();
 class PlumeInfo {
     static GetPlumeInfo(id) {
         return PlumeInfo.plumes[id];
@@ -7279,7 +7324,7 @@ class BrowserCacheDialog {
         this.DialogBoxElement.style.display = "none";
         this.CurrentTransaction = null;
     }
-    static GetEngineListData(callback, message = "Browser cache") {
+    static GetListFromCache(callback, message = "Browser cache") {
         this.SetTransaction(callback);
         this.DialogBoxElement.querySelector("span").innerHTML = message;
         let container = document.getElementById("cache-box-content");
@@ -7297,7 +7342,37 @@ class BrowserCacheDialog {
             listItem.addEventListener("click", () => {
                 this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl$/, ""));
             });
+            listItem.title = i;
             listItem.innerHTML = i;
+            container.appendChild(listItem);
+        });
+    }
+    static GetListFromAutosave(callback, message = "Browser cache") {
+        this.SetTransaction(callback);
+        this.DialogBoxElement.querySelector("span").innerHTML = message;
+        let container = document.getElementById("cache-box-content");
+        container.innerHTML = "";
+        let lists = [];
+        for (let i in localStorage) {
+            if (/^(.)+\.enl.autosave$/.test(i)) {
+                lists.push(i);
+            }
+        }
+        lists = lists.sort((a, b) => a < b ? 1 : -1);
+        lists.forEach(i => {
+            let listItem = document.createElement("div");
+            listItem.classList.add("option-button");
+            listItem.addEventListener("click", () => {
+                this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl.autosave$/, ""));
+            });
+            let tmp = i.replace(/\.enl.autosave$/, "").split("-");
+            for (let i = 2; i < tmp.length; ++i) {
+                tmp[1] += `-${tmp[i]}`;
+            }
+            tmp.length = 2;
+            let time = new Date(parseInt(tmp[0]));
+            listItem.title = `@${time.toLocaleString()} | ${tmp[1]}`;
+            listItem.innerHTML = `@${time.toLocaleString()} | ${tmp[1]}`;
             container.appendChild(listItem);
         });
     }
@@ -7315,10 +7390,12 @@ class BrowserCacheDialog {
         lists = lists.sort();
         lists.forEach(i => {
             let listItem = document.createElement("div");
+            listItem.title = i;
             listItem.innerHTML = i;
             let removeButton = document.createElement("img");
-            removeButton.src = "img/button/remove-cache.png";
+            removeButton.src = "svg/button/remove-cache.svg";
             removeButton.title = "Remove this list from cache";
+            removeButton.style.right = "0px";
             removeButton.classList.add("option-button");
             removeButton.classList.add("cache-option-button");
             removeButton.addEventListener("click", () => {
@@ -7330,8 +7407,9 @@ class BrowserCacheDialog {
             });
             listItem.appendChild(removeButton);
             let renameButton = document.createElement("img");
-            renameButton.src = "img/button/rename-cache.png";
+            renameButton.src = "svg/button/rename-cache.svg";
             renameButton.title = "Rename this list";
+            renameButton.style.right = "26px";
             renameButton.classList.add("option-button");
             renameButton.classList.add("cache-option-button");
             renameButton.addEventListener("click", () => {
@@ -7349,8 +7427,9 @@ class BrowserCacheDialog {
             });
             listItem.appendChild(renameButton);
             let appendButton = document.createElement("img");
-            appendButton.src = "img/button/append-cache.png";
+            appendButton.src = "svg/button/append-cache.svg";
             appendButton.title = "Append this list";
+            appendButton.style.right = "52px";
             appendButton.classList.add("option-button");
             appendButton.classList.add("cache-option-button");
             appendButton.addEventListener("click", () => {
@@ -7363,8 +7442,9 @@ class BrowserCacheDialog {
             });
             listItem.appendChild(appendButton);
             let openButton = document.createElement("img");
-            openButton.src = "img/button/open-cache.png";
+            openButton.src = "svg/button/open-cache.svg";
             openButton.title = "Open this list";
+            openButton.style.right = "78px";
             openButton.classList.add("option-button");
             openButton.classList.add("cache-option-button");
             openButton.addEventListener("click", () => {
@@ -7525,9 +7605,7 @@ class Engine {
             Spacer: EngineEditableFieldMetadata.Spacer,
             ID: EngineEditableFieldMetadata.ID,
             Mass: EngineEditableFieldMetadata.Mass,
-            Thrust: EngineEditableFieldMetadata.Thrust,
-            AtmIsp: EngineEditableFieldMetadata.AtmIsp,
-            VacIsp: EngineEditableFieldMetadata.VacIsp,
+            Propulsion: EngineEditableFieldMetadata.Propulsion,
             Cost: EngineEditableFieldMetadata.Cost,
             EntryCost: EngineEditableFieldMetadata.EntryCost,
             MinThrust: EngineEditableFieldMetadata.MinThrust,
@@ -7897,15 +7975,32 @@ class Engine {
         let targetEngine = (this.PolyType == PolymorphismType.MultiModeSlave ||
             this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
-        if (!targetEngine.LimitTanks) {
-            return new Array().concat(targetEngine.TanksContents);
-        }
         let output = [];
-        let usedVolume = 0;
-        targetEngine.TanksContents.forEach(v => {
-            let thisVol = Math.min(v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation, targetEngine.TanksVolume - usedVolume);
-            output.push([v[0], thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
-        });
+        if (!targetEngine.LimitTanks) {
+            targetEngine.TanksContents.forEach(v => {
+                let currentVolume = output.findIndex(x => v[0] == x[0]);
+                if (currentVolume == -1) {
+                    output.push([v[0], v[1]]);
+                }
+                else {
+                    output[currentVolume][1] += v[1];
+                }
+            });
+        }
+        else {
+            let usedVolume = 0;
+            targetEngine.TanksContents.forEach(v => {
+                let thisVol = Math.min(v[1] / FuelInfo.GetFuelInfo(v[0]).TankUtilisation, targetEngine.TanksVolume - usedVolume);
+                let currentVolume = output.findIndex(x => v[0] == x[0]);
+                if (currentVolume == -1) {
+                    output.push([v[0], thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation]);
+                }
+                else {
+                    output[currentVolume][1] += thisVol * FuelInfo.GetFuelInfo(v[0]).TankUtilisation;
+                }
+                usedVolume += thisVol;
+            });
+        }
         return output;
     }
     RebuildMasterSelect(e) {
@@ -8067,6 +8162,128 @@ class Engine {
         });
         return output;
     }
+    GetCumulativeEngineMassFlow() {
+        let output = 0;
+        this.GetEngineMassFlow().forEach(([_, flow]) => {
+            output += flow;
+        });
+        return output;
+    }
+    GetEngineMassFlow() {
+        let massFlow = this.VacIsp;
+        massFlow *= 9.8066;
+        massFlow = 1 / massFlow;
+        massFlow *= this.Thrust;
+        let propellantMassRatios = [];
+        let electricRatio = this.FuelRatioItems.find(x => x[0] == Fuel.ElectricCharge);
+        let electric = electricRatio ? electricRatio[1] : null;
+        if (this.FuelVolumeRatios) {
+            this.FuelRatioItems.forEach(([fuel, ratio]) => {
+                propellantMassRatios.push([fuel, ratio * FuelInfo.GetFuelInfo(fuel).Density]);
+            });
+        }
+        else {
+            propellantMassRatios = this.FuelRatioItems;
+        }
+        let overallRatio = 0;
+        propellantMassRatios.forEach(([fuel, ratio]) => {
+            if (fuel == Fuel.ElectricCharge) {
+                return;
+            }
+            overallRatio += ratio;
+        });
+        let output = [];
+        propellantMassRatios.forEach(([fuel, ratio]) => {
+            if (fuel == Fuel.ElectricCharge) {
+                return;
+            }
+            output.push([fuel, massFlow * ratio / overallRatio]);
+        });
+        if (electric) {
+            output.push([Fuel.ElectricCharge, electric]);
+        }
+        return output;
+    }
+    GetEngineBurnTime() {
+        let output = [];
+        const thrustCurveMultiplier = this.GetThrustCurveBurnTimeMultiplier();
+        let tankContents = this.GetConstrainedTankContents();
+        let massFlow = this.GetEngineMassFlow();
+        massFlow.forEach(fuel => {
+            let fuelReserves = tankContents.find(x => x[0] == fuel[0]);
+            let fuelMass = fuelReserves ? fuelReserves[1] * FuelInfo.GetFuelInfo(fuelReserves[0]).Density : 0;
+            output.push([
+                fuel[0],
+                thrustCurveMultiplier * fuelMass / fuel[1]
+            ]);
+        });
+        return output;
+    }
+    static CalculateBurnTimeMultiplier(thrustCurve) {
+        if (thrustCurve.length == 0) {
+            return 1;
+        }
+        if (thrustCurve.length == 1) {
+            return 100 / thrustCurve[0][1];
+        }
+        let curve = thrustCurve;
+        let ranges = [];
+        let previousFuelPoint = 100;
+        let previousThrustPoint = curve[0][1];
+        curve.forEach(point => {
+            if (point[0] == 100) {
+                return;
+            }
+            let a;
+            let b;
+            if (point[1] - previousThrustPoint == 0) {
+                a = Infinity;
+                b = previousThrustPoint / 100;
+            }
+            else {
+                a = (previousFuelPoint - point[0]) / (previousThrustPoint - point[1]);
+                b = (point[1] - point[0] * (1 / a)) / 100;
+            }
+            ranges.push([
+                point[0] / 100,
+                previousFuelPoint / 100,
+                a,
+                b
+            ]);
+            previousFuelPoint = point[0];
+            previousThrustPoint = point[1];
+        });
+        let lastPoint = curve[curve.length - 1];
+        if (lastPoint[0] != 100) {
+            ranges.push([
+                0,
+                lastPoint[0] / 100,
+                Infinity,
+                lastPoint[1] / 100
+            ]);
+        }
+        const antiderivative = (x, a, b) => {
+            if (a == Infinity) {
+                return x / b;
+            }
+            else {
+                return a * Math.log(Math.abs(x + a * b));
+            }
+        };
+        let output = 0;
+        ranges.forEach(range => {
+            if (range[0] != range[1]) {
+                output += antiderivative(range[1], range[2], range[3]) - antiderivative(range[0], range[2], range[3]);
+            }
+        });
+        if (isNaN(output)) {
+            return Infinity;
+        }
+        return output;
+    }
+    GetThrustCurveBurnTimeMultiplier() {
+        return Engine.CalculateBurnTimeMultiplier(this.ThrustCurve);
+    }
     GetBaseWidth() {
         if (this.UseBaseWidth) {
             return this.Width;
@@ -8119,9 +8336,6 @@ class Engine {
         }
     }
     GetThrustCurveConfig() {
-        this.ThrustCurve = this.ThrustCurve.sort((a, b) => {
-            return b[0] - a[0];
-        });
         if (this.ThrustCurve.length == 0) {
             return "";
         }
@@ -8129,12 +8343,31 @@ class Engine {
         let lastTangent = 0;
         let newTangent = 0;
         this.ThrustCurve.push([Number.MIN_VALUE, this.ThrustCurve[this.ThrustCurve.length - 1][1]]);
+        const antiSquareOffsetDelta = -0.0001;
+        let antiSquareOffset = 0;
+        let wasSquare = false;
+        let isSquare = false;
         for (let i = 0; i < this.ThrustCurve.length - 1; ++i) {
-            newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0]);
+            let deltaThrust = this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1];
+            let deltaFuel = (this.ThrustCurve[i + 1][0] + antiSquareOffset) - (this.ThrustCurve[i][0] + antiSquareOffset);
+            if (deltaFuel == 0) {
+                isSquare = true;
+                deltaFuel = (this.ThrustCurve[i + 1][0] + antiSquareOffset) - (this.ThrustCurve[i][0] + antiSquareOffset + antiSquareOffsetDelta);
+            }
+            else {
+                isSquare = false;
+            }
+            newTangent = deltaThrust / deltaFuel;
             keys += `
-                key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
+                key = ${(this.ThrustCurve[i][0] + antiSquareOffset) / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
             `;
             lastTangent = newTangent;
+            if (isSquare) {
+                antiSquareOffset += antiSquareOffsetDelta;
+            }
+            if (!isSquare && wasSquare) {
+                antiSquareOffset = 0;
+            }
         }
         this.ThrustCurve.pop();
         return `
@@ -8232,7 +8465,7 @@ class Engine {
                 maxThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust}
                 minThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.PlumeID).PlumeEffectName}
-                heatProduction = 100
+                heatProduction = 10
                 massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.MasterEngineName].Cost : 0)}
@@ -8267,7 +8500,7 @@ class Engine {
                 maxThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust}
                 minThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo(this.ExhaustPlumeID).PlumeEffectName}
-                heatProduction = 100
+                heatProduction = 10
                 massMult = 1
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = 0
@@ -8319,21 +8552,13 @@ Engine.ColumnDefinitions = {
         Name: "Mass",
         DefaultWidth: 80,
         DisplayFlags: 0b00100
-    }, Thrust: {
-        Name: "Vacuum thrust",
-        DefaultWidth: 120,
+    }, Propulsion: {
+        Name: "Propulsion",
+        DefaultWidth: 300,
         DisplayFlags: 0b00000
     }, MinThrust: {
         Name: "Minimum thrust",
         DefaultWidth: 60,
-        DisplayFlags: 0b00000
-    }, AtmIsp: {
-        Name: "Sea level Isp",
-        DefaultWidth: 80,
-        DisplayFlags: 0b00000
-    }, VacIsp: {
-        Name: "Vacuum Isp",
-        DefaultWidth: 80,
         DisplayFlags: 0b00000
     }, PressureFed: {
         Name: "Pressure fed",
@@ -8385,11 +8610,11 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b10100
     }, Tank: {
         Name: "Tank",
-        DefaultWidth: 320,
+        DefaultWidth: 420,
         DisplayFlags: 0b10100
     }, ThrustCurve: {
         Name: "Thrust curve",
-        DefaultWidth: 200,
+        DefaultWidth: 417,
         DisplayFlags: 0b00000
     }, Spacer: {
         Name: "",
@@ -8401,10 +8626,8 @@ Engine._ColumnSorts = {
     Active: (a, b) => Engine.RegularSort(a.Active, b.Active, a.ID, b.ID),
     ID: (a, b) => Engine.RegularSort(a.ID, b.ID),
     Labels: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.GetDisplayLabel(), b.GetDisplayLabel(), a.ID, b.ID), EngineVariant: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.EngineVariant, b.EngineVariant, a.ID, b.ID), Mass: (a, b) => Engine.RegularSort(a.GetMass(), b.GetMass(), a.ID, b.ID),
-    Thrust: (a, b) => Engine.RegularSort(a.Thrust, b.Thrust, a.ID, b.ID),
+    Propulsion: (a, b) => Engine.RegularSort(a.Thrust, b.Thrust, a.ID, b.ID),
     MinThrust: (a, b) => Engine.RegularSort(a.MinThrust, b.MinThrust, a.ID, b.ID),
-    AtmIsp: (a, b) => Engine.RegularSort(a.AtmIsp, b.AtmIsp, a.ID, b.ID),
-    VacIsp: (a, b) => Engine.RegularSort(a.VacIsp, b.VacIsp, a.ID, b.ID),
     PressureFed: (a, b) => Engine.RegularSort(a.PressureFed, b.PressureFed, a.ID, b.ID),
     NeedsUllage: (a, b) => Engine.RegularSort(a.NeedsUllage, b.NeedsUllage, a.ID, b.ID),
     TechUnlockNode: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID), EntryCost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.EntryCost, b.EntryCost, a.ID, b.ID), Cost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.Cost, b.Cost, a.ID, b.ID), AlternatorPower: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.AlternatorPower, b.AlternatorPower, a.ID, b.ID), ThrustCurve: (a, b) => Engine.RegularSort(a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
@@ -8512,18 +8735,6 @@ var EngineEditableFieldMetadata;
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineEditableFieldMetadata;
 (function (EngineEditableFieldMetadata) {
-    EngineEditableFieldMetadata.AtmIsp = {
-        ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = Unit.Display(engine.AtmIsp, "s", true);
-        }, ApplyValueToEditElement: (e, engine) => {
-            e.value = Unit.Display(engine.AtmIsp, "s", true);
-        }, ApplyChangesToValue: (e, engine) => {
-            engine.AtmIsp = Unit.Parse(e.value, "s");
-        }
-    };
-})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
-var EngineEditableFieldMetadata;
-(function (EngineEditableFieldMetadata) {
     EngineEditableFieldMetadata.Cost = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = Unit.Display(engine.Cost, " VF", Settings.classic_unit_display);
@@ -8564,7 +8775,7 @@ var EngineEditableFieldMetadata;
                 <div style="grid-area: c;"><input style="width: calc(100%);"></div>
                 <div class="content-cell-content" style="grid-area: e;">Height</div>
                 <div style="grid-area: f;"><input style="width: calc(100%);"></div>
-                <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="img/button/aspectRatio.png"></div>
+                <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="svg/button/aspectRatio.svg"></div>
             `;
             let checkboxLabel = document.createElement("span");
             let checkbox = document.createElement("input");
@@ -8685,8 +8896,8 @@ var EngineEditableFieldMetadata;
                 "d d d"
             `;
             grid.innerHTML = `
-                <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
-                <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
+                <div style="grid-area: a;"><img class="mini-button option-button" title="Add new propellant to the list" src="svg/button/add-mini.svg"></div>
+                <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last propellant from list" src="svg/button/remove-mini.svg"></div>
                 <div class="content-cell-content" style="grid-area: c;"></div>
                 <div class="content-cell-content" style="grid-area: d; overflow: auto;"><table><tr><th style="width: 65%;">Fuel</th><th style="width: 35%;">Ratio</th></tr></table></div>
             `;
@@ -8918,7 +9129,7 @@ var EngineEditableFieldMetadata;
                 <div style="grid-area: d;"><input style="width: calc(100%);"></div>
                 
                 <div class="content-cell-content" style="grid-area: e;">Description</div>
-                <div style="grid-area: f;"><textarea style="resize: none; width: calc(100%); height: 100%;"></textarea></div>
+                <div style="grid-area: f;"><textarea style="resize: none; width: calc(100% - 6px); height: calc(100% - 3px);"></textarea></div>
             `;
             tmp.appendChild(grid);
             return tmp;
@@ -8985,12 +9196,12 @@ var EngineEditableFieldMetadata;
         }, GetEditElement: () => {
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
-            tmp.style.height = "48px";
+            tmp.style.height = "46px";
             tmp.style.padding = "0";
             let grid = document.createElement("div");
             grid.style.display = "grid";
             grid.style.gridTemplateColumns = "auto";
-            grid.style.gridTemplateRows = "24px 24px";
+            grid.style.gridTemplateRows = "23px 23px";
             grid.style.gridTemplateAreas = `
                 "a"
                 "b"
@@ -9013,6 +9224,228 @@ var EngineEditableFieldMetadata;
             engine.PolyType = parseInt(selects[0].value);
             engine.MasterEngineName = selects[1].value;
             engine.RehidePolyFields(engine.ListCols);
+        }
+    };
+})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var EngineEditableFieldMetadata;
+(function (EngineEditableFieldMetadata) {
+    const g = 9.8066;
+    const MF_GetFlow_t = (thrust_kN, impulse_s) => thrust_kN / g / impulse_s;
+    const MF_GetThrust_kN = (massflow_t, impulse_s) => massflow_t * g * impulse_s;
+    const MF_GetIsp_s = (thrust_kN, massflow_t) => thrust_kN / g / massflow_t;
+    EngineEditableFieldMetadata.Propulsion = {
+        ApplyValueToDisplayElement: (e, engine) => {
+            e.innerHTML = `${Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 6)} | ${Unit.Display(engine.VacIsp, "s", true, 3)}-${Unit.Display(engine.AtmIsp, "s", true, 3)}`;
+        }, GetEditElement: () => {
+            let output = document.createElement("div");
+            let container = document.createElement("div");
+            container.classList.add("propulsionContainer");
+            container.classList.add("content-cell-content");
+            output.appendChild(container);
+            let thrustLabel = document.createElement("div");
+            let vacImpulseLabel = document.createElement("div");
+            let massFlowLabel = document.createElement("div");
+            let slImpulseLabel = document.createElement("div");
+            let thrustInput = document.createElement("input");
+            let vacImpulseInput = document.createElement("input");
+            let massFlowInput = document.createElement("input");
+            let slImpulseInput = document.createElement("input");
+            let thrustCheckbox = document.createElement("input");
+            let massFlowCheckbox = document.createElement("input");
+            let slImpulseCheckbox = document.createElement("input");
+            {
+                thrustLabel.classList.add("thrustLabel");
+                vacImpulseLabel.classList.add("vacImpulseLabel");
+                massFlowLabel.classList.add("massFlowLabel");
+                slImpulseLabel.classList.add("slImpulseLabel");
+                thrustInput.classList.add("thrustInput");
+                vacImpulseInput.classList.add("vacImpulseInput");
+                massFlowInput.classList.add("massFlowInput");
+                slImpulseInput.classList.add("slImpulseInput");
+                thrustCheckbox.classList.add("thrustCheckbox");
+                massFlowCheckbox.classList.add("massFlowCheckbox");
+                slImpulseCheckbox.classList.add("slImpulseCheckbox");
+            }
+            {
+                thrustLabel.style.gridArea = "tl";
+                vacImpulseLabel.style.gridArea = "vl";
+                massFlowLabel.style.gridArea = "ml";
+                slImpulseLabel.style.gridArea = "sl";
+                thrustInput.style.gridArea = "ti";
+                vacImpulseInput.style.gridArea = "vi";
+                massFlowInput.style.gridArea = "mi";
+                slImpulseInput.style.gridArea = "si";
+                thrustCheckbox.style.gridArea = "tc";
+                massFlowCheckbox.style.gridArea = "mc";
+                slImpulseCheckbox.style.gridArea = "sc";
+            }
+            {
+                container.appendChild(thrustLabel);
+                container.appendChild(vacImpulseLabel);
+                container.appendChild(massFlowLabel);
+                container.appendChild(slImpulseLabel);
+                container.appendChild(thrustInput);
+                container.appendChild(vacImpulseInput);
+                container.appendChild(massFlowInput);
+                container.appendChild(slImpulseInput);
+                container.appendChild(thrustCheckbox);
+                container.appendChild(massFlowCheckbox);
+                container.appendChild(slImpulseCheckbox);
+            }
+            {
+                thrustLabel.innerHTML = "Thrust";
+                vacImpulseLabel.innerHTML = "Vac Isp";
+                massFlowLabel.innerHTML = "Mass flow";
+                slImpulseLabel.innerHTML = "SL Isp";
+                vacImpulseLabel.classList.add("abbr");
+                vacImpulseLabel.title = "Vacuum specific impulse";
+                slImpulseLabel.classList.add("abbr");
+                slImpulseLabel.title = "Sea level specific impulse";
+                massFlowLabel.classList.add("abbr");
+                massFlowLabel.title = "Fuel mass consumed per second at 100% thrust";
+                thrustCheckbox.type = "checkbox";
+                massFlowCheckbox.type = "checkbox";
+                slImpulseCheckbox.type = "checkbox";
+                thrustCheckbox.title = "Lock";
+                massFlowCheckbox.title = "Lock";
+                slImpulseCheckbox.title = "Keep the Vac/SL Isp ratio";
+            }
+            {
+                const clearLock = () => {
+                    thrustInput.disabled = false;
+                    vacImpulseInput.disabled = false;
+                    massFlowInput.disabled = false;
+                    slImpulseInput.disabled = false;
+                    thrustCheckbox.checked = false;
+                    massFlowCheckbox.checked = false;
+                };
+                thrustCheckbox.addEventListener("change", () => {
+                    if (thrustCheckbox.checked) {
+                        thrustInput.disabled = true;
+                        vacImpulseInput.disabled = false;
+                        massFlowInput.disabled = false;
+                        slImpulseInput.disabled = false;
+                        massFlowCheckbox.checked = false;
+                    }
+                    else {
+                        clearLock();
+                    }
+                });
+                massFlowCheckbox.addEventListener("change", () => {
+                    if (massFlowCheckbox.checked) {
+                        thrustInput.disabled = false;
+                        vacImpulseInput.disabled = false;
+                        massFlowInput.disabled = true;
+                        slImpulseInput.disabled = false;
+                        thrustCheckbox.checked = false;
+                    }
+                    else {
+                        clearLock();
+                    }
+                });
+            }
+            {
+                const getCurrentInputValues = () => ({
+                    thrust: Unit.Parse(thrustInput.value, "kN"),
+                    vacIsp: Unit.Parse(vacImpulseInput.value, "s"),
+                    massFlow: Unit.Parse(massFlowInput.value, "t"),
+                    slIsp: Unit.Parse(slImpulseInput.value, "s")
+                });
+                const setDerivedThrust = () => {
+                    let currentValues = getCurrentInputValues();
+                    thrustInput.value = Unit.Display(MF_GetThrust_kN(currentValues.massFlow, currentValues.vacIsp), "kN", Settings.classic_unit_display);
+                };
+                const setDerivedIsp = () => {
+                    let currentValues = getCurrentInputValues();
+                    vacImpulseInput.value = Unit.Display(MF_GetIsp_s(currentValues.thrust, currentValues.massFlow), "s", true);
+                    handlePossibleIspChange();
+                };
+                const setDerivedMassFlow = () => {
+                    let currentValues = getCurrentInputValues();
+                    massFlowInput.value = Unit.Display(MF_GetFlow_t(currentValues.thrust, currentValues.vacIsp), "t", Settings.classic_unit_display);
+                };
+                const handlePossibleIspChange = () => {
+                    let currentValues = getCurrentInputValues();
+                    let previousVacIsp = Unit.Parse(vacImpulseInput.getAttribute("previousValue"), "s");
+                    let previousSLIsp = Unit.Parse(slImpulseInput.getAttribute("previousValue"), "s");
+                    if (slImpulseCheckbox.checked && currentValues.vacIsp && currentValues.slIsp) {
+                        if (currentValues.vacIsp != previousVacIsp) {
+                            slImpulseInput.value = Unit.Display(previousSLIsp * currentValues.vacIsp / previousVacIsp, "s", true);
+                        }
+                        else if (currentValues.slIsp != previousSLIsp) {
+                            vacImpulseInput.value = Unit.Display(previousVacIsp * currentValues.slIsp / previousSLIsp, "s", true);
+                        }
+                    }
+                    if (currentValues.vacIsp && currentValues.slIsp) {
+                        vacImpulseInput.setAttribute("previousValue", vacImpulseInput.value);
+                        slImpulseInput.setAttribute("previousValue", slImpulseInput.value);
+                    }
+                };
+                thrustInput.addEventListener("input", () => {
+                    if (massFlowCheckbox.checked) {
+                        setDerivedIsp();
+                    }
+                    else {
+                        setDerivedMassFlow();
+                    }
+                });
+                vacImpulseInput.addEventListener("input", () => {
+                    if (massFlowCheckbox.checked) {
+                        setDerivedThrust();
+                    }
+                    else {
+                        setDerivedMassFlow();
+                    }
+                    handlePossibleIspChange();
+                });
+                massFlowInput.addEventListener("input", () => {
+                    if (thrustCheckbox.checked) {
+                        setDerivedIsp();
+                    }
+                    else {
+                        setDerivedThrust();
+                    }
+                });
+                slImpulseInput.addEventListener("input", () => {
+                    handlePossibleIspChange();
+                    if (massFlowCheckbox.checked) {
+                        setDerivedThrust();
+                    }
+                    else {
+                        setDerivedMassFlow();
+                    }
+                    handlePossibleIspChange();
+                });
+            }
+            return output;
+        }, ApplyValueToEditElement: (e, engine) => {
+            let thrustInput = e.querySelector(".thrustInput");
+            let vacImpulseInput = e.querySelector(".vacImpulseInput");
+            let massFlowInput = e.querySelector(".massFlowInput");
+            let slImpulseInput = e.querySelector(".slImpulseInput");
+            let thrustCheckbox = e.querySelector(".thrustCheckbox");
+            let massFlowCheckbox = e.querySelector(".massFlowCheckbox");
+            let slImpulseCheckbox = e.querySelector(".slImpulseCheckbox");
+            thrustCheckbox.checked = false;
+            massFlowCheckbox.checked = false;
+            slImpulseCheckbox.checked = false;
+            thrustInput.disabled = false;
+            vacImpulseInput.disabled = false;
+            massFlowInput.disabled = false;
+            slImpulseInput.disabled = false;
+            thrustInput.value = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display);
+            vacImpulseInput.value = Unit.Display(engine.VacIsp, "s", true);
+            massFlowInput.value = Unit.Display(MF_GetFlow_t(engine.Thrust, engine.VacIsp), "t", Settings.classic_unit_display);
+            slImpulseInput.value = Unit.Display(engine.AtmIsp, "s", true);
+            vacImpulseInput.setAttribute("previousValue", vacImpulseInput.value);
+            slImpulseInput.setAttribute("previousValue", slImpulseInput.value);
+        }, ApplyChangesToValue: (e, engine) => {
+            let thrustInput = e.querySelector(".thrustInput");
+            let vacImpulseInput = e.querySelector(".vacImpulseInput");
+            let slImpulseInput = e.querySelector(".slImpulseInput");
+            engine.Thrust = Unit.Parse(thrustInput.value, "kN");
+            engine.VacIsp = Unit.Parse(vacImpulseInput.value, "s");
+            engine.AtmIsp = Unit.Parse(slImpulseInput.value, "s");
         }
     };
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
@@ -9091,47 +9524,29 @@ var EngineEditableFieldMetadata;
             grid.innerHTML = `
                 <div class="content-cell-content" style="grid-area: c; padding-top: 4px;">Limit tank volume (L)</div>
                 
-                <div class="content-cell-content" style="grid-area: d"><input style="cursor: help;" title="Enable tank volume restriction" type="checkbox"></div>
+                <div class="content-cell-content" style="grid-area: d"><input style="position: relative; top: -1px; left: -1px;" class="abbr" title="Enable tank volume restriction" type="checkbox"></div>
                 <div style="grid-area: e; padding-top: 1px;"><input style="width: calc(100%);"></div>
                 
                 <div class="content-cell-content" style="grid-area:f; padding-top: 4px;">Estimated tank volume: <span></span></div>
                 
-                <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="img/button/add-mini.png"></div>
-                <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="img/button/remove-mini.png"></div>
-                <div class="content-cell-content" style="grid-area: j; overflow: auto;"><table><tr><th style="width: 35%;">Fuel</th><th style="width: 35%;">Volume</th><th style="width: 30%;">Mass</th></tr></table></div>
+                <div style="grid-area: g;"><img class="mini-button option-button" title="Add new propellant to the list" src="svg/button/add-mini.svg"></div>
+                <div style="grid-area: h;"><img class="mini-button option-button" title="Remove last propellant from list" src="svg/button/remove-mini.svg"></div>
+                <div class="content-cell-content" style="grid-area: j; overflow: auto; white-space: unset;">
+                    <table>
+                        <tr>
+                            <th style="width: 25%;">Fuel</th>
+                            <th style="width: 25%;">Volume</th>
+                            <th style="width: 25%;">Mass</th>
+                            <th class="abbr" title="Engine burn time using only the in-part tank and full throttle" style="width: 25%;">Time</th>
+                        </tr>
+                    </table>
+                </div>
             `;
             let inputs = grid.querySelectorAll("input");
             inputs[0].addEventListener("change", () => {
                 inputs[1].disabled = !inputs[0].checked;
             });
-            let table = grid.querySelector("tbody");
             let imgs = grid.querySelectorAll("img");
-            imgs[0].addEventListener("click", () => {
-                let tr = document.createElement("tr");
-                let select = FuelInfo.Dropdown.cloneNode(true);
-                select.querySelector(`option[value="${Fuel.Hydrazine}"]`).selected = true;
-                tr.innerHTML = `
-                    <td></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display(1, "L", Settings.classic_unit_display)}"></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display(1 * FuelInfo.GetFuelInfo(Fuel.Hydrazine).Density, "t", Settings.classic_unit_display)}"></td>
-                `;
-                let inputs = tr.querySelectorAll("input");
-                select.addEventListener("change", () => {
-                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                });
-                inputs[0].addEventListener("keydown", (e) => {
-                    setTimeout(() => {
-                        inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                    }, 20);
-                });
-                inputs[1].addEventListener("keydown", (e) => {
-                    setTimeout(() => {
-                        inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
-                    }, 20);
-                });
-                tr.children[0].appendChild(select);
-                table.appendChild(tr);
-            });
             imgs[1].addEventListener("click", () => {
                 let tmp = grid.querySelectorAll("tr");
                 if (tmp.length > 1) {
@@ -9141,10 +9556,78 @@ var EngineEditableFieldMetadata;
             tmp.appendChild(grid);
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
+            const addRow = (tableElement, v) => {
+                let thisRawMassFlow = massFlow.find(x => v[0] == x[0]);
+                let fuelInfo = FuelInfo.GetFuelInfo(v[0]);
+                let thisMassFlow = thisRawMassFlow ? thisRawMassFlow[1] / thrustCurveMultiplier : 0;
+                let thisBurnTime = thisRawMassFlow ? ((v[1] * fuelInfo.Density) / thisRawMassFlow[1]) * thrustCurveMultiplier : 0;
+                let tr = document.createElement("tr");
+                let select = FuelInfo.Dropdown.cloneNode(true);
+                select.querySelector(`option[value="${v[0]}"]`).selected = true;
+                tr.innerHTML = `
+                    <td></td>
+                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1], "L", Settings.classic_unit_display, 3)}"></td>
+                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1] * fuelInfo.Density, "t", Settings.classic_unit_display, 3)}"></td>
+                    <td><input style="width: calc(100%);" ${thisBurnTime == 0 ? "disabled" : ""} value="${Unit.Display(thisBurnTime, "s", true, 3)}"></td>
+                `;
+                let inputs = tr.querySelectorAll("input");
+                select.addEventListener("change", () => {
+                    let newFuel = parseInt(select.value);
+                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(newFuel).Density, "t", Settings.classic_unit_display, 3);
+                    thisRawMassFlow = massFlow.find(x => newFuel == x[0]);
+                    fuelInfo = FuelInfo.GetFuelInfo(newFuel);
+                    thisMassFlow = thisRawMassFlow ? thisRawMassFlow[1] / thrustCurveMultiplier : 0;
+                    thisBurnTime = thisRawMassFlow ? ((parseFloat(inputs[0].value) * fuelInfo.Density) / thisRawMassFlow[1]) * thrustCurveMultiplier : 0;
+                    inputs[2].disabled = thisBurnTime == 0;
+                    newVolume();
+                });
+                const newVolume = () => {
+                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display, 3);
+                    if (!inputs[2].disabled) {
+                        inputs[2].value = Unit.Display((Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density) / thisMassFlow, "s", true, 3);
+                    }
+                    else {
+                        inputs[2].value = Unit.Display(0, "s", true, 3);
+                    }
+                };
+                const newMass = () => {
+                    inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display, 3);
+                    if (!inputs[2].disabled) {
+                        inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / thisMassFlow, "s", true, 3);
+                    }
+                };
+                const newTime = () => {
+                    inputs[0].value = Unit.Display((Unit.Parse(inputs[2].value, "s") * thisMassFlow) / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display, 3);
+                    inputs[1].value = Unit.Display(Unit.Parse(inputs[2].value, "s") * thisMassFlow, "t", Settings.classic_unit_display, 3);
+                };
+                inputs[0].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        newVolume();
+                    }, 20);
+                });
+                inputs[1].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        newMass();
+                    }, 20);
+                });
+                inputs[2].addEventListener("keydown", (e) => {
+                    setTimeout(() => {
+                        newTime();
+                    }, 20);
+                });
+                tr.children[0].appendChild(select);
+                tableElement.appendChild(tr);
+            };
             let allInputs = e.querySelectorAll(`input`);
+            let addElementButton = e.querySelector("img");
+            addElementButton.onclick = () => {
+                addRow(table, [Fuel.Hydrazine, 1]);
+            };
+            let massFlow = engine.GetEngineMassFlow();
+            let thrustCurveMultiplier = engine.GetThrustCurveBurnTimeMultiplier();
             allInputs[0].checked = engine.UseTanks;
             allInputs[1].checked = engine.LimitTanks;
-            allInputs[2].value = Unit.Display(engine.TanksVolume, "L", Settings.classic_unit_display);
+            allInputs[2].value = Unit.Display(engine.TanksVolume, "L", Settings.classic_unit_display, 3);
             e.querySelectorAll("span")[1].innerHTML = Unit.Display(engine.GetTankSizeEstimate(), "L", Settings.classic_unit_display, 3);
             e.children[1].style.display = engine.UseTanks ? "grid" : "none";
             allInputs[2].disabled = !engine.LimitTanks;
@@ -9156,30 +9639,7 @@ var EngineEditableFieldMetadata;
                 }
             });
             engine.TanksContents.forEach(v => {
-                let tr = document.createElement("tr");
-                let select = FuelInfo.Dropdown.cloneNode(true);
-                select.querySelector(`option[value="${v[0]}"]`).selected = true;
-                tr.innerHTML = `
-                    <td></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1], "L", Settings.classic_unit_display)}"></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display(v[1] * FuelInfo.GetFuelInfo(v[0]).Density, "t", Settings.classic_unit_display)}"></td>
-                `;
-                let inputs = tr.querySelectorAll("input");
-                select.addEventListener("change", () => {
-                    inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                });
-                inputs[0].addEventListener("keydown", (e) => {
-                    setTimeout(() => {
-                        inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "L") * FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "t", Settings.classic_unit_display);
-                    }, 20);
-                });
-                inputs[1].addEventListener("keydown", (e) => {
-                    setTimeout(() => {
-                        inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "t") / FuelInfo.GetFuelInfo(parseInt(select.value)).Density, "L", Settings.classic_unit_display);
-                    }, 20);
-                });
-                tr.children[0].appendChild(select);
-                table.appendChild(tr);
+                addRow(table, v);
             });
         }, ApplyChangesToValue: (e, engine) => {
             let selects = e.querySelectorAll("select");
@@ -9188,12 +9648,12 @@ var EngineEditableFieldMetadata;
             engine.UseTanks = allInputs[0].checked;
             engine.LimitTanks = allInputs[1].checked;
             engine.TanksVolume = Unit.Parse(allInputs[2].value, "L");
-            if (selects.length * 2 != inputs.length) {
+            if (selects.length * 3 != inputs.length) {
                 console.warn("table misaligned?");
             }
             engine.TanksContents = [];
             for (let i = 0; i < selects.length; ++i) {
-                engine.TanksContents.push([parseInt(selects[i].value), Unit.Parse(inputs[2 * i].value, "L")]);
+                engine.TanksContents.push([parseInt(selects[i].value), Unit.Parse(inputs[3 * i].value, "L")]);
             }
         }
     };
@@ -9308,125 +9768,435 @@ var EngineEditableFieldMetadata;
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineEditableFieldMetadata;
 (function (EngineEditableFieldMetadata) {
-    EngineEditableFieldMetadata.Thrust = {
-        ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 9);
-        }, ApplyValueToEditElement: (e, engine) => {
-            e.value = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display);
-        }, ApplyChangesToValue: (e, engine) => {
-            engine.Thrust = Unit.Parse(e.value, "kN");
-        }
-    };
-})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
-var EngineEditableFieldMetadata;
-(function (EngineEditableFieldMetadata) {
+    let chartWidth = 400;
+    let chartHeight = 400;
+    const defaultUpperBound = 150;
+    let pointerIDcounter = 1;
     EngineEditableFieldMetadata.ThrustCurve = {
         ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = engine.ThrustCurve.length > 0 ? "Custom" : "Default";
+            e.innerHTML = engine.ThrustCurve.length > 0 ? `Custom: ${engine.GetThrustCurveBurnTimeMultiplier().toFixed(3)} * Burn time` : "Default";
         }, GetEditElement: () => {
+            let style = getComputedStyle(document.body);
             let tmp = document.createElement("div");
-            tmp.classList.add("content-cell-content");
-            tmp.style.height = "150px";
-            tmp.style.padding = "0";
-            let grid = document.createElement("div");
-            grid.style.display = "grid";
-            grid.style.gridTemplateColumns = "24px 24px 24px auto";
-            grid.style.gridTemplateRows = "24px 129px";
-            grid.style.gridTemplateAreas = `
-                "a b c d"
-                "e e e e"
-            `;
-            grid.innerHTML = `
-                <div style="grid-area: a;"><img class="mini-button option-button" title="Add new entry" src="img/button/add-mini.png"></div>
-                <div style="grid-area: b;"><img class="mini-button option-button" title="Remove last entry" src="img/button/remove-mini.png"></div>
-                <div style="grid-area: c;"><img class="mini-button option-button" title="Sort entries by Fuel% (Descending)" src="img/button/sort-mini.png"></div>
-                <div class="content-cell-content" style="grid-area: d;"></div>
-                <div class="content-cell-content" style="grid-area: e; overflow: auto;"><table><tr><th style="width: 50%;">Fuel%</th><th style="width: 50%;">Thrust%</th></tr></table></div>
-            `;
-            let table = grid.querySelector("tbody");
-            let imgs = grid.querySelectorAll("img");
-            imgs[0].addEventListener("click", () => {
-                let tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td><input style="width: calc(100%);" value="0"></td>
-                    <td><input style="width: calc(100%);" value="0"></td>
-                `;
-                table.appendChild(tr);
+            tmp.style.width = "100%";
+            tmp.style.height = `${417 + 232}px`;
+            new ResizeObserver(() => {
+                chartWidth = tmp.offsetWidth - 16;
+                chartBackground.width = chartWidth;
+                chartLines.width = chartWidth;
+                drawGrid(chartBackground.getContext("2d"), parseInt(upperBoundInput.value));
+                repositionPointsAfterResize(chartPoints, upperBoundInput, chartTable);
+                updateLines();
+            }).observe(tmp);
+            let chartElement = document.createElement("div");
+            chartElement.classList.add("chartElement");
+            let chartBackground = document.createElement("canvas");
+            chartBackground.classList.add("chartBackground");
+            chartBackground.width = chartWidth;
+            chartBackground.height = chartHeight;
+            chartElement.appendChild(chartBackground);
+            tmp.appendChild(chartElement);
+            let chartLines = document.createElement("canvas");
+            chartLines.classList.add("chartLines");
+            chartLines.height = chartHeight;
+            chartLines.width = chartWidth;
+            chartElement.appendChild(chartLines);
+            let chartPoints = document.createElement("div");
+            chartPoints.classList.add("chartPoints");
+            chartElement.appendChild(chartPoints);
+            const updateLines = () => {
+                updateLineChart(chartLines.getContext("2d"), getCurve(chartPoints, parseInt(upperBoundInput.value)), style.getPropertyValue("--tableLine"), parseInt(upperBoundInput.value));
+            };
+            chartPoints.addEventListener("pointerdown", () => {
+                setActivePoint(chartPoints, null, chartTable);
             });
-            imgs[1].addEventListener("click", () => {
-                let tmp = grid.querySelectorAll("tr");
-                if (tmp.length > 1) {
-                    tmp[tmp.length - 1].remove();
+            chartPoints.addEventListener("dblclick", (e) => {
+                addPoint(chartPoints, chartTable, e.layerX, e.layerY, false, updateLines, upperBoundInput);
+                updateLines();
+            });
+            let detailsElement = document.createElement("div");
+            detailsElement.classList.add("chartDetails");
+            tmp.appendChild(detailsElement);
+            let chartNormalizeButton = document.createElement("button");
+            chartNormalizeButton.classList.add("abbr");
+            chartNormalizeButton.classList.add("chartNormalizeButton");
+            chartNormalizeButton.style.gridArea = "a";
+            chartNormalizeButton.innerHTML = "Normalize";
+            chartNormalizeButton.title = "Move the points on the chart to change burn time multiplier to 1, keeping current curve shape";
+            chartNormalizeButton.addEventListener("click", () => {
+                let points = chartPoints.querySelectorAll(".chartPoint");
+                let burnTimeMultiplier = Engine.CalculateBurnTimeMultiplier(getCurve(chartPoints, parseInt(upperBoundInput.value)).map(([fuel, thrust]) => {
+                    return [fuel * 100, thrust * 100];
+                }));
+                if (burnTimeMultiplier == Infinity) {
+                    Notifier.Warn("Curve that achieves 0% thrust at any point can't be normalized (Infinite burn time)", 5000);
+                    return;
+                }
+                let upperBound = parseInt(upperBoundInput.value);
+                points.forEach(p => {
+                    let thrust = parseFloat(p.getAttribute("valueY"));
+                    thrust *= burnTimeMultiplier;
+                    upperBound = Math.max(upperBound, thrust * 1.05);
+                    movePoint(p, parseFloat(p.getAttribute("valueX")), thrust, true, upperBoundInput, chartTable.querySelector(`.chartTableRow[pointID="${p.getAttribute("pointID")}"]`), true);
+                });
+                upperBound = Math.round(upperBound);
+                upperBoundInput.setAttribute("previousValue", upperBoundInput.value);
+                upperBoundInput.value = upperBound.toString();
+                drawGrid(chartBackground.getContext("2d"), upperBound);
+                repositionPointsAfterResize(chartPoints, upperBoundInput, chartTable);
+                updateLines();
+            });
+            detailsElement.appendChild(chartNormalizeButton);
+            let chartRemovePointButton = document.createElement("button");
+            chartRemovePointButton.classList.add("chartRemovePointButton");
+            chartRemovePointButton.style.gridArea = "b";
+            chartRemovePointButton.innerHTML = "Delete selected point";
+            chartRemovePointButton.addEventListener("click", () => {
+                let point = getActivePoint(chartPoints);
+                if (point) {
+                    removePoint(point, chartTable);
+                    updateLines();
                 }
             });
-            imgs[2].addEventListener("click", () => {
-                let tmpCurve = [];
-                let inputs = tmp.querySelectorAll(`input`);
-                for (let i = 0; i < inputs.length; i += 2) {
-                    tmpCurve.push([parseFloat(inputs[i].value.replace(",", ".")), parseFloat(inputs[i + 1].value.replace(",", "."))]);
+            detailsElement.appendChild(chartRemovePointButton);
+            let upperBoundInput = document.createElement("input");
+            upperBoundInput.type = "number";
+            upperBoundInput.min = "1";
+            upperBoundInput.classList.add("content-cell-content");
+            upperBoundInput.classList.add("upperBoundInput");
+            upperBoundInput.style.gridArea = "c";
+            detailsElement.appendChild(upperBoundInput);
+            upperBoundInput.addEventListener("keyup", () => {
+                if (isNaN(parseInt(upperBoundInput.value)) || parseInt(upperBoundInput.value) <= 0) {
+                    return;
                 }
-                tmpCurve = tmpCurve.sort((a, b) => {
-                    return b[0] - a[0];
-                });
-                let table = tmp.querySelector("tbody");
-                let rows = tmp.querySelectorAll("tr");
-                rows.forEach((v, i) => {
-                    if (i != 0) {
-                        v.remove();
-                    }
-                });
-                tmpCurve.forEach(v => {
-                    let tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td><input style="width: calc(100%);" value="${v[0]}"></td>
-                        <td><input style="width: calc(100%);" value="${v[1]}"></td>
-                    `;
-                    table.appendChild(tr);
-                });
+                drawGrid(chartBackground.getContext("2d"), parseInt(upperBoundInput.value));
+                repositionPointsAfterResize(chartPoints, upperBoundInput, chartTable);
+                updateLines();
             });
-            tmp.appendChild(grid);
+            upperBoundInput.addEventListener("change", () => {
+                if (isNaN(parseInt(upperBoundInput.value)) || parseInt(upperBoundInput.value) <= 0) {
+                    upperBoundInput.value = defaultUpperBound.toString();
+                }
+                drawGrid(chartBackground.getContext("2d"), parseInt(upperBoundInput.value));
+                repositionPointsAfterResize(chartPoints, upperBoundInput, chartTable);
+                updateLines();
+            });
+            let upperBoundLabel = document.createElement("span");
+            upperBoundLabel.classList.add("abbr");
+            upperBoundInput.classList.add("upperBoundLabel");
+            upperBoundLabel.innerHTML = "% Thrust upper bound";
+            upperBoundLabel.title = "Highest thrust value on the chart";
+            upperBoundLabel.style.gridArea = "d";
+            detailsElement.appendChild(upperBoundLabel);
+            let chartTableContainer = document.createElement("div");
+            chartTableContainer.classList.add("chartTableContainer");
+            chartTableContainer.style.gridArea = "e";
+            detailsElement.appendChild(chartTableContainer);
+            let chartTable = document.createElement("table");
+            chartTable.classList.add("chartTable");
+            chartTableContainer.appendChild(chartTable);
+            chartTable.innerHTML = `
+                <col width="*">
+                <col width="*">
+                <col width="24">
+                <tr>
+                    <th>Fuel%</th>
+                    <th>Thrust%</th>
+                    <th></th>
+                </tr>
+            `;
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
-            let table = e.querySelector("tbody");
-            let rows = e.querySelectorAll("tr");
-            engine.ThrustCurve = engine.ThrustCurve.sort((a, b) => {
-                return b[0] - a[0];
+            let container = e.querySelector(".chartPoints");
+            let chartBackground = e.querySelector(".chartBackground");
+            let chartLines = e.querySelector(".chartLines");
+            let upperBoundInput = e.querySelector(".upperBoundInput");
+            let chartTable = e.querySelector(".chartTable");
+            let style = getComputedStyle(document.body);
+            let upperBound = defaultUpperBound;
+            engine.ThrustCurve.forEach(([fuel, thrust]) => {
+                upperBound = Math.max(upperBound, thrust * 1.05);
             });
-            rows.forEach((v, i) => {
-                if (i != 0) {
-                    v.remove();
-                }
+            upperBound = Math.round(upperBound);
+            upperBoundInput.setAttribute("previousValue", upperBound.toString());
+            upperBoundInput.value = upperBound.toString();
+            let canvas = chartBackground.getContext("2d");
+            drawGrid(canvas, upperBound);
+            container.innerHTML = "";
+            chartTable.children[1].querySelectorAll(".chartTableRow").forEach(r => {
+                r.remove();
             });
-            engine.ThrustCurve.forEach(v => {
-                let tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td><input style="width: calc(100%);" value="${v[0]}"></td>
-                    <td><input style="width: calc(100%);" value="${v[1]}"></td>
-                `;
-                table.appendChild(tr);
-            });
-        }, ApplyChangesToValue: (e, engine) => {
-            let inputs = e.querySelectorAll(`input`);
-            engine.ThrustCurve = [];
-            for (let i = 0; i < inputs.length; i += 2) {
-                engine.ThrustCurve.push([parseFloat(inputs[i].value.replace(",", ".")), parseFloat(inputs[i + 1].value.replace(",", "."))]);
+            const updateLines = () => {
+                updateLineChart(chartLines.getContext("2d"), getCurve(container, parseInt(upperBoundInput.value)), style.getPropertyValue("--tableLine"), parseInt(upperBoundInput.value));
+            };
+            for (let i = 0; i < engine.ThrustCurve.length; ++i) {
+                const FLOATING_POINT_FIX_ACCURACY = 8;
+                let fuel = Math.round(engine.ThrustCurve[i][0] * (Math.pow(10, FLOATING_POINT_FIX_ACCURACY))) / (Math.pow(10, FLOATING_POINT_FIX_ACCURACY));
+                let thrust = Math.round(engine.ThrustCurve[i][1] * (Math.pow(10, FLOATING_POINT_FIX_ACCURACY))) / (Math.pow(10, FLOATING_POINT_FIX_ACCURACY));
+                addPoint(container, chartTable, fuel, thrust, true, updateLines, upperBoundInput);
             }
-            engine.ThrustCurve = engine.ThrustCurve.sort((a, b) => {
-                return b[0] - a[0];
-            });
+            updateLines();
+        }, ApplyChangesToValue: (e, engine) => {
+            engine.ThrustCurve = getCurve(e.querySelector(".chartPoints"), parseInt(e.querySelector(".upperBoundInput").value)).map(([fuel, thrust]) => [fuel * 100, thrust * 100]);
         },
     };
-})(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
-var EngineEditableFieldMetadata;
-(function (EngineEditableFieldMetadata) {
-    EngineEditableFieldMetadata.VacIsp = {
-        ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = Unit.Display(engine.VacIsp, "s", true);
-        }, ApplyValueToEditElement: (e, engine) => {
-            e.value = Unit.Display(engine.VacIsp, "s", true);
-        }, ApplyChangesToValue: (e, engine) => {
-            engine.VacIsp = Unit.Parse(e.value, "s");
+    const movePoint = (point, x, y, xyIsValue, upperBoundInput, chartTableRow, updateTableRowInput) => {
+        if (xyIsValue) {
+            let xPos = chartWidth - x * chartWidth / 100;
+            let yPos = chartHeight - y * chartHeight / parseInt(upperBoundInput.value);
+            point.style.left = `${xPos - pointRadius}px`;
+            point.style.top = `${yPos - pointRadius}px`;
+            point.setAttribute("valueX", x.toString());
+            point.setAttribute("valueY", y.toString());
+            updateTableRow(chartTableRow, x, y, updateTableRowInput);
         }
+        else {
+            point.style.left = `${x - pointRadius}px`;
+            point.style.top = `${y - pointRadius}px`;
+            let actualValueX = (100 - 100 * (x) / chartWidth);
+            let actualValueY = ((chartHeight - y) * parseInt(upperBoundInput.value) / chartHeight);
+            point.setAttribute("valueX", actualValueX.toString());
+            point.setAttribute("valueY", actualValueY.toString());
+            updateTableRow(chartTableRow, actualValueX, actualValueY, updateTableRowInput);
+        }
+    };
+    const updateTableRow = (chartTableRow, xValue, yValue, updateInputFields) => {
+        let inputs = chartTableRow.querySelectorAll("input");
+        if (inputs.length != 2) {
+            console.error("Bad table row:", chartTableRow, inputs);
+            return;
+        }
+        if (updateInputFields) {
+            inputs[0].value = xValue.toString();
+            inputs[1].value = yValue.toString();
+        }
+        sortChartTableRows(chartTableRow.parentElement);
+    };
+    const sortChartTableRows = (chartTable) => {
+        let rows = [];
+        chartTable.querySelectorAll(".chartTableRow").forEach(r => {
+            let value = parseFloat(r.querySelector("input").value);
+            value = isNaN(value) ? 0 : value;
+            rows.push([r, value]);
+        });
+        rows.sort((a, b) => {
+            let output = b[1] - a[1];
+            if (output == 0) {
+                output = parseInt(a[0].getAttribute("pointID")) - parseInt(b[0].getAttribute("pointID"));
+            }
+            return output;
+        });
+        let activeElementBackup = document.activeElement;
+        rows.forEach(([row, _]) => {
+            chartTable.appendChild(row);
+        });
+        if (activeElementBackup) {
+            activeElementBackup.focus();
+        }
+    };
+    const repositionPointsAfterResize = (container, upperBoundInput, chartTable) => {
+        container.querySelectorAll(".chartPoint").forEach(p => {
+            movePoint(p, parseFloat(p.getAttribute("valueX")), parseFloat(p.getAttribute("valueY")), true, upperBoundInput, chartTable.querySelector(`.chartTableRow[pointID="${p.getAttribute("pointID")}"]`), true);
+        });
+        upperBoundInput.setAttribute("previousValue", upperBoundInput.value);
+    };
+    const drawGrid = (canvas, upperBound) => {
+        let style = getComputedStyle(document.body);
+        const getLine = (yValue, color) => {
+            return {
+                Position: 400 - Math.round(chartHeight * yValue / upperBound),
+                Width: 1,
+                Color: color,
+                Label: `${yValue}%`
+            };
+        };
+        let linesY = [];
+        linesY.push(getLine(50, style.getPropertyValue("--tableDistinct")));
+        linesY.push(getLine(100, style.getPropertyValue("--tableRed")));
+        linesY.push(getLine(150, style.getPropertyValue("--tableRegular")));
+        if (upperBound <= 200) {
+            for (let i = 10; i < 200; i += 10) {
+                if (i == 50 || i == 100 || i == 150) {
+                    continue;
+                }
+                linesY.push(getLine(i, style.getPropertyValue("--tableRegular")));
+            }
+        }
+        else {
+            for (let i = 200; i < upperBound; i += 100) {
+                linesY.push(getLine(i, style.getPropertyValue("--tableRegular")));
+            }
+        }
+        CanvasHelper.DrawGrid(0, 0, chartWidth - 1, chartHeight - 1, 9, 0, true, canvas, style.getPropertyValue("--tableRegular"), 1, {
+            2: { Color: style.getPropertyValue("--tableRegular"), Label: "80%" },
+            5: { Color: style.getPropertyValue("--tableDistinct"), Label: "50%" },
+            8: { Color: style.getPropertyValue("--tableRegular"), Label: "20%" }
+        }, undefined, { Color: style.getPropertyValue("--tableBorder"), Width: 1 }, "Fuel", "Thrust", undefined, linesY);
+    };
+    const setActivePoint = (container, activePoint, chartTable) => {
+        if (activePoint && activePoint.parentElement != container) {
+            console.warn("This point isn't a direct child to given container", activePoint, container);
+        }
+        container.querySelectorAll(".chartPointActive").forEach(p => {
+            p.classList.remove("chartPointActive");
+        });
+        chartTable.querySelectorAll(".chartTableRowActive").forEach(r => {
+            r.classList.remove("chartTableRowActive");
+        });
+        if (activePoint) {
+            activePoint.classList.add("chartPointActive");
+            let tableRow = chartTable.querySelector(`.chartTableRow[pointID="${activePoint.getAttribute("pointID")}"]`);
+            if (tableRow) {
+                tableRow.classList.add("chartTableRowActive");
+            }
+        }
+    };
+    function getActivePoint(container) {
+        return container.querySelector(".chartPointActive");
+    }
+    const removePoint = (point, chartTable) => {
+        if (confirm("You are about to remove a thrust curve point. Are you sure?")) {
+            point.remove();
+            let tableRow = chartTable.querySelector(`.chartTableRow[pointID="${point.getAttribute("pointID")}"]`);
+            if (tableRow) {
+                tableRow.remove();
+            }
+        }
+    };
+    const pointRadius = 5;
+    const addPoint = (container, chartTable, startX, startY, startIsExactValue, onValueUpdate, upperBoundInput) => {
+        let newPoint = document.createElement("div");
+        newPoint.classList.add("chartPoint");
+        let newRow = document.createElement("tr");
+        newRow.classList.add("chartTableRow");
+        newRow.setAttribute("pointID", pointerIDcounter.toString());
+        newRow.innerHTML = `
+            <td><input class="chartTableRowInput content-cell-content"></td>
+            <td><input class="chartTableRowInput content-cell-content"></td>
+            <td style="font-size: 0;">
+                <img src="svg/button/remove-mid.svg" class="chartTableRowButton medium-button option-button">
+            </td>
+        `;
+        let tableInputs = newRow.querySelectorAll("input");
+        let fuelInput = tableInputs[0];
+        let thrustInput = tableInputs[1];
+        let tableButtons = newRow.querySelectorAll("img");
+        let removeButton = tableButtons[0];
+        fuelInput.addEventListener("keyup", () => {
+            let newValueX = fuelInput.value == "" ? 0 : parseFloat(fuelInput.value);
+            if (!isNaN(newValueX)) {
+                movePoint(newPoint, newValueX, parseFloat(newPoint.getAttribute("valueY")), true, upperBoundInput, newRow, false);
+                onValueUpdate();
+            }
+        });
+        thrustInput.addEventListener("keyup", () => {
+            let newValueY = thrustInput.value == "" ? 0 : parseFloat(thrustInput.value);
+            if (!isNaN(newValueY)) {
+                movePoint(newPoint, parseFloat(newPoint.getAttribute("valueX")), newValueY, true, upperBoundInput, newRow, false);
+                onValueUpdate();
+            }
+        });
+        fuelInput.addEventListener("focusin", () => { setActivePoint(container, newPoint, chartTable); });
+        thrustInput.addEventListener("focusin", () => { setActivePoint(container, newPoint, chartTable); });
+        removeButton.addEventListener("click", () => {
+            removePoint(newPoint, chartTable);
+            onValueUpdate();
+        });
+        chartTable.children[1].appendChild(newRow);
+        newPoint.setAttribute("pointID", pointerIDcounter.toString());
+        movePoint(newPoint, startX, startY, startIsExactValue, upperBoundInput, newRow, true);
+        container.appendChild(newPoint);
+        setActivePoint(container, newPoint, chartTable);
+        newPoint.addEventListener("pointerdown", e => {
+            e.stopImmediatePropagation();
+            let startX = Input.MouseX - pointRadius;
+            let startY = Input.MouseY - pointRadius;
+            let originalX = parseInt(newPoint.style.left);
+            let originalY = parseInt(newPoint.style.top);
+            setActivePoint(container, newPoint, chartTable);
+            Dragger.Drag(() => {
+                let newX = Math.min(Math.max(originalX + Input.MouseX - startX, 0), chartWidth);
+                let newY = Math.min(Math.max(originalY + Input.MouseY - startY, 0), chartHeight);
+                if (newX != originalX + pointRadius ||
+                    newY != originalY + pointRadius) {
+                    movePoint(newPoint, newX, newY, false, upperBoundInput, newRow, true);
+                    onValueUpdate();
+                }
+            });
+        });
+        newPoint.addEventListener("dblclick", e => {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        });
+        ++pointerIDcounter;
+    };
+    function getCurve(pointContainer, upperBound) {
+        let pointElements = pointContainer.querySelectorAll("div.chartPoint");
+        let points = [];
+        let finalPoints = [];
+        let output = [];
+        pointElements.forEach(e => {
+            if (e.hasAttribute("valueX") && e.hasAttribute("valueY")) {
+                points.push([
+                    true,
+                    parseFloat(e.getAttribute("valueX")),
+                    parseFloat(e.getAttribute("valueY")),
+                    parseInt(e.getAttribute("pointID"))
+                ]);
+            }
+            else {
+                points.push([
+                    false,
+                    parseInt(e.style.left),
+                    parseInt(e.style.top),
+                    parseInt(e.getAttribute("pointID"))
+                ]);
+            }
+        });
+        points.forEach(([final, rawFuel, rawThrust, pointID]) => {
+            if (final) {
+                finalPoints.push([
+                    rawFuel / 100,
+                    rawThrust / 100,
+                    pointID
+                ]);
+                return;
+            }
+            finalPoints.push([
+                (rawFuel + pointRadius) / chartWidth,
+                (1 - (rawThrust + pointRadius) / chartHeight) * upperBound / 100,
+                pointID
+            ]);
+        });
+        output = finalPoints.sort((a, b) => {
+            if (a[0] - b[0] != 0) {
+                return b[0] - a[0];
+            }
+            else {
+                return a[2] - b[2];
+            }
+        }).map(([fuel, thrust, _]) => [fuel, thrust]);
+        return output;
+    }
+    const updateLineChart = (lineChart, points, color, upperBound) => {
+        lineChart.clearRect(0, 0, chartWidth, chartHeight);
+        lineChart.beginPath();
+        lineChart.strokeStyle = color;
+        if (points.length == 0) {
+            lineChart.moveTo(0, chartHeight / (upperBound / 100));
+            lineChart.lineTo(chartWidth, chartHeight / (upperBound / 100));
+            return;
+        }
+        else {
+            lineChart.moveTo(0, chartHeight - points[0][1] * chartHeight / (upperBound / 100));
+            for (let i = 0; i < points.length; ++i) {
+                lineChart.lineTo(chartWidth - points[i][0] * chartWidth, chartHeight - points[i][1] * chartHeight / (upperBound / 100));
+            }
+            lineChart.lineTo(chartWidth, chartHeight - points[points.length - 1][1] * chartHeight / (upperBound / 100));
+        }
+        lineChart.stroke();
+        lineChart.closePath();
     };
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineEditableFieldMetadata;
@@ -9827,6 +10597,29 @@ class AllTankDefinition {
         `);
     }
 }
+class Autosave {
+    static Save(list, name) {
+        let data = Serializer.SerializeMany(list);
+        let timestamp = new Date().getTime().toString();
+        timestamp = "0".repeat(24 - timestamp.length) + timestamp;
+        let autosaveName = `${timestamp}-${name}.enl.autosave`;
+        Store.SetBinary(autosaveName, data);
+        this.Trim();
+    }
+    static Trim() {
+        let autosaves = [];
+        for (let i in localStorage) {
+            if (/^(.)+\.enl.autosave$/.test(i)) {
+                autosaves.push(i);
+            }
+        }
+        autosaves = autosaves.sort((a, b) => a < b ? 1 : -1);
+        for (let i = autosaves.length - 1; i >= this.AUTOSAVE_LIMIT; --i) {
+            localStorage.removeItem(autosaves[i]);
+        }
+    }
+}
+Autosave.AUTOSAVE_LIMIT = 128;
 class BitConverter {
     static ByteArrayToBase64(data) {
         return btoa(String.fromCharCode.apply(null, data));
@@ -9863,6 +10656,144 @@ BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
+const DEFAULT_STROKE_COLOR = "#444";
+const DEFAULT_STROKE_WIDTH = 1;
+class CanvasHelper {
+    static DrawLine(x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) {
+        x1 = Math.round(x1 + 0.5) - 0.5;
+        x2 = Math.round(x2 + 0.5) - 0.5;
+        y1 = Math.round(y1 + 0.5) - 0.5;
+        y2 = Math.round(y2 + 0.5) - 0.5;
+        canvas.beginPath();
+        canvas.moveTo(x1, y1);
+        canvas.lineTo(x2, y2);
+        canvas.strokeStyle = color;
+        canvas.lineWidth = width;
+        canvas.lineCap = "square";
+        canvas.stroke();
+    }
+    static DrawRectangle(x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) {
+        this.DrawLine(x1, y1, x2, y1, canvas, color, width);
+        this.DrawLine(x2, y1, x2, y2, canvas, color, width);
+        this.DrawLine(x2, y2, x1, y2, canvas, color, width);
+        this.DrawLine(x1, y2, x1, y1, canvas, color, width);
+    }
+    static DrawGrid(originX, originY, sizeX, sizeY, linesX, linesY, outline, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH, styleX, styleY, styleOutline, labelX, labelY, lineOverrideX, lineOverrideY) {
+        canvas.clearRect(0, 0, sizeX, sizeY);
+        for (let x = 1; x <= linesX; ++x) {
+            let currentX = originX + (x * (originX + sizeX) / (linesX + 1));
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleX && styleX[x] && styleX[x].Color) {
+                currentColor = styleX[x].Color;
+            }
+            if (styleX && styleX[x] && styleX[x].Width) {
+                currentWidth = styleX[x].Width;
+            }
+            if (styleX && styleX[x] && styleX[x].Label) {
+                canvas.fillText(styleX[x].Label, currentX + 1, originY + sizeY - 2, sizeX / (linesX + 1) - 2);
+            }
+            this.DrawLine(currentX, originY, currentX, originY + sizeY, canvas, currentColor, currentWidth);
+        }
+        for (let y = 1; y <= linesY; ++y) {
+            let currentY = originY + (y * (originY + sizeY) / (linesY + 1));
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleY && styleY[y] && styleY[y].Color) {
+                currentColor = styleY[y].Color;
+            }
+            if (styleY && styleY[y] && styleY[y].Width) {
+                currentWidth = styleY[y].Width;
+            }
+            if (styleY && styleY[y] && styleY[y].Label) {
+                canvas.fillText(styleY[y].Label, originX + 2, currentY - 1);
+            }
+            this.DrawLine(originX, currentY, originX + sizeX, currentY, canvas, currentColor, currentWidth);
+        }
+        if (lineOverrideX) {
+            lineOverrideX.forEach(l => {
+                if (!l.Position && l.Position != 0) {
+                    console.warn("Position is mandatory for line override. Skipping...");
+                    return;
+                }
+                let currentColor = color;
+                let currentWidth = width;
+                if (l.Color) {
+                    currentColor = l.Color;
+                }
+                if (l.Width) {
+                    currentWidth = l.Width;
+                }
+                if (l.Label) {
+                    canvas.fillText(l.Label, l.Position + 1, sizeY - 1);
+                }
+                this.DrawLine(l.Position, 0, l.Position, sizeY, canvas, currentColor, currentWidth);
+            });
+        }
+        if (lineOverrideY) {
+            lineOverrideY.forEach(l => {
+                if (!l.Position && l.Position != 0) {
+                    console.warn("Position is mandatory for line override. Skipping...");
+                    return;
+                }
+                let currentColor = color;
+                let currentWidth = width;
+                if (l.Color) {
+                    currentColor = l.Color;
+                }
+                if (l.Width) {
+                    currentWidth = l.Width;
+                }
+                if (l.Label) {
+                    canvas.fillText(l.Label, 1, l.Position - 1);
+                }
+                this.DrawLine(0, l.Position, sizeX, l.Position, canvas, currentColor, currentWidth);
+            });
+        }
+        if (labelX) {
+            canvas.textAlign = "end";
+            canvas.fillText(labelX, originX + sizeX - 2, originY + sizeY - 2);
+            canvas.textAlign = "start";
+        }
+        if (labelY) {
+            canvas.textBaseline = "top";
+            canvas.fillText(labelY, originX + 2, originY + 2);
+            canvas.textBaseline = "alphabetic";
+        }
+        if (outline) {
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleOutline && styleOutline.Color) {
+                currentColor = styleOutline.Color;
+            }
+            if (styleOutline && styleOutline.Width) {
+                currentWidth = styleOutline.Width;
+            }
+            this.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
+        }
+    }
+}
+function Debug_AutosaveImmediately() {
+    Autosave.Save(MainEngineTable.Items, ListName);
+}
+function Debug_LogLocalStorageUsage() {
+    let usedB = 0;
+    for (var k in localStorage) {
+        if (k == "key" ||
+            k == "getItem" ||
+            k == "setItem" ||
+            k == "removeItem" ||
+            k == "clear" ||
+            k == "length") {
+            continue;
+        }
+        usedB += (k.length + localStorage[k].length) * 2;
+    }
+    console.log(`Used bytes: ${usedB}`);
+    console.log(`Used chars: ${usedB / 2}`);
+    console.log("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
+    console.log("Maximum should be around 5MB");
+}
 class DebugLists {
     static AppendListForExhaustPreviews() {
         let toAppend = [];
@@ -10167,7 +11098,7 @@ class Exporter {
                     ignitionThreshold = 0.1
                     minThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
                     maxThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust}
-                    heatProduction = 180
+                    heatProduction = 10
                     EngineType = ${engine.EngineTypeConfig()}
                     exhaustDamageDistanceOffset = 0.79
                     useThrustCurve = ${engine.ThrustCurve.length > 0}
@@ -10197,7 +11128,7 @@ class Exporter {
                     ignitionThreshold = 0.1
                     minThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
                     maxThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust}
-                    heatProduction = 180
+                    heatProduction = 10
                     EngineType = ${engine.EngineTypeConfig()}
                     exhaustDamageDistanceOffset = 0.79
                     useThrustCurve = ${engine.ThrustCurve.length > 0}
@@ -10230,7 +11161,7 @@ class Exporter {
                     ignitionThreshold = 0.1
                     minThrust = ${engine.Thrust * engine.MinThrust / 100}
                     maxThrust = ${engine.Thrust}
-                    heatProduction = 180
+                    heatProduction = 10
                     EngineType = ${engine.EngineTypeConfig()}
                     exhaustDamageDistanceOffset = 0.79
                     useThrustCurve = ${engine.ThrustCurve.length > 0}
@@ -10656,7 +11587,8 @@ class ImageOverflowPreview {
         }
         let child = root.firstChild;
         child.style.position = "relative";
-        root.addEventListener("mousemove", e => {
+        root.addEventListener("mousemove", event => {
+            let e = event;
             if (child.clientHeight <= root.clientHeight && child.clientWidth <= root.clientWidth) {
                 return;
             }
@@ -10752,7 +11684,7 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files <progress />`;
+                exportStatusElement.innerHTML = `<img src="svg/load16.svg"> Zipping all files <progress />`;
                 let progressElement = exportStatusElement.querySelector("progress");
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date().getTime();
@@ -11304,6 +12236,10 @@ class Unit {
             console.error("Bad input unit");
             return [0, ""];
         }
+        let imperial = ImperialUnits[rawUnit];
+        if (imperial) {
+            return imperial;
+        }
         if (rawUnit.length == 1) {
             return [1, rawUnit];
         }
@@ -11321,9 +12257,9 @@ class Unit {
         }
     }
     static Parse(value, baseUnit) {
-        let rawInputNumber = /^[0-9,.]+/.exec(value);
+        let rawInputNumber = /^[0-9,.]+/.exec(value.replace(/ /g, ""));
         let inputNumber = rawInputNumber ? parseFloat(rawInputNumber[0].replace(",", ".")) : 0;
-        let rawInputUnit = /[^0-9,.]+$/.exec(value);
+        let rawInputUnit = /[^0-9,.]+$/.exec(value.replace(/ /g, ""));
         let inputUnit = this.ParseUnit(rawInputUnit ? rawInputUnit[0] : baseUnit);
         let targetUnit = this.ParseUnit(baseUnit);
         if (inputUnit[1] == "g" && targetUnit[1] == "t") {
@@ -11341,6 +12277,32 @@ class Unit {
         return inputNumber * inputUnit[0] / targetUnit[0];
     }
 }
+const ImperialUnits = {
+    "th": [0.0000254, "m"],
+    "in": [0.0254, "m"],
+    "''": [0.0254, "m"],
+    "ft": [0.3048, "m"],
+    "'": [0.3048, "m"],
+    "yd": [0.9144, "m"],
+    "ch": [20.1168, "m"],
+    "fur": [201.168, "m"],
+    "mi": [1609.344, "m"],
+    "nm": [1852, "m"],
+    "gi": [0.1420653125, "l"],
+    "pt": [0.56826125, "l"],
+    "qt": [1.1365225, "l"],
+    "gal": [4.54609, "l"],
+    "gr": [0.06479891, "g"],
+    "dr": [1.7718451953125, "g"],
+    "oz": [28.349523125, "g"],
+    "lb": [453.59237, "g"],
+    "st": [6350.29318, "g"],
+    "qr": [12700.58636, "g"],
+    "qtr": [12700.58636, "g"],
+    "cwt": [50802.34544, "g"],
+    "lbf": [4.4482216152605, "N"],
+    "klbf": [4448.2216152605, "N"],
+};
 const MetricPrefix = [
     ["Y", 1e+24],
     ["Z", 1e+21],

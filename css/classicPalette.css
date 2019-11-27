@@ -21,15 +21,23 @@
     
     --confirm: #4B4;
     
-    --textSelection: #66F;
-    --selection: #88F;
+    --textSelection: #77F;
+    --selection: #88D;
     --selectionMajor: #66F;
+    --selectionCell: #77F;
     
     --info: #88F;
     --warn: #FB8;
     --error: #F44;
     
     --sortMin: #888;
-    --sortMax: #F88;
+    --sortMax: #F44;
+    
+    --tableBackground: #AAA;
+    --tableBorder: #222;
+    --tableDistinct: #333;
+    --tableRegular: #888;
+    --tableRed: #F00;
+    --tableLine: #048;
     
 }

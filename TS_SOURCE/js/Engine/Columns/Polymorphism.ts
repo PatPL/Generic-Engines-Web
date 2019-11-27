@@ -21,13 +21,13 @@ namespace EngineEditableFieldMetadata {
         }, GetEditElement: () => {
             let tmp = document.createElement ("div");
             tmp.classList.add ("content-cell-content");
-            tmp.style.height = "48px";
+            tmp.style.height = "46px";
             tmp.style.padding = "0";
             
             let grid = document.createElement ("div");
             grid.style.display = "grid";
             grid.style.gridTemplateColumns = "auto";
-            grid.style.gridTemplateRows = "24px 24px";
+            grid.style.gridTemplateRows = "23px 23px";
             grid.style.gridTemplateAreas = `
                 "a"
                 "b"

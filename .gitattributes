@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# linguist-vendored didn't hide the files from the language breakdown
+lib/* linguist-generated
+
+js/* linguist-generated

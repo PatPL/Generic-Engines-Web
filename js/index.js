@@ -637,7 +637,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.2";
+Version.CurrentVersion = "Web.0.9.3 Dev";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -774,6 +774,14 @@ const Settings = {
         return Store.GetText("setting:hide_disabled_fields_on_sort", "1") == "1";
     }, set hide_disabled_fields_on_sort(value) {
         Store.SetText("setting:hide_disabled_fields_on_sort", value ? "1" : "0");
+    }, get current_theme() {
+        return Store.GetText("setting:current_theme", Settings.dark_theme ? "Dark" : "Classic");
+    }, set current_theme(value) {
+        Store.SetText("setting:current_theme", value);
+    }, get custom_theme() {
+        return Store.GetText("setting:custom_theme", btoa(JSON.stringify([])));
+    }, set custom_theme(value) {
+        Store.SetText("setting:custom_theme", value);
     }
 };
 var ListName = "Unnamed";
@@ -797,7 +805,6 @@ window.onbeforeunload = (e) => {
     }
 };
 function ApplySettings() {
-    document.getElementById("css-palette").href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
     document.documentElement.style.setProperty("--infoPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
 }
 ApplySettings();
@@ -961,6 +968,7 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-add").addEventListener("click", AddButton_Click);
     document.getElementById("option-button-remove").addEventListener("click", RemoveButton_Click);
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
+    document.getElementById("option-button-style").addEventListener("click", StyleButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
     document.getElementById("option-button-download-list").addEventListener("click", DownloadListButton_Click);
     document.getElementById("option-button-cache-list").addEventListener("click", CacheListButton_Click);
@@ -1251,6 +1259,9 @@ function RemoveButton_Click() {
 }
 function SettingsButton_Click() {
     SettingsDialog.Show();
+}
+function StyleButton_Click() {
+    StyleDialog.Show();
 }
 function HelpButton_Click() {
     FullscreenWindows["about-box"].style.display = "flex";
@@ -7590,6 +7601,158 @@ class PlumeSelector {
         this.SetTransaction(callback);
     }
 }
+class StyleDialog {
+    static Show() {
+        FullscreenWindows["style-box"].style.display = "flex";
+    }
+    static Init() {
+        let select = document.getElementById("styles-select");
+        let customContainer = document.getElementById("custom-styles-container");
+        let customTable = document.getElementById("styles-custom");
+        let customReloadButton = document.getElementById("custom-styles-reload");
+        let themeOverrideStyle = document.getElementById("custom-theme-override");
+        let indexMap = [];
+        let indexMapCounter = 0;
+        const applyCurrentTheme = () => {
+            let themeFile = this.ThemeFiles[Settings.current_theme];
+            if (themeFile) {
+                this.SetThemeFile(themeFile);
+                themeOverrideStyle.innerHTML = "";
+            }
+            else {
+                themeOverrideStyle.innerHTML = this.BuildOverrideThemeStyle(Settings.custom_theme);
+            }
+        };
+        const getCurrentCustomThemeFromTable = () => {
+            let output = [];
+            let trs = customTable.querySelectorAll("tr");
+            trs.forEach(e => {
+                output.push([e.children[0].innerHTML, e.children[1].children[0].value]);
+            });
+            return output;
+        };
+        const applyCurrentCustomThemeToTable = () => {
+            let currentCustomTheme = [];
+            try {
+                currentCustomTheme = JSON.parse(atob(Settings.custom_theme));
+            }
+            catch (e) {
+                console.error(console.error("Couldn't parse the custom theme: ", e, atob(Settings.custom_theme)), "Resetting to default value...");
+                Settings.custom_theme = btoa(JSON.stringify([]));
+            }
+            customTable.innerHTML = "";
+            currentCustomTheme.forEach(([cssVar, value]) => {
+                let tr = document.createElement("tr");
+                let input = document.createElement("input");
+                input.style.margin = "0px 22px 0px 6px";
+                input.value = value;
+                input.addEventListener("input", () => {
+                    Settings.custom_theme = btoa(JSON.stringify(getCurrentCustomThemeFromTable()));
+                    applyCurrentTheme();
+                });
+                tr.innerHTML = "<td></td><td></td>";
+                tr.children[0].innerHTML = cssVar;
+                tr.children[1].appendChild(input);
+                customTable.appendChild(tr);
+            });
+        };
+        applyCurrentTheme();
+        select.innerHTML = "";
+        for (let i in StyleDialog.ThemeFiles) {
+            select.innerHTML += `<option value="${i}">${i}</option>`;
+            indexMap.push([i, indexMapCounter++]);
+        }
+        let currentTheme = indexMap.find(x => x[0] == Settings.current_theme);
+        if (currentTheme) {
+            select.selectedIndex = currentTheme[1];
+            if (currentTheme[0] == "Custom") {
+                customContainer.style.display = "block";
+                applyCurrentCustomThemeToTable();
+            }
+            else {
+                customContainer.style.display = "none";
+            }
+        }
+        else {
+            console.warn("Theme not found: ", Settings.current_theme);
+            console.warn("Themes: ", indexMap);
+        }
+        select.addEventListener("change", () => {
+            let selectedTheme = indexMap.find(x => x[1] == select.selectedIndex)[0];
+            Settings.current_theme = selectedTheme;
+            if (selectedTheme == "Custom") {
+                customContainer.style.display = "block";
+                applyCurrentCustomThemeToTable();
+                applyCurrentTheme();
+            }
+            else {
+                customContainer.style.display = "none";
+            }
+            applyCurrentTheme();
+        });
+        customReloadButton.addEventListener("click", () => {
+            if (confirm("Are you sure you want to rebuild the custom theme?\n\nYou will lose the current custom theme.")) {
+                Settings.custom_theme = btoa(JSON.stringify(this.GetCurrentCSSVars()));
+                applyCurrentCustomThemeToTable();
+                applyCurrentTheme();
+            }
+        });
+    }
+    static GetCurrentCSSVars() {
+        let output = [];
+        let paletteSheet = Array.from(document.styleSheets).find(x => /(.)*Palette.css$/.test(x.href));
+        if (paletteSheet) {
+            let paletteRule = Array.from(paletteSheet.rules).find(x => x.selectorText == ":root");
+            if (paletteRule) {
+                let paletteStyle = paletteRule.style;
+                if (paletteStyle) {
+                    Array.from(paletteStyle).forEach(v => {
+                        output.push([v, paletteStyle.getPropertyValue(v).trim()]);
+                    });
+                }
+                else {
+                    console.warn("Didn't find the palette styles");
+                }
+            }
+            else {
+                console.warn("Didn't find the ':root' rule in the palette file");
+            }
+        }
+        else {
+            console.warn("Didn't find the '*.Palette.css' palette file");
+        }
+        return output;
+    }
+    static SetThemeFile(file) {
+        document.getElementById("css-palette").href = `css/${file}`;
+    }
+    static BuildOverrideThemeStyle(b64CustomTheme) {
+        let output = ":root {";
+        let vars = [];
+        try {
+            vars = JSON.parse(atob(b64CustomTheme));
+        }
+        catch (e) {
+            console.error("Couldn't parse the custom theme: ", e, atob(b64CustomTheme));
+        }
+        vars.forEach(([cssVar, value]) => {
+            output += `
+                ${cssVar}: ${value};
+            `;
+        });
+        output += "}";
+        return output;
+    }
+}
+StyleDialog._initialized = false;
+StyleDialog.ThemeFiles = {
+    "Classic": "classicPalette.css",
+    "Dark": "darkPalette.css",
+    "Custom": false
+};
+document.addEventListener("DOMContentLoaded", () => {
+    StyleDialog.Init();
+});
 var PolymorphismType;
 (function (PolymorphismType) {
     PolymorphismType[PolymorphismType["Single"] = 0] = "Single";

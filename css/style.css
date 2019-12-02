@@ -247,10 +247,10 @@ span.checkbox-label {
     background: var(--lighterGrayBackground);
     
     display: grid;
-    grid-template-columns: 36px 36px 36px 36px 36px 36px 36px 36px 36px auto 4px 36px 32px;
+    grid-template-columns: 36px 36px 36px 36px 36px 36px 36px 36px 36px auto 4px 36px 36px 32px;
     grid-template-rows: 32px;
     grid-template-areas:
-        "la lb lc ld le lf lg lh li ss .  ra rb"
+        "la lb lc ld le lf lg lh li ss .  ra rb rc"
     ;
 }
 
@@ -512,6 +512,10 @@ input.content-cell-content {
     
     background: var(--darkBackground);
     opacity: 0.66;
+}
+
+.transparent {
+    background: none;
 }
 
 .fullscreen-content {
@@ -985,4 +989,26 @@ input.content-cell-content {
     
     margin: 0;
     cursor: pointer;
+}
+
+/**/
+
+#custom-styles-container {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#custom-styles-reload {
+    margin: 6px 0px 6px 0px;
+}
+
+#style-box input {
+    background: var(--lightGrayBackground);
+    color: var(--darkerText);
+}
+
+#style-box select {
+    background: var(--lightGrayBackground);
+    color: var(--darkerText);
 }

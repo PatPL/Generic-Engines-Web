@@ -23,11 +23,8 @@ window.onbeforeunload = (e: any) => {
 }
 
 function ApplySettings () {
-    //Set color palette for dark/other theme
-    (document.getElementById ("css-palette")! as HTMLLinkElement).href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
-
     //Toggle info panel
-    document.documentElement.style.setProperty ("--infoPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
+    document.documentElement.style.setProperty ("--infoPanelWidth", `${ Settings.show_info_panel ? 320 : 0 }px`);
 }
 
 ApplySettings ();
@@ -245,6 +242,7 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-remove")!.addEventListener ("click", RemoveButton_Click);
     
     document.getElementById ("option-button-settings")!.addEventListener ("click", SettingsButton_Click);
+    document.getElementById ("option-button-style")!.addEventListener ("click", StyleButton_Click);
     document.getElementById ("option-button-help")!.addEventListener ("click", HelpButton_Click);
     
     document.getElementById ("option-button-download-list")!.addEventListener ("click", DownloadListButton_Click);
@@ -623,6 +621,10 @@ function RemoveButton_Click () {
 
 function SettingsButton_Click () {
     SettingsDialog.Show ();
+}
+
+function StyleButton_Click () {
+    StyleDialog.Show ();
 }
 
 function HelpButton_Click () {

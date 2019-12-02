@@ -10,6 +10,7 @@
     <link id="main-css" rel="stylesheet" type="text/css" href="css/style.css">
     
     <style id="edit-cell-height-override">/* Changed in JS */</style>
+    <style id="custom-theme-override">/* Changed in JS */</style>
     
     <script>
         // Detect IE and Edge, and display 'use Firefox or Chromium browser' notice
@@ -92,7 +93,6 @@
         <div class="fullscreen-grayout"></div>
         <div class="fullscreen-content">
             <input setting-field="classic_unit_display" type="checkbox"><span class="checkbox-label">Display only KSP units (t, kN, l, kW (EC/s))</span><br>
-            <input setting-field="dark_theme" type="checkbox"><span class="checkbox-label">Use dark theme</span><br>
             <input setting-field="show_info_panel" type="checkbox"><span class="checkbox-label">Show side panel with additional info</span><br>
             <input setting-field="prettify_config" type="checkbox"><span class="checkbox-label">Prettify exported config (For debug purposes)</span><br>
             <input setting-field="async_sort" type="checkbox"><span class="checkbox-label">Sort items asynchronously (UI should be a bit snappier for larger lists)</span><br>
@@ -179,6 +179,18 @@
             </div>
         </div>
     </div>
+    <div class="fullscreen-box" id="style-box" style="display: none;">
+        <div class="fullscreen-grayout transparent"></div>
+        <div class="fullscreen-content">
+            Current theme: <select id="styles-select"></select>
+            <div id="custom-styles-container" style="display: none">
+                <button id="custom-styles-reload" title="Rebuild the custom theme using last selected built-in theme">Reload</button>
+                <table id="styles-custom">
+                    
+                </table>
+            </div>
+        </div>
+    </div>
     <div class="option-container" id="option-row">
         <img style="grid-area: la;" id="option-button-new" title="Clear the current list" class="option-button" src="svg/button/clear.svg">
         <img style="grid-area: lb;" id="option-button-open" title="Open/Append an existing list" class="option-button" src="svg/button/open.svg">
@@ -191,7 +203,8 @@
         <img style="grid-area: li;" id="option-button-remove" title="Delete selected engines from current list" class="option-button" src="svg/button/remove.svg">
         <div style="grid-area: ss;" class="flex-spacer" id="list-name"></div>
         <img style="grid-area: ra;" id="option-button-help" title="Help & About" class="option-button" src="svg/button/help.svg">
-        <img style="grid-area: rb;" id="option-button-settings" title="Settings" class="option-button" src="svg/button/settings.svg">
+        <img style="grid-area: rb;" id="option-button-style" title="Customize theme" class="option-button" src="svg/button/style.svg">
+        <img style="grid-area: rc;" id="option-button-settings" title="Settings" class="option-button" src="svg/button/settings.svg">
     </div>
     <div id="content-container">
         <div id="list-container">

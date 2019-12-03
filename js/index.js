@@ -251,7 +251,8 @@ window.addEventListener("pointerdown", (e) => {
             while (currentElement != null) {
                 if (currentElement.getAttribute("data-FieldID") == EditableField.EditedField.FieldID.toString() ||
                     currentElement.getAttribute("data-FieldID") == "-1" ||
-                    currentElement.classList.contains("fullscreen-box")) {
+                    currentElement.classList.contains("fullscreen-box") ||
+                    currentElement.classList.contains("do-not-end-edit-mode")) {
                     foundEdited = true;
                     break;
                 }
@@ -7741,13 +7742,16 @@ class StyleDialog {
             `;
         });
         output += "}";
+        output = Exporter.PrettifyConfig(Exporter.CompactConfig(output));
         return output;
     }
 }
 StyleDialog._initialized = false;
 StyleDialog.ThemeFiles = {
     "Classic": "classicPalette.css",
+    "Azure": "azure-Palette.css",
     "Dark": "darkPalette.css",
+    "Deep Sea": "deepSea-Palette.css",
     "Custom": false
 };
 document.addEventListener("DOMContentLoaded", () => {
@@ -10956,6 +10960,15 @@ function Debug_LogLocalStorageUsage() {
     console.log(`Used chars: ${usedB / 2}`);
     console.log("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
     console.log("Maximum should be around 5MB");
+}
+function Debug_GetCurrentCustomThemeAsCSSRule() {
+    let vars = JSON.parse(atob(Settings.custom_theme));
+    let output = ":root {\n";
+    vars.forEach(([cssVar, value]) => {
+        output += `    ${cssVar}: ${value};\n`;
+    });
+    output += "}\n";
+    console.log(output);
 }
 class DebugLists {
     static AppendListForExhaustPreviews() {

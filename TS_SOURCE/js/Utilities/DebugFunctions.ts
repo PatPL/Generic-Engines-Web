@@ -29,3 +29,16 @@ function Debug_LogLocalStorageUsage () {
     console.log ("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
     console.log ("Maximum should be around 5MB");
 }
+
+function Debug_GetCurrentCustomThemeAsCSSRule () {
+    let vars: [string, string][] = JSON.parse (atob (Settings.custom_theme));
+    let output = ":root {\n";
+    
+    vars.forEach (([cssVar, value]) => {
+        output += `    ${ cssVar }: ${ value };\n`;
+    });
+    
+    output += "}\n";
+    
+    console.log (output);
+}

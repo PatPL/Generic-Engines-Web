@@ -3,9 +3,18 @@ class StyleDialog {
     private static _initialized = false;
     private static readonly ThemeFiles: { [name: string]: string | false } = {
         "Classic": "classicPalette.css",
+        "Azure": "azure-Palette.css",
         "Dark": "darkPalette.css",
+        "Deep Sea": "deepSea-Palette.css",
         "Custom": false
     };
+    
+    /*
+    Adding a theme:
+     - Add a file with "*Palette.css" name to "css/" folder
+     - Add the theme name and file name in ThemeFiles object
+     - Done
+    */
     
     public static Show () {
         FullscreenWindows["style-box"].style.display = "flex";
@@ -164,6 +173,9 @@ class StyleDialog {
         });
         
         output += "}";
+        
+        // For easier exporting into built-in themes
+        output = Exporter.PrettifyConfig (Exporter.CompactConfig (output));
         
         return output;
     }

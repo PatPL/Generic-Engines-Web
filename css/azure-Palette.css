@@ -1,0 +1,30 @@
+:root {
+    --lighterGrayBackground: #8BB;
+    --lightGrayBackground: #499;
+    --sidePanelBackground: #377;
+    --grayBackground: #078;
+    --grayBorder: #888;
+    --darkBorder: #444;
+    --darkBackground: #444;
+    --darkText: #444;
+    --darkerBorder: #222;
+    --darkerText: #123;
+    --rowEven: #488;
+    --rowOdd: #5AA;
+    --confirm: radial-gradient(circle, #FA4, #F64);
+    --textSelection: #77F;
+    --selection: #88D;
+    --selectionMajor: #66F;
+    --selectionCell: #77F;
+    --info: #88F;
+    --warn: #FB8;
+    --error: #F44;
+    --sortMin: #366;
+    --sortMax: #6BB;
+    --tableBackground: #58B;
+    --tableBorder: #222;
+    --tableDistinct: #222;
+    --tableRegular: #466;
+    --tableRed: #F00;
+    --tableLine: #122;
+}

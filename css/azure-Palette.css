@@ -12,10 +12,10 @@
     --rowEven: #488;
     --rowOdd: #5AA;
     --confirm: radial-gradient(circle, #FA4, #F64);
-    --textSelection: #77F;
-    --selection: #88D;
-    --selectionMajor: #66F;
-    --selectionCell: #77F;
+    --textSelection: #375;
+    --selection: #486;
+    --selectionMajor: #264;
+    --selectionCell: #365;
     --info: #88F;
     --warn: #FB8;
     --error: #F44;

@@ -8749,7 +8749,7 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b00000
     }, Dimensions: {
         Name: "Size",
-        DefaultWidth: 160,
+        DefaultWidth: 200,
         DisplayFlags: 0b10100
     }, Gimbal: {
         Name: "Gimbal",
@@ -8920,56 +8920,66 @@ var EngineEditableFieldMetadata;
             tmp.classList.add("content-cell-content");
             return tmp;
         }, ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = `↔${Unit.Display(engine.Width, "m", false, 9)} x ↕${Unit.Display(engine.Height, "m", false, 9)}`;
+            e.innerHTML = `↔${Unit.Display(engine.GetBaseWidth(), "m", false, 3)} x ↕${Unit.Display(engine.Height, "m", false, 3)}`;
         }, GetEditElement: () => {
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
-            tmp.style.height = "76px";
+            tmp.style.height = "80px";
             tmp.style.padding = "0";
             let grid = document.createElement("div");
             grid.style.display = "grid";
-            grid.style.gridTemplateColumns = "62px auto 2px 24px 2px";
-            grid.style.gridTemplateRows = "24px 24px 2px 24px";
+            grid.style.gridTemplateColumns = "76px auto 2px 24px 2px";
+            grid.style.gridTemplateRows = "2px 24px 2px 24px 2px 24px";
             grid.style.gridTemplateAreas = `
-                "a a a a z"
-                "b c c c z"
-                "x x x x x"
-                "e f q g y"
+                ". . . . ."
+                "a h h h ."
+                ". . . . ."
+                "b c c c ."
+                ". . . . ."
+                "e f q g ."
             `;
             grid.innerHTML = `
-                <div class="content-cell-content" style="grid-area: a;"></div>
-                <div class="content-cell-content" style="grid-area: b;">Width</div>
+                <div class="content-cell-content" style="grid-area: a;">Bell ↔</div>
+                <div style="grid-area: h;"><input style="width: calc(100%);"></div>
+                <div class="content-cell-content" style="grid-area: b;">Base ↔</div>
                 <div style="grid-area: c;"><input style="width: calc(100%);"></div>
-                <div class="content-cell-content" style="grid-area: e;">Height</div>
+                <div class="content-cell-content" style="grid-area: e;">Height ↕</div>
                 <div style="grid-area: f;"><input style="width: calc(100%);"></div>
                 <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="svg/button/aspectRatio.svg"></div>
             `;
-            let checkboxLabel = document.createElement("span");
-            let checkbox = document.createElement("input");
-            checkboxLabel.style.position = "relative";
-            checkboxLabel.style.top = "-4px";
-            checkboxLabel.style.left = "4px";
-            checkbox.type = "checkbox";
-            checkbox.addEventListener("change", e => {
-                checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
-            });
-            grid.children[0].appendChild(checkbox);
-            grid.children[0].appendChild(checkboxLabel);
             tmp.appendChild(grid);
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
             let inputs = e.querySelectorAll("input");
-            inputs[0].checked = engine.UseBaseWidth;
-            inputs[1].value = Unit.Display(engine.Width, "m", false);
-            inputs[2].value = Unit.Display(engine.Height, "m", false);
-            e.querySelector("img").onclick = () => {
-                let modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
-                inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false, 3);
+            const modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
+            const baseToBellRatio = modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
+            const updateBellWidth = () => {
+                inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "m") / baseToBellRatio, "m", false, 3);
             };
-            e.querySelector("span").innerHTML = inputs[0].checked ? "Base width" : "Bell width";
+            const updateBaseWidth = () => {
+                inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "m") * baseToBellRatio, "m", false, 3);
+            };
+            if (engine.UseBaseWidth) {
+                inputs[1].value = Unit.Display(engine.Width, "m", false, 3);
+                updateBellWidth();
+            }
+            else {
+                inputs[0].value = Unit.Display(engine.Width, "m", false, 3);
+                updateBaseWidth();
+            }
+            inputs[2].value = Unit.Display(engine.Height, "m", false, 3);
+            inputs[0].oninput = () => {
+                updateBaseWidth();
+            };
+            inputs[1].oninput = () => {
+                updateBellWidth();
+            };
+            e.querySelector("img").onclick = () => {
+                inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth, "m", false, 3);
+            };
         }, ApplyChangesToValue: (e, engine) => {
             let inputs = e.querySelectorAll("input");
-            engine.UseBaseWidth = inputs[0].checked;
+            engine.UseBaseWidth = true;
             engine.Width = Unit.Parse(inputs[1].value, "m");
             engine.Height = Unit.Parse(inputs[2].value, "m");
         }

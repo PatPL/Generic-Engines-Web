@@ -56,7 +56,7 @@ class Engine implements ITableElement<Engine> {
             DisplayFlags: 0b00000
         }, Dimensions: {
             Name: "Size",
-            DefaultWidth: 160,
+            DefaultWidth: 200,
             DisplayFlags: 0b10100
         }, Gimbal: {
             Name: "Gimbal",

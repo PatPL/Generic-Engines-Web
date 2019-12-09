@@ -320,10 +320,10 @@ function OpenUploadButton_Click () {
                 ListNameDisplay.SetValue (filename);
                 
                 MainEngineTable.Items = Serializer.DeserializeMany (data);
-                MainEngineTable.RebuildTable ();
                 MainEngineTable.Items.forEach (e => {
                     e.EngineList = MainEngineTable.Items;
                 });
+                MainEngineTable.RebuildTable ();
                 
                 FullscreenWindows["open-box"].style.display = "none";
                 Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -365,10 +365,10 @@ function OpenCacheButton_Click () {
             }
             
             MainEngineTable.Items = Serializer.DeserializeMany (data);
-            MainEngineTable.RebuildTable ();
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -407,10 +407,10 @@ function OpenClipboardButton_Click () {
             let data = BitConverter.Base64ToByteArray (b64);
             
             MainEngineTable.Items = Serializer.DeserializeMany (data);
-            MainEngineTable.RebuildTable ();
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -459,10 +459,10 @@ function OpenAutosaveButton_Click () {
             }
             
             MainEngineTable.Items = Serializer.DeserializeMany (data);
-            MainEngineTable.RebuildTable ();
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);

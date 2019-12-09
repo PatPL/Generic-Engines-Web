@@ -196,10 +196,10 @@ class BrowserCacheDialog {
                     ListNameDisplay.SetValue (i.replace (/\.enl$/, ""))
                     
                     MainEngineTable.Items = Serializer.DeserializeMany (Store.GetBinary (i));
-                    MainEngineTable.RebuildTable ();
                     MainEngineTable.Items.forEach (e => {
                         e.EngineList = MainEngineTable.Items;
                     });
+                    MainEngineTable.RebuildTable ();
                     
                     this.DialogBoxElement.style.display = "none";
                 }

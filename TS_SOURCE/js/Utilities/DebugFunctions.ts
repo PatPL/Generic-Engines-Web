@@ -42,3 +42,7 @@ function Debug_GetCurrentCustomThemeAsCSSRule () {
     
     console.log (output);
 }
+
+function Debug_DisplayCustomThemeRandomizer () {
+    document.getElementById ("custom-styles-randomize")!.style.display = "block";
+}

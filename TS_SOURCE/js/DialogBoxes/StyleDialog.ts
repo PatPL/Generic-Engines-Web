@@ -127,6 +127,25 @@ class StyleDialog {
                 applyCurrentTheme ();
             }
         });
+        
+        // Debug button
+        document.getElementById ("custom-styles-randomize")!.addEventListener ("click", () => {
+            if (confirm ("Are you sure? You'll lose your current custom theme.")) {
+                const hex = "0123456789abcdef";
+                customTable.querySelectorAll ("input").forEach (i => {
+                    let color = "#";
+                    color += hex[Math.floor (Math.random () * 16)];
+                    color += hex[Math.floor (Math.random () * 16)];
+                    color += hex[Math.floor (Math.random () * 16)];
+                    color += hex[Math.floor (Math.random () * 16)];
+                    color += hex[Math.floor (Math.random () * 16)];
+                    color += hex[Math.floor (Math.random () * 16)];
+                    i.value = color;
+                });
+                Settings.custom_theme = btoa (JSON.stringify (getCurrentCustomThemeFromTable ()));
+                applyCurrentTheme ();
+            }
+        })
     }
     
     private static GetCurrentCSSVars (): [string, string][] {

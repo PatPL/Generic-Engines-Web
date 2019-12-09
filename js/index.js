@@ -7698,6 +7698,23 @@ class StyleDialog {
                 applyCurrentTheme();
             }
         });
+        document.getElementById("custom-styles-randomize").addEventListener("click", () => {
+            if (confirm("Are you sure? You'll lose your current custom theme.")) {
+                const hex = "0123456789abcdef";
+                customTable.querySelectorAll("input").forEach(i => {
+                    let color = "#";
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    i.value = color;
+                });
+                Settings.custom_theme = btoa(JSON.stringify(getCurrentCustomThemeFromTable()));
+                applyCurrentTheme();
+            }
+        });
     }
     static GetCurrentCSSVars() {
         let output = [];
@@ -10979,6 +10996,9 @@ function Debug_GetCurrentCustomThemeAsCSSRule() {
     });
     output += "}\n";
     console.log(output);
+}
+function Debug_DisplayCustomThemeRandomizer() {
+    document.getElementById("custom-styles-randomize").style.display = "block";
 }
 class DebugLists {
     static AppendListForExhaustPreviews() {

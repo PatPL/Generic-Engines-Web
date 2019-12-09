@@ -277,8 +277,8 @@ span.checkbox-label {
 
 .option-button {
     cursor: pointer;
-    background: var(--lightGrayBackground);
-    outline: var(--darkBorder) 2px solid;
+    background: var(--buttonBackground);
+    outline: var(--buttonOutline) 2px solid;
     outline-offset: -2px;
 }
 

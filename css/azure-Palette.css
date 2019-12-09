@@ -1,20 +1,20 @@
 :root {
     --lighterGrayBackground: #8BB;
-    --lightGrayBackground: #499;
-    --sidePanelBackground: #377;
-    --grayBackground: #078;
+    --lightGrayBackground: #6AA;
+    --sidePanelBackground: #599;
+    --grayBackground: #488;
     --grayBorder: #888;
     --darkBorder: #444;
     --darkBackground: #444;
     --darkText: #444;
     --darkerBorder: #222;
     --darkerText: #123;
-    --rowEven: #488;
+    --rowEven: #499;
     --rowOdd: #5AA;
     --confirm: radial-gradient(circle, #FA4, #F64);
     --textSelection: #375;
-    --selection: #57F;
-    --selectionMajor: #46B;
+    --selection: #08B;
+    --selectionMajor: #06B;
     --selectionCell: #57B;
     --info: #88F;
     --warn: #FB8;
@@ -27,4 +27,6 @@
     --tableRegular: #466;
     --tableRed: #F00;
     --tableLine: #122;
+    --buttonBackground: #6AA;
+    --buttonOutline: #444;
 }

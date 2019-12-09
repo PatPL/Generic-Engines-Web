@@ -1,43 +1,32 @@
 :root {
-    
     --lighterGrayBackground: #444;
-    
     --lightGrayBackground: #333;
-    
     --sidePanelBackground: #282828;
-    
     --grayBackground: #222;
     --grayBorder: #222;
-    
     --darkBorder: #555;
     --darkBackground: #111;
     --darkText: #CCC;
-    
     --darkerBorder: #000;
     --darkerText: #AAA;
-    
     --rowEven: #282828;
     --rowOdd: #383838;
-    
     --confirm: #262;
-    
     --textSelection: #F22;
     --selection: #224;
     --selectionMajor: #226;
     --selectionCell: #336;
-    
     --info: #228;
     --warn: #842;
     --error: #822;
-    
     --sortMin: #222;
     --sortMax: #B22;
-    
     --tableBackground: #555;
     --tableBorder: #000;
     --tableDistinct: #000;
     --tableRegular: #444;
     --tableRed: #F00;
     --tableLine: #024;
-    
+    --buttonBackground: #333;
+    --buttonOutline: #111;
 }

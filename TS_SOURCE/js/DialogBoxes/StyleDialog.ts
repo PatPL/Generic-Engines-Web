@@ -53,33 +53,34 @@ class StyleDialog {
         }
         
         const applyCurrentCustomThemeToTable = () => {
-            let currentCustomTheme: [string, string][] = [];
-            try {
-                currentCustomTheme = JSON.parse (atob (Settings.custom_theme));
+            let varMap: { [cssVar: string]: string } = {};
+        
+            this.GetCurrentCSSVars ().forEach (([cssVar, value]) => { varMap[cssVar] = value });
+            
+            try { 
+                let customVars = JSON.parse (atob (Settings.custom_theme)) as [string, string][];
+                customVars.forEach (([cssVar, value]) => { varMap[cssVar] = value });
             } catch (e) {
-                console.error (console.error ("Couldn't parse the custom theme: ", e, atob (Settings.custom_theme)), "Resetting to default value...");
-                Settings.custom_theme = btoa (JSON.stringify ([]));
+                console.error ("Couldn't parse the custom theme: ", e, atob (Settings.custom_theme));
             }
             
-            customTable.innerHTML = "";
-            
-            currentCustomTheme.forEach (([cssVar, value]) => {
+            for (let i in varMap) {
                 let tr = document.createElement ("tr");
                 let input = document.createElement ("input");
                 input.style.margin = "0px 22px 0px 6px";
                 
-                input.value = value;
+                input.value = varMap[i];
                 input.addEventListener ("input", () => {
                     Settings.custom_theme = btoa (JSON.stringify (getCurrentCustomThemeFromTable ()));
                     applyCurrentTheme ();
                 });
                 
                 tr.innerHTML = "<td></td><td></td>";
-                tr.children[0].innerHTML = cssVar;
+                tr.children[0].innerHTML = i;
                 tr.children[1].appendChild (input);
                 
                 customTable.appendChild (tr);
-            });
+            }
         }
         
         applyCurrentTheme ();
@@ -179,17 +180,22 @@ class StyleDialog {
     private static BuildOverrideThemeStyle (b64CustomTheme: string): string {
         let output = ":root {";
         
-        let vars: [string, string][] = [];
+        let varMap: { [cssVar: string]: string } = {};
+        
+        this.GetCurrentCSSVars ().forEach (([cssVar, value]) => { varMap[cssVar] = value });
+        
         try { 
-            vars = JSON.parse (atob (b64CustomTheme));
+            let customVars = JSON.parse (atob (b64CustomTheme)) as [string, string][];
+            customVars.forEach (([cssVar, value]) => { varMap[cssVar] = value });
         } catch (e) {
             console.error ("Couldn't parse the custom theme: ", e, atob (b64CustomTheme));
         }
-        vars.forEach (([cssVar, value]) => {
+        
+        for (let i in varMap) {
             output += `
-                ${ cssVar }: ${ value };
+                ${ i }: ${ varMap[i] };
             `;
-        });
+        }
         
         output += "}";
         

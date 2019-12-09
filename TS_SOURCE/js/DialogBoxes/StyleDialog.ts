@@ -64,6 +64,8 @@ class StyleDialog {
                 console.error ("Couldn't parse the custom theme: ", e, atob (Settings.custom_theme));
             }
             
+            customTable.innerHTML = "";
+            
             for (let i in varMap) {
                 let tr = document.createElement ("tr");
                 let input = document.createElement ("input");

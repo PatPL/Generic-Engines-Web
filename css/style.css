@@ -36,6 +36,20 @@ body {
     
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     color: var(--defaultTextColor);
+    
+    scrollbar-color: var(--scrollbarHandle) var(--scrollbarBackground);
+}
+
+*::-webkit-scrollbar {
+    width: 5px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--scrollbarBackground);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--scrollbarHandle);
 }
 
 textarea {

@@ -41,4 +41,6 @@
     --tableLine: #04B;
     --buttonBackground: radial-gradient(#113, #000);
     --buttonOutline: #000;
+    --scrollbarHandle: #224;
+    --scrollbarBackground: #080808;
 }

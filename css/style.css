@@ -1,5 +1,5 @@
 :root {
-    --infoPanelWidth: 0px;
+    --infoNotificationBackgroundPanelWidth: 0px;
 }
 
 .left {
@@ -18,7 +18,7 @@
 .abbr {
     cursor: help;
     /* Useful but doesn't look that good */
-    /* text-decoration: underline dotted var(--darkBorder); */
+    /* text-decoration: underline dotted var(--defaultBorderColor); */
 }
 
 body {
@@ -35,7 +35,7 @@ body {
     overflow: hidden; /* Small screen? ¯\_(ツ)_/¯ */
     
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 textarea {
@@ -52,7 +52,7 @@ ul {
 
 hr {
     border: none;
-    border-top: var(--darkBorder) solid 1px;
+    border-top: var(--defaultBorderColor) solid 1px;
 }
 
 table {
@@ -86,12 +86,12 @@ select {
     height: 23px;
     -webkit-appearance: menulist;
     
-    background: var(--lighterGrayBackground);
-    color: var(--darkText);
+    background: var(--inputBackground);
+    color: var(--inputText);
     
     border: none;
     
-    outline: 1px var(--darkBorder) solid;
+    outline: 1px var(--inputBorder) solid;
     outline-offset: -1px;
     
     box-sizing: border-box;
@@ -100,8 +100,8 @@ select {
 }
 
 optgroup {
-    background: var(--grayBackground);
-    color: var(--darkText);
+    background: var(--optgroupBackground);
+    color: var(--inputText);
 }
 
 input {
@@ -111,20 +111,20 @@ input {
     box-sizing: border-box;
     padding-left: 3px;
     height: 100%;
-    background: var(--lighterGrayBackground);
-    color: var(--darkText);
-    border: 1px var(--darkerBorder) solid;
+    background: var(--inputBackground);
+    color: var(--inputText);
+    border: 1px var(--inputBorder) solid;
     
     min-width: 12px;
 }
 
 button {
-    border: 2px solid var(--darkBorder);
-    background: var(--lightGrayBackground);
+    border: 2px solid var(--inputBorder);
+    background: var(--inputBackground);
     padding: 4px;
     font-size: 16px;
     
-    color: var(--darkerText);
+    color: var(--inputText);
 }
 
 button:hover {
@@ -133,7 +133,7 @@ button:hover {
     outline: #44B 2px solid;
     outline-offset: -2px;
     
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 button:active {
@@ -142,7 +142,7 @@ button:active {
     outline: #00B 2px solid;
     outline-offset: -2px;
     
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 textarea {
@@ -151,26 +151,26 @@ textarea {
     
     padding-left: 3px;
     height: calc(100% - 1px);
-    background: var(--lighterGrayBackground);
-    color: var(--darkText);
-    border: 1px var(--darkerBorder) solid;
+    background: var(--inputBackground);
+    color: var(--inputText);
+    border: 1px var(--inputBorder) solid;
 }
 
 textarea::selection {
-    background: var(--textSelection);
-    color: var(--darkerText);
+    background: var(--textSelectionBackground);
+    color: var(--textSelectionColor);
 }
 
 input:disabled {
-    background: var(--lightGrayBackground);
-    color: var(--darkerText);
-    border: 1px var(--error) solid;
+    background: var(--disabledInputBackground);
+    color: var(--defaultTextColor);
+    border: 1px var(--errorNotificationBackground) solid;
     cursor: not-allowed;
 }
 
 input::selection {
-    background: var(--textSelection);
-    color: var(--darkerText);
+    background: var(--textSelectionBackground);
+    color: var(--textSelectionColor);
 }
 
 input[type="checkbox"] {
@@ -180,17 +180,17 @@ input[type="checkbox"] {
     margin: 2px auto 1px auto;
     width: 19px;
     height: 19px;
-    background: var(--darkBackground);
-    border: 1px var(--darkerBorder) solid;
+    background: var(--checkboxDisabled);
+    border: 1px var(--checkboxBorder) solid;
     outline: none;
 }
 
 input[type="checkbox"]:checked {
-    background: var(--confirm);
+    background: var(--checkboxEnabled);
 }
 
 input[type="checkbox"]:disabled {
-    border: 2px var(--error) dashed;
+    border: 2px var(--errorNotificationBackground) dashed;
     cursor: not-allowed !important;
 }
 
@@ -207,16 +207,16 @@ span.checkbox-label {
     height: 100%;
     
     cursor: pointer;
-    background: var(--lighterGrayBackground);
+    background: var(--inputBackground);
     padding: 2px;
     
-    border: 1px solid var(--grayBorder);
+    border: 1px solid var(--inputBorder);
     box-sizing: border-box;
     
     overflow: hidden;
     white-space: nowrap;
     
-    color: var(--darkText);
+    color: var(--inputText);
 }
 
 .clickable-text:hover {
@@ -225,7 +225,7 @@ span.checkbox-label {
     outline: #44B 2px solid;
     outline-offset: -2px;
     
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 .clickable-text:active {
@@ -234,7 +234,7 @@ span.checkbox-label {
     outline: #00B 2px solid;
     outline-offset: -2px;
     
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 /**/
@@ -244,7 +244,7 @@ span.checkbox-label {
     height: 40px;
     padding: 4px;
     box-sizing: border-box;
-    background: var(--lighterGrayBackground);
+    background: var(--optionRowBackground);
     
     display: grid;
     grid-template-columns: 36px 36px 36px 36px 36px 36px 36px 36px 36px auto 4px 36px 36px 32px;
@@ -257,7 +257,7 @@ span.checkbox-label {
 .flex-spacer {
     /* Site width - padding - other grid fields */
     max-width: calc(100vw - 8px - 396px);
-    background: var(--lightGrayBackground);
+    background: var(--defaultBackgroundColor);
     line-height: 28px;
     font-size: 20px;
     text-align: center;
@@ -297,9 +297,9 @@ span.checkbox-label {
 /**/
 
 #list-container {
-    width: calc(100% - var(--infoPanelWidth));
+    width: calc(100% - var(--infoNotificationBackgroundPanelWidth));
     height: calc(100vh - 40px);
-    background: var(--lightGrayBackground);
+    background: var(--defaultBackgroundColor);
 }
 
 #content-container {
@@ -309,13 +309,14 @@ span.checkbox-label {
 
 #info-panel {
     position: relative;
-    width: var(--infoPanelWidth);
+    width: var(--infoNotificationBackgroundPanelWidth);
     height: calc(100vh - 40px);
     
     box-sizing: border-box;
     
     background: var(--sidePanelBackground);
-    border-left: 1px var(--darkBorder) solid;
+    color: var(--sidePanelText);
+    border-left: 1px var(--defaultBorderColor) solid;
     z-index: 200;
 }
 
@@ -350,7 +351,7 @@ span.checkbox-label {
     
     height: 100%;
     width: auto;
-    background: var(--lightGrayBackground);
+    background: var(--tableBackgroundColor);
     color: white;
 }
 
@@ -390,7 +391,7 @@ span.checkbox-label {
     word-break: break-all;
     
     box-sizing: border-box;
-    border-color: var(--darkBorder);
+    border-color: var(--tableBorderColor);
     border-style: solid;
     border-width: 0px;
     border-right-width: 1px;
@@ -405,21 +406,21 @@ span.checkbox-label {
     overflow: hidden;
     cursor: pointer; /* Now you can click it to sort column */
     
-    background: var(--grayBackground);
-    color: var(--darkerText);
+    background: var(--headerBackground);
+    color: var(--headerText);
 }
 
 .sortAsc {
-    background: linear-gradient(180deg, var(--sortMin), var(--sortMax));
+    background: var(--sortAscending);
 }
 
 .sortDesc {
-    background: linear-gradient(0deg, var(--sortMin), var(--sortMax));
+    background: var(--sortDescending);
 }
 
 .content-cell {
     box-sizing: border-box;
-    border-color: var(--darkBorder);
+    border-color: var(--tableBorderColor);
     border-style: solid;
     border-width: 0px;
     border-right-width: 1px;
@@ -432,7 +433,7 @@ span.checkbox-label {
     /* line-height: 19px; */
     font-size: 16px;
     overflow: hidden;
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 .content-cell-content {
@@ -455,7 +456,7 @@ span.checkbox-label {
 }
 
 div.content-cell-edit {
-    background: var(--selectionCell);
+    background: var(--editedCellBackbround);
 }
 
 input.content-cell-content {
@@ -463,26 +464,26 @@ input.content-cell-content {
 }
 
 .selected {
-    background: var(--selection) !important;
+    background: var(--rowSelection) !important;
 }
 
 .selected.last {
-    background: var(--selectionMajor) !important;
+    background: var(--rowSelectionMajor) !important;
 }
 
 .selected.hideCell {
-    color: var(--darkBackground) !important;
-    background: var(--darkBackground) !important;
+    color: var(--hiddenCellColor) !important;
+    background: var(--hiddenCellColor) !important;
 }
 
 .selected.last.hideCell {
-    color: var(--darkBackground) !important;
-    background: var(--darkBackground) !important;
+    color: var(--hiddenCellColor) !important;
+    background: var(--hiddenCellColor) !important;
 }
 
 .hideCell {
-    color: var(--darkBackground) !important;
-    background: var(--darkBackground) !important;
+    color: var(--hiddenCellColor) !important;
+    background: var(--hiddenCellColor) !important;
 }
 
 .content-cell:nth-child(even) {
@@ -513,8 +514,7 @@ input.content-cell-content {
     width: 100%;
     height: 100%;
     
-    background: var(--darkBackground);
-    opacity: 0.66;
+    background: var(--modalOcclusionBackground);
 }
 
 .transparent {
@@ -524,8 +524,8 @@ input.content-cell-content {
 .fullscreen-content {
     z-index: 999;
     
-    background: var(--lighterGrayBackground);
-    border: var(--darkBorder) 2px solid;
+    background: var(--modalBackground);
+    border: var(--defaultBorderColor) 2px solid;
     padding: 8px;
     
     width: auto;
@@ -603,7 +603,7 @@ input.content-cell-content {
     width: 800px;
     height: 560px;
     
-    background: var(--grayBackground);
+    background: var(--defaultBackgroundColor);
     padding-top: 2px;
     
     display: flex;
@@ -624,8 +624,8 @@ input.content-cell-content {
     font-size: 20px;
     
     box-sizing: border-box;
-    background: var(--lightGrayBackground);
-    border: var(--darkBorder) 2px solid;
+    background: var(--defaultBackgroundColor);
+    border: var(--defaultBorderColor) 2px solid;
     
     word-break: break-all;
     white-space: pre;
@@ -651,7 +651,7 @@ input.content-cell-content {
 }
 
 #about-box hr {
-    border: var(--grayBorder) solid 1px;
+    border: var(--defaultBorderColor) solid 1px;
     margin: 8px -8px 8px -8px;
 }
 
@@ -686,7 +686,7 @@ input.content-cell-content {
     height: 100px;
     float: left;
     
-    outline-color: var(--darkBorder);
+    outline-color: var(--inputBorder);
     outline-width: 2px;
     outline-offset: -1px;
     outline-style: solid;
@@ -708,7 +708,7 @@ input.content-cell-content {
 
 .modal-selector > div > span {
     grid-area: div;
-    border-right: 2px solid var(--grayBorder);
+    border-right: 2px solid var(--defaultBorderColor);
 }
 
 @media only screen and (max-width: 700px) {
@@ -781,7 +781,7 @@ input.content-cell-content {
     box-sizing: border-box;
     line-height: 32px;
     
-    background: var(--lightGrayBackground);
+    background: var(--defaultBackgroundColor);
     margin-top: 2px;
 }
 
@@ -791,7 +791,7 @@ input.content-cell-content {
     overflow: hidden;
     display: block;
     word-break: keep-all;
-    border-right: 1px solid var(--darkBorder);
+    border-right: 1px solid var(--defaultBorderColor);
 }
 
 /**/
@@ -823,28 +823,24 @@ input.content-cell-content {
     line-height: 24px;
     height: 36px;
     width: auto;
-    
-    color: var(--darkerText);
-    background: var(--grayBackground);
-    border: var(--darkBorder) 2px solid;
 }
 
 .notify-box.info {
-    color: var(--darkerText);
-    background: var(--info);
-    border: var(--darkBorder) 2px solid;
+    color: var(--notificationTextColor);
+    background: var(--infoNotificationBackground);
+    border: var(--defaultBorderColor) 2px solid;
 }
 
 .notify-box.warn {
-    color: var(--darkerText);
-    background: var(--warn);
-    border: var(--darkBorder) 2px solid;
+    color: var(--notificationTextColor);
+    background: var(--warnNotificationBackground);
+    border: var(--defaultBorderColor) 2px solid;
 }
 
 .notify-box.error {
-    color: var(--darkerText);
-    background: var(--error);
-    border: var(--darkBorder) 2px solid;
+    color: var(--notificationTextColor);
+    background: var(--errorNotificationBackground);
+    border: var(--defaultBorderColor) 2px solid;
 }
 
 /**/
@@ -857,7 +853,7 @@ input.content-cell-content {
     padding: 8px;
     box-sizing: border-box;
     
-    border-bottom: var(--darkBorder) solid 1px;
+    border-bottom: var(--defaultBorderColor) solid 1px;
     background: var(--tableBackground);
 }
 
@@ -1004,14 +1000,4 @@ input.content-cell-content {
 
 #custom-styles-reload {
     margin: 6px 0px 6px 0px;
-}
-
-#style-box input {
-    background: var(--lightGrayBackground);
-    color: var(--darkerText);
-}
-
-#style-box select {
-    background: var(--lightGrayBackground);
-    color: var(--darkerText);
 }

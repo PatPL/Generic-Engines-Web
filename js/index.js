@@ -806,7 +806,7 @@ window.onbeforeunload = (e) => {
     }
 };
 function ApplySettings() {
-    document.documentElement.style.setProperty("--infoPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
+    document.documentElement.style.setProperty("--infoNotificationBackgroundPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
 }
 ApplySettings();
 function ApplyEngineToInfoPanel(engine, clear = false) {
@@ -882,12 +882,12 @@ addEventListener("DOMContentLoaded", () => {
             return;
         }
         let originalX = Input.MouseX;
-        let originalWidth = parseFloat(document.documentElement.style.getPropertyValue("--infoPanelWidth"));
+        let originalWidth = parseFloat(document.documentElement.style.getPropertyValue("--infoNotificationBackgroundPanelWidth"));
         originalWidth = isNaN(originalWidth) ? 200 : originalWidth;
         Dragger.Drag(() => {
             let newWidth = originalWidth - Input.MouseX + originalX;
             newWidth = Math.max(50, newWidth);
-            document.documentElement.style.setProperty("--infoPanelWidth", `${newWidth}px`);
+            document.documentElement.style.setProperty("--infoNotificationBackgroundPanelWidth", `${newWidth}px`);
         });
     });
     window.addEventListener("dragover", e => {

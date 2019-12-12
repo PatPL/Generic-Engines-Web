@@ -46,3 +46,9 @@ function Debug_GetCurrentCustomThemeAsCSSRule () {
 function Debug_DisplayCustomThemeRandomizer () {
     document.getElementById ("custom-styles-randomize")!.style.display = "block";
 }
+
+function Debug_SendExampleNotifierMessages () {
+    Notifier.Info ("This is an information", 0);
+    Notifier.Warn ("This is a warning", 0);
+    Notifier.Error ("This is an error", 0);
+}

@@ -1,7 +1,7 @@
 :root {
     --sidePanelBackground: #001;
-    --sidePanelText: #48B;
-    --headerText: #48B;
+    --sidePanelText: #079;
+    --headerText: #369;
     --headerBackground: #000818;
     --modalBackground: #000818;
     --modalOcclusionBackground: rgba(0, 0, 0, 0.75);
@@ -11,8 +11,8 @@
     --inputBackground: #012;
     --disabledInputBackground: #001;
     --optgroupBackground: #001;
-    --tableBackgroundColor: #012;
-    --tableBorderColor: #036;
+    --tableBackgroundColor: #000B18;
+    --tableBorderColor: #025;
     --optionRowBackground: #002030;
     --defaultBackgroundColor: #012;
     --defaultBorderColor: #036;
@@ -24,9 +24,10 @@
     --checkboxEnabled: radial-gradient(#0B4, #063, #020);
     --textSelectionBackground: #036;
     --textSelectionColor: #48B;
-    --rowSelection: #002820;
-    --rowSelectionMajor: #002010;
-    --editedCellBackbround: #002820;
+    --rowSelection: #001B18;
+    --rowSelectionMajor: #00140B;
+    --editedCellBackbround: #00120D;
+    --notificationTextColor: #000;
     --infoNotificationBackground: #228;
     --warnNotificationBackground: #842;
     --errorNotificationBackground: #822;

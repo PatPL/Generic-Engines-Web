@@ -8163,6 +8163,9 @@ class Engine {
             this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
         let output = [];
+        if (!targetEngine.UseTanks) {
+            return output;
+        }
         if (!targetEngine.LimitTanks) {
             targetEngine.TanksContents.forEach(v => {
                 let currentVolume = output.findIndex(x => v[0] == x[0]);

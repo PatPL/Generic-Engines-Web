@@ -707,6 +707,8 @@ class Engine implements ITableElement<Engine> {
         
         let output: [Fuel, number][] = [];
         
+        if (!targetEngine.UseTanks) { return output; }
+        
         if (!targetEngine.LimitTanks) {
             targetEngine.TanksContents.forEach (v => {
                 let currentVolume = output.findIndex (x => v[0] == x[0]);

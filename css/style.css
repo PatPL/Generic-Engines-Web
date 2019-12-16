@@ -447,7 +447,7 @@ span.checkbox-label {
     /* line-height: 19px; */
     font-size: 16px;
     overflow: hidden;
-    color: var(--defaultTextColor);
+    color: var(--tableTextColor);
 }
 
 .content-cell-content {
@@ -1016,5 +1016,6 @@ input.content-cell-content {
 }
 
 #styles-custom input {
+    position: relative;
     width: 300px;
 }

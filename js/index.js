@@ -7654,9 +7654,21 @@ class StyleDialog {
                     Settings.custom_theme = btoa(JSON.stringify(getCurrentCustomThemeFromTable()));
                     applyCurrentTheme();
                 });
-                tr.innerHTML = "<td></td><td></td>";
+                const inputHeight = 21;
+                const inputBorderWidth = 1;
+                let colorPicker = document.createElement("div");
+                colorPicker.style.position = "absolute";
+                colorPicker.style.width = `${inputHeight}px`;
+                colorPicker.style.height = `${inputHeight}px`;
+                colorPicker.style.top = `${1 + inputBorderWidth}px`;
+                colorPicker.style.right = `${1 + inputHeight + inputBorderWidth}px`;
+                colorPicker.style.cursor = "pointer";
+                colorPicker.title = "Open a color selector";
+                ColorInput.HookInput(colorPicker, input);
+                tr.innerHTML = "<td></td><td style='position: relative'></td>";
                 tr.children[0].innerHTML = i;
                 tr.children[1].appendChild(input);
+                tr.children[1].appendChild(colorPicker);
                 customTable.appendChild(tr);
             }
         };
@@ -10993,6 +11005,14 @@ class CanvasHelper {
             }
             this.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
         }
+    }
+}
+class ColorInput {
+    static HookInput(trigger, target) {
+        trigger.style.background = target.value;
+        target.addEventListener("input", () => {
+            trigger.style.background = target.value;
+        });
     }
 }
 function Debug_AutosaveImmediately() {

@@ -7,6 +7,7 @@ class StyleDialog {
         "Dark (Blue accent)": "darkBlue-Palette.css",
         "Dark (Red accent)": "darkRed-Palette.css",
         "Deep Sea": "deepSea-Palette.css",
+        "Hot dog stand": "hotDogStand-Palette.css",
         "Custom": false
     };
     

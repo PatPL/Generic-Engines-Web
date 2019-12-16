@@ -4,7 +4,8 @@ class StyleDialog {
     private static readonly ThemeFiles: { [name: string]: string | false } = {
         "Classic": "classicPalette.css",
         "Azure": "azure-Palette.css",
-        "Dark": "darkPalette.css",
+        "Dark (Blue accent)": "darkBlue-Palette.css",
+        "Dark (Red accent)": "darkRed-Palette.css",
         "Deep Sea": "deepSea-Palette.css",
         "Custom": false
     };
@@ -25,6 +26,8 @@ class StyleDialog {
         let customContainer = document.getElementById ("custom-styles-container")! as HTMLDivElement;
         let customTable = document.getElementById ("styles-custom")! as HTMLTableElement;
         let customReloadButton = document.getElementById ("custom-styles-reload")! as HTMLButtonElement;
+        let customExportButton = document.getElementById ("custom-styles-export")! as HTMLButtonElement;
+        let customImportButton = document.getElementById ("custom-styles-import")! as HTMLButtonElement;
         let themeOverrideStyle = document.getElementById ("custom-theme-override")! as HTMLStyleElement;
         
         let indexMap: [string, number][] = [];
@@ -61,7 +64,7 @@ class StyleDialog {
                 let customVars = JSON.parse (atob (Settings.custom_theme)) as [string, string][];
                 customVars.forEach (([cssVar, value]) => { varMap[cssVar] = value });
             } catch (e) {
-                console.error ("Couldn't parse the custom theme: ", e, atob (Settings.custom_theme));
+                console.error ("Couldn't parse the custom theme: ", e, Settings.custom_theme);
             }
             
             customTable.innerHTML = "";
@@ -131,6 +134,25 @@ class StyleDialog {
             }
         });
         
+        customExportButton.addEventListener ("click", () => {
+            if (FileIO.ToClipboard (Settings.custom_theme)) {
+                Notifier.Info ("Theme copied to clipboard");
+            } else {
+                Notifier.Warn ("Couldn't put the custom style in clipboard. Check dev console (F12) for the theme");
+                console.log ("Custom theme:", Settings.custom_theme);
+            }
+        });
+        
+        customImportButton.addEventListener ("click", () => {
+            if (confirm ("Importing custom theme will overwrite your current custom theme.\n\nAre you sure you want to continue?")) {
+                let newTheme = prompt ("Paste the custom theme (Base64)");
+                if (newTheme != null) {
+                    Settings.custom_theme = newTheme;
+                    applyCurrentTheme ();
+                }
+            }
+        });
+        
         // Debug button
         document.getElementById ("custom-styles-randomize")!.addEventListener ("click", () => {
             if (confirm ("Are you sure? You'll lose your current custom theme.")) {
@@ -190,7 +212,7 @@ class StyleDialog {
             let customVars = JSON.parse (atob (b64CustomTheme)) as [string, string][];
             customVars.forEach (([cssVar, value]) => { varMap[cssVar] = value });
         } catch (e) {
-            console.error ("Couldn't parse the custom theme: ", e, atob (b64CustomTheme));
+            console.error ("Couldn't parse the custom theme: ", e, b64CustomTheme);
         }
         
         for (let i in varMap) {

@@ -41,6 +41,8 @@
     --tableLine: #122;
     --buttonBackground: #6AA;
     --buttonOutline: #444;
+    --buttonOutlineHover: #44B;
+    --buttonOutlineActive: #00B;
     --scrollbarHandle: #244;
     --scrollbarBackground: #488;
 }

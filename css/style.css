@@ -144,7 +144,7 @@ button {
 button:hover {
     filter: brightness(1.2) contrast(1.2);
     
-    outline: #44B 2px solid;
+    outline: var(--buttonOutlineHover) 2px solid;
     outline-offset: -2px;
     
     color: var(--defaultTextColor);
@@ -153,7 +153,7 @@ button:hover {
 button:active {
     filter: brightness(0.8) contrast(0.8);
     
-    outline: #00B 2px solid;
+    outline: var(--buttonOutlineActive) 2px solid;
     outline-offset: -2px;
     
     color: var(--defaultTextColor);
@@ -236,7 +236,7 @@ span.checkbox-label {
 .clickable-text:hover {
     filter: brightness(1.2) contrast(1.2);
     
-    outline: #44B 2px solid;
+    outline: var(--buttonOutlineHover) 2px solid;
     outline-offset: -2px;
     
     color: var(--defaultTextColor);
@@ -245,7 +245,7 @@ span.checkbox-label {
 .clickable-text:active {
     filter: brightness(0.8) contrast(0.8);
     
-    outline: #00B 2px solid;
+    outline: var(--buttonOutlineActive) 2px solid;
     outline-offset: -2px;
     
     color: var(--defaultTextColor);
@@ -298,13 +298,13 @@ span.checkbox-label {
 
 .option-button:hover {
     filter: brightness(1.2) contrast(1.2);
-    outline: #44B 2px solid;
+    outline: var(--buttonOutlineHover) 2px solid;
     outline-offset: -2px;
 }
 
 .option-button:active {
     filter: brightness(0.8) contrast(0.8);
-    outline: #00B 2px solid;
+    outline: var(--buttonOutlineActive) 2px solid;
     outline-offset: -2px;
 }
 
@@ -1013,4 +1013,8 @@ input.content-cell-content {
 
 #custom-styles-reload {
     margin: 6px 0px 6px 0px;
+}
+
+#styles-custom input {
+    width: 300px;
 }

@@ -7611,6 +7611,8 @@ class StyleDialog {
         let customContainer = document.getElementById("custom-styles-container");
         let customTable = document.getElementById("styles-custom");
         let customReloadButton = document.getElementById("custom-styles-reload");
+        let customExportButton = document.getElementById("custom-styles-export");
+        let customImportButton = document.getElementById("custom-styles-import");
         let themeOverrideStyle = document.getElementById("custom-theme-override");
         let indexMap = [];
         let indexMapCounter = 0;
@@ -7640,7 +7642,7 @@ class StyleDialog {
                 customVars.forEach(([cssVar, value]) => { varMap[cssVar] = value; });
             }
             catch (e) {
-                console.error("Couldn't parse the custom theme: ", e, atob(Settings.custom_theme));
+                console.error("Couldn't parse the custom theme: ", e, Settings.custom_theme);
             }
             customTable.innerHTML = "";
             for (let i in varMap) {
@@ -7699,6 +7701,24 @@ class StyleDialog {
                 applyCurrentTheme();
             }
         });
+        customExportButton.addEventListener("click", () => {
+            if (FileIO.ToClipboard(Settings.custom_theme)) {
+                Notifier.Info("Theme copied to clipboard");
+            }
+            else {
+                Notifier.Warn("Couldn't put the custom style in clipboard. Check dev console (F12) for the theme");
+                console.log("Custom theme:", Settings.custom_theme);
+            }
+        });
+        customImportButton.addEventListener("click", () => {
+            if (confirm("Importing custom theme will overwrite your current custom theme.\n\nAre you sure you want to continue?")) {
+                let newTheme = prompt("Paste the custom theme (Base64)");
+                if (newTheme != null) {
+                    Settings.custom_theme = newTheme;
+                    applyCurrentTheme();
+                }
+            }
+        });
         document.getElementById("custom-styles-randomize").addEventListener("click", () => {
             if (confirm("Are you sure? You'll lose your current custom theme.")) {
                 const hex = "0123456789abcdef";
@@ -7754,7 +7774,7 @@ class StyleDialog {
             customVars.forEach(([cssVar, value]) => { varMap[cssVar] = value; });
         }
         catch (e) {
-            console.error("Couldn't parse the custom theme: ", e, atob(b64CustomTheme));
+            console.error("Couldn't parse the custom theme: ", e, b64CustomTheme);
         }
         for (let i in varMap) {
             output += `
@@ -7770,7 +7790,8 @@ StyleDialog._initialized = false;
 StyleDialog.ThemeFiles = {
     "Classic": "classicPalette.css",
     "Azure": "azure-Palette.css",
-    "Dark": "darkPalette.css",
+    "Dark (Blue accent)": "darkBlue-Palette.css",
+    "Dark (Red accent)": "darkRed-Palette.css",
     "Deep Sea": "deepSea-Palette.css",
     "Custom": false
 };

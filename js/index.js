@@ -11010,19 +11010,33 @@ class CanvasHelper {
 class ColorInput {
     static ParseRGB(cssColor) {
         cssColor = cssColor.toLowerCase();
-        let output = [0, 0, 0, 1.0];
-        if (/^#[0-9a-f]{3}$/.test(cssColor)) {
-            output[0] += ColorInput.hexValue[cssColor[1]] * 17;
-            output[1] += ColorInput.hexValue[cssColor[2]] * 17;
-            output[2] += ColorInput.hexValue[cssColor[3]] * 17;
+        if (/^[0-9a-f]{3,}$/.test(cssColor)) {
+            cssColor = `#${cssColor}`;
         }
-        else if (/^#[0-9a-f]{6}$/.test(cssColor)) {
+        let output = [0, 0, 0, 1.0];
+        if (/^#[0-9a-f]{8,}$/.test(cssColor)) {
             output[0] += ColorInput.hexValue[cssColor[1]] * 16;
             output[0] += ColorInput.hexValue[cssColor[2]];
             output[1] += ColorInput.hexValue[cssColor[3]] * 16;
             output[1] += ColorInput.hexValue[cssColor[4]];
             output[2] += ColorInput.hexValue[cssColor[5]] * 16;
             output[2] += ColorInput.hexValue[cssColor[6]];
+            output[3] = ColorInput.hexValue[cssColor[7]] * 16;
+            output[3] += ColorInput.hexValue[cssColor[8]];
+            output[3] /= 255;
+        }
+        else if (/^#[0-9a-f]{6,}$/.test(cssColor)) {
+            output[0] += ColorInput.hexValue[cssColor[1]] * 16;
+            output[0] += ColorInput.hexValue[cssColor[2]];
+            output[1] += ColorInput.hexValue[cssColor[3]] * 16;
+            output[1] += ColorInput.hexValue[cssColor[4]];
+            output[2] += ColorInput.hexValue[cssColor[5]] * 16;
+            output[2] += ColorInput.hexValue[cssColor[6]];
+        }
+        else if (/^#[0-9a-f]{3,}$/.test(cssColor)) {
+            output[0] += ColorInput.hexValue[cssColor[1]] * 17;
+            output[1] += ColorInput.hexValue[cssColor[2]] * 17;
+            output[2] += ColorInput.hexValue[cssColor[3]] * 17;
         }
         else if (/^rgb(a)?\([ ]*[0-9]{1,3}[ ]*,[ ]*[0-9]{1,3}[ ]*,[ ]*[0-9]{1,3}(.)*$/.test(cssColor)) {
             let rawValues = cssColor.split("(")[1].split(",");
@@ -11106,6 +11120,11 @@ class ColorInput {
     static RGBToCSSColor(color) {
         return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
     }
+    static RGBToHTMLColor(color) {
+        let [r, g, b, a] = color;
+        a = Math.round(a * 255);
+        return `#${this.hexLookup[Math.floor(r / 16)]}${this.hexLookup[r % 16]}${this.hexLookup[Math.floor(g / 16)]}${this.hexLookup[g % 16]}${this.hexLookup[Math.floor(b / 16)]}${this.hexLookup[b % 16]}${this.hexLookup[Math.floor(a / 16)]}${this.hexLookup[a % 16]}`;
+    }
     static HSVToCSSColor(color) {
         return this.RGBToCSSColor(this.HSVtoRGB(color));
     }
@@ -11119,12 +11138,43 @@ class ColorInput {
         });
     }
     static StartTransaction(trigger, target) {
+        let valueBackup = target.value;
+        this.ElementRevert.onclick = () => {
+            target.value = valueBackup;
+            let event = document.createEvent("HTMLEvents");
+            event.initEvent("input", false, true);
+            target.dispatchEvent(event);
+            FullscreenWindows["color-box"].style.display = "none";
+            this.EndTransaction();
+        };
         document.getElementById("color-box").style.display = "block";
+        if (this.CurrentResizeListener != null) {
+            window.removeEventListener("resize", this.CurrentResizeListener);
+        }
+        this.CurrentResizeListener = () => {
+            let triggerBox = trigger.getBoundingClientRect();
+            let containerBox = this.ElementContainer.getBoundingClientRect();
+            let finalX = triggerBox.left - containerBox.width;
+            finalX = Math.max(finalX, 0);
+            let finalY = triggerBox.top;
+            if (finalY + containerBox.height > window.innerHeight) {
+                finalY = triggerBox.top + triggerBox.height - containerBox.height;
+            }
+            finalY = Math.max(finalY, 0);
+            this.ElementContainer.style.left = `${finalX}px`;
+            this.ElementContainer.style.top = `${finalY}px`;
+        };
+        this.CurrentResizeListener();
+        window.addEventListener("resize", this.CurrentResizeListener);
         this.SetRGBColor(this.ParseRGB(target.value));
         this.CurrentlyTargetedInput = target;
     }
     static EndTransaction() {
         this.CurrentlyTargetedInput = null;
+        if (this.CurrentResizeListener) {
+            window.removeEventListener("resize", this.CurrentResizeListener);
+            this.CurrentResizeListener = null;
+        }
     }
     static SetRGBColor(color) {
         this.CurrentColorRGB = color;
@@ -11194,6 +11244,9 @@ class ColorInput {
         this.ElementA.style.background = this.RGBToCSSColor([r, g, b, 1.0]);
         this.ElementAMeter.style.bottom = `${a * 255}px`;
         this.ElementPreview.style.background = this.RGBToCSSColor([r, g, b, a]);
+        if (!this.DO_NOT_UPDATE_INPUT_OVERRIDE) {
+            this.ElementPreviewInput.value = this.RGBToHTMLColor([r, g, b, a]);
+        }
     }
     static ApplyCurrentColorToTargetedInput() {
         if (this.CurrentlyTargetedInput != null) {
@@ -11207,6 +11260,7 @@ class ColorInput {
         if (this.Initialized) {
             return;
         }
+        this.ElementContainer = document.getElementById("color-selector-container");
         this.ElementSquareX = document.getElementById("color-selector-squareX");
         this.ElementSquareY = document.getElementById("color-selector-squareY");
         this.ElementSquareOverlay = document.getElementById("color-selector-squareOverlay");
@@ -11225,6 +11279,9 @@ class ColorInput {
         this.ElementAOverlay = document.getElementById("color-selector-a-overlay");
         this.ElementAMeter = this.ElementAOverlay.querySelector(".color-meter-horizontal");
         this.ElementPreview = document.getElementById("color-selector-preview");
+        this.ElementPreviewInput = document.getElementById("color-selector-preview-input");
+        this.ElementApply = document.getElementById("color-selector-apply");
+        this.ElementRevert = document.getElementById("color-selector-revert");
         document.getElementById("color-box").querySelector(".fullscreen-grayout").addEventListener("click", () => {
             this.EndTransaction();
         });
@@ -11334,13 +11391,28 @@ class ColorInput {
                 this.SetHSVColor([h, s, v, a]);
             });
         });
+        this.ElementApply.addEventListener("click", () => {
+            FullscreenWindows["color-box"].style.display = "none";
+            this.EndTransaction();
+        });
+        this.ElementPreviewInput.addEventListener("input", () => {
+            this.DO_NOT_UPDATE_INPUT_OVERRIDE = true;
+            this.SetRGBColor(this.ParseRGB(this.ElementPreviewInput.value));
+            this.DO_NOT_UPDATE_INPUT_OVERRIDE = false;
+        });
     }
 }
+ColorInput.DO_NOT_UPDATE_INPUT_OVERRIDE = false;
 ColorInput.CurrentColorRGB = [0, 0, 0, 1.0];
 ColorInput.CurrentColorHSV = [0, 0, 0, 1.0];
 ColorInput.CurrentColorAlpha = 1.0;
 ColorInput.CurrentLock = "R";
 ColorInput.CurrentlyTargetedInput = null;
+ColorInput.CurrentResizeListener = null;
+ColorInput.hexLookup = [
+    "0", "1", "2", "3", "4", "5", "6", "7",
+    "8", "9", "A", "B", "C", "D", "E", "F",
+];
 ColorInput.hexValue = {
     "0": 0, "1": 1, "2": 2, "3": 3,
     "4": 4, "5": 5, "6": 6, "7": 7,

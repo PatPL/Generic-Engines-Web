@@ -2,13 +2,19 @@ type RGBA = [number, number, number, number];
 type HSVA = [number, number, number, number];
 class ColorInput {
     
+    // I really want to avoid passing this bool over 4 functions just for this one little feature
+    // Set to true by input event for ApplyCurrentColorToInputs, and set back to false afterwards
+    private static DO_NOT_UPDATE_INPUT_OVERRIDE: boolean = false;
+    
     private static CurrentColorRGB: RGBA = [0, 0, 0, 1.0];
     private static CurrentColorHSV: HSVA = [0, 0, 0, 1.0];
     private static CurrentColorAlpha: number = 1.0;
     
     private static CurrentLock: "R" | "G" | "B" = "R";
     private static CurrentlyTargetedInput: HTMLInputElement | null = null;
+    private static CurrentResizeListener: (() => void) | null = null;
     
+    private static ElementContainer: HTMLDivElement;
     private static ElementSquareX: HTMLDivElement;
     private static ElementSquareY: HTMLDivElement;
     private static ElementSquareOverlay: HTMLDivElement;
@@ -27,7 +33,14 @@ class ColorInput {
     private static ElementAOverlay: HTMLDivElement;
     private static ElementAMeter: HTMLDivElement;
     private static ElementPreview: HTMLDivElement;
+    private static ElementPreviewInput: HTMLInputElement;
+    private static ElementApply: HTMLImageElement;
+    private static ElementRevert: HTMLImageElement;
     
+    private static readonly hexLookup: string[] = [
+        "0", "1", "2", "3", "4", "5", "6", "7",
+        "8", "9", "A", "B", "C", "D", "E", "F",
+    ]
     private static readonly hexValue: { [hex: string]: number } = {
         "0":  0, "1":  1, "2":  2, "3":  3,
         "4":  4, "5":  5, "6":  6, "7":  7,
@@ -37,23 +50,37 @@ class ColorInput {
     
     private static ParseRGB (cssColor: string): RGBA {
         cssColor = cssColor.toLowerCase ();
+        if (/^[0-9a-f]{3,}$/.test (cssColor)) {
+            // Hex color without #. Allow, and add # for parsing
+            cssColor = `#${ cssColor }`;
+        }
         
         let output: RGBA = [0, 0, 0, 1.0];
         
-        if (/^#[0-9a-f]{3}$/.test (cssColor)) {
-            // #abc
-            output[0] += ColorInput.hexValue[cssColor[1]] * 17;
-            output[1] += ColorInput.hexValue[cssColor[2]] * 17;
-            output[2] += ColorInput.hexValue[cssColor[3]] * 17;
-        } else if (/^#[0-9a-f]{6}$/.test (cssColor)) {
-            // 86cdab
+        if (/^#[0-9a-f]{8,}$/.test (cssColor)) {
+            // #125489FF
             output[0] += ColorInput.hexValue[cssColor[1]] * 16;
             output[0] += ColorInput.hexValue[cssColor[2]];
             output[1] += ColorInput.hexValue[cssColor[3]] * 16;
             output[1] += ColorInput.hexValue[cssColor[4]];
             output[2] += ColorInput.hexValue[cssColor[5]] * 16;
             output[2] += ColorInput.hexValue[cssColor[6]];
-            
+            output[3] = ColorInput.hexValue[cssColor[7]] * 16;
+            output[3] += ColorInput.hexValue[cssColor[8]];
+            output[3] /= 255;
+        } else if (/^#[0-9a-f]{6,}$/.test (cssColor)) {
+            // #86cdab
+            output[0] += ColorInput.hexValue[cssColor[1]] * 16;
+            output[0] += ColorInput.hexValue[cssColor[2]];
+            output[1] += ColorInput.hexValue[cssColor[3]] * 16;
+            output[1] += ColorInput.hexValue[cssColor[4]];
+            output[2] += ColorInput.hexValue[cssColor[5]] * 16;
+            output[2] += ColorInput.hexValue[cssColor[6]];
+        } else if (/^#[0-9a-f]{3,}$/.test (cssColor)) {
+            // #abc
+            output[0] += ColorInput.hexValue[cssColor[1]] * 17;
+            output[1] += ColorInput.hexValue[cssColor[2]] * 17;
+            output[2] += ColorInput.hexValue[cssColor[3]] * 17;
         } else if (/^rgb(a)?\([ ]*[0-9]{1,3}[ ]*,[ ]*[0-9]{1,3}[ ]*,[ ]*[0-9]{1,3}(.)*$/.test (cssColor)) {
             // rgb(1,1,1)
             // rgb(100, 200, 250)
@@ -150,6 +177,17 @@ class ColorInput {
         return `rgba(${ color[0] }, ${ color[1] }, ${ color[2] }, ${ color[3] })`;
     }
     
+    private static RGBToHTMLColor (color: RGBA) {
+        let [r, g, b, a] = color;
+        a = Math.round (a * 255);
+        return `#${
+            this.hexLookup[Math.floor (r / 16)] }${ this.hexLookup[r % 16]
+        }${ this.hexLookup[Math.floor (g / 16)] }${ this.hexLookup[g % 16]
+        }${ this.hexLookup[Math.floor (b / 16)] }${ this.hexLookup[b % 16]
+        }${ this.hexLookup[Math.floor (a / 16)] }${ this.hexLookup[a % 16]
+        }`; // #12345678 <- #RRGGBBAA
+    }
+    
     private static HSVToCSSColor (color: HSVA) {
         return this.RGBToCSSColor (this.HSVtoRGB (color));
     }
@@ -166,11 +204,45 @@ class ColorInput {
     }
     
     private static StartTransaction (trigger: HTMLElement, target: HTMLInputElement) {
+        // Setup the revert button
+        let valueBackup = target.value;
+        this.ElementRevert.onclick = () => {
+            target.value = valueBackup;
+            // Doesn't fire on its own
+            let event = document.createEvent("HTMLEvents");
+            event.initEvent("input", false, true);
+            target.dispatchEvent(event);
+            
+            FullscreenWindows["color-box"].style.display = "none";
+            this.EndTransaction ();
+        };
+        
         // Display the picker
         document.getElementById ("color-box")!.style.display = "block";
         
         // Move the picker in the right position
+        if (this.CurrentResizeListener != null) {
+            window.removeEventListener ("resize", this.CurrentResizeListener);
+        }
         
+        this.CurrentResizeListener = () => {
+            let triggerBox = trigger.getBoundingClientRect ();
+            let containerBox = this.ElementContainer.getBoundingClientRect ();
+            
+            let finalX = triggerBox.left - containerBox.width;
+            finalX = Math.max (finalX, 0);
+            let finalY = triggerBox.top;
+            if (finalY + containerBox.height > window.innerHeight) {
+                finalY = triggerBox.top + triggerBox.height - containerBox.height;
+            }
+            finalY = Math.max (finalY, 0);
+            
+            this.ElementContainer.style.left = `${ finalX }px`;
+            this.ElementContainer.style.top = `${ finalY }px`;
+        }
+        
+        this.CurrentResizeListener ();
+        window.addEventListener ("resize", this.CurrentResizeListener);
         
         // Set current input's value to the picker
         this.SetRGBColor (this.ParseRGB (target.value));
@@ -182,6 +254,10 @@ class ColorInput {
     
     private static EndTransaction () {
         this.CurrentlyTargetedInput = null;
+        if (this.CurrentResizeListener) {
+            window.removeEventListener ("resize", this.CurrentResizeListener);
+            this.CurrentResizeListener = null;
+        }
     }
     
     private static SetRGBColor (color: RGBA) {
@@ -283,6 +359,9 @@ class ColorInput {
         this.ElementAMeter.style.bottom = `${ a * 255 }px`;
         
         this.ElementPreview.style.background = this.RGBToCSSColor ([r, g, b, a]);
+        if (!this.DO_NOT_UPDATE_INPUT_OVERRIDE) {
+            this.ElementPreviewInput.value = this.RGBToHTMLColor ([r, g, b, a]);
+        }
     }
     
     private static ApplyCurrentColorToTargetedInput () {
@@ -300,6 +379,7 @@ class ColorInput {
     public static Initialize () {
         if (this.Initialized) { return; }
         
+        this.ElementContainer = document.getElementById ("color-selector-container") as HTMLDivElement;
         this.ElementSquareX = document.getElementById ("color-selector-squareX") as HTMLDivElement;
         this.ElementSquareY = document.getElementById ("color-selector-squareY") as HTMLDivElement;
         this.ElementSquareOverlay = document.getElementById ("color-selector-squareOverlay") as HTMLDivElement;
@@ -318,6 +398,9 @@ class ColorInput {
         this.ElementAOverlay = document.getElementById ("color-selector-a-overlay") as HTMLDivElement;
         this.ElementAMeter = this.ElementAOverlay.querySelector (".color-meter-horizontal") as HTMLDivElement;
         this.ElementPreview = document.getElementById ("color-selector-preview") as HTMLDivElement;
+        this.ElementPreviewInput = document.getElementById ("color-selector-preview-input") as HTMLInputElement;
+        this.ElementApply = document.getElementById ("color-selector-apply") as HTMLImageElement;
+        this.ElementRevert = document.getElementById ("color-selector-revert") as HTMLImageElement;
         
         document.getElementById ("color-box")!.querySelector (".fullscreen-grayout")!.addEventListener ("click", () => {
             this.EndTransaction ();
@@ -454,6 +537,17 @@ class ColorInput {
                 a = Math.min (Math.max ((startY - Input.MouseY + 255 - e.layerY) / 255, 0), 1);
                 this.SetHSVColor ([h, s, v, a]);
             });
+        });
+        
+        this.ElementApply.addEventListener ("click", () => {
+            FullscreenWindows["color-box"].style.display = "none";
+            this.EndTransaction ();
+        });
+        
+        this.ElementPreviewInput.addEventListener ("input", () => {
+            this.DO_NOT_UPDATE_INPUT_OVERRIDE = true;
+            this.SetRGBColor (this.ParseRGB (this.ElementPreviewInput.value));
+            this.DO_NOT_UPDATE_INPUT_OVERRIDE = false;
         });
         
     }

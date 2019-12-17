@@ -1019,3 +1019,176 @@ input.content-cell-content {
     position: relative;
     width: 300px;
 }
+
+/**/
+
+#color-selector-container {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    
+    padding: 4px;
+    background: var(--modalBackground);
+    border: 2px solid var(--defaultBorderColor);
+    
+    display: grid;
+    grid-template-columns: 256px 8px 32px 4px 32px 4px 32px;
+    grid-template-rows: 256px 8px 32px 4px 32px 4px 32px;
+    grid-template-areas: 
+        "a . e . f . g"
+        ". . . . . . ."
+        "b . h h h h h"
+        ". . h h h h h"
+        "c . h h h h h"
+        ". . h h h h h"
+        "d . h h h h h"
+    ;
+}
+
+/* Colors:
+
+A----B
+|    |
+|    |
+C----D
+
+X: linear-gradient(to right, A, B)
+Y: linear-gradient(to right, C, D)
+
+*/
+
+#color-selector-squareX {
+    grid-area: a;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-squareY {
+    position: relative;
+    grid-area: a;
+    width: 100%;
+    height: 100%;
+    mask-image: linear-gradient(to bottom, transparent, #FFF);
+}
+
+#color-selector-squareOverlay {
+    position: relative;
+    grid-area: a;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+#color-selector-r {
+    position: relative;
+    grid-area: b;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-g {
+    position: relative;
+    grid-area: c;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-b {
+    position: relative;
+    grid-area: d;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-s {
+    position: relative;
+    grid-area: e;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-v {
+    position: relative;
+    grid-area: f;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-a-grid {
+    background: url("../img/transparent.png");
+    position: relative;
+    grid-area: g;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-a {
+    mask-image: linear-gradient(to top, transparent, #FFF);
+    position: relative;
+    grid-area: g;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-a-overlay {
+    position: relative;
+    grid-area: g;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-preview-grid {
+    background: url("../img/transparent.png");
+    position: relative;
+    grid-area: h;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-preview {
+    position: relative;
+    grid-area: h;
+    width: 100%;
+    height: 100%;
+}
+
+.color-meter-vertical {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    
+    height: 100%;
+    width: 1px;
+    background: #000;
+    
+    pointer-events: none;
+}
+
+.color-meter-horizontal {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    
+    height: 1px;
+    width: 100%;
+    background: #000;
+    
+    pointer-events: none;
+}
+
+.circular-color-meter {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    /* Pivot at center */
+    transform: translate(-50%, -50%);
+    
+    width: 5px;
+    height: 5px;
+    
+    background: none;
+    border: 1px solid #000;
+    border-radius: 9999px;
+    
+    pointer-events: none;
+}

@@ -11008,13 +11008,349 @@ class CanvasHelper {
     }
 }
 class ColorInput {
+    static ParseRGB(cssColor) {
+        cssColor = cssColor.toLowerCase();
+        let output = [0, 0, 0, 1.0];
+        if (/^#[0-9a-f]{3}$/.test(cssColor)) {
+            output[0] += ColorInput.hexValue[cssColor[1]] * 17;
+            output[1] += ColorInput.hexValue[cssColor[2]] * 17;
+            output[2] += ColorInput.hexValue[cssColor[3]] * 17;
+        }
+        else if (/^#[0-9a-f]{6}$/.test(cssColor)) {
+            output[0] += ColorInput.hexValue[cssColor[1]] * 16;
+            output[0] += ColorInput.hexValue[cssColor[2]];
+            output[1] += ColorInput.hexValue[cssColor[3]] * 16;
+            output[1] += ColorInput.hexValue[cssColor[4]];
+            output[2] += ColorInput.hexValue[cssColor[5]] * 16;
+            output[2] += ColorInput.hexValue[cssColor[6]];
+        }
+        else if (/^rgb(a)?\([ ]*[0-9]{1,3}[ ]*,[ ]*[0-9]{1,3}[ ]*,[ ]*[0-9]{1,3}(.)*$/.test(cssColor)) {
+            let rawValues = cssColor.split("(")[1].split(",");
+            output[0] = parseInt(rawValues[0]);
+            output[1] = parseInt(rawValues[1]);
+            output[2] = parseInt(rawValues[2]);
+            if (output.length > 3) {
+                output[3] = parseFloat(rawValues[3]);
+            }
+        }
+        else {
+            console.warn("CSSColor didn't match any regex: ", cssColor);
+        }
+        output[0] = Math.min(Math.max(output[0], 0), 255);
+        output[1] = Math.min(Math.max(output[1], 0), 255);
+        output[2] = Math.min(Math.max(output[2], 0), 255);
+        output[3] = Math.min(Math.max(output[3], 0), 1.0);
+        return output;
+    }
+    static RGBtoHSV(color) {
+        let color0_1 = [
+            color[0] / 255,
+            color[1] / 255,
+            color[2] / 255
+        ];
+        let Cmax = Math.max(color0_1[0], color0_1[1], color0_1[2]);
+        let Cmin = Math.min(color0_1[0], color0_1[1], color0_1[2]);
+        let delta = Cmax - Cmin;
+        let h;
+        if (delta == 0) {
+            h = 0;
+        }
+        else if (Cmax == color0_1[0]) {
+            h = 60 * (((color0_1[1] - color0_1[2]) / delta) % 6);
+        }
+        else if (Cmax == color0_1[1]) {
+            h = 60 * (((color0_1[2] - color0_1[0]) / delta) + 2);
+        }
+        else {
+            h = 60 * (((color0_1[0] - color0_1[1]) / delta) + 4);
+        }
+        let s;
+        if (Cmax == 0) {
+            s = 0;
+        }
+        else {
+            s = delta / Cmax;
+        }
+        let v = Cmax;
+        return [h, s, v, color[3]];
+    }
+    static HSVtoRGB(color) {
+        let [h, s, v, a] = color;
+        let c = v * s;
+        let x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+        let m = v - c;
+        let RGBtmp;
+        if (h < 60) {
+            RGBtmp = [c, x, 0];
+        }
+        else if (h < 120) {
+            RGBtmp = [x, c, 0];
+        }
+        else if (h < 180) {
+            RGBtmp = [0, c, x];
+        }
+        else if (h < 240) {
+            RGBtmp = [0, x, c];
+        }
+        else if (h < 300) {
+            RGBtmp = [x, 0, c];
+        }
+        else {
+            RGBtmp = [c, 0, x];
+        }
+        let r = Math.round((RGBtmp[0] + m) * 255);
+        let g = Math.round((RGBtmp[1] + m) * 255);
+        let b = Math.round((RGBtmp[2] + m) * 255);
+        return [r, g, b, a];
+    }
+    static RGBToCSSColor(color) {
+        return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
+    }
+    static HSVToCSSColor(color) {
+        return this.RGBToCSSColor(this.HSVtoRGB(color));
+    }
     static HookInput(trigger, target) {
         trigger.style.background = target.value;
         target.addEventListener("input", () => {
             trigger.style.background = target.value;
         });
+        trigger.addEventListener("click", () => {
+            this.StartTransaction(trigger, target);
+        });
+    }
+    static StartTransaction(trigger, target) {
+        document.getElementById("color-box").style.display = "block";
+        this.SetRGBColor(this.ParseRGB(target.value));
+        this.CurrentlyTargetedInput = target;
+    }
+    static EndTransaction() {
+        this.CurrentlyTargetedInput = null;
+    }
+    static SetRGBColor(color) {
+        this.CurrentColorRGB = color;
+        this.CurrentColorHSV = this.RGBtoHSV(color);
+        this.OnColorUpdate();
+    }
+    static SetHSVColor(color) {
+        this.CurrentColorHSV = color;
+        this.CurrentColorRGB = this.HSVtoRGB(color);
+        this.OnColorUpdate();
+    }
+    static OnColorUpdate() {
+        this.ApplyCurrentColorToInputs();
+        this.ApplyCurrentColorToTargetedInput();
+    }
+    static SetLock(lock) {
+        this.CurrentLock = lock;
+        this.ApplyCurrentColorToInputs();
+    }
+    static ApplyCurrentColorToInputs() {
+        let A, B, C, D;
+        let [r, g, b, a] = this.CurrentColorRGB;
+        let [h, s, v] = this.CurrentColorHSV;
+        if (this.CurrentLock == "R") {
+            A = [r, 0, 255, 1.0];
+            B = [r, 255, 255, 1.0];
+            C = [r, 0, 0, 1.0];
+            D = [r, 255, 0, 1.0];
+            this.ElementSquareMeter.style.left = `${g}px`;
+            this.ElementSquareMeter.style.top = `${255 - b}px`;
+        }
+        else if (this.CurrentLock == "G") {
+            A = [0, g, 255, 1.0];
+            B = [255, g, 255, 1.0];
+            C = [0, g, 0, 1.0];
+            D = [255, g, 0, 1.0];
+            this.ElementSquareMeter.style.left = `${r}px`;
+            this.ElementSquareMeter.style.top = `${255 - b}px`;
+        }
+        else {
+            A = [0, 255, b, 1.0];
+            B = [255, 255, b, 1.0];
+            C = [0, 0, b, 1.0];
+            D = [255, 0, b, 1.0];
+            this.ElementSquareMeter.style.left = `${r}px`;
+            this.ElementSquareMeter.style.top = `${255 - g}px`;
+        }
+        this.ElementSquareX.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor(A)}, ${this.RGBToCSSColor(B)})`;
+        this.ElementSquareY.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor(C)}, ${this.RGBToCSSColor(D)})`;
+        this.ElementR.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor([0, g, b, 1.0])}, ${this.RGBToCSSColor([255, g, b, 1.0])})`;
+        this.ElementRMeter.style.left = `${r}px`;
+        this.ElementG.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor([r, 0, b, 1.0])}, ${this.RGBToCSSColor([r, 255, b, 1.0])})`;
+        this.ElementGMeter.style.left = `${g}px`;
+        this.ElementB.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor([r, g, 0, 1.0])}, ${this.RGBToCSSColor([r, g, 255, 1.0])})`;
+        this.ElementBMeter.style.left = `${b}px`;
+        this.ElementS.style.background =
+            `linear-gradient(to top, ${this.HSVToCSSColor([h, 0.0, v, 1.0])}, ${this.HSVToCSSColor([h, 1.0, v, 1.0])})`;
+        this.ElementSMeter.style.bottom = `${s * 255}px`;
+        this.ElementV.style.background =
+            `linear-gradient(to top, ${this.HSVToCSSColor([h, s, 0.0, 1.0])}, ${this.HSVToCSSColor([h, s, 1.0, 1.0])})`;
+        this.ElementVMeter.style.bottom = `${v * 255}px`;
+        this.ElementA.style.background = this.RGBToCSSColor([r, g, b, 1.0]);
+        this.ElementAMeter.style.bottom = `${a * 255}px`;
+        this.ElementPreview.style.background = this.RGBToCSSColor([r, g, b, a]);
+    }
+    static ApplyCurrentColorToTargetedInput() {
+        if (this.CurrentlyTargetedInput != null) {
+            this.CurrentlyTargetedInput.value = this.RGBToCSSColor(this.CurrentColorRGB);
+            let event = document.createEvent("HTMLEvents");
+            event.initEvent("input", false, true);
+            this.CurrentlyTargetedInput.dispatchEvent(event);
+        }
+    }
+    static Initialize() {
+        if (this.Initialized) {
+            return;
+        }
+        this.ElementSquareX = document.getElementById("color-selector-squareX");
+        this.ElementSquareY = document.getElementById("color-selector-squareY");
+        this.ElementSquareOverlay = document.getElementById("color-selector-squareOverlay");
+        this.ElementSquareMeter = this.ElementSquareOverlay.querySelector(".circular-color-meter");
+        this.ElementR = document.getElementById("color-selector-r");
+        this.ElementRMeter = this.ElementR.querySelector(".color-meter-vertical");
+        this.ElementG = document.getElementById("color-selector-g");
+        this.ElementGMeter = this.ElementG.querySelector(".color-meter-vertical");
+        this.ElementB = document.getElementById("color-selector-b");
+        this.ElementBMeter = this.ElementB.querySelector(".color-meter-vertical");
+        this.ElementS = document.getElementById("color-selector-s");
+        this.ElementSMeter = this.ElementS.querySelector(".color-meter-horizontal");
+        this.ElementV = document.getElementById("color-selector-v");
+        this.ElementVMeter = this.ElementV.querySelector(".color-meter-horizontal");
+        this.ElementA = document.getElementById("color-selector-a");
+        this.ElementAOverlay = document.getElementById("color-selector-a-overlay");
+        this.ElementAMeter = this.ElementAOverlay.querySelector(".color-meter-horizontal");
+        this.ElementPreview = document.getElementById("color-selector-preview");
+        document.getElementById("color-box").querySelector(".fullscreen-grayout").addEventListener("click", () => {
+            this.EndTransaction();
+        });
+        this.ElementSquareOverlay.oncontextmenu = () => false;
+        this.ElementSquareOverlay.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [r, g, b, a] = this.CurrentColorRGB;
+            if (e.button == 2) {
+                if (this.CurrentLock == "R") {
+                    this.SetLock("G");
+                }
+                else if (this.CurrentLock == "G") {
+                    this.SetLock("B");
+                }
+                else {
+                    this.SetLock("R");
+                }
+                return;
+            }
+            let startX = Input.MouseX;
+            let startY = Input.MouseY;
+            Dragger.Drag(() => {
+                if (this.CurrentLock == "R") {
+                    g = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                    b = 255 - Math.min(Math.max(Input.MouseY - startY + e.layerY, 0), 255);
+                }
+                else if (this.CurrentLock == "G") {
+                    r = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                    b = 255 - Math.min(Math.max(Input.MouseY - startY + e.layerY, 0), 255);
+                }
+                else {
+                    r = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                    g = 255 - Math.min(Math.max(Input.MouseY - startY + e.layerY, 0), 255);
+                }
+                this.SetRGBColor([r, g, b, a]);
+            });
+        });
+        this.ElementR.oncontextmenu = () => false;
+        this.ElementR.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [r, g, b, a] = this.CurrentColorRGB;
+            if (e.button == 2) {
+                this.SetLock("R");
+                return;
+            }
+            let startX = Input.MouseX;
+            Dragger.Drag(() => {
+                r = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                this.SetRGBColor([r, g, b, a]);
+            });
+        });
+        this.ElementG.oncontextmenu = () => false;
+        this.ElementG.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [r, g, b, a] = this.CurrentColorRGB;
+            if (e.button == 2) {
+                this.SetLock("G");
+                return;
+            }
+            let startX = Input.MouseX;
+            Dragger.Drag(() => {
+                g = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                this.SetRGBColor([r, g, b, a]);
+            });
+        });
+        this.ElementB.oncontextmenu = () => false;
+        this.ElementB.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [r, g, b, a] = this.CurrentColorRGB;
+            if (e.button == 2) {
+                this.SetLock("B");
+                return;
+            }
+            let startX = Input.MouseX;
+            Dragger.Drag(() => {
+                b = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                this.SetRGBColor([r, g, b, a]);
+            });
+        });
+        this.ElementS.oncontextmenu = () => false;
+        this.ElementS.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [h, s, v, a] = this.CurrentColorHSV;
+            let startY = Input.MouseY;
+            Dragger.Drag(() => {
+                s = Math.min(Math.max((startY - Input.MouseY + 255 - e.layerY) / 255, 0), 1);
+                this.SetHSVColor([h, s, v, a]);
+            });
+        });
+        this.ElementV.oncontextmenu = () => false;
+        this.ElementV.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [h, s, v, a] = this.CurrentColorHSV;
+            let startY = Input.MouseY;
+            Dragger.Drag(() => {
+                v = Math.min(Math.max((startY - Input.MouseY + 255 - e.layerY) / 255, 0), 1);
+                this.SetHSVColor([h, s, v, a]);
+            });
+        });
+        this.ElementAOverlay.oncontextmenu = () => false;
+        this.ElementAOverlay.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [h, s, v, a] = this.CurrentColorHSV;
+            let startY = Input.MouseY;
+            Dragger.Drag(() => {
+                a = Math.min(Math.max((startY - Input.MouseY + 255 - e.layerY) / 255, 0), 1);
+                this.SetHSVColor([h, s, v, a]);
+            });
+        });
     }
 }
+ColorInput.CurrentColorRGB = [0, 0, 0, 1.0];
+ColorInput.CurrentColorHSV = [0, 0, 0, 1.0];
+ColorInput.CurrentColorAlpha = 1.0;
+ColorInput.CurrentLock = "R";
+ColorInput.CurrentlyTargetedInput = null;
+ColorInput.hexValue = {
+    "0": 0, "1": 1, "2": 2, "3": 3,
+    "4": 4, "5": 5, "6": 6, "7": 7,
+    "8": 8, "9": 9, "a": 10, "b": 11,
+    "c": 12, "d": 13, "e": 14, "f": 15
+};
+ColorInput.Initialized = false;
+document.addEventListener("DOMContentLoaded", () => {
+    ColorInput.Initialize();
+});
 function Debug_AutosaveImmediately() {
     Autosave.Save(MainEngineTable.Items, ListName);
 }

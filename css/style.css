@@ -284,6 +284,11 @@ span.checkbox-label {
 
 /**/
 
+.button32px {
+    width: 32px;
+    height: 32px;
+}
+
 .option-button-disabled {
     filter: brightness(0.66) contrast(0.66);
     cursor: not-allowed;
@@ -1006,13 +1011,11 @@ input.content-cell-content {
 /**/
 
 #custom-styles-container {
+    padding: 8px 0px 0px 0px;
+    
     max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
-}
-
-#custom-styles-reload {
-    margin: 6px 0px 6px 0px;
 }
 
 #styles-custom input {

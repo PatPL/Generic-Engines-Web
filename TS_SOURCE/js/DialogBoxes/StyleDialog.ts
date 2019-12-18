@@ -73,7 +73,7 @@ class StyleDialog {
             for (let i in varMap) {
                 let tr = document.createElement ("tr");
                 let input = document.createElement ("input");
-                input.style.margin = "0px 22px 0px 6px";
+                input.style.margin = "0px 45px 0px 6px";
                 
                 input.value = varMap[i];
                 
@@ -82,22 +82,31 @@ class StyleDialog {
                     applyCurrentTheme ();
                 });
                 
-                const inputHeight = 21;
-                const inputBorderWidth = 1;
+                // This one is horrible
+                const inputHeight = 23;
+                const inputBorderWidth = 0;
                 let colorPicker = document.createElement ("div");
                 colorPicker.style.position = "absolute";
                 colorPicker.style.width = `${ inputHeight }px`;
                 colorPicker.style.height = `${ inputHeight }px`;
                 colorPicker.style.top = `${ 1 + inputBorderWidth }px`;
-                colorPicker.style.right = `${ 1 + inputHeight + inputBorderWidth }px`;
+                colorPicker.style.right = `${ inputHeight + inputBorderWidth - 1 }px`;
                 colorPicker.style.cursor = "pointer";
                 colorPicker.title = "Open a color selector";
+                let pickerGridBG = document.createElement ("div");
+                pickerGridBG.style.position = "absolute";
+                pickerGridBG.style.width = `${ inputHeight }px`;
+                pickerGridBG.style.height = `${ inputHeight }px`;
+                pickerGridBG.style.top = `${ 1 + inputBorderWidth }px`;
+                pickerGridBG.style.right = `${ inputHeight + inputBorderWidth - 1 }px`;
+                pickerGridBG.style.background = "url(img/transparent.png)"
                 
                 ColorInput.HookInput (colorPicker, input);
                 
                 tr.innerHTML = "<td></td><td style='position: relative'></td>";
                 tr.children[0].innerHTML = i;
                 tr.children[1].appendChild (input);
+                tr.children[1].appendChild (pickerGridBG);
                 tr.children[1].appendChild (colorPicker);
                 
                 customTable.appendChild (tr);

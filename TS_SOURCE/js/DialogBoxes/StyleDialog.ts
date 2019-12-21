@@ -14,10 +14,28 @@ class StyleDialog {
         "Custom": false
     };
     
+    private static readonly ThemeGroups: [string, string[]][] = [
+        ["Light", [
+            "Classic",
+            "Azure"
+        ]], ["Dark", [
+            "Dark (blue accent)",
+            "Dark (red accent)",
+            "Deep sea",
+            "High contrast"
+        ]], ["Themed", [
+            "Sunset",
+            "Night sky"
+        ]], ["Other", [
+            "Custom"
+        ]]
+    ];
+    
     /*
     Adding a theme:
      - Add a file with "*Palette.css" name to "css/" folder
      - Add the theme name and file name in ThemeFiles object
+     - Add the theme name to the ThemeGroups
      - Done
     */
     
@@ -131,10 +149,26 @@ class StyleDialog {
         applyCurrentTheme ();
         
         select.innerHTML = "";
-        for (let i in StyleDialog.ThemeFiles) {
-            select.innerHTML += `<option value="${ i }">${ i }</option>`
-            indexMap.push ([i, indexMapCounter++]);
-        }
+        this.ThemeGroups.forEach (([groupName, themes]) => {
+            select.innerHTML += `<optgroup label="${ groupName }">`;
+            
+            themes.forEach (themeName => {
+                if (this.ThemeFiles [themeName] != undefined) {
+                    select.innerHTML += `<option value="${ themeName }">${ themeName }</option>`;
+                    indexMap.push ([themeName, indexMapCounter++]);
+                } else {
+                    console.warn (
+                        `Theme named "${ themeName }" not found in ThemeFiles, but is assigned in ThemeGroups (skipping). Is it a typo?`
+                    );
+                }
+            });
+            
+            select.innerHTML += `</optgroup>`
+        });
+        // for (let i in StyleDialog.ThemeFiles) {
+        //     select.innerHTML += `<option value="${ i }">${ i }</option>`
+        //     indexMap.push ([i, indexMapCounter++]);
+        // }
         
         let currentTheme = indexMap.find (x => x[0] == Settings.current_theme);
         if (currentTheme) {

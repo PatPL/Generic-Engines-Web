@@ -8112,10 +8112,19 @@ class StyleDialog {
         };
         applyCurrentTheme();
         select.innerHTML = "";
-        for (let i in StyleDialog.ThemeFiles) {
-            select.innerHTML += `<option value="${i}">${i}</option>`;
-            indexMap.push([i, indexMapCounter++]);
-        }
+        this.ThemeGroups.forEach(([groupName, themes]) => {
+            select.innerHTML += `<optgroup label="${groupName}">`;
+            themes.forEach(themeName => {
+                if (this.ThemeFiles[themeName] != undefined) {
+                    select.innerHTML += `<option value="${themeName}">${themeName}</option>`;
+                    indexMap.push([themeName, indexMapCounter++]);
+                }
+                else {
+                    console.warn(`Theme named "${themeName}" not found in ThemeFiles, but is assigned in ThemeGroups (skipping). Is it a typo?`);
+                }
+            });
+            select.innerHTML += `</optgroup>`;
+        });
         let currentTheme = indexMap.find(x => x[0] == Settings.current_theme);
         if (currentTheme) {
             select.selectedIndex = currentTheme[1];
@@ -8250,6 +8259,22 @@ StyleDialog.ThemeFiles = {
     "Hot dog stand": "hotDogStand-Palette.css",
     "Custom": false
 };
+StyleDialog.ThemeGroups = [
+    ["Light", [
+            "Classic",
+            "Azure"
+        ]], ["Dark", [
+            "Dark (blue accent)",
+            "Dark (red accent)",
+            "Deep sea",
+            "High contrast"
+        ]], ["Themed", [
+            "Sunset",
+            "Night sky"
+        ]], ["Other", [
+            "Custom"
+        ]]
+];
 document.addEventListener("DOMContentLoaded", () => {
     StyleDialog.Init();
 });

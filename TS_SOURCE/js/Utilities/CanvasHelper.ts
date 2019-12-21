@@ -1,6 +1,3 @@
-const DEFAULT_STROKE_COLOR: string = "#444" as const;
-const DEFAULT_STROKE_WIDTH: number = 1 as const;
-
 type LineData = {
     Position?: number;
     Label?: string;
@@ -8,9 +5,12 @@ type LineData = {
     Width?: number;
 }
 
-class CanvasHelper {
+namespace CanvasHelper {
+    const DEFAULT_STROKE_COLOR: string = "#444" as const;
+    const DEFAULT_TEXT_COLOR: string = "#000" as const;
+    const DEFAULT_STROKE_WIDTH: number = 1 as const;
     
-    public static DrawLine (
+    export const DrawLine = (
         x1: number,
         y1: number,
         x2: number,
@@ -18,7 +18,7 @@ class CanvasHelper {
         canvas: CanvasRenderingContext2D,
         color: string = DEFAULT_STROKE_COLOR,
         width: number = DEFAULT_STROKE_WIDTH
-    ): void {
+    ): void => {
         x1 = Math.round (x1 + 0.5) - 0.5;
         x2 = Math.round (x2 + 0.5) - 0.5;
         y1 = Math.round (y1 + 0.5) - 0.5;
@@ -35,7 +35,7 @@ class CanvasHelper {
         canvas.stroke ();
     }
     
-    public static DrawRectangle (
+    export const DrawRectangle = (
         x1: number,
         y1: number,
         x2: number,
@@ -43,14 +43,14 @@ class CanvasHelper {
         canvas: CanvasRenderingContext2D,
         color: string = DEFAULT_STROKE_COLOR,
         width: number = DEFAULT_STROKE_WIDTH
-    ): void {
-        this.DrawLine (x1, y1, x2, y1, canvas, color, width);
-        this.DrawLine (x2, y1, x2, y2, canvas, color, width);
-        this.DrawLine (x2, y2, x1, y2, canvas, color, width);
-        this.DrawLine (x1, y2, x1, y1, canvas, color, width);
+    ): void => {
+        DrawLine (x1, y1, x2, y1, canvas, color, width);
+        DrawLine (x2, y1, x2, y2, canvas, color, width);
+        DrawLine (x2, y2, x1, y2, canvas, color, width);
+        DrawLine (x1, y2, x1, y1, canvas, color, width);
     }
     
-    public static DrawGrid (
+    export const DrawGrid = (
         originX: number,
         originY: number,
         sizeX: number,
@@ -60,6 +60,7 @@ class CanvasHelper {
         outline: boolean,
         canvas: CanvasRenderingContext2D,
         color: string = DEFAULT_STROKE_COLOR,
+        textColor: string = DEFAULT_TEXT_COLOR,
         width: number = DEFAULT_STROKE_WIDTH,
         styleX?: { [num: string]: LineData | undefined },
         styleY?: { [num: string]: LineData | undefined },
@@ -68,7 +69,7 @@ class CanvasHelper {
         labelY?: string,
         lineOverrideX?: LineData[],
         lineOverrideY?: LineData[],
-    ): void {
+    ): void => {
         canvas.clearRect (0, 0, sizeX, sizeY);
         
         for (let x = 1; x <= linesX; ++x) {
@@ -85,10 +86,11 @@ class CanvasHelper {
             }
             
             if (styleX && styleX[x] && styleX[x]!.Label) {
+                canvas.fillStyle = textColor;
                 canvas.fillText (styleX[x]!.Label!, currentX + 1, originY + sizeY - 2, sizeX / (linesX + 1) - 2);
             }
             
-            this.DrawLine (
+            DrawLine (
                 currentX,
                 originY,
                 currentX,
@@ -113,10 +115,11 @@ class CanvasHelper {
             }
             
             if (styleY && styleY[y] && styleY[y]!.Label) {
+                canvas.fillStyle = textColor;
                 canvas.fillText (styleY[y]!.Label!, originX + 2, currentY - 1);
             }
             
-            this.DrawLine (
+            DrawLine (
                 originX,
                 currentY,
                 originX + sizeX,
@@ -146,10 +149,11 @@ class CanvasHelper {
                 }
                 
                 if (l.Label) {
+                    canvas.fillStyle = textColor;
                     canvas.fillText (l.Label!, l.Position + 1, sizeY - 1);
                 }
                 
-                this.DrawLine (
+                DrawLine (
                     l.Position, 0,
                     l.Position, sizeY,
                     canvas, currentColor, currentWidth
@@ -176,10 +180,11 @@ class CanvasHelper {
                 }
                 
                 if (l.Label) {
+                    canvas.fillStyle = textColor;
                     canvas.fillText (l.Label!, 1, l.Position - 1);
                 }
                 
-                this.DrawLine (
+                DrawLine (
                     0, l.Position,
                     sizeX, l.Position,
                     canvas, currentColor, currentWidth
@@ -190,6 +195,7 @@ class CanvasHelper {
         if (labelX) {
             canvas.textAlign = "end";
             
+            canvas.fillStyle = textColor;
             canvas.fillText (labelX, originX + sizeX - 2, originY + sizeY - 2);
             
             canvas.textAlign = "start";
@@ -198,6 +204,7 @@ class CanvasHelper {
         if (labelY) {
             canvas.textBaseline = "top";
             
+            canvas.fillStyle = textColor;
             canvas.fillText (labelY, originX + 2, originY + 2);
             
             canvas.textBaseline = "alphabetic";
@@ -216,7 +223,7 @@ class CanvasHelper {
                 currentWidth = styleOutline.Width;
             }
             
-            this.DrawRectangle (
+            DrawRectangle (
                 originX,
                 originY,
                 originX + sizeX,

@@ -8234,11 +8234,12 @@ class StyleDialog {
 }
 StyleDialog._initialized = false;
 StyleDialog.ThemeFiles = {
-    "Classic": "classicPalette.css",
+    "Classic": "classic-Palette.css",
     "Azure": "azure-Palette.css",
-    "Dark (Blue accent)": "darkBlue-Palette.css",
-    "Dark (Red accent)": "darkRed-Palette.css",
-    "Deep Sea": "deepSea-Palette.css",
+    "Dark (blue accent)": "darkBlue-Palette.css",
+    "Dark (red accent)": "darkRed-Palette.css",
+    "Deep sea": "deepSea-Palette.css",
+    "High contrast": "highContrast-Palette.css",
     "Hot dog stand": "hotDogStand-Palette.css",
     "Custom": false
 };
@@ -10434,6 +10435,131 @@ var EngineEditableFieldMetadata;
         }
     };
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var CanvasHelper;
+(function (CanvasHelper) {
+    const DEFAULT_STROKE_COLOR = "#444";
+    const DEFAULT_TEXT_COLOR = "#000";
+    const DEFAULT_STROKE_WIDTH = 1;
+    CanvasHelper.DrawLine = (x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) => {
+        x1 = Math.round(x1 + 0.5) - 0.5;
+        x2 = Math.round(x2 + 0.5) - 0.5;
+        y1 = Math.round(y1 + 0.5) - 0.5;
+        y2 = Math.round(y2 + 0.5) - 0.5;
+        canvas.beginPath();
+        canvas.moveTo(x1, y1);
+        canvas.lineTo(x2, y2);
+        canvas.strokeStyle = color;
+        canvas.lineWidth = width;
+        canvas.lineCap = "square";
+        canvas.stroke();
+    };
+    CanvasHelper.DrawRectangle = (x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) => {
+        CanvasHelper.DrawLine(x1, y1, x2, y1, canvas, color, width);
+        CanvasHelper.DrawLine(x2, y1, x2, y2, canvas, color, width);
+        CanvasHelper.DrawLine(x2, y2, x1, y2, canvas, color, width);
+        CanvasHelper.DrawLine(x1, y2, x1, y1, canvas, color, width);
+    };
+    CanvasHelper.DrawGrid = (originX, originY, sizeX, sizeY, linesX, linesY, outline, canvas, color = DEFAULT_STROKE_COLOR, textColor = DEFAULT_TEXT_COLOR, width = DEFAULT_STROKE_WIDTH, styleX, styleY, styleOutline, labelX, labelY, lineOverrideX, lineOverrideY) => {
+        canvas.clearRect(0, 0, sizeX, sizeY);
+        for (let x = 1; x <= linesX; ++x) {
+            let currentX = originX + (x * (originX + sizeX) / (linesX + 1));
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleX && styleX[x] && styleX[x].Color) {
+                currentColor = styleX[x].Color;
+            }
+            if (styleX && styleX[x] && styleX[x].Width) {
+                currentWidth = styleX[x].Width;
+            }
+            if (styleX && styleX[x] && styleX[x].Label) {
+                canvas.fillStyle = textColor;
+                canvas.fillText(styleX[x].Label, currentX + 1, originY + sizeY - 2, sizeX / (linesX + 1) - 2);
+            }
+            CanvasHelper.DrawLine(currentX, originY, currentX, originY + sizeY, canvas, currentColor, currentWidth);
+        }
+        for (let y = 1; y <= linesY; ++y) {
+            let currentY = originY + (y * (originY + sizeY) / (linesY + 1));
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleY && styleY[y] && styleY[y].Color) {
+                currentColor = styleY[y].Color;
+            }
+            if (styleY && styleY[y] && styleY[y].Width) {
+                currentWidth = styleY[y].Width;
+            }
+            if (styleY && styleY[y] && styleY[y].Label) {
+                canvas.fillStyle = textColor;
+                canvas.fillText(styleY[y].Label, originX + 2, currentY - 1);
+            }
+            CanvasHelper.DrawLine(originX, currentY, originX + sizeX, currentY, canvas, currentColor, currentWidth);
+        }
+        if (lineOverrideX) {
+            lineOverrideX.forEach(l => {
+                if (!l.Position && l.Position != 0) {
+                    console.warn("Position is mandatory for line override. Skipping...");
+                    return;
+                }
+                let currentColor = color;
+                let currentWidth = width;
+                if (l.Color) {
+                    currentColor = l.Color;
+                }
+                if (l.Width) {
+                    currentWidth = l.Width;
+                }
+                if (l.Label) {
+                    canvas.fillStyle = textColor;
+                    canvas.fillText(l.Label, l.Position + 1, sizeY - 1);
+                }
+                CanvasHelper.DrawLine(l.Position, 0, l.Position, sizeY, canvas, currentColor, currentWidth);
+            });
+        }
+        if (lineOverrideY) {
+            lineOverrideY.forEach(l => {
+                if (!l.Position && l.Position != 0) {
+                    console.warn("Position is mandatory for line override. Skipping...");
+                    return;
+                }
+                let currentColor = color;
+                let currentWidth = width;
+                if (l.Color) {
+                    currentColor = l.Color;
+                }
+                if (l.Width) {
+                    currentWidth = l.Width;
+                }
+                if (l.Label) {
+                    canvas.fillStyle = textColor;
+                    canvas.fillText(l.Label, 1, l.Position - 1);
+                }
+                CanvasHelper.DrawLine(0, l.Position, sizeX, l.Position, canvas, currentColor, currentWidth);
+            });
+        }
+        if (labelX) {
+            canvas.textAlign = "end";
+            canvas.fillStyle = textColor;
+            canvas.fillText(labelX, originX + sizeX - 2, originY + sizeY - 2);
+            canvas.textAlign = "start";
+        }
+        if (labelY) {
+            canvas.textBaseline = "top";
+            canvas.fillStyle = textColor;
+            canvas.fillText(labelY, originX + 2, originY + 2);
+            canvas.textBaseline = "alphabetic";
+        }
+        if (outline) {
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleOutline && styleOutline.Color) {
+                currentColor = styleOutline.Color;
+            }
+            if (styleOutline && styleOutline.Width) {
+                currentWidth = styleOutline.Width;
+            }
+            CanvasHelper.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
+        }
+    };
+})(CanvasHelper || (CanvasHelper = {}));
 var EngineEditableFieldMetadata;
 (function (EngineEditableFieldMetadata) {
     let chartWidth = 400;
@@ -10696,7 +10822,7 @@ var EngineEditableFieldMetadata;
                 linesY.push(getLine(i, style.getPropertyValue("--tableRegular")));
             }
         }
-        CanvasHelper.DrawGrid(0, 0, chartWidth - 1, chartHeight - 1, 9, 0, true, canvas, style.getPropertyValue("--tableRegular"), 1, {
+        CanvasHelper.DrawGrid(0, 0, chartWidth - 1, chartHeight - 1, 9, 0, true, canvas, style.getPropertyValue("--tableRegular"), style.getPropertyValue("--tableText"), 1, {
             2: { Color: style.getPropertyValue("--tableRegular"), Label: "80%" },
             5: { Color: style.getPropertyValue("--tableDistinct"), Label: "50%" },
             8: { Color: style.getPropertyValue("--tableRegular"), Label: "20%" }
@@ -11324,123 +11450,6 @@ BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
-const DEFAULT_STROKE_COLOR = "#444";
-const DEFAULT_STROKE_WIDTH = 1;
-class CanvasHelper {
-    static DrawLine(x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) {
-        x1 = Math.round(x1 + 0.5) - 0.5;
-        x2 = Math.round(x2 + 0.5) - 0.5;
-        y1 = Math.round(y1 + 0.5) - 0.5;
-        y2 = Math.round(y2 + 0.5) - 0.5;
-        canvas.beginPath();
-        canvas.moveTo(x1, y1);
-        canvas.lineTo(x2, y2);
-        canvas.strokeStyle = color;
-        canvas.lineWidth = width;
-        canvas.lineCap = "square";
-        canvas.stroke();
-    }
-    static DrawRectangle(x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) {
-        this.DrawLine(x1, y1, x2, y1, canvas, color, width);
-        this.DrawLine(x2, y1, x2, y2, canvas, color, width);
-        this.DrawLine(x2, y2, x1, y2, canvas, color, width);
-        this.DrawLine(x1, y2, x1, y1, canvas, color, width);
-    }
-    static DrawGrid(originX, originY, sizeX, sizeY, linesX, linesY, outline, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH, styleX, styleY, styleOutline, labelX, labelY, lineOverrideX, lineOverrideY) {
-        canvas.clearRect(0, 0, sizeX, sizeY);
-        for (let x = 1; x <= linesX; ++x) {
-            let currentX = originX + (x * (originX + sizeX) / (linesX + 1));
-            let currentColor = color;
-            let currentWidth = width;
-            if (styleX && styleX[x] && styleX[x].Color) {
-                currentColor = styleX[x].Color;
-            }
-            if (styleX && styleX[x] && styleX[x].Width) {
-                currentWidth = styleX[x].Width;
-            }
-            if (styleX && styleX[x] && styleX[x].Label) {
-                canvas.fillText(styleX[x].Label, currentX + 1, originY + sizeY - 2, sizeX / (linesX + 1) - 2);
-            }
-            this.DrawLine(currentX, originY, currentX, originY + sizeY, canvas, currentColor, currentWidth);
-        }
-        for (let y = 1; y <= linesY; ++y) {
-            let currentY = originY + (y * (originY + sizeY) / (linesY + 1));
-            let currentColor = color;
-            let currentWidth = width;
-            if (styleY && styleY[y] && styleY[y].Color) {
-                currentColor = styleY[y].Color;
-            }
-            if (styleY && styleY[y] && styleY[y].Width) {
-                currentWidth = styleY[y].Width;
-            }
-            if (styleY && styleY[y] && styleY[y].Label) {
-                canvas.fillText(styleY[y].Label, originX + 2, currentY - 1);
-            }
-            this.DrawLine(originX, currentY, originX + sizeX, currentY, canvas, currentColor, currentWidth);
-        }
-        if (lineOverrideX) {
-            lineOverrideX.forEach(l => {
-                if (!l.Position && l.Position != 0) {
-                    console.warn("Position is mandatory for line override. Skipping...");
-                    return;
-                }
-                let currentColor = color;
-                let currentWidth = width;
-                if (l.Color) {
-                    currentColor = l.Color;
-                }
-                if (l.Width) {
-                    currentWidth = l.Width;
-                }
-                if (l.Label) {
-                    canvas.fillText(l.Label, l.Position + 1, sizeY - 1);
-                }
-                this.DrawLine(l.Position, 0, l.Position, sizeY, canvas, currentColor, currentWidth);
-            });
-        }
-        if (lineOverrideY) {
-            lineOverrideY.forEach(l => {
-                if (!l.Position && l.Position != 0) {
-                    console.warn("Position is mandatory for line override. Skipping...");
-                    return;
-                }
-                let currentColor = color;
-                let currentWidth = width;
-                if (l.Color) {
-                    currentColor = l.Color;
-                }
-                if (l.Width) {
-                    currentWidth = l.Width;
-                }
-                if (l.Label) {
-                    canvas.fillText(l.Label, 1, l.Position - 1);
-                }
-                this.DrawLine(0, l.Position, sizeX, l.Position, canvas, currentColor, currentWidth);
-            });
-        }
-        if (labelX) {
-            canvas.textAlign = "end";
-            canvas.fillText(labelX, originX + sizeX - 2, originY + sizeY - 2);
-            canvas.textAlign = "start";
-        }
-        if (labelY) {
-            canvas.textBaseline = "top";
-            canvas.fillText(labelY, originX + 2, originY + 2);
-            canvas.textBaseline = "alphabetic";
-        }
-        if (outline) {
-            let currentColor = color;
-            let currentWidth = width;
-            if (styleOutline && styleOutline.Color) {
-                currentColor = styleOutline.Color;
-            }
-            if (styleOutline && styleOutline.Width) {
-                currentWidth = styleOutline.Width;
-            }
-            this.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
-        }
-    }
-}
 function Debug_AutosaveImmediately() {
     Autosave.Save(MainEngineTable.Items, ListName);
 }

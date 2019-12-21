@@ -2,11 +2,12 @@ class StyleDialog {
     
     private static _initialized = false;
     private static readonly ThemeFiles: { [name: string]: string | false } = {
-        "Classic": "classicPalette.css",
+        "Classic": "classic-Palette.css",
         "Azure": "azure-Palette.css",
-        "Dark (Blue accent)": "darkBlue-Palette.css",
-        "Dark (Red accent)": "darkRed-Palette.css",
-        "Deep Sea": "deepSea-Palette.css",
+        "Dark (blue accent)": "darkBlue-Palette.css",
+        "Dark (red accent)": "darkRed-Palette.css",
+        "Deep sea": "deepSea-Palette.css",
+        "High contrast": "highContrast-Palette.css",
         "Hot dog stand": "hotDogStand-Palette.css",
         "Custom": false
     };

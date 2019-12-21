@@ -1,3 +1,4 @@
+/// <reference path="../../Utilities/CanvasHelper.ts" />
 namespace EngineEditableFieldMetadata {
     
     let chartWidth = 400;
@@ -395,7 +396,8 @@ namespace EngineEditableFieldMetadata {
             0, 0,
             chartWidth - 1, chartHeight - 1,
             9, 0, true,
-            canvas, style.getPropertyValue ("--tableRegular"), 1,
+            canvas, style.getPropertyValue ("--tableRegular"),
+            style.getPropertyValue ("--tableText"), 1,
             {
                 2: { Color: style.getPropertyValue ("--tableRegular"), Label: "80%" },
                 5: { Color: style.getPropertyValue ("--tableDistinct"), Label: "50%" },

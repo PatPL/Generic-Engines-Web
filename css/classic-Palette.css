@@ -35,6 +35,7 @@
     --sortAscending: linear-gradient(180deg, #888, #F44);
     --sortDescending: linear-gradient(180deg, #F44, #888); 
     --tableBackground: #AAA;
+    --tableText: #000;
     --tableBorder: #222;
     --tableDistinct: #333;
     --tableRegular: #888;

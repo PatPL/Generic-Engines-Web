@@ -9,6 +9,9 @@
     --inputBorder: #000;
     --inputText: #BBB;
     --inputBackground: #333;
+	--selectBorder: #000;
+    --selectText: #BBB;
+    --selectBackground: #333;
     --disabledInputBackground: #222;
     --optgroupBackground: #222;
     --tableTextColor: #AAA;

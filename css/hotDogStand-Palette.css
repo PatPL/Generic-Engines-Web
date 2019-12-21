@@ -9,6 +9,9 @@
     --inputBorder: #FF0;
     --inputText: #FFF;
     --inputBackground: #F00;
+	--selectBorder: #FF0;
+    --selectText: #FFF;
+    --selectBackground: #F00;
     --disabledInputBackground: #B00;
     --optgroupBackground: #B00;
     --tableTextColor: #000;

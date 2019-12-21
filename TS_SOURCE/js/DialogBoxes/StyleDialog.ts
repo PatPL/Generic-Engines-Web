@@ -7,6 +7,7 @@ class StyleDialog {
         "Dark (blue accent)": "darkBlue-Palette.css",
         "Dark (red accent)": "darkRed-Palette.css",
         "Deep sea": "deepSea-Palette.css",
+        "Night sky": "nightSky-Palette.css",
         "High contrast": "highContrast-Palette.css",
         "Hot dog stand": "hotDogStand-Palette.css",
         "Custom": false
@@ -85,11 +86,11 @@ class StyleDialog {
                 
                 input.addEventListener ("focusin", () => {
                     // Autoselect the color in fields. Omit the '#' in fields with #________ values
-                    if (/^#[0-9a-f]{3,8}/.test (input.value.toLowerCase ())) {
+                    if (/^#[0-9a-f]*/.test (input.value.toLowerCase ())) {
                         input.selectionStart = 1;
                         input.selectionEnd = input.value.length;
                     } else {
-                        input.selectionStart = 1;
+                        input.selectionStart = 0;
                         input.selectionEnd = input.value.length;
                     }
                 });
@@ -104,6 +105,7 @@ class StyleDialog {
                 colorPicker.style.top = `${ 1 + inputBorderWidth }px`;
                 colorPicker.style.right = `${ inputHeight + inputBorderWidth - 1 }px`;
                 colorPicker.style.cursor = "pointer";
+                colorPicker.style.background = `var(${ i })`;
                 colorPicker.title = "Open a color selector";
                 let pickerGridBG = document.createElement ("div");
                 pickerGridBG.style.position = "absolute";

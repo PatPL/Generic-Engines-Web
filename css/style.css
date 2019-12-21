@@ -100,12 +100,12 @@ select {
     height: 23px;
     -webkit-appearance: menulist;
     
-    background: var(--inputBackground);
-    color: var(--inputText);
+    background: var(--selectBackground);
+    color: var(--selectText);
     
     border: none;
     
-    outline: 1px var(--inputBorder) solid;
+    outline: 1px var(--selectBorder) solid;
     outline-offset: -1px;
     
     box-sizing: border-box;
@@ -371,6 +371,9 @@ span.checkbox-label {
     
     height: 100%;
     width: auto;
+    
+    /* For some reason this doesn't work in the shorthand 'background' property */
+    background-size: cover;
     background: var(--tableBackgroundColor);
     color: white;
 }

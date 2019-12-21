@@ -76,6 +76,13 @@ class ColorInput {
             output[1] += ColorInput.hexValue[cssColor[4]];
             output[2] += ColorInput.hexValue[cssColor[5]] * 16;
             output[2] += ColorInput.hexValue[cssColor[6]];
+        } else if (/^#[0-9a-f]{4,}$/.test (cssColor)) {
+            // #abcd
+            output[0] += ColorInput.hexValue[cssColor[1]] * 17;
+            output[1] += ColorInput.hexValue[cssColor[2]] * 17;
+            output[2] += ColorInput.hexValue[cssColor[3]] * 17;
+            output[3] += ColorInput.hexValue[cssColor[4]] * 17;
+            output[3] /= 255;
         } else if (/^#[0-9a-f]{3,}$/.test (cssColor)) {
             // #abc
             output[0] += ColorInput.hexValue[cssColor[1]] * 17;
@@ -193,11 +200,6 @@ class ColorInput {
     }
     
     public static HookInput (trigger: HTMLElement, target: HTMLInputElement) {
-        trigger.style.background = target.value;
-        target.addEventListener ("input", () => {
-            trigger.style.background = target.value;
-        });
-        
         trigger.addEventListener ("click", () => {
             this.StartTransaction (trigger, target);
         });

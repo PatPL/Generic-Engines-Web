@@ -7501,6 +7501,13 @@ class ColorInput {
             output[2] += ColorInput.hexValue[cssColor[5]] * 16;
             output[2] += ColorInput.hexValue[cssColor[6]];
         }
+        else if (/^#[0-9a-f]{4,}$/.test(cssColor)) {
+            output[0] += ColorInput.hexValue[cssColor[1]] * 17;
+            output[1] += ColorInput.hexValue[cssColor[2]] * 17;
+            output[2] += ColorInput.hexValue[cssColor[3]] * 17;
+            output[3] += ColorInput.hexValue[cssColor[4]] * 17;
+            output[3] /= 255;
+        }
         else if (/^#[0-9a-f]{3,}$/.test(cssColor)) {
             output[0] += ColorInput.hexValue[cssColor[1]] * 17;
             output[1] += ColorInput.hexValue[cssColor[2]] * 17;
@@ -7597,10 +7604,6 @@ class ColorInput {
         return this.RGBToCSSColor(this.HSVtoRGB(color));
     }
     static HookInput(trigger, target) {
-        trigger.style.background = target.value;
-        target.addEventListener("input", () => {
-            trigger.style.background = target.value;
-        });
         trigger.addEventListener("click", () => {
             this.StartTransaction(trigger, target);
         });
@@ -8071,12 +8074,12 @@ class StyleDialog {
                     applyCurrentTheme();
                 });
                 input.addEventListener("focusin", () => {
-                    if (/^#[0-9a-f]{3,8}/.test(input.value.toLowerCase())) {
+                    if (/^#[0-9a-f]*/.test(input.value.toLowerCase())) {
                         input.selectionStart = 1;
                         input.selectionEnd = input.value.length;
                     }
                     else {
-                        input.selectionStart = 1;
+                        input.selectionStart = 0;
                         input.selectionEnd = input.value.length;
                     }
                 });
@@ -8089,6 +8092,7 @@ class StyleDialog {
                 colorPicker.style.top = `${1 + inputBorderWidth}px`;
                 colorPicker.style.right = `${inputHeight + inputBorderWidth - 1}px`;
                 colorPicker.style.cursor = "pointer";
+                colorPicker.style.background = `var(${i})`;
                 colorPicker.title = "Open a color selector";
                 let pickerGridBG = document.createElement("div");
                 pickerGridBG.style.position = "absolute";
@@ -8239,6 +8243,7 @@ StyleDialog.ThemeFiles = {
     "Dark (blue accent)": "darkBlue-Palette.css",
     "Dark (red accent)": "darkRed-Palette.css",
     "Deep sea": "deepSea-Palette.css",
+    "Night sky": "nightSky-Palette.css",
     "High contrast": "highContrast-Palette.css",
     "Hot dog stand": "hotDogStand-Palette.css",
     "Custom": false

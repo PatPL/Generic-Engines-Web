@@ -188,6 +188,7 @@ class StyleDialog {
                 let newTheme = prompt ("Paste the custom theme (Base64)");
                 if (newTheme != null) {
                     Settings.custom_theme = newTheme;
+                    applyCurrentCustomThemeToTable ();
                     applyCurrentTheme ();
                 }
             }

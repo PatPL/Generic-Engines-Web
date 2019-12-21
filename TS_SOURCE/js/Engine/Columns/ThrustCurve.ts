@@ -58,7 +58,7 @@ namespace EngineEditableFieldMetadata {
                 updateLineChart (
                     chartLines.getContext ("2d")!,
                     getCurve (chartPoints, parseInt (upperBoundInput.value)),
-                    style.getPropertyValue ("--tableLine"),
+                    style.getPropertyValue ("--thrustCurveTableLine"),
                     parseInt (upperBoundInput.value)
                 );
             }
@@ -221,7 +221,7 @@ namespace EngineEditableFieldMetadata {
                 updateLineChart (
                     chartLines.getContext ("2d")!,
                     getCurve (container, parseInt (upperBoundInput.value)),
-                    style.getPropertyValue ("--tableLine"),
+                    style.getPropertyValue ("--thrustCurveTableLine"),
                     parseInt (upperBoundInput.value)
                 );
             }
@@ -376,19 +376,19 @@ namespace EngineEditableFieldMetadata {
         }
         let linesY: LineData[] = [];
         
-        linesY.push (getLine (50, style.getPropertyValue ("--tableDistinct")));
-        linesY.push (getLine (100, style.getPropertyValue ("--tableRed")));
-        linesY.push (getLine (150, style.getPropertyValue ("--tableRegular")));
+        linesY.push (getLine (50, style.getPropertyValue ("--thrustCurveTableDistinct")));
+        linesY.push (getLine (100, style.getPropertyValue ("--thrustCurveTableRed")));
+        linesY.push (getLine (150, style.getPropertyValue ("--thrustCurveTableRegular")));
         
         if (upperBound <= 200) {
             for (let i = 10; i < 200; i += 10) {
                 if (i == 50 || i == 100 || i == 150) { continue; }
                 
-                linesY.push (getLine (i, style.getPropertyValue ("--tableRegular")));
+                linesY.push (getLine (i, style.getPropertyValue ("--thrustCurveTableRegular")));
             }
         } else {
             for (let i = 200; i < upperBound; i += 100) {
-                linesY.push (getLine (i, style.getPropertyValue ("--tableRegular")));
+                linesY.push (getLine (i, style.getPropertyValue ("--thrustCurveTableRegular")));
             }
         }
         
@@ -396,15 +396,15 @@ namespace EngineEditableFieldMetadata {
             0, 0,
             chartWidth - 1, chartHeight - 1,
             9, 0, true,
-            canvas, style.getPropertyValue ("--tableRegular"),
-            style.getPropertyValue ("--tableText"), 1,
+            canvas, style.getPropertyValue ("--thrustCurveTableRegular"),
+            style.getPropertyValue ("--thrustCurveTableText"), 1,
             {
-                2: { Color: style.getPropertyValue ("--tableRegular"), Label: "80%" },
-                5: { Color: style.getPropertyValue ("--tableDistinct"), Label: "50%" },
-                8: { Color: style.getPropertyValue ("--tableRegular"), Label: "20%" }
+                2: { Color: style.getPropertyValue ("--thrustCurveTableRegular"), Label: "80%" },
+                5: { Color: style.getPropertyValue ("--thrustCurveTableDistinct"), Label: "50%" },
+                8: { Color: style.getPropertyValue ("--thrustCurveTableRegular"), Label: "20%" }
             },
             undefined,
-            { Color: style.getPropertyValue ("--tableBorder"), Width: 1 },
+            { Color: style.getPropertyValue ("--thrustCurveTableBorder"), Width: 1 },
             "Fuel", "Thrust",
             undefined, linesY
         );

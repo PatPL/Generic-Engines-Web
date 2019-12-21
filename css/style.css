@@ -876,7 +876,7 @@ input.content-cell-content {
     box-sizing: border-box;
     
     border-bottom: var(--defaultBorderColor) solid 1px;
-    background: var(--tableBackground);
+    background: var(--thrustCurveTableBackground);
 }
 
 .chartBackground {
@@ -915,14 +915,14 @@ input.content-cell-content {
     height: 10px;
     
     background: rgba(128, 64, 255, 0.25);
-    border: 1px solid var(--tableBorder);
+    border: 1px solid var(--thrustCurveTableBorder);
     border-radius: 9999px;
     
     cursor: pointer;
 }
 
 .chartPoint.chartPointActive {
-    border: 2px solid var(--tableRed);
+    border: 2px solid var(--thrustCurveTableRed);
     background: rgba(255, 128, 64, 0.25);
 }
 

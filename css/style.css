@@ -255,10 +255,11 @@ span.checkbox-label {
 
 #option-row {
     width: 100vw;
-    height: 40px;
+    height: 41px;
     padding: 4px;
     box-sizing: border-box;
     background: var(--optionRowBackground);
+    border-bottom: 1px solid var(--defaultBorderColor);
     
     display: grid;
     grid-template-columns: 36px 36px 36px 36px 36px 36px 36px 36px 36px auto 4px 36px 36px 32px;

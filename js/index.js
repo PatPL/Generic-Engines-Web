@@ -8240,6 +8240,7 @@ StyleDialog._initialized = false;
 StyleDialog.ThemeFiles = {
     "Classic": "classic-Palette.css",
     "Azure": "azure-Palette.css",
+    "Sunset": "sunset-Palette.css",
     "Dark (blue accent)": "darkBlue-Palette.css",
     "Dark (red accent)": "darkRed-Palette.css",
     "Deep sea": "deepSea-Palette.css",

@@ -373,8 +373,8 @@ span.checkbox-label {
     width: auto;
     
     /* For some reason this doesn't work in the shorthand 'background' property */
-    background-size: cover;
     background: var(--tableBackgroundColor);
+    background-size: cover;
     color: white;
 }
 

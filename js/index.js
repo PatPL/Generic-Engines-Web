@@ -8070,6 +8070,16 @@ class StyleDialog {
                     Settings.custom_theme = btoa(JSON.stringify(getCurrentCustomThemeFromTable()));
                     applyCurrentTheme();
                 });
+                input.addEventListener("focusin", () => {
+                    if (/^#[0-9a-f]{3,8}/.test(input.value.toLowerCase())) {
+                        input.selectionStart = 1;
+                        input.selectionEnd = input.value.length;
+                    }
+                    else {
+                        input.selectionStart = 1;
+                        input.selectionEnd = input.value.length;
+                    }
+                });
                 const inputHeight = 23;
                 const inputBorderWidth = 0;
                 let colorPicker = document.createElement("div");

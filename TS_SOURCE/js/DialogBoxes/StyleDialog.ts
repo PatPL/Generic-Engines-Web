@@ -82,6 +82,17 @@ class StyleDialog {
                     applyCurrentTheme ();
                 });
                 
+                input.addEventListener ("focusin", () => {
+                    // Autoselect the color in fields. Omit the '#' in fields with #________ values
+                    if (/^#[0-9a-f]{3,8}/.test (input.value.toLowerCase ())) {
+                        input.selectionStart = 1;
+                        input.selectionEnd = input.value.length;
+                    } else {
+                        input.selectionStart = 1;
+                        input.selectionEnd = input.value.length;
+                    }
+                });
+                
                 // This one is horrible
                 const inputHeight = 23;
                 const inputBorderWidth = 0;

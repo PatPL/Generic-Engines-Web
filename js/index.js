@@ -776,7 +776,7 @@ const Settings = {
     }, set hide_disabled_fields_on_sort(value) {
         Store.SetText("setting:hide_disabled_fields_on_sort", value ? "1" : "0");
     }, get current_theme() {
-        return Store.GetText("setting:current_theme", Settings.dark_theme ? "Dark" : "Classic");
+        return Store.GetText("setting:current_theme", Settings.dark_theme ? "Dark (blue accent)" : "Classic");
     }, set current_theme(value) {
         Store.SetText("setting:current_theme", value);
     }, get custom_theme() {

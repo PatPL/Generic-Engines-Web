@@ -41,7 +41,9 @@ body {
 }
 
 *::-webkit-scrollbar {
-    width: 5px;
+    /* Does nothing. VSCode doesn't want an empty rule,
+    but a rule is required for the scrollbar styles to work */
+    background: none;
 }
 
 *::-webkit-scrollbar-track {
@@ -50,6 +52,10 @@ body {
 
 *::-webkit-scrollbar-thumb {
     background: var(--scrollbarHandle);
+}
+
+*::-webkit-scrollbar-corner {
+    background: var(--scrollbarBackground);
 }
 
 textarea {
@@ -1015,7 +1021,7 @@ input.content-cell-content {
 /**/
 
 #custom-styles-container {
-    padding: 8px 0px 0px 0px;
+    padding: 8px 40px 0px 0px;
     
     max-height: 500px;
     overflow-y: auto;
@@ -1024,6 +1030,7 @@ input.content-cell-content {
 
 #styles-custom input {
     position: relative;
+    margin: 0px 2px 0px 6px;
     width: 300px;
 }
 
@@ -1086,6 +1093,7 @@ Y: linear-gradient(to right, C, D)
     width: 100%;
     height: 100%;
     mask-image: linear-gradient(to bottom, transparent, #FFF);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #FFF);
 }
 
 #color-selector-squareOverlay {
@@ -1141,6 +1149,7 @@ Y: linear-gradient(to right, C, D)
 
 #color-selector-a {
     mask-image: linear-gradient(to top, transparent, #FFF);
+    -webkit-mask-image: linear-gradient(to top, transparent, #FFF);
     position: relative;
     grid-area: g;
     width: 100%;

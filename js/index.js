@@ -796,6 +796,8 @@ var EditableFieldMetadata = {
 let ListNameDisplay;
 let MainEngineTable;
 let FullscreenWindows = {};
+let isFirefox = typeof InstallTrigger !== 'undefined';
+let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 window.onbeforeunload = (e) => {
     if (MainEngineTable.Items.length != 0) {
         e.returnValue = "Are you sure that you want to leave this page? You will lose all unsaved data";
@@ -923,8 +925,6 @@ addEventListener("DOMContentLoaded", () => {
     });
     let imgs = document.querySelectorAll("img.browser-relevant");
     imgs.forEach(i => {
-        let isFirefox = typeof InstallTrigger !== 'undefined';
-        let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
         if (isFirefox) {
             i.src = i.src.replace("()", "firefox");
         }
@@ -8024,6 +8024,13 @@ class PlumeSelector {
 class StyleDialog {
     static Show() {
         FullscreenWindows["style-box"].style.display = "flex";
+        let customTable = document.getElementById("styles-custom");
+        requestAnimationFrame(() => {
+            customTable.style.display = "inline";
+            requestAnimationFrame(() => {
+                customTable.style.display = "block";
+            });
+        });
     }
     static Init() {
         let select = document.getElementById("styles-select");
@@ -8033,6 +8040,9 @@ class StyleDialog {
         let customExportButton = document.getElementById("custom-styles-export");
         let customImportButton = document.getElementById("custom-styles-import");
         let themeOverrideStyle = document.getElementById("custom-theme-override");
+        if (!isFirefox) {
+            customContainer.style.paddingRight = "24px";
+        }
         let indexMap = [];
         let indexMapCounter = 0;
         const applyCurrentTheme = () => {
@@ -8067,7 +8077,6 @@ class StyleDialog {
             for (let i in varMap) {
                 let tr = document.createElement("tr");
                 let input = document.createElement("input");
-                input.style.margin = "0px 45px 0px 6px";
                 input.value = varMap[i];
                 input.addEventListener("input", () => {
                     Settings.custom_theme = btoa(JSON.stringify(getCurrentCustomThemeFromTable()));
@@ -8081,6 +8090,7 @@ class StyleDialog {
                     else {
                         input.selectionStart = 0;
                         input.selectionEnd = input.value.length;
+                        input.selectionDirection = "backward";
                     }
                 });
                 const inputHeight = 23;
@@ -8090,7 +8100,7 @@ class StyleDialog {
                 colorPicker.style.width = `${inputHeight}px`;
                 colorPicker.style.height = `${inputHeight}px`;
                 colorPicker.style.top = `${1 + inputBorderWidth}px`;
-                colorPicker.style.right = `${inputHeight + inputBorderWidth - 1}px`;
+                colorPicker.style.right = `-${inputHeight + inputBorderWidth - 1}px`;
                 colorPicker.style.cursor = "pointer";
                 colorPicker.style.background = `var(${i})`;
                 colorPicker.title = "Open a color selector";
@@ -8099,7 +8109,7 @@ class StyleDialog {
                 pickerGridBG.style.width = `${inputHeight}px`;
                 pickerGridBG.style.height = `${inputHeight}px`;
                 pickerGridBG.style.top = `${1 + inputBorderWidth}px`;
-                pickerGridBG.style.right = `${inputHeight + inputBorderWidth - 1}px`;
+                pickerGridBG.style.right = `-${inputHeight + inputBorderWidth - 1}px`;
                 pickerGridBG.style.background = "url(img/transparent.png)";
                 ColorInput.HookInput(colorPicker, input);
                 tr.innerHTML = "<td></td><td style='position: relative'></td>";

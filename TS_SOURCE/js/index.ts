@@ -12,6 +12,11 @@ let MainEngineTable: HtmlTable<Engine>;
 
 let FullscreenWindows: { [id: string]: HTMLElement } = {};
 
+//@ts-ignore
+let isFirefox = typeof InstallTrigger !== 'undefined';
+//@ts-ignore
+let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
 //Website exit confirmation
 window.onbeforeunload = (e: any) => {
     if (MainEngineTable.Items.length != 0) {
@@ -180,12 +185,6 @@ addEventListener ("DOMContentLoaded", () => {
     //Set correct browser icons
     let imgs = document.querySelectorAll<HTMLImageElement> ("img.browser-relevant");
     imgs.forEach (i => {
-        //@ts-ignore
-        let isFirefox = typeof InstallTrigger !== 'undefined';
-        //@ts-ignore
-        let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-        
-        
         
         if (isFirefox) {
             i.src = i.src.replace ("()", "firefox");
@@ -194,7 +193,6 @@ addEventListener ("DOMContentLoaded", () => {
         } else {
             i.src = i.src.replace ("()", "chrome");
         }
-        
         
     });
     

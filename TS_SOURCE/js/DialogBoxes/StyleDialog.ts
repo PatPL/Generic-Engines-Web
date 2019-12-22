@@ -41,6 +41,16 @@ class StyleDialog {
     
     public static Show () {
         FullscreenWindows["style-box"].style.display = "flex";
+        
+        // For some reason Chrome (Probably opera as well) doesn't draw the element correcly
+        // on the first run so it has to be forcefully redrawn
+        let customTable = document.getElementById ("styles-custom")! as HTMLTableElement;
+        requestAnimationFrame (() => {
+            customTable.style.display = "inline";
+            requestAnimationFrame (() => {
+                customTable.style.display = "block";
+            });
+        });
     }
     
     public static Init () {
@@ -51,6 +61,13 @@ class StyleDialog {
         let customExportButton = document.getElementById ("custom-styles-export")! as HTMLButtonElement;
         let customImportButton = document.getElementById ("custom-styles-import")! as HTMLButtonElement;
         let themeOverrideStyle = document.getElementById ("custom-theme-override")! as HTMLStyleElement;
+        
+        if (!isFirefox) {
+            // (I assume...)
+            // Chrome / Opera handle scrollbar "display" differently (block / inline)
+            // And this results in huge gaps near tightly packed elements in this container
+            customContainer.style.paddingRight = "24px";
+        }
         
         let indexMap: [string, number][] = [];
         let indexMapCounter = 0;
@@ -94,7 +111,6 @@ class StyleDialog {
             for (let i in varMap) {
                 let tr = document.createElement ("tr");
                 let input = document.createElement ("input");
-                input.style.margin = "0px 45px 0px 6px";
                 
                 input.value = varMap[i];
                 
@@ -111,6 +127,7 @@ class StyleDialog {
                     } else {
                         input.selectionStart = 0;
                         input.selectionEnd = input.value.length;
+                        input.selectionDirection = "backward";
                     }
                 });
                 
@@ -122,7 +139,7 @@ class StyleDialog {
                 colorPicker.style.width = `${ inputHeight }px`;
                 colorPicker.style.height = `${ inputHeight }px`;
                 colorPicker.style.top = `${ 1 + inputBorderWidth }px`;
-                colorPicker.style.right = `${ inputHeight + inputBorderWidth - 1 }px`;
+                colorPicker.style.right = `-${ inputHeight + inputBorderWidth - 1 }px`;
                 colorPicker.style.cursor = "pointer";
                 colorPicker.style.background = `var(${ i })`;
                 colorPicker.title = "Open a color selector";
@@ -131,7 +148,7 @@ class StyleDialog {
                 pickerGridBG.style.width = `${ inputHeight }px`;
                 pickerGridBG.style.height = `${ inputHeight }px`;
                 pickerGridBG.style.top = `${ 1 + inputBorderWidth }px`;
-                pickerGridBG.style.right = `${ inputHeight + inputBorderWidth - 1 }px`;
+                pickerGridBG.style.right = `-${ inputHeight + inputBorderWidth - 1 }px`;
                 pickerGridBG.style.background = "url(img/transparent.png)"
                 
                 ColorInput.HookInput (colorPicker, input);

@@ -11734,7 +11734,6 @@ class DebugLists {
 class Dragger {
     static Drop() {
         if (this.currentInterval) {
-            clearInterval(this.currentInterval);
             this.currentInterval = null;
         }
     }
@@ -11742,7 +11741,14 @@ class Dragger {
         if (this.currentInterval) {
             this.Drop();
         }
-        this.currentInterval = setInterval(action, 20);
+        this.currentInterval = action;
+        let callFrame = () => {
+            if (this.currentInterval) {
+                this.currentInterval();
+                requestAnimationFrame(callFrame);
+            }
+        };
+        requestAnimationFrame(callFrame);
     }
 }
 window.addEventListener("pointerup", () => {

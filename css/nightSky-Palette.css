@@ -26,8 +26,8 @@
     --checkboxBorder: #111;
     --checkboxDisabled: #000B;
     --checkboxEnabled: #28BB;
-    --textSelectionBackground: #004;
-    --textSelectionColor: #AAA;
+    --textSelectionBackground: #00BBBBFE;
+    --textSelectionColor: #000;
     --rowSelection: #2664;
     --rowSelectionMajor: #4BB4;
     --editedCellBackbround: #0008;

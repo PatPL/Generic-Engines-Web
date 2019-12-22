@@ -26,8 +26,8 @@
     --checkboxBorder: #222;
     --checkboxDisabled: #444;
     --checkboxEnabled: radial-gradient(circle, #FA4, #F64);
-    --textSelectionBackground: #375;
-    --textSelectionColor: #123;
+    --textSelectionBackground: #336699FE;
+    --textSelectionColor: #000;
     --rowSelection: #08B;
     --rowSelectionMajor: #06B;
     --editedCellBackbround: #57B;

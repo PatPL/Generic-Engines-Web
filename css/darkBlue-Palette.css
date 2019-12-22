@@ -5,7 +5,7 @@
     --headerBackground: #111;
     --modalBackground: #222;
     --modalOcclusionBackground: rgba(0, 0, 0, 0.75);
-    --hiddenCellColor: #111;
+    --hiddenCellColor: #080808;
     --inputBorder: #000;
     --inputText: #BBB;
     --inputBackground: #333;
@@ -26,7 +26,7 @@
     --checkboxBorder: #111;
     --checkboxDisabled: #080808;
     --checkboxEnabled: #248;
-    --textSelectionBackground: #004;
+    --textSelectionBackground: #000044FE;
     --textSelectionColor: #AAA;
     --rowSelection: #224;
     --rowSelectionMajor: #226;

@@ -26,7 +26,7 @@
     --checkboxBorder: #666;
     --checkboxDisabled: #000;
     --checkboxEnabled: #0B0;
-    --textSelectionBackground: #444;
+    --textSelectionBackground: #444444FE;
     --textSelectionColor: #fff;
     --rowSelection: #222;
     --rowSelectionMajor: linear-gradient(to bottom, #222, #444, #222);

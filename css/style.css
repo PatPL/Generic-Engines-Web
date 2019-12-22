@@ -89,6 +89,11 @@ td {
     padding: 0;
 }
 
+::selection {
+    background: var(--textSelectionBackground);
+    color: var(--textSelectionColor);
+}
+
 img.mini-button {
     width: 19px;
     height: 19px;

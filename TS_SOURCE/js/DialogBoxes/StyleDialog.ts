@@ -154,6 +154,7 @@ class StyleDialog {
                 ColorInput.HookInput (colorPicker, input);
                 
                 tr.innerHTML = "<td></td><td style='position: relative'></td>";
+                (tr.children[0] as HTMLTableCellElement).style.userSelect = "all";
                 tr.children[0].innerHTML = i;
                 tr.children[1].appendChild (input);
                 tr.children[1].appendChild (pickerGridBG);

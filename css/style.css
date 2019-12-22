@@ -1045,8 +1045,10 @@ input.content-cell-content {
     
     display: grid;
     grid-template-columns: 256px 4px 32px 4px 32px 4px 32px;
-    grid-template-rows: 256px 4px 32px 4px 32px 4px 32px;
+    grid-template-rows: 32px 4px 256px 4px 32px 4px 32px 4px 32px;
     grid-template-areas: 
+        "l l l l l l l"
+        ". . . . . . ."
         "a . e . f . g"
         ". . . . . . ."
         "b . h h h . i"
@@ -1159,6 +1161,13 @@ Y: linear-gradient(to right, C, D)
 #color-selector-a-overlay {
     position: relative;
     grid-area: g;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-h {
+    position: relative;
+    grid-area: l;
     width: 100%;
     height: 100%;
 }

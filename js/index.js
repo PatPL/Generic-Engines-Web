@@ -7566,6 +7566,9 @@ class ColorInput {
             s = delta / Cmax;
         }
         let v = Cmax;
+        h %= 360;
+        h += 360;
+        h %= 360;
         return [h, s, v, color[3]];
     }
     static HSVtoRGB(color) {
@@ -7719,6 +7722,9 @@ class ColorInput {
         this.ElementVMeter.style.bottom = `${v * 255}px`;
         this.ElementA.style.background = this.RGBToCSSColor([r, g, b, 1.0]);
         this.ElementAMeter.style.bottom = `${a * 255}px`;
+        this.ElementH.style.background =
+            `linear-gradient(to right, ${this.HSVToCSSColor([0, s, v, a])}, ${this.HSVToCSSColor([60, s, v, a])}, ${this.HSVToCSSColor([120, s, v, a])}, ${this.HSVToCSSColor([180, s, v, a])}, ${this.HSVToCSSColor([240, s, v, a])}, ${this.HSVToCSSColor([300, s, v, a])}, ${this.HSVToCSSColor([360, s, v, a])})`;
+        this.ElementHMeter.style.left = `${h * this.ElementH.clientWidth / 360}px`;
         this.ElementPreview.style.background = this.RGBToCSSColor([r, g, b, a]);
         if (!this.DO_NOT_UPDATE_INPUT_OVERRIDE) {
             this.ElementPreviewInput.value = this.RGBToHTMLColor([r, g, b, a]);
@@ -7754,6 +7760,8 @@ class ColorInput {
         this.ElementA = document.getElementById("color-selector-a");
         this.ElementAOverlay = document.getElementById("color-selector-a-overlay");
         this.ElementAMeter = this.ElementAOverlay.querySelector(".color-meter-horizontal");
+        this.ElementH = document.getElementById("color-selector-h");
+        this.ElementHMeter = this.ElementH.querySelector(".color-meter-vertical");
         this.ElementPreview = document.getElementById("color-selector-preview");
         this.ElementPreviewInput = document.getElementById("color-selector-preview-input");
         this.ElementApply = document.getElementById("color-selector-apply");
@@ -7864,6 +7872,18 @@ class ColorInput {
             let startY = Input.MouseY;
             Dragger.Drag(() => {
                 a = Math.min(Math.max((startY - Input.MouseY + 255 - e.layerY) / 255, 0), 1);
+                this.SetHSVColor([h, s, v, a]);
+            });
+        });
+        this.ElementH.oncontextmenu = () => false;
+        this.ElementH.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [h, s, v, a] = this.CurrentColorHSV;
+            let startX = Input.MouseX;
+            Dragger.Drag(() => {
+                h = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), this.ElementH.clientWidth);
+                h *= 360;
+                h /= this.ElementH.clientWidth;
                 this.SetHSVColor([h, s, v, a]);
             });
         });

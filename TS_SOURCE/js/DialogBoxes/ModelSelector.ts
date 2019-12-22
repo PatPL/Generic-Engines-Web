@@ -54,6 +54,12 @@ document.addEventListener ("DOMContentLoaded", () => {
     
 });
 
+document.addEventListener ("keydown", e => {
+    if (e.key == "Escape") {
+        ModelSelector.FinishTransaction (null);
+    }
+});
+
 class ModelSelector {
     
     public static DialogBoxElement: HTMLElement;

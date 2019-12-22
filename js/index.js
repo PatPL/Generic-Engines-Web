@@ -7321,6 +7321,11 @@ document.addEventListener("DOMContentLoaded", () => {
         BrowserCacheDialog.FinishTransaction(null);
     });
 });
+document.addEventListener("keydown", e => {
+    if (e.key == "Escape") {
+        BrowserCacheDialog.FinishTransaction(null);
+    }
+});
 class BrowserCacheDialog {
     static SetTransaction(transaction) {
         if (this.CurrentTransaction) {
@@ -7933,6 +7938,11 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(newElement);
     });
 });
+document.addEventListener("keydown", e => {
+    if (e.key == "Escape") {
+        ModelSelector.FinishTransaction(null);
+    }
+});
 class ModelSelector {
     static SetTransaction(transaction) {
         if (this.CurrentTransaction) {
@@ -8001,6 +8011,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ImageOverflowPreview.Hook(newElement.querySelector("div"));
         container.appendChild(newElement);
     });
+});
+document.addEventListener("keydown", e => {
+    if (e.key == "Escape") {
+        PlumeSelector.FinishTransaction(null);
+    }
 });
 class PlumeSelector {
     static SetTransaction(transaction) {

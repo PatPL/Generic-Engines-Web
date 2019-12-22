@@ -7,6 +7,12 @@ document.addEventListener ("DOMContentLoaded", () => {
     })
 });
 
+document.addEventListener ("keydown", e => {
+    if (e.key == "Escape") {
+        BrowserCacheDialog.FinishTransaction (null);
+    }
+});
+
 class BrowserCacheDialog {
     
     public static DialogBoxElement: HTMLElement;

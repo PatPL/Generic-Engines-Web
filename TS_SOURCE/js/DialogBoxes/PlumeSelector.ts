@@ -65,6 +65,12 @@ document.addEventListener ("DOMContentLoaded", () => {
     
 });
 
+document.addEventListener ("keydown", e => {
+    if (e.key == "Escape") {
+        PlumeSelector.FinishTransaction (null);
+    }
+});
+
 class PlumeSelector {
     
     public static DialogBoxElement: HTMLElement;

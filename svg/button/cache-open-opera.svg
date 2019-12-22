@@ -472,20 +472,7 @@
     <g
        id="g10866"
        clip-path="url(#_clipPath_TUOfwZ4OltAdCghGJTzw43tlYWFbOBlP)">
-      <rect
-         id="rect10860"
-         style="fill:#444444"
-         height="64"
-         width="64"
-         x="0"
-         y="0" />
-      <rect
-         id="rect10862"
-         height="60"
-         width="60"
-         y="2"
-         x="2"
-         style="fill:#bbbbbb" />
+      
       <path
          id="path10864"
          d="m 54,18 h 4 L 52,6 46,18 h 4 V 46 H 36 v 4 h 18 z"

@@ -479,20 +479,7 @@
     <g
        id="g10912"
        clip-path="url(#_clipPath_w7MlWWXZraV2WhxJy2yCs7eoqlLB3c9K)">
-      <rect
-         id="rect10906"
-         style="fill:#444444"
-         height="64"
-         width="64"
-         x="0"
-         y="0" />
-      <rect
-         id="rect10908"
-         height="60"
-         width="60"
-         y="2"
-         x="2"
-         style="fill:#bbbbbb" />
+      
       <path
          id="path10910"
          d="m 54,18 h 4 L 52,6 46,18 h 4 V 46 H 36 v 4 h 18 z"

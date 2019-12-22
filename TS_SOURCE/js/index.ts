@@ -12,6 +12,11 @@ let MainEngineTable: HtmlTable<Engine>;
 
 let FullscreenWindows: { [id: string]: HTMLElement } = {};
 
+//@ts-ignore
+let isFirefox = typeof InstallTrigger !== 'undefined';
+//@ts-ignore
+let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
 //Website exit confirmation
 window.onbeforeunload = (e: any) => {
     if (MainEngineTable.Items.length != 0) {
@@ -23,11 +28,8 @@ window.onbeforeunload = (e: any) => {
 }
 
 function ApplySettings () {
-    //Set color palette for dark/other theme
-    (document.getElementById ("css-palette")! as HTMLLinkElement).href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
-
     //Toggle info panel
-    document.documentElement.style.setProperty ("--infoPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
+    document.documentElement.style.setProperty ("--infoNotificationBackgroundPanelWidth", `${ Settings.show_info_panel ? 320 : 0 }px`);
 }
 
 ApplySettings ();
@@ -126,12 +128,12 @@ addEventListener ("DOMContentLoaded", () => {
         if (e.which != 1) { return; }
         
         let originalX = Input.MouseX;
-        let originalWidth = parseFloat (document.documentElement.style.getPropertyValue ("--infoPanelWidth"));
+        let originalWidth = parseFloat (document.documentElement.style.getPropertyValue ("--infoNotificationBackgroundPanelWidth"));
         originalWidth = isNaN (originalWidth) ? 200 : originalWidth;
         Dragger.Drag (() => {
             let newWidth = originalWidth - Input.MouseX + originalX;
             newWidth = Math.max (50, newWidth);
-            document.documentElement.style.setProperty ("--infoPanelWidth", `${newWidth}px`);
+            document.documentElement.style.setProperty ("--infoNotificationBackgroundPanelWidth", `${newWidth}px`);
         });
     });
     
@@ -183,12 +185,6 @@ addEventListener ("DOMContentLoaded", () => {
     //Set correct browser icons
     let imgs = document.querySelectorAll<HTMLImageElement> ("img.browser-relevant");
     imgs.forEach (i => {
-        //@ts-ignore
-        let isFirefox = typeof InstallTrigger !== 'undefined';
-        //@ts-ignore
-        let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-        
-        
         
         if (isFirefox) {
             i.src = i.src.replace ("()", "firefox");
@@ -197,7 +193,6 @@ addEventListener ("DOMContentLoaded", () => {
         } else {
             i.src = i.src.replace ("()", "chrome");
         }
-        
         
     });
     
@@ -245,6 +240,7 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-remove")!.addEventListener ("click", RemoveButton_Click);
     
     document.getElementById ("option-button-settings")!.addEventListener ("click", SettingsButton_Click);
+    document.getElementById ("option-button-style")!.addEventListener ("click", StyleButton_Click);
     document.getElementById ("option-button-help")!.addEventListener ("click", HelpButton_Click);
     
     document.getElementById ("option-button-download-list")!.addEventListener ("click", DownloadListButton_Click);
@@ -322,10 +318,10 @@ function OpenUploadButton_Click () {
                 ListNameDisplay.SetValue (filename);
                 
                 MainEngineTable.Items = Serializer.DeserializeMany (data);
-                MainEngineTable.RebuildTable ();
                 MainEngineTable.Items.forEach (e => {
                     e.EngineList = MainEngineTable.Items;
                 });
+                MainEngineTable.RebuildTable ();
                 
                 FullscreenWindows["open-box"].style.display = "none";
                 Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -367,10 +363,10 @@ function OpenCacheButton_Click () {
             }
             
             MainEngineTable.Items = Serializer.DeserializeMany (data);
-            MainEngineTable.RebuildTable ();
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -409,10 +405,10 @@ function OpenClipboardButton_Click () {
             let data = BitConverter.Base64ToByteArray (b64);
             
             MainEngineTable.Items = Serializer.DeserializeMany (data);
-            MainEngineTable.RebuildTable ();
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -461,10 +457,10 @@ function OpenAutosaveButton_Click () {
             }
             
             MainEngineTable.Items = Serializer.DeserializeMany (data);
-            MainEngineTable.RebuildTable ();
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -623,6 +619,10 @@ function RemoveButton_Click () {
 
 function SettingsButton_Click () {
     SettingsDialog.Show ();
+}
+
+function StyleButton_Click () {
+    StyleDialog.Show ();
 }
 
 function HelpButton_Click () {

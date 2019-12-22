@@ -29,3 +29,26 @@ function Debug_LogLocalStorageUsage () {
     console.log ("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
     console.log ("Maximum should be around 5MB");
 }
+
+function Debug_GetCurrentCustomThemeAsCSSRule () {
+    let vars: [string, string][] = JSON.parse (atob (Settings.custom_theme));
+    let output = ":root {\n";
+    
+    vars.forEach (([cssVar, value]) => {
+        output += `    ${ cssVar }: ${ value };\n`;
+    });
+    
+    output += "}\n";
+    
+    console.log (output);
+}
+
+function Debug_DisplayCustomThemeRandomizer () {
+    document.getElementById ("custom-styles-randomize")!.style.display = "block";
+}
+
+function Debug_SendExampleNotifierMessages () {
+    Notifier.Info ("This is an information", 0);
+    Notifier.Warn ("This is a warning", 0);
+    Notifier.Error ("This is an error", 0);
+}

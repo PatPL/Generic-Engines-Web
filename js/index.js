@@ -251,7 +251,8 @@ window.addEventListener("pointerdown", (e) => {
             while (currentElement != null) {
                 if (currentElement.getAttribute("data-FieldID") == EditableField.EditedField.FieldID.toString() ||
                     currentElement.getAttribute("data-FieldID") == "-1" ||
-                    currentElement.classList.contains("fullscreen-box")) {
+                    currentElement.classList.contains("fullscreen-box") ||
+                    currentElement.classList.contains("do-not-end-edit-mode")) {
                     foundEdited = true;
                     break;
                 }
@@ -637,7 +638,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.2";
+Version.CurrentVersion = "Web.0.9.3";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -774,6 +775,14 @@ const Settings = {
         return Store.GetText("setting:hide_disabled_fields_on_sort", "1") == "1";
     }, set hide_disabled_fields_on_sort(value) {
         Store.SetText("setting:hide_disabled_fields_on_sort", value ? "1" : "0");
+    }, get current_theme() {
+        return Store.GetText("setting:current_theme", Settings.dark_theme ? "Dark (blue accent)" : "Classic");
+    }, set current_theme(value) {
+        Store.SetText("setting:current_theme", value);
+    }, get custom_theme() {
+        return Store.GetText("setting:custom_theme", btoa(JSON.stringify([])));
+    }, set custom_theme(value) {
+        Store.SetText("setting:custom_theme", value);
     }
 };
 var ListName = "Unnamed";
@@ -787,6 +796,8 @@ var EditableFieldMetadata = {
 let ListNameDisplay;
 let MainEngineTable;
 let FullscreenWindows = {};
+let isFirefox = typeof InstallTrigger !== 'undefined';
+let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
 window.onbeforeunload = (e) => {
     if (MainEngineTable.Items.length != 0) {
         e.returnValue = "Are you sure that you want to leave this page? You will lose all unsaved data";
@@ -797,8 +808,7 @@ window.onbeforeunload = (e) => {
     }
 };
 function ApplySettings() {
-    document.getElementById("css-palette").href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
-    document.documentElement.style.setProperty("--infoPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
+    document.documentElement.style.setProperty("--infoNotificationBackgroundPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
 }
 ApplySettings();
 function ApplyEngineToInfoPanel(engine, clear = false) {
@@ -874,12 +884,12 @@ addEventListener("DOMContentLoaded", () => {
             return;
         }
         let originalX = Input.MouseX;
-        let originalWidth = parseFloat(document.documentElement.style.getPropertyValue("--infoPanelWidth"));
+        let originalWidth = parseFloat(document.documentElement.style.getPropertyValue("--infoNotificationBackgroundPanelWidth"));
         originalWidth = isNaN(originalWidth) ? 200 : originalWidth;
         Dragger.Drag(() => {
             let newWidth = originalWidth - Input.MouseX + originalX;
             newWidth = Math.max(50, newWidth);
-            document.documentElement.style.setProperty("--infoPanelWidth", `${newWidth}px`);
+            document.documentElement.style.setProperty("--infoNotificationBackgroundPanelWidth", `${newWidth}px`);
         });
     });
     window.addEventListener("dragover", e => {
@@ -915,8 +925,6 @@ addEventListener("DOMContentLoaded", () => {
     });
     let imgs = document.querySelectorAll("img.browser-relevant");
     imgs.forEach(i => {
-        let isFirefox = typeof InstallTrigger !== 'undefined';
-        let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
         if (isFirefox) {
             i.src = i.src.replace("()", "firefox");
         }
@@ -961,6 +969,7 @@ addEventListener("DOMContentLoaded", () => {
     document.getElementById("option-button-add").addEventListener("click", AddButton_Click);
     document.getElementById("option-button-remove").addEventListener("click", RemoveButton_Click);
     document.getElementById("option-button-settings").addEventListener("click", SettingsButton_Click);
+    document.getElementById("option-button-style").addEventListener("click", StyleButton_Click);
     document.getElementById("option-button-help").addEventListener("click", HelpButton_Click);
     document.getElementById("option-button-download-list").addEventListener("click", DownloadListButton_Click);
     document.getElementById("option-button-cache-list").addEventListener("click", CacheListButton_Click);
@@ -1006,10 +1015,10 @@ function OpenUploadButton_Click() {
                 filename = filename.replace(/\.enl$/, "");
                 ListNameDisplay.SetValue(filename);
                 MainEngineTable.Items = Serializer.DeserializeMany(data);
-                MainEngineTable.RebuildTable();
                 MainEngineTable.Items.forEach(e => {
                     e.EngineList = MainEngineTable.Items;
                 });
+                MainEngineTable.RebuildTable();
                 FullscreenWindows["open-box"].style.display = "none";
                 Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
             }
@@ -1044,10 +1053,10 @@ function OpenCacheButton_Click() {
                 ListNameDisplay.SetValue(newFilename);
             }
             MainEngineTable.Items = Serializer.DeserializeMany(data);
-            MainEngineTable.RebuildTable();
             MainEngineTable.Items.forEach(e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable();
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }, "Choose a list to open");
@@ -1077,10 +1086,10 @@ function OpenClipboardButton_Click() {
         try {
             let data = BitConverter.Base64ToByteArray(b64);
             MainEngineTable.Items = Serializer.DeserializeMany(data);
-            MainEngineTable.RebuildTable();
             MainEngineTable.Items.forEach(e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable();
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }
@@ -1121,10 +1130,10 @@ function OpenAutosaveButton_Click() {
                 ListNameDisplay.SetValue(newFilename);
             }
             MainEngineTable.Items = Serializer.DeserializeMany(data);
-            MainEngineTable.RebuildTable();
             MainEngineTable.Items.forEach(e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable();
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }, "Open autosave:");
@@ -1251,6 +1260,9 @@ function RemoveButton_Click() {
 }
 function SettingsButton_Click() {
     SettingsDialog.Show();
+}
+function StyleButton_Click() {
+    StyleDialog.Show();
 }
 function HelpButton_Click() {
     FullscreenWindows["about-box"].style.display = "flex";
@@ -7309,6 +7321,11 @@ document.addEventListener("DOMContentLoaded", () => {
         BrowserCacheDialog.FinishTransaction(null);
     });
 });
+document.addEventListener("keydown", e => {
+    if (e.key == "Escape") {
+        BrowserCacheDialog.FinishTransaction(null);
+    }
+});
 class BrowserCacheDialog {
     static SetTransaction(transaction) {
         if (this.CurrentTransaction) {
@@ -7451,10 +7468,10 @@ class BrowserCacheDialog {
                 if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
                     ListNameDisplay.SetValue(i.replace(/\.enl$/, ""));
                     MainEngineTable.Items = Serializer.DeserializeMany(Store.GetBinary(i));
-                    MainEngineTable.RebuildTable();
                     MainEngineTable.Items.forEach(e => {
                         e.EngineList = MainEngineTable.Items;
                     });
+                    MainEngineTable.RebuildTable();
                     this.DialogBoxElement.style.display = "none";
                 }
             });
@@ -7463,6 +7480,445 @@ class BrowserCacheDialog {
         });
     }
 }
+class ColorInput {
+    static ParseRGB(cssColor) {
+        cssColor = cssColor.toLowerCase();
+        if (/^[0-9a-f]{3,}$/.test(cssColor)) {
+            cssColor = `#${cssColor}`;
+        }
+        let output = [0, 0, 0, 1.0];
+        if (/^#[0-9a-f]{8,}$/.test(cssColor)) {
+            output[0] += ColorInput.hexValue[cssColor[1]] * 16;
+            output[0] += ColorInput.hexValue[cssColor[2]];
+            output[1] += ColorInput.hexValue[cssColor[3]] * 16;
+            output[1] += ColorInput.hexValue[cssColor[4]];
+            output[2] += ColorInput.hexValue[cssColor[5]] * 16;
+            output[2] += ColorInput.hexValue[cssColor[6]];
+            output[3] = ColorInput.hexValue[cssColor[7]] * 16;
+            output[3] += ColorInput.hexValue[cssColor[8]];
+            output[3] /= 255;
+        }
+        else if (/^#[0-9a-f]{6,}$/.test(cssColor)) {
+            output[0] += ColorInput.hexValue[cssColor[1]] * 16;
+            output[0] += ColorInput.hexValue[cssColor[2]];
+            output[1] += ColorInput.hexValue[cssColor[3]] * 16;
+            output[1] += ColorInput.hexValue[cssColor[4]];
+            output[2] += ColorInput.hexValue[cssColor[5]] * 16;
+            output[2] += ColorInput.hexValue[cssColor[6]];
+        }
+        else if (/^#[0-9a-f]{4,}$/.test(cssColor)) {
+            output[0] += ColorInput.hexValue[cssColor[1]] * 17;
+            output[1] += ColorInput.hexValue[cssColor[2]] * 17;
+            output[2] += ColorInput.hexValue[cssColor[3]] * 17;
+            output[3] += ColorInput.hexValue[cssColor[4]] * 17;
+            output[3] /= 255;
+        }
+        else if (/^#[0-9a-f]{3,}$/.test(cssColor)) {
+            output[0] += ColorInput.hexValue[cssColor[1]] * 17;
+            output[1] += ColorInput.hexValue[cssColor[2]] * 17;
+            output[2] += ColorInput.hexValue[cssColor[3]] * 17;
+        }
+        else if (/^rgb(a)?\([ ]*[0-9]{1,3}[ ]*,[ ]*[0-9]{1,3}[ ]*,[ ]*[0-9]{1,3}(.)*$/.test(cssColor)) {
+            let rawValues = cssColor.split("(")[1].split(",");
+            output[0] = parseInt(rawValues[0]);
+            output[1] = parseInt(rawValues[1]);
+            output[2] = parseInt(rawValues[2]);
+            if (output.length > 3) {
+                output[3] = parseFloat(rawValues[3]);
+            }
+        }
+        else {
+            console.warn("CSSColor didn't match any regex: ", cssColor);
+        }
+        output[0] = Math.min(Math.max(output[0], 0), 255);
+        output[1] = Math.min(Math.max(output[1], 0), 255);
+        output[2] = Math.min(Math.max(output[2], 0), 255);
+        output[3] = Math.min(Math.max(output[3], 0), 1.0);
+        return output;
+    }
+    static RGBtoHSV(color) {
+        let color0_1 = [
+            color[0] / 255,
+            color[1] / 255,
+            color[2] / 255
+        ];
+        let Cmax = Math.max(color0_1[0], color0_1[1], color0_1[2]);
+        let Cmin = Math.min(color0_1[0], color0_1[1], color0_1[2]);
+        let delta = Cmax - Cmin;
+        let h;
+        if (delta == 0) {
+            h = 0;
+        }
+        else if (Cmax == color0_1[0]) {
+            h = 60 * (((color0_1[1] - color0_1[2]) / delta) % 6);
+        }
+        else if (Cmax == color0_1[1]) {
+            h = 60 * (((color0_1[2] - color0_1[0]) / delta) + 2);
+        }
+        else {
+            h = 60 * (((color0_1[0] - color0_1[1]) / delta) + 4);
+        }
+        let s;
+        if (Cmax == 0) {
+            s = 0;
+        }
+        else {
+            s = delta / Cmax;
+        }
+        let v = Cmax;
+        h %= 360;
+        h += 360;
+        h %= 360;
+        return [h, s, v, color[3]];
+    }
+    static HSVtoRGB(color) {
+        let [h, s, v, a] = color;
+        let c = v * s;
+        let x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+        let m = v - c;
+        let RGBtmp;
+        if (h < 60) {
+            RGBtmp = [c, x, 0];
+        }
+        else if (h < 120) {
+            RGBtmp = [x, c, 0];
+        }
+        else if (h < 180) {
+            RGBtmp = [0, c, x];
+        }
+        else if (h < 240) {
+            RGBtmp = [0, x, c];
+        }
+        else if (h < 300) {
+            RGBtmp = [x, 0, c];
+        }
+        else {
+            RGBtmp = [c, 0, x];
+        }
+        let r = Math.round((RGBtmp[0] + m) * 255);
+        let g = Math.round((RGBtmp[1] + m) * 255);
+        let b = Math.round((RGBtmp[2] + m) * 255);
+        return [r, g, b, a];
+    }
+    static RGBToCSSColor(color) {
+        return `rgba(${color[0]}, ${color[1]}, ${color[2]}, ${color[3]})`;
+    }
+    static RGBToHTMLColor(color) {
+        let [r, g, b, a] = color;
+        a = Math.round(a * 255);
+        return `#${this.hexLookup[Math.floor(r / 16)]}${this.hexLookup[r % 16]}${this.hexLookup[Math.floor(g / 16)]}${this.hexLookup[g % 16]}${this.hexLookup[Math.floor(b / 16)]}${this.hexLookup[b % 16]}${this.hexLookup[Math.floor(a / 16)]}${this.hexLookup[a % 16]}`;
+    }
+    static HSVToCSSColor(color) {
+        return this.RGBToCSSColor(this.HSVtoRGB(color));
+    }
+    static HookInput(trigger, target) {
+        trigger.addEventListener("click", () => {
+            this.StartTransaction(trigger, target);
+        });
+    }
+    static StartTransaction(trigger, target) {
+        let valueBackup = target.value;
+        this.ElementRevert.onclick = () => {
+            target.value = valueBackup;
+            let event = document.createEvent("HTMLEvents");
+            event.initEvent("input", false, true);
+            target.dispatchEvent(event);
+            FullscreenWindows["color-box"].style.display = "none";
+            this.EndTransaction();
+        };
+        document.getElementById("color-box").style.display = "block";
+        if (this.CurrentResizeListener != null) {
+            window.removeEventListener("resize", this.CurrentResizeListener);
+        }
+        this.CurrentResizeListener = () => {
+            let triggerBox = trigger.getBoundingClientRect();
+            let containerBox = this.ElementContainer.getBoundingClientRect();
+            let finalX = triggerBox.left - containerBox.width;
+            finalX = Math.max(finalX, 0);
+            let finalY = triggerBox.top;
+            if (finalY + containerBox.height > window.innerHeight) {
+                finalY = triggerBox.top + triggerBox.height - containerBox.height;
+            }
+            finalY = Math.max(finalY, 0);
+            this.ElementContainer.style.left = `${finalX}px`;
+            this.ElementContainer.style.top = `${finalY}px`;
+        };
+        this.CurrentResizeListener();
+        window.addEventListener("resize", this.CurrentResizeListener);
+        this.SetRGBColor(this.ParseRGB(target.value));
+        this.CurrentlyTargetedInput = target;
+    }
+    static EndTransaction() {
+        this.CurrentlyTargetedInput = null;
+        if (this.CurrentResizeListener) {
+            window.removeEventListener("resize", this.CurrentResizeListener);
+            this.CurrentResizeListener = null;
+        }
+    }
+    static SetRGBColor(color) {
+        this.CurrentColorRGB = color;
+        this.CurrentColorHSV = this.RGBtoHSV(color);
+        this.OnColorUpdate();
+    }
+    static SetHSVColor(color) {
+        this.CurrentColorHSV = color;
+        this.CurrentColorRGB = this.HSVtoRGB(color);
+        this.OnColorUpdate();
+    }
+    static OnColorUpdate() {
+        this.ApplyCurrentColorToInputs();
+        this.ApplyCurrentColorToTargetedInput();
+    }
+    static SetLock(lock) {
+        this.CurrentLock = lock;
+        this.ApplyCurrentColorToInputs();
+    }
+    static ApplyCurrentColorToInputs() {
+        let A, B, C, D;
+        let [r, g, b, a] = this.CurrentColorRGB;
+        let [h, s, v] = this.CurrentColorHSV;
+        if (this.CurrentLock == "R") {
+            A = [r, 0, 255, 1.0];
+            B = [r, 255, 255, 1.0];
+            C = [r, 0, 0, 1.0];
+            D = [r, 255, 0, 1.0];
+            this.ElementSquareMeter.style.left = `${g}px`;
+            this.ElementSquareMeter.style.top = `${255 - b}px`;
+        }
+        else if (this.CurrentLock == "G") {
+            A = [0, g, 255, 1.0];
+            B = [255, g, 255, 1.0];
+            C = [0, g, 0, 1.0];
+            D = [255, g, 0, 1.0];
+            this.ElementSquareMeter.style.left = `${r}px`;
+            this.ElementSquareMeter.style.top = `${255 - b}px`;
+        }
+        else {
+            A = [0, 255, b, 1.0];
+            B = [255, 255, b, 1.0];
+            C = [0, 0, b, 1.0];
+            D = [255, 0, b, 1.0];
+            this.ElementSquareMeter.style.left = `${r}px`;
+            this.ElementSquareMeter.style.top = `${255 - g}px`;
+        }
+        this.ElementSquareX.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor(A)}, ${this.RGBToCSSColor(B)})`;
+        this.ElementSquareY.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor(C)}, ${this.RGBToCSSColor(D)})`;
+        this.ElementR.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor([0, g, b, 1.0])}, ${this.RGBToCSSColor([255, g, b, 1.0])})`;
+        this.ElementRMeter.style.left = `${r}px`;
+        this.ElementG.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor([r, 0, b, 1.0])}, ${this.RGBToCSSColor([r, 255, b, 1.0])})`;
+        this.ElementGMeter.style.left = `${g}px`;
+        this.ElementB.style.background =
+            `linear-gradient(to right, ${this.RGBToCSSColor([r, g, 0, 1.0])}, ${this.RGBToCSSColor([r, g, 255, 1.0])})`;
+        this.ElementBMeter.style.left = `${b}px`;
+        this.ElementS.style.background =
+            `linear-gradient(to top, ${this.HSVToCSSColor([h, 0.0, v, 1.0])}, ${this.HSVToCSSColor([h, 1.0, v, 1.0])})`;
+        this.ElementSMeter.style.bottom = `${s * 255}px`;
+        this.ElementV.style.background =
+            `linear-gradient(to top, ${this.HSVToCSSColor([h, s, 0.0, 1.0])}, ${this.HSVToCSSColor([h, s, 1.0, 1.0])})`;
+        this.ElementVMeter.style.bottom = `${v * 255}px`;
+        this.ElementA.style.background = this.RGBToCSSColor([r, g, b, 1.0]);
+        this.ElementAMeter.style.bottom = `${a * 255}px`;
+        this.ElementH.style.background =
+            `linear-gradient(to right, ${this.HSVToCSSColor([0, s, v, a])}, ${this.HSVToCSSColor([60, s, v, a])}, ${this.HSVToCSSColor([120, s, v, a])}, ${this.HSVToCSSColor([180, s, v, a])}, ${this.HSVToCSSColor([240, s, v, a])}, ${this.HSVToCSSColor([300, s, v, a])}, ${this.HSVToCSSColor([360, s, v, a])})`;
+        this.ElementHMeter.style.left = `${h * this.ElementH.clientWidth / 360}px`;
+        this.ElementPreview.style.background = this.RGBToCSSColor([r, g, b, a]);
+        if (!this.DO_NOT_UPDATE_INPUT_OVERRIDE) {
+            this.ElementPreviewInput.value = this.RGBToHTMLColor([r, g, b, a]);
+        }
+    }
+    static ApplyCurrentColorToTargetedInput() {
+        if (this.CurrentlyTargetedInput != null) {
+            this.CurrentlyTargetedInput.value = this.RGBToCSSColor(this.CurrentColorRGB);
+            let event = document.createEvent("HTMLEvents");
+            event.initEvent("input", false, true);
+            this.CurrentlyTargetedInput.dispatchEvent(event);
+        }
+    }
+    static Initialize() {
+        if (this.Initialized) {
+            return;
+        }
+        this.ElementContainer = document.getElementById("color-selector-container");
+        this.ElementSquareX = document.getElementById("color-selector-squareX");
+        this.ElementSquareY = document.getElementById("color-selector-squareY");
+        this.ElementSquareOverlay = document.getElementById("color-selector-squareOverlay");
+        this.ElementSquareMeter = this.ElementSquareOverlay.querySelector(".circular-color-meter");
+        this.ElementR = document.getElementById("color-selector-r");
+        this.ElementRMeter = this.ElementR.querySelector(".color-meter-vertical");
+        this.ElementG = document.getElementById("color-selector-g");
+        this.ElementGMeter = this.ElementG.querySelector(".color-meter-vertical");
+        this.ElementB = document.getElementById("color-selector-b");
+        this.ElementBMeter = this.ElementB.querySelector(".color-meter-vertical");
+        this.ElementS = document.getElementById("color-selector-s");
+        this.ElementSMeter = this.ElementS.querySelector(".color-meter-horizontal");
+        this.ElementV = document.getElementById("color-selector-v");
+        this.ElementVMeter = this.ElementV.querySelector(".color-meter-horizontal");
+        this.ElementA = document.getElementById("color-selector-a");
+        this.ElementAOverlay = document.getElementById("color-selector-a-overlay");
+        this.ElementAMeter = this.ElementAOverlay.querySelector(".color-meter-horizontal");
+        this.ElementH = document.getElementById("color-selector-h");
+        this.ElementHMeter = this.ElementH.querySelector(".color-meter-vertical");
+        this.ElementPreview = document.getElementById("color-selector-preview");
+        this.ElementPreviewInput = document.getElementById("color-selector-preview-input");
+        this.ElementApply = document.getElementById("color-selector-apply");
+        this.ElementRevert = document.getElementById("color-selector-revert");
+        document.getElementById("color-box").querySelector(".fullscreen-grayout").addEventListener("click", () => {
+            this.EndTransaction();
+        });
+        this.ElementSquareOverlay.oncontextmenu = () => false;
+        this.ElementSquareOverlay.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [r, g, b, a] = this.CurrentColorRGB;
+            if (e.button == 2) {
+                if (this.CurrentLock == "R") {
+                    this.SetLock("G");
+                }
+                else if (this.CurrentLock == "G") {
+                    this.SetLock("B");
+                }
+                else {
+                    this.SetLock("R");
+                }
+                return;
+            }
+            let startX = Input.MouseX;
+            let startY = Input.MouseY;
+            Dragger.Drag(() => {
+                if (this.CurrentLock == "R") {
+                    g = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                    b = 255 - Math.min(Math.max(Input.MouseY - startY + e.layerY, 0), 255);
+                }
+                else if (this.CurrentLock == "G") {
+                    r = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                    b = 255 - Math.min(Math.max(Input.MouseY - startY + e.layerY, 0), 255);
+                }
+                else {
+                    r = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                    g = 255 - Math.min(Math.max(Input.MouseY - startY + e.layerY, 0), 255);
+                }
+                this.SetRGBColor([r, g, b, a]);
+            });
+        });
+        this.ElementR.oncontextmenu = () => false;
+        this.ElementR.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [r, g, b, a] = this.CurrentColorRGB;
+            if (e.button == 2) {
+                this.SetLock("R");
+                return;
+            }
+            let startX = Input.MouseX;
+            Dragger.Drag(() => {
+                r = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                this.SetRGBColor([r, g, b, a]);
+            });
+        });
+        this.ElementG.oncontextmenu = () => false;
+        this.ElementG.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [r, g, b, a] = this.CurrentColorRGB;
+            if (e.button == 2) {
+                this.SetLock("G");
+                return;
+            }
+            let startX = Input.MouseX;
+            Dragger.Drag(() => {
+                g = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                this.SetRGBColor([r, g, b, a]);
+            });
+        });
+        this.ElementB.oncontextmenu = () => false;
+        this.ElementB.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [r, g, b, a] = this.CurrentColorRGB;
+            if (e.button == 2) {
+                this.SetLock("B");
+                return;
+            }
+            let startX = Input.MouseX;
+            Dragger.Drag(() => {
+                b = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), 255);
+                this.SetRGBColor([r, g, b, a]);
+            });
+        });
+        this.ElementS.oncontextmenu = () => false;
+        this.ElementS.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [h, s, v, a] = this.CurrentColorHSV;
+            let startY = Input.MouseY;
+            Dragger.Drag(() => {
+                s = Math.min(Math.max((startY - Input.MouseY + 255 - e.layerY) / 255, 0), 1);
+                this.SetHSVColor([h, s, v, a]);
+            });
+        });
+        this.ElementV.oncontextmenu = () => false;
+        this.ElementV.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [h, s, v, a] = this.CurrentColorHSV;
+            let startY = Input.MouseY;
+            Dragger.Drag(() => {
+                v = Math.min(Math.max((startY - Input.MouseY + 255 - e.layerY) / 255, 0), 1);
+                this.SetHSVColor([h, s, v, a]);
+            });
+        });
+        this.ElementAOverlay.oncontextmenu = () => false;
+        this.ElementAOverlay.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [h, s, v, a] = this.CurrentColorHSV;
+            let startY = Input.MouseY;
+            Dragger.Drag(() => {
+                a = Math.min(Math.max((startY - Input.MouseY + 255 - e.layerY) / 255, 0), 1);
+                this.SetHSVColor([h, s, v, a]);
+            });
+        });
+        this.ElementH.oncontextmenu = () => false;
+        this.ElementH.addEventListener("pointerdown", _e => {
+            let e = _e;
+            let [h, s, v, a] = this.CurrentColorHSV;
+            let startX = Input.MouseX;
+            Dragger.Drag(() => {
+                h = Math.min(Math.max(Input.MouseX - startX + e.layerX, 0), this.ElementH.clientWidth);
+                h *= 360;
+                h /= this.ElementH.clientWidth;
+                this.SetHSVColor([h, s, v, a]);
+            });
+        });
+        this.ElementApply.addEventListener("click", () => {
+            FullscreenWindows["color-box"].style.display = "none";
+            this.EndTransaction();
+        });
+        this.ElementPreviewInput.addEventListener("input", () => {
+            this.DO_NOT_UPDATE_INPUT_OVERRIDE = true;
+            this.SetRGBColor(this.ParseRGB(this.ElementPreviewInput.value));
+            this.DO_NOT_UPDATE_INPUT_OVERRIDE = false;
+        });
+    }
+}
+ColorInput.DO_NOT_UPDATE_INPUT_OVERRIDE = false;
+ColorInput.CurrentColorRGB = [0, 0, 0, 1.0];
+ColorInput.CurrentColorHSV = [0, 0, 0, 1.0];
+ColorInput.CurrentColorAlpha = 1.0;
+ColorInput.CurrentLock = "R";
+ColorInput.CurrentlyTargetedInput = null;
+ColorInput.CurrentResizeListener = null;
+ColorInput.hexLookup = [
+    "0", "1", "2", "3", "4", "5", "6", "7",
+    "8", "9", "A", "B", "C", "D", "E", "F",
+];
+ColorInput.hexValue = {
+    "0": 0, "1": 1, "2": 2, "3": 3,
+    "4": 4, "5": 5, "6": 6, "7": 7,
+    "8": 8, "9": 9, "a": 10, "b": 11,
+    "c": 12, "d": 13, "e": 14, "f": 15
+};
+ColorInput.Initialized = false;
+document.addEventListener("DOMContentLoaded", () => {
+    ColorInput.Initialize();
+});
 document.addEventListener("DOMContentLoaded", () => {
     ModelSelector.DialogBoxElement = document.getElementById("model-selector");
     ModelSelector.DialogBoxElement.querySelector("div.fullscreen-grayout").addEventListener("click", () => {
@@ -7501,6 +7957,11 @@ document.addEventListener("DOMContentLoaded", () => {
         ImageOverflowPreview.Hook(newElement.querySelector("div"));
         container.appendChild(newElement);
     });
+});
+document.addEventListener("keydown", e => {
+    if (e.key == "Escape") {
+        ModelSelector.FinishTransaction(null);
+    }
 });
 class ModelSelector {
     static SetTransaction(transaction) {
@@ -7571,6 +8032,11 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(newElement);
     });
 });
+document.addEventListener("keydown", e => {
+    if (e.key == "Escape") {
+        PlumeSelector.FinishTransaction(null);
+    }
+});
 class PlumeSelector {
     static SetTransaction(transaction) {
         if (this.CurrentTransaction) {
@@ -7590,6 +8056,274 @@ class PlumeSelector {
         this.SetTransaction(callback);
     }
 }
+class StyleDialog {
+    static Show() {
+        FullscreenWindows["style-box"].style.display = "flex";
+        let customTable = document.getElementById("styles-custom");
+        requestAnimationFrame(() => {
+            customTable.style.display = "inline";
+            requestAnimationFrame(() => {
+                customTable.style.display = "block";
+            });
+        });
+    }
+    static Init() {
+        let select = document.getElementById("styles-select");
+        let customContainer = document.getElementById("custom-styles-container");
+        let customTable = document.getElementById("styles-custom");
+        let customReloadButton = document.getElementById("custom-styles-reload");
+        let customExportButton = document.getElementById("custom-styles-export");
+        let customImportButton = document.getElementById("custom-styles-import");
+        let themeOverrideStyle = document.getElementById("custom-theme-override");
+        if (!isFirefox) {
+            customContainer.style.paddingRight = "24px";
+        }
+        let indexMap = [];
+        let indexMapCounter = 0;
+        const applyCurrentTheme = () => {
+            let themeFile = this.ThemeFiles[Settings.current_theme];
+            if (themeFile) {
+                this.SetThemeFile(themeFile);
+                themeOverrideStyle.innerHTML = "";
+            }
+            else {
+                themeOverrideStyle.innerHTML = this.BuildOverrideThemeStyle(Settings.custom_theme);
+            }
+        };
+        const getCurrentCustomThemeFromTable = () => {
+            let output = [];
+            let trs = customTable.querySelectorAll("tr");
+            trs.forEach(e => {
+                output.push([e.children[0].innerHTML, e.children[1].children[0].value]);
+            });
+            return output;
+        };
+        const applyCurrentCustomThemeToTable = () => {
+            let varMap = {};
+            this.GetCurrentCSSVars().forEach(([cssVar, value]) => { varMap[cssVar] = value; });
+            try {
+                let customVars = JSON.parse(atob(Settings.custom_theme));
+                customVars.forEach(([cssVar, value]) => { varMap[cssVar] = value; });
+            }
+            catch (e) {
+                console.error("Couldn't parse the custom theme: ", e, Settings.custom_theme);
+            }
+            customTable.innerHTML = "";
+            for (let i in varMap) {
+                let tr = document.createElement("tr");
+                let input = document.createElement("input");
+                input.value = varMap[i];
+                input.addEventListener("input", () => {
+                    Settings.custom_theme = btoa(JSON.stringify(getCurrentCustomThemeFromTable()));
+                    applyCurrentTheme();
+                });
+                input.addEventListener("focusin", () => {
+                    if (/^#[0-9a-f]*/.test(input.value.toLowerCase())) {
+                        input.selectionStart = 1;
+                        input.selectionEnd = input.value.length;
+                    }
+                    else {
+                        input.selectionStart = 0;
+                        input.selectionEnd = input.value.length;
+                        input.selectionDirection = "backward";
+                    }
+                });
+                const inputHeight = 23;
+                const inputBorderWidth = 0;
+                let colorPicker = document.createElement("div");
+                colorPicker.style.position = "absolute";
+                colorPicker.style.width = `${inputHeight}px`;
+                colorPicker.style.height = `${inputHeight}px`;
+                colorPicker.style.top = `${1 + inputBorderWidth}px`;
+                colorPicker.style.right = `-${inputHeight + inputBorderWidth - 1}px`;
+                colorPicker.style.cursor = "pointer";
+                colorPicker.style.background = `var(${i})`;
+                colorPicker.title = "Open a color selector";
+                let pickerGridBG = document.createElement("div");
+                pickerGridBG.style.position = "absolute";
+                pickerGridBG.style.width = `${inputHeight}px`;
+                pickerGridBG.style.height = `${inputHeight}px`;
+                pickerGridBG.style.top = `${1 + inputBorderWidth}px`;
+                pickerGridBG.style.right = `-${inputHeight + inputBorderWidth - 1}px`;
+                pickerGridBG.style.background = "url(img/transparent.png)";
+                ColorInput.HookInput(colorPicker, input);
+                tr.innerHTML = "<td></td><td style='position: relative'></td>";
+                tr.children[0].style.userSelect = "all";
+                tr.children[0].innerHTML = i;
+                tr.children[1].appendChild(input);
+                tr.children[1].appendChild(pickerGridBG);
+                tr.children[1].appendChild(colorPicker);
+                customTable.appendChild(tr);
+            }
+        };
+        applyCurrentTheme();
+        select.innerHTML = "";
+        this.ThemeGroups.forEach(([groupName, themes]) => {
+            select.innerHTML += `<optgroup label="${groupName}">`;
+            themes.forEach(themeName => {
+                if (this.ThemeFiles[themeName] != undefined) {
+                    select.innerHTML += `<option value="${themeName}">${themeName}</option>`;
+                    indexMap.push([themeName, indexMapCounter++]);
+                }
+                else {
+                    console.warn(`Theme named "${themeName}" not found in ThemeFiles, but is assigned in ThemeGroups (skipping). Is it a typo?`);
+                }
+            });
+            select.innerHTML += `</optgroup>`;
+        });
+        let currentTheme = indexMap.find(x => x[0] == Settings.current_theme);
+        if (currentTheme) {
+            select.selectedIndex = currentTheme[1];
+            if (currentTheme[0] == "Custom") {
+                customContainer.style.display = "block";
+                applyCurrentCustomThemeToTable();
+            }
+            else {
+                customContainer.style.display = "none";
+            }
+        }
+        else {
+            console.warn("Theme not found: ", Settings.current_theme);
+            console.warn("Themes: ", indexMap);
+        }
+        select.addEventListener("change", () => {
+            let selectedTheme = indexMap.find(x => x[1] == select.selectedIndex)[0];
+            Settings.current_theme = selectedTheme;
+            if (selectedTheme == "Custom") {
+                customContainer.style.display = "block";
+                applyCurrentCustomThemeToTable();
+                applyCurrentTheme();
+            }
+            else {
+                customContainer.style.display = "none";
+            }
+            applyCurrentTheme();
+        });
+        customReloadButton.addEventListener("click", () => {
+            if (confirm("Are you sure you want to rebuild the custom theme?\n\nYou will lose the current custom theme.")) {
+                Settings.custom_theme = btoa(JSON.stringify(this.GetCurrentCSSVars()));
+                applyCurrentCustomThemeToTable();
+                applyCurrentTheme();
+            }
+        });
+        customExportButton.addEventListener("click", () => {
+            if (FileIO.ToClipboard(Settings.custom_theme)) {
+                Notifier.Info("Theme copied to clipboard");
+            }
+            else {
+                Notifier.Warn("Couldn't put the custom style in clipboard. Check dev console (F12) for the theme");
+                console.log("Custom theme:", Settings.custom_theme);
+            }
+        });
+        customImportButton.addEventListener("click", () => {
+            if (confirm("Importing custom theme will overwrite your current custom theme.\n\nAre you sure you want to continue?")) {
+                let newTheme = prompt("Paste the custom theme (Base64)");
+                if (newTheme != null) {
+                    Settings.custom_theme = newTheme;
+                    applyCurrentCustomThemeToTable();
+                    applyCurrentTheme();
+                }
+            }
+        });
+        document.getElementById("custom-styles-randomize").addEventListener("click", () => {
+            if (confirm("Are you sure? You'll lose your current custom theme.")) {
+                const hex = "0123456789abcdef";
+                customTable.querySelectorAll("input").forEach(i => {
+                    let color = "#";
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    color += hex[Math.floor(Math.random() * 16)];
+                    i.value = color;
+                });
+                Settings.custom_theme = btoa(JSON.stringify(getCurrentCustomThemeFromTable()));
+                applyCurrentTheme();
+            }
+        });
+    }
+    static GetCurrentCSSVars() {
+        let output = [];
+        let paletteSheet = Array.from(document.styleSheets).find(x => /(.)*Palette.css$/.test(x.href));
+        if (paletteSheet) {
+            let paletteRule = Array.from(paletteSheet.rules).find(x => x.selectorText == ":root");
+            if (paletteRule) {
+                let paletteStyle = paletteRule.style;
+                if (paletteStyle) {
+                    Array.from(paletteStyle).forEach(v => {
+                        output.push([v, paletteStyle.getPropertyValue(v).trim()]);
+                    });
+                }
+                else {
+                    console.warn("Didn't find the palette styles");
+                }
+            }
+            else {
+                console.warn("Didn't find the ':root' rule in the palette file");
+            }
+        }
+        else {
+            console.warn("Didn't find the '*.Palette.css' palette file");
+        }
+        return output;
+    }
+    static SetThemeFile(file) {
+        document.getElementById("css-palette").href = `css/${file}`;
+    }
+    static BuildOverrideThemeStyle(b64CustomTheme) {
+        let output = ":root {";
+        let varMap = {};
+        this.GetCurrentCSSVars().forEach(([cssVar, value]) => { varMap[cssVar] = value; });
+        try {
+            let customVars = JSON.parse(atob(b64CustomTheme));
+            customVars.forEach(([cssVar, value]) => { varMap[cssVar] = value; });
+        }
+        catch (e) {
+            console.error("Couldn't parse the custom theme: ", e, b64CustomTheme);
+        }
+        for (let i in varMap) {
+            output += `
+                ${i}: ${varMap[i]};
+            `;
+        }
+        output += "}";
+        output = Exporter.PrettifyConfig(Exporter.CompactConfig(output));
+        return output;
+    }
+}
+StyleDialog._initialized = false;
+StyleDialog.ThemeFiles = {
+    "Classic": "classic-Palette.css",
+    "Azure": "azure-Palette.css",
+    "Sunset": "sunset-Palette.css",
+    "Dark (blue accent)": "darkBlue-Palette.css",
+    "Dark (red accent)": "darkRed-Palette.css",
+    "Deep sea": "deepSea-Palette.css",
+    "Night sky": "nightSky-Palette.css",
+    "High contrast": "highContrast-Palette.css",
+    "Hot dog stand": "hotDogStand-Palette.css",
+    "Custom": false
+};
+StyleDialog.ThemeGroups = [
+    ["Light", [
+            "Classic",
+            "Azure"
+        ]], ["Dark", [
+            "Dark (blue accent)",
+            "Dark (red accent)",
+            "Deep sea",
+            "High contrast"
+        ]], ["Themed", [
+            "Sunset",
+            "Night sky"
+        ]], ["Other", [
+            "Custom"
+        ]]
+];
+document.addEventListener("DOMContentLoaded", () => {
+    StyleDialog.Init();
+});
 var PolymorphismType;
 (function (PolymorphismType) {
     PolymorphismType[PolymorphismType["Single"] = 0] = "Single";
@@ -7976,6 +8710,9 @@ class Engine {
             this.PolyType == PolymorphismType.MultiConfigSlave) ? this.EngineList.find(x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
         let output = [];
+        if (!targetEngine.UseTanks) {
+            return output;
+        }
         if (!targetEngine.LimitTanks) {
             targetEngine.TanksContents.forEach(v => {
                 let currentVolume = output.findIndex(x => v[0] == x[0]);
@@ -8582,7 +9319,7 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b00000
     }, Dimensions: {
         Name: "Size",
-        DefaultWidth: 160,
+        DefaultWidth: 200,
         DisplayFlags: 0b10100
     }, Gimbal: {
         Name: "Gimbal",
@@ -8753,56 +9490,66 @@ var EngineEditableFieldMetadata;
             tmp.classList.add("content-cell-content");
             return tmp;
         }, ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = `↔${Unit.Display(engine.Width, "m", false, 9)} x ↕${Unit.Display(engine.Height, "m", false, 9)}`;
+            e.innerHTML = `↔${Unit.Display(engine.GetBaseWidth(), "m", false, 3)} x ↕${Unit.Display(engine.Height, "m", false, 3)}`;
         }, GetEditElement: () => {
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
-            tmp.style.height = "76px";
+            tmp.style.height = "80px";
             tmp.style.padding = "0";
             let grid = document.createElement("div");
             grid.style.display = "grid";
-            grid.style.gridTemplateColumns = "62px auto 2px 24px 2px";
-            grid.style.gridTemplateRows = "24px 24px 2px 24px";
+            grid.style.gridTemplateColumns = "76px auto 2px 24px 2px";
+            grid.style.gridTemplateRows = "2px 24px 2px 24px 2px 24px";
             grid.style.gridTemplateAreas = `
-                "a a a a z"
-                "b c c c z"
-                "x x x x x"
-                "e f q g y"
+                ". . . . ."
+                "a h h h ."
+                ". . . . ."
+                "b c c c ."
+                ". . . . ."
+                "e f q g ."
             `;
             grid.innerHTML = `
-                <div class="content-cell-content" style="grid-area: a;"></div>
-                <div class="content-cell-content" style="grid-area: b;">Width</div>
+                <div class="content-cell-content" style="grid-area: a;">Bell ↔</div>
+                <div style="grid-area: h;"><input style="width: calc(100%);"></div>
+                <div class="content-cell-content" style="grid-area: b;">Base ↔</div>
                 <div style="grid-area: c;"><input style="width: calc(100%);"></div>
-                <div class="content-cell-content" style="grid-area: e;">Height</div>
+                <div class="content-cell-content" style="grid-area: e;">Height ↕</div>
                 <div style="grid-area: f;"><input style="width: calc(100%);"></div>
                 <div style="grid-area: g;"><img class="option-button stretch" title="Set height matching the width and model" src="svg/button/aspectRatio.svg"></div>
             `;
-            let checkboxLabel = document.createElement("span");
-            let checkbox = document.createElement("input");
-            checkboxLabel.style.position = "relative";
-            checkboxLabel.style.top = "-4px";
-            checkboxLabel.style.left = "4px";
-            checkbox.type = "checkbox";
-            checkbox.addEventListener("change", e => {
-                checkboxLabel.innerHTML = checkbox.checked ? "Base width" : "Bell width";
-            });
-            grid.children[0].appendChild(checkbox);
-            grid.children[0].appendChild(checkboxLabel);
             tmp.appendChild(grid);
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
             let inputs = e.querySelectorAll("input");
-            inputs[0].checked = engine.UseBaseWidth;
-            inputs[1].value = Unit.Display(engine.Width, "m", false);
-            inputs[2].value = Unit.Display(engine.Height, "m", false);
-            e.querySelector("img").onclick = () => {
-                let modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
-                inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / (inputs[0].checked ? modelInfo.OriginalBaseWidth : modelInfo.OriginalBellWidth), "m", false, 3);
+            const modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
+            const baseToBellRatio = modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
+            const updateBellWidth = () => {
+                inputs[0].value = Unit.Display(Unit.Parse(inputs[1].value, "m") / baseToBellRatio, "m", false, 3);
             };
-            e.querySelector("span").innerHTML = inputs[0].checked ? "Base width" : "Bell width";
+            const updateBaseWidth = () => {
+                inputs[1].value = Unit.Display(Unit.Parse(inputs[0].value, "m") * baseToBellRatio, "m", false, 3);
+            };
+            if (engine.UseBaseWidth) {
+                inputs[1].value = Unit.Display(engine.Width, "m", false, 3);
+                updateBellWidth();
+            }
+            else {
+                inputs[0].value = Unit.Display(engine.Width, "m", false, 3);
+                updateBaseWidth();
+            }
+            inputs[2].value = Unit.Display(engine.Height, "m", false, 3);
+            inputs[0].oninput = () => {
+                updateBaseWidth();
+            };
+            inputs[1].oninput = () => {
+                updateBellWidth();
+            };
+            e.querySelector("img").onclick = () => {
+                inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth, "m", false, 3);
+            };
         }, ApplyChangesToValue: (e, engine) => {
             let inputs = e.querySelectorAll("input");
-            engine.UseBaseWidth = inputs[0].checked;
+            engine.UseBaseWidth = true;
             engine.Width = Unit.Parse(inputs[1].value, "m");
             engine.Height = Unit.Parse(inputs[2].value, "m");
         }
@@ -9766,6 +10513,131 @@ var EngineEditableFieldMetadata;
         }
     };
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
+var CanvasHelper;
+(function (CanvasHelper) {
+    const DEFAULT_STROKE_COLOR = "#444";
+    const DEFAULT_TEXT_COLOR = "#000";
+    const DEFAULT_STROKE_WIDTH = 1;
+    CanvasHelper.DrawLine = (x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) => {
+        x1 = Math.round(x1 + 0.5) - 0.5;
+        x2 = Math.round(x2 + 0.5) - 0.5;
+        y1 = Math.round(y1 + 0.5) - 0.5;
+        y2 = Math.round(y2 + 0.5) - 0.5;
+        canvas.beginPath();
+        canvas.moveTo(x1, y1);
+        canvas.lineTo(x2, y2);
+        canvas.strokeStyle = color;
+        canvas.lineWidth = width;
+        canvas.lineCap = "square";
+        canvas.stroke();
+    };
+    CanvasHelper.DrawRectangle = (x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) => {
+        CanvasHelper.DrawLine(x1, y1, x2, y1, canvas, color, width);
+        CanvasHelper.DrawLine(x2, y1, x2, y2, canvas, color, width);
+        CanvasHelper.DrawLine(x2, y2, x1, y2, canvas, color, width);
+        CanvasHelper.DrawLine(x1, y2, x1, y1, canvas, color, width);
+    };
+    CanvasHelper.DrawGrid = (originX, originY, sizeX, sizeY, linesX, linesY, outline, canvas, color = DEFAULT_STROKE_COLOR, textColor = DEFAULT_TEXT_COLOR, width = DEFAULT_STROKE_WIDTH, styleX, styleY, styleOutline, labelX, labelY, lineOverrideX, lineOverrideY) => {
+        canvas.clearRect(0, 0, sizeX, sizeY);
+        for (let x = 1; x <= linesX; ++x) {
+            let currentX = originX + (x * (originX + sizeX) / (linesX + 1));
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleX && styleX[x] && styleX[x].Color) {
+                currentColor = styleX[x].Color;
+            }
+            if (styleX && styleX[x] && styleX[x].Width) {
+                currentWidth = styleX[x].Width;
+            }
+            if (styleX && styleX[x] && styleX[x].Label) {
+                canvas.fillStyle = textColor;
+                canvas.fillText(styleX[x].Label, currentX + 1, originY + sizeY - 2, sizeX / (linesX + 1) - 2);
+            }
+            CanvasHelper.DrawLine(currentX, originY, currentX, originY + sizeY, canvas, currentColor, currentWidth);
+        }
+        for (let y = 1; y <= linesY; ++y) {
+            let currentY = originY + (y * (originY + sizeY) / (linesY + 1));
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleY && styleY[y] && styleY[y].Color) {
+                currentColor = styleY[y].Color;
+            }
+            if (styleY && styleY[y] && styleY[y].Width) {
+                currentWidth = styleY[y].Width;
+            }
+            if (styleY && styleY[y] && styleY[y].Label) {
+                canvas.fillStyle = textColor;
+                canvas.fillText(styleY[y].Label, originX + 2, currentY - 1);
+            }
+            CanvasHelper.DrawLine(originX, currentY, originX + sizeX, currentY, canvas, currentColor, currentWidth);
+        }
+        if (lineOverrideX) {
+            lineOverrideX.forEach(l => {
+                if (!l.Position && l.Position != 0) {
+                    console.warn("Position is mandatory for line override. Skipping...");
+                    return;
+                }
+                let currentColor = color;
+                let currentWidth = width;
+                if (l.Color) {
+                    currentColor = l.Color;
+                }
+                if (l.Width) {
+                    currentWidth = l.Width;
+                }
+                if (l.Label) {
+                    canvas.fillStyle = textColor;
+                    canvas.fillText(l.Label, l.Position + 1, sizeY - 1);
+                }
+                CanvasHelper.DrawLine(l.Position, 0, l.Position, sizeY, canvas, currentColor, currentWidth);
+            });
+        }
+        if (lineOverrideY) {
+            lineOverrideY.forEach(l => {
+                if (!l.Position && l.Position != 0) {
+                    console.warn("Position is mandatory for line override. Skipping...");
+                    return;
+                }
+                let currentColor = color;
+                let currentWidth = width;
+                if (l.Color) {
+                    currentColor = l.Color;
+                }
+                if (l.Width) {
+                    currentWidth = l.Width;
+                }
+                if (l.Label) {
+                    canvas.fillStyle = textColor;
+                    canvas.fillText(l.Label, 1, l.Position - 1);
+                }
+                CanvasHelper.DrawLine(0, l.Position, sizeX, l.Position, canvas, currentColor, currentWidth);
+            });
+        }
+        if (labelX) {
+            canvas.textAlign = "end";
+            canvas.fillStyle = textColor;
+            canvas.fillText(labelX, originX + sizeX - 2, originY + sizeY - 2);
+            canvas.textAlign = "start";
+        }
+        if (labelY) {
+            canvas.textBaseline = "top";
+            canvas.fillStyle = textColor;
+            canvas.fillText(labelY, originX + 2, originY + 2);
+            canvas.textBaseline = "alphabetic";
+        }
+        if (outline) {
+            let currentColor = color;
+            let currentWidth = width;
+            if (styleOutline && styleOutline.Color) {
+                currentColor = styleOutline.Color;
+            }
+            if (styleOutline && styleOutline.Width) {
+                currentWidth = styleOutline.Width;
+            }
+            CanvasHelper.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
+        }
+    };
+})(CanvasHelper || (CanvasHelper = {}));
 var EngineEditableFieldMetadata;
 (function (EngineEditableFieldMetadata) {
     let chartWidth = 400;
@@ -9805,7 +10677,7 @@ var EngineEditableFieldMetadata;
             chartPoints.classList.add("chartPoints");
             chartElement.appendChild(chartPoints);
             const updateLines = () => {
-                updateLineChart(chartLines.getContext("2d"), getCurve(chartPoints, parseInt(upperBoundInput.value)), style.getPropertyValue("--tableLine"), parseInt(upperBoundInput.value));
+                updateLineChart(chartLines.getContext("2d"), getCurve(chartPoints, parseInt(upperBoundInput.value)), style.getPropertyValue("--thrustCurveTableLine"), parseInt(upperBoundInput.value));
             };
             chartPoints.addEventListener("pointerdown", () => {
                 setActivePoint(chartPoints, null, chartTable);
@@ -9928,7 +10800,7 @@ var EngineEditableFieldMetadata;
                 r.remove();
             });
             const updateLines = () => {
-                updateLineChart(chartLines.getContext("2d"), getCurve(container, parseInt(upperBoundInput.value)), style.getPropertyValue("--tableLine"), parseInt(upperBoundInput.value));
+                updateLineChart(chartLines.getContext("2d"), getCurve(container, parseInt(upperBoundInput.value)), style.getPropertyValue("--thrustCurveTableLine"), parseInt(upperBoundInput.value));
             };
             for (let i = 0; i < engine.ThrustCurve.length; ++i) {
                 const FLOATING_POINT_FIX_ACCURACY = 8;
@@ -10012,27 +10884,27 @@ var EngineEditableFieldMetadata;
             };
         };
         let linesY = [];
-        linesY.push(getLine(50, style.getPropertyValue("--tableDistinct")));
-        linesY.push(getLine(100, style.getPropertyValue("--tableRed")));
-        linesY.push(getLine(150, style.getPropertyValue("--tableRegular")));
+        linesY.push(getLine(50, style.getPropertyValue("--thrustCurveTableDistinct")));
+        linesY.push(getLine(100, style.getPropertyValue("--thrustCurveTableRed")));
+        linesY.push(getLine(150, style.getPropertyValue("--thrustCurveTableRegular")));
         if (upperBound <= 200) {
             for (let i = 10; i < 200; i += 10) {
                 if (i == 50 || i == 100 || i == 150) {
                     continue;
                 }
-                linesY.push(getLine(i, style.getPropertyValue("--tableRegular")));
+                linesY.push(getLine(i, style.getPropertyValue("--thrustCurveTableRegular")));
             }
         }
         else {
             for (let i = 200; i < upperBound; i += 100) {
-                linesY.push(getLine(i, style.getPropertyValue("--tableRegular")));
+                linesY.push(getLine(i, style.getPropertyValue("--thrustCurveTableRegular")));
             }
         }
-        CanvasHelper.DrawGrid(0, 0, chartWidth - 1, chartHeight - 1, 9, 0, true, canvas, style.getPropertyValue("--tableRegular"), 1, {
-            2: { Color: style.getPropertyValue("--tableRegular"), Label: "80%" },
-            5: { Color: style.getPropertyValue("--tableDistinct"), Label: "50%" },
-            8: { Color: style.getPropertyValue("--tableRegular"), Label: "20%" }
-        }, undefined, { Color: style.getPropertyValue("--tableBorder"), Width: 1 }, "Fuel", "Thrust", undefined, linesY);
+        CanvasHelper.DrawGrid(0, 0, chartWidth - 1, chartHeight - 1, 9, 0, true, canvas, style.getPropertyValue("--thrustCurveTableRegular"), style.getPropertyValue("--thrustCurveTableText"), 1, {
+            2: { Color: style.getPropertyValue("--thrustCurveTableRegular"), Label: "80%" },
+            5: { Color: style.getPropertyValue("--thrustCurveTableDistinct"), Label: "50%" },
+            8: { Color: style.getPropertyValue("--thrustCurveTableRegular"), Label: "20%" }
+        }, undefined, { Color: style.getPropertyValue("--thrustCurveTableBorder"), Width: 1 }, "Fuel", "Thrust", undefined, linesY);
     };
     const setActivePoint = (container, activePoint, chartTable) => {
         if (activePoint && activePoint.parentElement != container) {
@@ -10656,123 +11528,6 @@ BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
-const DEFAULT_STROKE_COLOR = "#444";
-const DEFAULT_STROKE_WIDTH = 1;
-class CanvasHelper {
-    static DrawLine(x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) {
-        x1 = Math.round(x1 + 0.5) - 0.5;
-        x2 = Math.round(x2 + 0.5) - 0.5;
-        y1 = Math.round(y1 + 0.5) - 0.5;
-        y2 = Math.round(y2 + 0.5) - 0.5;
-        canvas.beginPath();
-        canvas.moveTo(x1, y1);
-        canvas.lineTo(x2, y2);
-        canvas.strokeStyle = color;
-        canvas.lineWidth = width;
-        canvas.lineCap = "square";
-        canvas.stroke();
-    }
-    static DrawRectangle(x1, y1, x2, y2, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH) {
-        this.DrawLine(x1, y1, x2, y1, canvas, color, width);
-        this.DrawLine(x2, y1, x2, y2, canvas, color, width);
-        this.DrawLine(x2, y2, x1, y2, canvas, color, width);
-        this.DrawLine(x1, y2, x1, y1, canvas, color, width);
-    }
-    static DrawGrid(originX, originY, sizeX, sizeY, linesX, linesY, outline, canvas, color = DEFAULT_STROKE_COLOR, width = DEFAULT_STROKE_WIDTH, styleX, styleY, styleOutline, labelX, labelY, lineOverrideX, lineOverrideY) {
-        canvas.clearRect(0, 0, sizeX, sizeY);
-        for (let x = 1; x <= linesX; ++x) {
-            let currentX = originX + (x * (originX + sizeX) / (linesX + 1));
-            let currentColor = color;
-            let currentWidth = width;
-            if (styleX && styleX[x] && styleX[x].Color) {
-                currentColor = styleX[x].Color;
-            }
-            if (styleX && styleX[x] && styleX[x].Width) {
-                currentWidth = styleX[x].Width;
-            }
-            if (styleX && styleX[x] && styleX[x].Label) {
-                canvas.fillText(styleX[x].Label, currentX + 1, originY + sizeY - 2, sizeX / (linesX + 1) - 2);
-            }
-            this.DrawLine(currentX, originY, currentX, originY + sizeY, canvas, currentColor, currentWidth);
-        }
-        for (let y = 1; y <= linesY; ++y) {
-            let currentY = originY + (y * (originY + sizeY) / (linesY + 1));
-            let currentColor = color;
-            let currentWidth = width;
-            if (styleY && styleY[y] && styleY[y].Color) {
-                currentColor = styleY[y].Color;
-            }
-            if (styleY && styleY[y] && styleY[y].Width) {
-                currentWidth = styleY[y].Width;
-            }
-            if (styleY && styleY[y] && styleY[y].Label) {
-                canvas.fillText(styleY[y].Label, originX + 2, currentY - 1);
-            }
-            this.DrawLine(originX, currentY, originX + sizeX, currentY, canvas, currentColor, currentWidth);
-        }
-        if (lineOverrideX) {
-            lineOverrideX.forEach(l => {
-                if (!l.Position && l.Position != 0) {
-                    console.warn("Position is mandatory for line override. Skipping...");
-                    return;
-                }
-                let currentColor = color;
-                let currentWidth = width;
-                if (l.Color) {
-                    currentColor = l.Color;
-                }
-                if (l.Width) {
-                    currentWidth = l.Width;
-                }
-                if (l.Label) {
-                    canvas.fillText(l.Label, l.Position + 1, sizeY - 1);
-                }
-                this.DrawLine(l.Position, 0, l.Position, sizeY, canvas, currentColor, currentWidth);
-            });
-        }
-        if (lineOverrideY) {
-            lineOverrideY.forEach(l => {
-                if (!l.Position && l.Position != 0) {
-                    console.warn("Position is mandatory for line override. Skipping...");
-                    return;
-                }
-                let currentColor = color;
-                let currentWidth = width;
-                if (l.Color) {
-                    currentColor = l.Color;
-                }
-                if (l.Width) {
-                    currentWidth = l.Width;
-                }
-                if (l.Label) {
-                    canvas.fillText(l.Label, 1, l.Position - 1);
-                }
-                this.DrawLine(0, l.Position, sizeX, l.Position, canvas, currentColor, currentWidth);
-            });
-        }
-        if (labelX) {
-            canvas.textAlign = "end";
-            canvas.fillText(labelX, originX + sizeX - 2, originY + sizeY - 2);
-            canvas.textAlign = "start";
-        }
-        if (labelY) {
-            canvas.textBaseline = "top";
-            canvas.fillText(labelY, originX + 2, originY + 2);
-            canvas.textBaseline = "alphabetic";
-        }
-        if (outline) {
-            let currentColor = color;
-            let currentWidth = width;
-            if (styleOutline && styleOutline.Color) {
-                currentColor = styleOutline.Color;
-            }
-            if (styleOutline && styleOutline.Width) {
-                currentWidth = styleOutline.Width;
-            }
-            this.DrawRectangle(originX, originY, originX + sizeX, originY + sizeY, canvas, currentColor, currentWidth);
-        }
-    }
-}
 function Debug_AutosaveImmediately() {
     Autosave.Save(MainEngineTable.Items, ListName);
 }
@@ -10793,6 +11548,23 @@ function Debug_LogLocalStorageUsage() {
     console.log(`Used chars: ${usedB / 2}`);
     console.log("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
     console.log("Maximum should be around 5MB");
+}
+function Debug_GetCurrentCustomThemeAsCSSRule() {
+    let vars = JSON.parse(atob(Settings.custom_theme));
+    let output = ":root {\n";
+    vars.forEach(([cssVar, value]) => {
+        output += `    ${cssVar}: ${value};\n`;
+    });
+    output += "}\n";
+    console.log(output);
+}
+function Debug_DisplayCustomThemeRandomizer() {
+    document.getElementById("custom-styles-randomize").style.display = "block";
+}
+function Debug_SendExampleNotifierMessages() {
+    Notifier.Info("This is an information", 0);
+    Notifier.Warn("This is a warning", 0);
+    Notifier.Error("This is an error", 0);
 }
 class DebugLists {
     static AppendListForExhaustPreviews() {
@@ -10998,7 +11770,6 @@ class DebugLists {
 class Dragger {
     static Drop() {
         if (this.currentInterval) {
-            clearInterval(this.currentInterval);
             this.currentInterval = null;
         }
     }
@@ -11006,7 +11777,14 @@ class Dragger {
         if (this.currentInterval) {
             this.Drop();
         }
-        this.currentInterval = setInterval(action, 20);
+        this.currentInterval = action;
+        let callFrame = () => {
+            if (this.currentInterval) {
+                this.currentInterval();
+                requestAnimationFrame(callFrame);
+            }
+        };
+        requestAnimationFrame(callFrame);
     }
 }
 window.addEventListener("pointerup", () => {

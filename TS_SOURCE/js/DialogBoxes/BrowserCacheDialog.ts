@@ -7,6 +7,12 @@ document.addEventListener ("DOMContentLoaded", () => {
     })
 });
 
+document.addEventListener ("keydown", e => {
+    if (e.key == "Escape") {
+        BrowserCacheDialog.FinishTransaction (null);
+    }
+});
+
 class BrowserCacheDialog {
     
     public static DialogBoxElement: HTMLElement;
@@ -196,10 +202,10 @@ class BrowserCacheDialog {
                     ListNameDisplay.SetValue (i.replace (/\.enl$/, ""))
                     
                     MainEngineTable.Items = Serializer.DeserializeMany (Store.GetBinary (i));
-                    MainEngineTable.RebuildTable ();
                     MainEngineTable.Items.forEach (e => {
                         e.EngineList = MainEngineTable.Items;
                     });
+                    MainEngineTable.RebuildTable ();
                     
                     this.DialogBoxElement.style.display = "none";
                 }

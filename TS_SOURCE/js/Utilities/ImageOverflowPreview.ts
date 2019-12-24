@@ -13,7 +13,12 @@ class ImageOverflowPreview {
         
         let child = root.firstChild as HTMLElement;
         child.style.position = "relative";
-        root.addEventListener ("mousemove", e => {
+        root.addEventListener ("mousemove", event => {
+            // Actual HTML event has layerX and layerY, but typescript for some reason
+            // thinks these don't exist on that event type.
+            // This only casts the type; doesn't change the event object
+            let e = event as MouseEvent & { layerX: number, layerY: number };
+
             if (child.clientHeight <= root.clientHeight && child.clientWidth <= root.clientWidth) {
                 return;
             }

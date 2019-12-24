@@ -7,6 +7,12 @@ document.addEventListener ("DOMContentLoaded", () => {
     })
 });
 
+document.addEventListener ("keydown", e => {
+    if (e.key == "Escape") {
+        BrowserCacheDialog.FinishTransaction (null);
+    }
+});
+
 class BrowserCacheDialog {
     
     public static DialogBoxElement: HTMLElement;
@@ -30,7 +36,7 @@ class BrowserCacheDialog {
         this.CurrentTransaction = null;
     }
     
-    public static GetEngineListData (callback: (data: Uint8Array | null, name?: string) => void, message: string = "Browser cache") {
+    public static GetListFromCache (callback: (data: Uint8Array | null, name?: string) => void, message: string = "Browser cache") {
         this.SetTransaction (callback);
         
         this.DialogBoxElement.querySelector ("span")!.innerHTML = message;
@@ -56,7 +62,51 @@ class BrowserCacheDialog {
                 this.FinishTransaction (Store.GetBinary (i), i.replace (/\.enl$/, ""));
             });
             
+            listItem.title = i;
             listItem.innerHTML = i;
+            container.appendChild (listItem);
+        });
+        
+    }
+    
+    public static GetListFromAutosave (callback: (data: Uint8Array | null, name?: string) => void, message: string = "Browser cache") {
+        this.SetTransaction (callback);
+        
+        this.DialogBoxElement.querySelector ("span")!.innerHTML = message;
+        
+        let container = document.getElementById ("cache-box-content")!;
+        container.innerHTML = "";
+        
+        let lists: string[] = [];
+        
+        for (let i in localStorage) {
+            if (/^(.)+\.enl.autosave$/.test (i)) {
+                lists.push (i);
+            }
+        }
+        
+        lists = lists.sort ((a, b) => a < b ? 1 : -1);
+        
+        lists.forEach (i => {
+            let listItem = document.createElement ("div");
+            listItem.classList.add ("option-button");
+            
+            listItem.addEventListener ("click", () => {
+                this.FinishTransaction (Store.GetBinary (i), i.replace (/\.enl.autosave$/, ""));
+            });
+            
+            // [timestamp]-[name].enl.autosave
+            let tmp = i.replace (/\.enl.autosave$/, "").split ("-");
+            for (let i = 2; i < tmp.length; ++i) {
+                // .split (limit) skips the rest of the string once it hits the limit
+                // It needs to be reappended
+                tmp[1] += `-${ tmp[i] }`;
+            }
+            tmp.length = 2;
+            
+            let time = new Date (parseInt (tmp[0]));
+            listItem.title = `@${ time.toLocaleString () } | ${ tmp[1] }`;
+            listItem.innerHTML = `@${ time.toLocaleString () } | ${ tmp[1] }`;
             container.appendChild (listItem);
         });
         
@@ -81,11 +131,13 @@ class BrowserCacheDialog {
         
         lists.forEach (i => {
             let listItem = document.createElement ("div");
+            listItem.title = i;
             listItem.innerHTML = i;
             
             let removeButton = document.createElement ("img");
-            removeButton.src = "img/button/remove-cache.png";
+            removeButton.src = "svg/button/remove-cache.svg";
             removeButton.title = "Remove this list from cache";
+            removeButton.style.right = "0px";
             removeButton.classList.add ("option-button");
             removeButton.classList.add ("cache-option-button");
             removeButton.addEventListener ("click", () => {
@@ -98,8 +150,9 @@ class BrowserCacheDialog {
             listItem.appendChild (removeButton);
             
             let renameButton = document.createElement ("img");
-            renameButton.src = "img/button/rename-cache.png";
+            renameButton.src = "svg/button/rename-cache.svg";
             renameButton.title = "Rename this list";
+            renameButton.style.right = "26px";
             renameButton.classList.add ("option-button");
             renameButton.classList.add ("cache-option-button");
             renameButton.addEventListener ("click", () => {
@@ -120,8 +173,9 @@ class BrowserCacheDialog {
             listItem.appendChild (renameButton);
             
             let appendButton = document.createElement ("img");
-            appendButton.src = "img/button/append-cache.png";
+            appendButton.src = "svg/button/append-cache.svg";
             appendButton.title = "Append this list";
+            appendButton.style.right = "52px";
             appendButton.classList.add ("option-button");
             appendButton.classList.add ("cache-option-button");
             appendButton.addEventListener ("click", () => {
@@ -138,8 +192,9 @@ class BrowserCacheDialog {
             listItem.appendChild (appendButton);
             
             let openButton = document.createElement ("img");
-            openButton.src = "img/button/open-cache.png";
+            openButton.src = "svg/button/open-cache.svg";
             openButton.title = "Open this list";
+            openButton.style.right = "78px";
             openButton.classList.add ("option-button");
             openButton.classList.add ("cache-option-button");
             openButton.addEventListener ("click", () => {
@@ -147,10 +202,10 @@ class BrowserCacheDialog {
                     ListNameDisplay.SetValue (i.replace (/\.enl$/, ""))
                     
                     MainEngineTable.Items = Serializer.DeserializeMany (Store.GetBinary (i));
-                    MainEngineTable.RebuildTable ();
                     MainEngineTable.Items.forEach (e => {
                         e.EngineList = MainEngineTable.Items;
                     });
+                    MainEngineTable.RebuildTable ();
                     
                     this.DialogBoxElement.style.display = "none";
                 }

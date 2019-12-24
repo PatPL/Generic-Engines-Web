@@ -1,5 +1,5 @@
 :root {
-    --infoPanelWidth: 0px;
+    --infoNotificationBackgroundPanelWidth: 0px;
 }
 
 .left {
@@ -17,6 +17,8 @@
 
 .abbr {
     cursor: help;
+    /* Useful but doesn't look that good */
+    /* text-decoration: underline dotted var(--defaultBorderColor); */
 }
 
 body {
@@ -33,7 +35,27 @@ body {
     overflow: hidden; /* Small screen? ¯\_(ツ)_/¯ */
     
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
+    
+    scrollbar-color: var(--scrollbarHandle) var(--scrollbarBackground);
+}
+
+*::-webkit-scrollbar {
+    /* Does nothing. VSCode doesn't want an empty rule,
+    but a rule is required for the scrollbar styles to work */
+    background: none;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--scrollbarBackground);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--scrollbarHandle);
+}
+
+*::-webkit-scrollbar-corner {
+    background: var(--scrollbarBackground);
 }
 
 textarea {
@@ -43,9 +65,14 @@ textarea {
     word-break: keep-all;
 }
 
-select {
-    width: 100%;
-    height: 100%;
+ul {
+    margin: 6px 0px 6px 0px;
+    padding-left: 24px;
+}
+
+hr {
+    border: none;
+    border-top: var(--defaultBorderColor) solid 1px;
 }
 
 table {
@@ -62,19 +89,34 @@ td {
     padding: 0;
 }
 
+::selection {
+    background: var(--textSelectionBackground);
+    color: var(--textSelectionColor);
+}
+
 img.mini-button {
     width: 19px;
     height: 19px;
     margin: 4px 0px 0px 4px;
 }
 
+img.medium-button {
+    width: 24px;
+    height: 24px;
+    margin: 0px 0px 0px 4px;
+}
+
 select {
-    background: var(--lighterGrayBackground);
-    color: var(--darkText);
+    width: 100%;
+    height: 23px;
+    -webkit-appearance: menulist;
+    
+    background: var(--selectBackground);
+    color: var(--selectText);
     
     border: none;
     
-    outline: 1px var(--darkBorder) solid;
+    outline: 1px var(--selectBorder) solid;
     outline-offset: -1px;
     
     box-sizing: border-box;
@@ -83,46 +125,49 @@ select {
 }
 
 optgroup {
-    background: var(--grayBackground);
-    color: var(--darkText);
+    background: var(--optgroupBackground);
+    color: var(--inputText);
 }
 
 input {
     font-size: inherit;
     font-family: inherit;
     
+    box-sizing: border-box;
     padding-left: 3px;
     height: 100%;
-    background: var(--lighterGrayBackground);
-    color: var(--darkText);
-    border: 1px var(--darkerBorder) solid;
+    background: var(--inputBackground);
+    color: var(--inputText);
+    border: 1px var(--inputBorder) solid;
+    
+    min-width: 12px;
 }
 
 button {
-    border: 2px solid var(--darkBorder);
-    background: var(--lightGrayBackground);
+    border: 2px solid var(--inputBorder);
+    background: var(--inputBackground);
     padding: 4px;
     font-size: 16px;
     
-    color: var(--darkerText);
+    color: var(--inputText);
 }
 
 button:hover {
     filter: brightness(1.2) contrast(1.2);
     
-    outline: #44B 2px solid;
+    outline: var(--buttonOutlineHover) 2px solid;
     outline-offset: -2px;
     
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 button:active {
     filter: brightness(0.8) contrast(0.8);
     
-    outline: #00B 2px solid;
+    outline: var(--buttonOutlineActive) 2px solid;
     outline-offset: -2px;
     
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 textarea {
@@ -130,22 +175,27 @@ textarea {
     font-family: inherit;
     
     padding-left: 3px;
-    height: 100%;
-    background: var(--lighterGrayBackground);
-    color: var(--darkText);
-    border: 1px var(--darkerBorder) solid;
+    height: calc(100% - 1px);
+    background: var(--inputBackground);
+    color: var(--inputText);
+    border: 1px var(--inputBorder) solid;
+}
+
+textarea::selection {
+    background: var(--textSelectionBackground);
+    color: var(--textSelectionColor);
 }
 
 input:disabled {
-    background: var(--lightGrayBackground);
-    color: var(--darkerText);
-    border: 1px var(--error) solid;
+    background: var(--disabledInputBackground);
+    color: var(--defaultTextColor);
+    border: 1px var(--errorNotificationBackground) solid;
     cursor: not-allowed;
 }
 
 input::selection {
-    background: var(--textSelection);
-    color: var(--darkerText);
+    background: var(--textSelectionBackground);
+    color: var(--textSelectionColor);
 }
 
 input[type="checkbox"] {
@@ -155,17 +205,17 @@ input[type="checkbox"] {
     margin: 2px auto 1px auto;
     width: 19px;
     height: 19px;
-    background: var(--darkBackground);
-    border: 1px var(--darkerBorder) solid;
+    background: var(--checkboxDisabled);
+    border: 1px var(--checkboxBorder) solid;
     outline: none;
 }
 
 input[type="checkbox"]:checked {
-    background: var(--confirm);
+    background: var(--checkboxEnabled);
 }
 
 input[type="checkbox"]:disabled {
-    border: 2px var(--error) dashed;
+    border: 2px var(--errorNotificationBackground) dashed;
     cursor: not-allowed !important;
 }
 
@@ -182,53 +232,58 @@ span.checkbox-label {
     height: 100%;
     
     cursor: pointer;
-    background: var(--lighterGrayBackground);
+    background: var(--inputBackground);
     padding: 2px;
     
-    border: 1px solid var(--grayBorder);
+    border: 1px solid var(--inputBorder);
     box-sizing: border-box;
     
     overflow: hidden;
     white-space: nowrap;
     
-    color: var(--darkText);
+    color: var(--inputText);
 }
 
 .clickable-text:hover {
     filter: brightness(1.2) contrast(1.2);
     
-    outline: #44B 2px solid;
+    outline: var(--buttonOutlineHover) 2px solid;
     outline-offset: -2px;
     
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 .clickable-text:active {
     filter: brightness(0.8) contrast(0.8);
     
-    outline: #00B 2px solid;
+    outline: var(--buttonOutlineActive) 2px solid;
     outline-offset: -2px;
     
-    color: var(--darkerText);
+    color: var(--defaultTextColor);
 }
 
 /**/
 
 #option-row {
     width: 100vw;
-    height: 40px;
+    height: 41px;
     padding: 4px;
     box-sizing: border-box;
-    background: var(--lighterGrayBackground);
-}
-
-.option-container {
-    display: flex;
+    background: var(--optionRowBackground);
+    border-bottom: 1px solid var(--defaultBorderColor);
+    
+    display: grid;
+    grid-template-columns: 36px 36px 36px 36px 36px 36px 36px 36px 36px auto 4px 36px 36px 32px;
+    grid-template-rows: 32px;
+    grid-template-areas:
+        "la lb lc ld le lf lg lh li ss .  ra rb rc"
+    ;
 }
 
 .flex-spacer {
-    flex: auto;
-    background: var(--lightGrayBackground);
+    /* Site width - padding - other grid fields */
+    max-width: calc(100vw - 8px - 396px);
+    background: var(--defaultBackgroundColor);
     line-height: 28px;
     font-size: 20px;
     text-align: center;
@@ -239,23 +294,12 @@ span.checkbox-label {
     height: 32px;
 }
 
-#option-container-left {
-    flex-direction: row;
-}
-
-#option-container-left > img {
-    margin-right: 4px;
-}
-
-#option-container-right {
-    flex-direction: row-reverse;
-}
-
-#option-container-right > img {
-    margin-left: 4px;
-}
-
 /**/
+
+.button32px {
+    width: 32px;
+    height: 32px;
+}
 
 .option-button-disabled {
     filter: brightness(0.66) contrast(0.66);
@@ -264,26 +308,29 @@ span.checkbox-label {
 
 .option-button {
     cursor: pointer;
+    background: var(--buttonBackground);
+    outline: var(--buttonOutline) 2px solid;
+    outline-offset: -2px;
 }
 
 .option-button:hover {
     filter: brightness(1.2) contrast(1.2);
-    outline: #44B 2px solid;
+    outline: var(--buttonOutlineHover) 2px solid;
     outline-offset: -2px;
 }
 
 .option-button:active {
     filter: brightness(0.8) contrast(0.8);
-    outline: #00B 2px solid;
+    outline: var(--buttonOutlineActive) 2px solid;
     outline-offset: -2px;
 }
 
 /**/
 
 #list-container {
-    width: calc(100% - var(--infoPanelWidth));
+    width: calc(100% - var(--infoNotificationBackgroundPanelWidth));
     height: calc(100vh - 40px);
-    background: var(--lightGrayBackground);
+    background: var(--defaultBackgroundColor);
 }
 
 #content-container {
@@ -293,13 +340,14 @@ span.checkbox-label {
 
 #info-panel {
     position: relative;
-    width: var(--infoPanelWidth);
+    width: var(--infoNotificationBackgroundPanelWidth);
     height: calc(100vh - 40px);
     
     box-sizing: border-box;
     
     background: var(--sidePanelBackground);
-    border-left: 1px var(--darkBorder) solid;
+    color: var(--sidePanelText);
+    border-left: 1px var(--defaultBorderColor) solid;
     z-index: 200;
 }
 
@@ -334,7 +382,10 @@ span.checkbox-label {
     
     height: 100%;
     width: auto;
-    background: var(--lightGrayBackground);
+    
+    /* For some reason this doesn't work in the shorthand 'background' property */
+    background: var(--tableBackgroundColor);
+    background-size: cover;
     color: white;
 }
 
@@ -374,7 +425,7 @@ span.checkbox-label {
     word-break: break-all;
     
     box-sizing: border-box;
-    border-color: var(--darkBorder);
+    border-color: var(--tableBorderColor);
     border-style: solid;
     border-width: 0px;
     border-right-width: 1px;
@@ -389,21 +440,21 @@ span.checkbox-label {
     overflow: hidden;
     cursor: pointer; /* Now you can click it to sort column */
     
-    background: var(--grayBackground);
-    color: var(--darkerText);
+    background: var(--headerBackground);
+    color: var(--headerText);
 }
 
 .sortAsc {
-    background: linear-gradient(180deg, var(--sortMin), var(--sortMax));
+    background: var(--sortAscending);
 }
 
 .sortDesc {
-    background: linear-gradient(0deg, var(--sortMin), var(--sortMax));
+    background: var(--sortDescending);
 }
 
 .content-cell {
     box-sizing: border-box;
-    border-color: var(--darkBorder);
+    border-color: var(--tableBorderColor);
     border-style: solid;
     border-width: 0px;
     border-right-width: 1px;
@@ -412,10 +463,11 @@ span.checkbox-label {
     width: 100%;
     height: 24px;
     
-    line-height: 19px;
+    /* Somehow this one screws up input height, even when it's overridden */
+    /* line-height: 19px; */
     font-size: 16px;
     overflow: hidden;
-    color: var(--darkerText);
+    color: var(--tableTextColor);
 }
 
 .content-cell-content {
@@ -425,7 +477,6 @@ span.checkbox-label {
     
     text-align: inherit;
     font-size: inherit;
-    color: inherit;
     
     width: 100%;
     height: 100%;
@@ -437,31 +488,35 @@ span.checkbox-label {
     white-space: normal;
 }
 
+div.content-cell-edit {
+    background: var(--editedCellBackbround);
+}
+
 input.content-cell-content {
     padding-left: 3px;
 }
 
 .selected {
-    background: var(--selection) !important;
+    background: var(--rowSelection) !important;
 }
 
 .selected.last {
-    background: var(--selectionMajor) !important;
+    background: var(--rowSelectionMajor) !important;
 }
 
 .selected.hideCell {
-    color: var(--darkBackground) !important;
-    background: var(--darkBackground) !important;
+    color: var(--hiddenCellColor) !important;
+    background: var(--hiddenCellColor) !important;
 }
 
 .selected.last.hideCell {
-    color: var(--darkBackground) !important;
-    background: var(--darkBackground) !important;
+    color: var(--hiddenCellColor) !important;
+    background: var(--hiddenCellColor) !important;
 }
 
 .hideCell {
-    color: var(--darkBackground) !important;
-    background: var(--darkBackground) !important;
+    color: var(--hiddenCellColor) !important;
+    background: var(--hiddenCellColor) !important;
 }
 
 .content-cell:nth-child(even) {
@@ -492,15 +547,18 @@ input.content-cell-content {
     width: 100%;
     height: 100%;
     
-    background: var(--darkBackground);
-    opacity: 0.66;
+    background: var(--modalOcclusionBackground);
+}
+
+.transparent {
+    background: none;
 }
 
 .fullscreen-content {
     z-index: 999;
     
-    background: var(--lighterGrayBackground);
-    border: var(--darkBorder) 2px solid;
+    background: var(--modalBackground);
+    border: var(--defaultBorderColor) 2px solid;
     padding: 8px;
     
     width: auto;
@@ -578,7 +636,7 @@ input.content-cell-content {
     width: 800px;
     height: 560px;
     
-    background: var(--grayBackground);
+    background: var(--defaultBackgroundColor);
     padding-top: 2px;
     
     display: flex;
@@ -590,21 +648,27 @@ input.content-cell-content {
 #cache-box > div.fullscreen-content > div div {
     width: calc(100% - 4px);
     height: 32px;
+    min-height: 32px;
     
+    position: relative;
     margin: 0px 2px 2px 2px;
     
     line-height: 28px;
     font-size: 20px;
     
     box-sizing: border-box;
-    background: var(--lightGrayBackground);
-    border: var(--darkBorder) 2px solid;
+    background: var(--defaultBackgroundColor);
+    border: var(--defaultBorderColor) 2px solid;
+    
+    word-break: break-all;
+    white-space: pre;
+    overflow: hidden;
 }
 
 .cache-option-button {
+    position: absolute;
     width: 24px;
     height: 24px;
-    float: right;
     margin: 2px 2px 0px 0px;
 }
 
@@ -620,7 +684,7 @@ input.content-cell-content {
 }
 
 #about-box hr {
-    border: var(--grayBorder) solid 1px;
+    border: var(--defaultBorderColor) solid 1px;
     margin: 8px -8px 8px -8px;
 }
 
@@ -655,7 +719,7 @@ input.content-cell-content {
     height: 100px;
     float: left;
     
-    outline-color: var(--darkBorder);
+    outline-color: var(--inputBorder);
     outline-width: 2px;
     outline-offset: -1px;
     outline-style: solid;
@@ -677,7 +741,7 @@ input.content-cell-content {
 
 .modal-selector > div > span {
     grid-area: div;
-    border-right: 2px solid var(--grayBorder);
+    border-right: 2px solid var(--defaultBorderColor);
 }
 
 @media only screen and (max-width: 700px) {
@@ -750,7 +814,7 @@ input.content-cell-content {
     box-sizing: border-box;
     line-height: 32px;
     
-    background: var(--lightGrayBackground);
+    background: var(--defaultBackgroundColor);
     margin-top: 2px;
 }
 
@@ -760,7 +824,7 @@ input.content-cell-content {
     overflow: hidden;
     display: block;
     word-break: keep-all;
-    border-right: 1px solid var(--darkBorder);
+    border-right: 1px solid var(--defaultBorderColor);
 }
 
 /**/
@@ -792,26 +856,385 @@ input.content-cell-content {
     line-height: 24px;
     height: 36px;
     width: auto;
-    
-    color: var(--darkerText);
-    background: var(--grayBackground);
-    border: var(--darkBorder) 2px solid;
 }
 
 .notify-box.info {
-    color: var(--darkerText);
-    background: var(--info);
-    border: var(--darkBorder) 2px solid;
+    color: var(--notificationTextColor);
+    background: var(--infoNotificationBackground);
+    border: var(--defaultBorderColor) 2px solid;
 }
 
 .notify-box.warn {
-    color: var(--darkerText);
-    background: var(--warn);
-    border: var(--darkBorder) 2px solid;
+    color: var(--notificationTextColor);
+    background: var(--warnNotificationBackground);
+    border: var(--defaultBorderColor) 2px solid;
 }
 
 .notify-box.error {
-    color: var(--darkerText);
-    background: var(--error);
-    border: var(--darkBorder) 2px solid;
+    color: var(--notificationTextColor);
+    background: var(--errorNotificationBackground);
+    border: var(--defaultBorderColor) 2px solid;
+}
+
+/**/
+
+.chartElement {
+    position: relative;
+    width: 100%;
+    height: 417px;
+    
+    padding: 8px;
+    box-sizing: border-box;
+    
+    border-bottom: var(--defaultBorderColor) solid 1px;
+    background: var(--thrustCurveTableBackground);
+}
+
+.chartBackground {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    
+    z-index: 1;
+}
+
+.chartLines {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    
+    z-index: 2;
+}
+
+.chartPoints {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    
+    width: calc(100% - 16px);
+    height: 400px;
+    
+    z-index: 3;
+    /* overflow: hidden; */
+}
+
+.chartPoint {
+    position: absolute;
+    box-sizing: border-box;
+    
+    width: 10px;
+    height: 10px;
+    
+    background: rgba(128, 64, 255, 0.25);
+    border: 1px solid var(--thrustCurveTableBorder);
+    border-radius: 9999px;
+    
+    cursor: pointer;
+}
+
+.chartPoint.chartPointActive {
+    border: 2px solid var(--thrustCurveTableRed);
+    background: rgba(255, 128, 64, 0.25);
+}
+
+.chartDetails {
+    display: grid;
+    width: 100%;
+    height: 232px;
+    box-sizing: border-box;
+    
+    padding: 4px 5px 4px 4px;
+    
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 24px 4px 24px 4px auto;
+    grid-template-areas:
+        "a b"
+        ". ."
+        "c d"
+        ". ."
+        "e e"
+    ;
+}
+
+.chartDetails span {
+    margin: 3px;
+}
+
+.chartNormalizeButton {
+    padding: 0;
+    margin-right: 2px;
+}
+
+.chartRemovePointButton {
+    padding: 0;
+    margin-left: 2px;
+}
+
+.chartTableContainer {
+    width: 100%;
+    height: 100%;
+    
+    padding-right: 4px;
+    overflow-y: auto;
+}
+
+.chartTable {
+    width: 100%;
+    height: auto;
+}
+
+.chartTableRowActive {
+    filter: brightness(0.7);
+}
+
+.chartTableRowInput {
+    height: 24px;
+}
+
+.chartTableRowButton {
+    margin: 0 !important;
+}
+
+/**/
+
+.propulsionContainer {
+    display: grid;
+    height: 99px;
+    padding: 0px;
+    text-align: right;
+    line-height: 23px;
+    
+    grid-template-columns: 87px 3px auto 24px;
+    grid-template-rows: 24px 24px 3px 24px 24px;
+    grid-template-areas: 
+        "tl .  ti tc"
+        "ml .  mi mc"
+        ".  .  .  . "
+        "vl .  vi sc"
+        "sl .  si sc"
+    ;
+}
+
+.propulsionContainer input[type="checkbox"] {
+    height: 100%;
+    width: 100%;
+    
+    margin: 0;
+    cursor: pointer;
+}
+
+/**/
+
+#custom-styles-container {
+    padding: 8px 40px 0px 0px;
+    
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#styles-custom input {
+    position: relative;
+    margin: 0px 2px 0px 6px;
+    width: 300px;
+}
+
+/**/
+
+#color-selector-container {
+    position: absolute;
+    
+    padding: 4px;
+    background: var(--modalBackground);
+    border: 2px solid var(--defaultBorderColor);
+    
+    display: grid;
+    grid-template-columns: 256px 4px 32px 4px 32px 4px 32px;
+    grid-template-rows: 32px 4px 256px 4px 32px 4px 32px 4px 32px;
+    grid-template-areas: 
+        "l l l l l l l"
+        ". . . . . . ."
+        "a . e . f . g"
+        ". . . . . . ."
+        "b . h h h . i"
+        ". . h h h . ."
+        "c . h h h . j"
+        ". . . . . . ."
+        "d . k k k k k"
+    ;
+}
+
+#color-selector-apply {
+    grid-area: i;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-revert {
+    grid-area: j;
+    width: 100%;
+    height: 100%;
+}
+
+/* Colors:
+
+A----B
+|    |
+|    |
+C----D
+
+X: linear-gradient(to right, A, B)
+Y: linear-gradient(to right, C, D)
+
+*/
+
+#color-selector-squareX {
+    grid-area: a;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-squareY {
+    position: relative;
+    grid-area: a;
+    width: 100%;
+    height: 100%;
+    mask-image: linear-gradient(to bottom, transparent, #FFF);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #FFF);
+}
+
+#color-selector-squareOverlay {
+    position: relative;
+    grid-area: a;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+#color-selector-r {
+    position: relative;
+    grid-area: b;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-g {
+    position: relative;
+    grid-area: c;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-b {
+    position: relative;
+    grid-area: d;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-s {
+    position: relative;
+    grid-area: e;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-v {
+    position: relative;
+    grid-area: f;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-a-grid {
+    background: url("../img/transparent.png");
+    position: relative;
+    grid-area: g;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-a {
+    mask-image: linear-gradient(to top, transparent, #FFF);
+    -webkit-mask-image: linear-gradient(to top, transparent, #FFF);
+    position: relative;
+    grid-area: g;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-a-overlay {
+    position: relative;
+    grid-area: g;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-h {
+    position: relative;
+    grid-area: l;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-preview-grid {
+    background: url("../img/transparent.png");
+    position: relative;
+    grid-area: h;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-preview {
+    position: relative;
+    grid-area: h;
+    width: 100%;
+    height: 100%;
+}
+
+#color-selector-preview-input {
+    grid-area: k;
+    font-family: "Consolas";
+    font-size: 18px;
+}
+
+.color-meter-vertical {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    
+    height: 100%;
+    width: 1px;
+    background: #000;
+    
+    pointer-events: none;
+}
+
+.color-meter-horizontal {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    
+    height: 1px;
+    width: 100%;
+    background: #000;
+    
+    pointer-events: none;
+}
+
+.circular-color-meter {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    /* Pivot at center */
+    transform: translate(-50%, -50%);
+    
+    width: 5px;
+    height: 5px;
+    
+    background: none;
+    border: 1px solid #000;
+    border-radius: 9999px;
+    
+    pointer-events: none;
 }

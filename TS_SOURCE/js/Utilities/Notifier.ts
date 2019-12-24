@@ -7,7 +7,7 @@ class Notifier {
     public static readonly NotificationLifetime = 7500;
     public static Container: HTMLElement;
     
-    public static Info (text: string, lifetime: number = this.NotificationLifetime) {
+    public static Info (text: string, lifetimeMS: number = this.NotificationLifetime) {
         let box = document.createElement ("div");
         box.classList.add ("notify-box");
         box.classList.add ("info");
@@ -19,14 +19,14 @@ class Notifier {
             box.remove ();
         })
         
-        if (lifetime > 0) {
+        if (lifetimeMS > 0) {
             setTimeout (() => {
                 box.remove ();
-            }, lifetime);
+            }, lifetimeMS);
         }
     }
     
-    public static Warn (text: string, lifetime: number = this.NotificationLifetime) {
+    public static Warn (text: string, lifetimeMS: number = this.NotificationLifetime) {
         let box = document.createElement ("div");
         box.classList.add ("notify-box");
         box.classList.add ("warn");
@@ -38,14 +38,14 @@ class Notifier {
             box.remove ();
         })
         
-        if (lifetime > 0) {
+        if (lifetimeMS > 0) {
             setTimeout (() => {
                 box.remove ();
-            }, lifetime);
+            }, lifetimeMS);
         }
     }
     
-    public static Error (text: string, lifetime: number = this.NotificationLifetime) {
+    public static Error (text: string, lifetimeMS: number = this.NotificationLifetime) {
         let box = document.createElement ("div");
         box.classList.add ("notify-box");
         box.classList.add ("error");
@@ -57,10 +57,10 @@ class Notifier {
             box.remove ();
         })
         
-        if (lifetime > 0) {
+        if (lifetimeMS > 0) {
             setTimeout (() => {
                 box.remove ();
-            }, lifetime);
+            }, lifetimeMS);
         }
     }
     

@@ -111,7 +111,7 @@ class Exporter {
                     ignitionThreshold = 0.1
                     minThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
                     maxThrust = ${(1 - engine.ExhaustThrustPercent / 100) * engine.Thrust}
-                    heatProduction = 180
+                    heatProduction = 10
                     EngineType = ${engine.EngineTypeConfig ()}
                     exhaustDamageDistanceOffset = 0.79
                     useThrustCurve = ${engine.ThrustCurve.length > 0}
@@ -141,7 +141,7 @@ class Exporter {
                     ignitionThreshold = 0.1
                     minThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust * engine.MinThrust / 100}
                     maxThrust = ${(engine.ExhaustThrustPercent / 100) * engine.Thrust}
-                    heatProduction = 180
+                    heatProduction = 10
                     EngineType = ${engine.EngineTypeConfig ()}
                     exhaustDamageDistanceOffset = 0.79
                     useThrustCurve = ${engine.ThrustCurve.length > 0}
@@ -173,7 +173,7 @@ class Exporter {
                     ignitionThreshold = 0.1
                     minThrust = ${engine.Thrust * engine.MinThrust / 100}
                     maxThrust = ${engine.Thrust}
-                    heatProduction = 180
+                    heatProduction = 10
                     EngineType = ${engine.EngineTypeConfig ()}
                     exhaustDamageDistanceOffset = 0.79
                     useThrustCurve = ${engine.ThrustCurve.length > 0}

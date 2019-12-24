@@ -26,21 +26,13 @@ class Engine implements ITableElement<Engine> {
             Name: "Mass",
             DefaultWidth: 80,
             DisplayFlags: 0b00100
-        }, Thrust: {
-            Name: "Vacuum thrust",
-            DefaultWidth: 120,
+        }, Propulsion: {
+            Name: "Propulsion",
+            DefaultWidth: 300,
             DisplayFlags: 0b00000
         }, MinThrust: {
             Name: "Minimum thrust",
             DefaultWidth: 60,
-            DisplayFlags: 0b00000
-        }, AtmIsp: {
-            Name: "Sea level Isp",
-            DefaultWidth: 80,
-            DisplayFlags: 0b00000
-        }, VacIsp: {
-            Name: "Vacuum Isp",
-            DefaultWidth: 80,
             DisplayFlags: 0b00000
         }, PressureFed: {
             Name: "Pressure fed",
@@ -64,7 +56,7 @@ class Engine implements ITableElement<Engine> {
             DisplayFlags: 0b00000
         }, Dimensions: {
             Name: "Size",
-            DefaultWidth: 160,
+            DefaultWidth: 200,
             DisplayFlags: 0b10100
         }, Gimbal: {
             Name: "Gimbal",
@@ -92,11 +84,11 @@ class Engine implements ITableElement<Engine> {
             DisplayFlags: 0b10100
         }, Tank: {
             Name: "Tank",
-            DefaultWidth: 320,
+            DefaultWidth: 420,
             DisplayFlags: 0b10100
         }, ThrustCurve: {
             Name: "Thrust curve",
-            DefaultWidth: 200,
+            DefaultWidth: 417,
             DisplayFlags: 0b00000
         }, Spacer: {
             Name: "",
@@ -140,10 +132,8 @@ class Engine implements ITableElement<Engine> {
             a.EngineVariant, b.EngineVariant,
             a.ID, b.ID
         ), Mass: (a, b) => Engine.RegularSort (a.GetMass (), b.GetMass (), a.ID, b.ID),
-        Thrust: (a, b) => Engine.RegularSort (a.Thrust, b.Thrust, a.ID, b.ID),
+        Propulsion: (a, b) => Engine.RegularSort (a.Thrust, b.Thrust, a.ID, b.ID),
         MinThrust: (a, b) => Engine.RegularSort (a.MinThrust, b.MinThrust, a.ID, b.ID),
-        AtmIsp: (a, b) => Engine.RegularSort (a.AtmIsp, b.AtmIsp, a.ID, b.ID),
-        VacIsp: (a, b) => Engine.RegularSort (a.VacIsp, b.VacIsp, a.ID, b.ID),
         PressureFed: (a, b) => Engine.RegularSort (a.PressureFed, b.PressureFed, a.ID, b.ID),
         NeedsUllage: (a, b) => Engine.RegularSort (a.NeedsUllage, b.NeedsUllage, a.ID, b.ID),
         TechUnlockNode: (a, b) => Engine.RegularSort (
@@ -296,9 +286,7 @@ class Engine implements ITableElement<Engine> {
         Spacer: EngineEditableFieldMetadata.Spacer,
         ID: EngineEditableFieldMetadata.ID,
         Mass: EngineEditableFieldMetadata.Mass,
-        Thrust: EngineEditableFieldMetadata.Thrust,
-        AtmIsp: EngineEditableFieldMetadata.AtmIsp,
-        VacIsp: EngineEditableFieldMetadata.VacIsp,
+        Propulsion: EngineEditableFieldMetadata.Propulsion,
         Cost: EngineEditableFieldMetadata.Cost,
         EntryCost: EngineEditableFieldMetadata.EntryCost,
         MinThrust: EngineEditableFieldMetadata.MinThrust,
@@ -336,6 +324,9 @@ class Engine implements ITableElement<Engine> {
     AlternatorPower: number = 0;
     TechUnlockNode: TechNode = TechNode.start;
     EngineVariant: EngineType = EngineType.Liquid;
+    /**
+     * [Fuel%, Thrust%]
+     */
     ThrustCurve: [number, number][] = [];
     
     UseBaseWidth: boolean = true; //Dimensions
@@ -362,6 +353,9 @@ class Engine implements ITableElement<Engine> {
     UseTanks: boolean = false; //Tank
     LimitTanks: boolean = true;
     TanksVolume: number = 0;
+    /**
+     * [fuel ID, fuel volume in L]
+     */
     TanksContents: [Fuel, number][] = [];
     
     EnableTestFlight: boolean = false; //TestFlight
@@ -701,6 +695,9 @@ class Engine implements ITableElement<Engine> {
         return output;
     }
     
+    /**
+     * Returns fuel ID and fuel volume in L
+     */
     public GetConstrainedTankContents (): [Fuel, number][] {
         let targetEngine = (
             this.PolyType == PolymorphismType.MultiModeSlave ||
@@ -708,21 +705,41 @@ class Engine implements ITableElement<Engine> {
         ) ? this.EngineList.find (x => x.ID == this.MasterEngineName) : this;
         targetEngine = targetEngine != undefined ? targetEngine : this;
         
-        if (!targetEngine.LimitTanks) { //Returns a copy, just like the code below
-            return new Array<[Fuel, number]> ().concat (targetEngine.TanksContents);
-        }
-        
         let output: [Fuel, number][] = [];
         
-        let usedVolume = 0;
-        targetEngine.TanksContents.forEach (v => {
-            let thisVol = Math.min (
-                v[1] / FuelInfo.GetFuelInfo (v[0]).TankUtilisation, //This entry's volume
-                targetEngine!.TanksVolume - usedVolume //Remaining volume
-            );
-            
-            output.push ([v[0], thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation]);
-        });
+        if (!targetEngine.UseTanks) { return output; }
+        
+        if (!targetEngine.LimitTanks) {
+            targetEngine.TanksContents.forEach (v => {
+                let currentVolume = output.findIndex (x => v[0] == x[0]);
+                if (currentVolume == -1) {
+                    // New entry for this propellant
+                    output.push ([v[0], v[1]]);
+                } else {
+                    // Entry already exists, add the volume
+                    output[currentVolume][1] += v[1];
+                }
+            });
+        } else {
+            let usedVolume = 0;
+            targetEngine.TanksContents.forEach (v => {
+                let thisVol = Math.min (
+                    v[1] / FuelInfo.GetFuelInfo (v[0]).TankUtilisation, //This entry's volume
+                    targetEngine!.TanksVolume - usedVolume //Remaining volume
+                );
+                
+                let currentVolume = output.findIndex (x => v[0] == x[0]);
+                if (currentVolume == -1) {
+                    // New entry for this propellant
+                    output.push ([v[0], thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation]);
+                } else {
+                    // Entry already exists, add the volume
+                    output[currentVolume][1] += thisVol * FuelInfo.GetFuelInfo (v[0]).TankUtilisation;
+                }
+                
+                usedVolume += thisVol;
+            });
+        }
         
         return output;
     }
@@ -919,6 +936,185 @@ class Engine implements ITableElement<Engine> {
         return output;
     }
     
+    /**
+     * Returns the mass flow in t/s
+     */
+    public GetCumulativeEngineMassFlow (): number {
+        let output = 0;
+        
+        this.GetEngineMassFlow ().forEach (([_, flow]) => {
+            output += flow;
+        });
+        
+        return output;
+    }
+    
+    /**
+     * Returns fuel ID and propellant flow in t/s
+     */
+    public GetEngineMassFlow (): [Fuel, number][] {
+        let massFlow = this.VacIsp; // s
+        massFlow *= 9.8066; // N*s/kg
+        massFlow = 1 / massFlow; // kg/N*s -> t/kN*s
+        massFlow *= this.Thrust // t/s
+        
+        let propellantMassRatios: [Fuel, number][] = [];
+        
+        let electricRatio = this.FuelRatioItems.find (x => x[0] == Fuel.ElectricCharge);
+        let electric = electricRatio ? electricRatio[1] : null;
+        
+        if (this.FuelVolumeRatios) {
+            // Propellant volume ratios need to be converted
+            this.FuelRatioItems.forEach (([fuel, ratio]) => {
+                propellantMassRatios.push ([fuel, ratio * FuelInfo.GetFuelInfo (fuel).Density]);
+            });
+        } else {
+            // Mass ratios are already set
+            propellantMassRatios = this.FuelRatioItems
+        }
+        
+        let overallRatio = 0;
+        propellantMassRatios.forEach (([fuel, ratio]) => {
+            if (fuel == Fuel.ElectricCharge) {
+                return; // continue;
+            }
+            
+            overallRatio += ratio;
+        })
+        
+        let output: [Fuel, number][] = [];
+        propellantMassRatios.forEach (([fuel, ratio]) => {
+            if (fuel == Fuel.ElectricCharge) {
+                return; // continue;
+            }
+            
+            output.push ([fuel, massFlow * ratio / overallRatio]);
+        });
+        
+        if (electric) {
+            output.push ([Fuel.ElectricCharge, electric]);
+        }
+        
+        return output;
+    }
+    
+    /**
+     * Returns fuel reserves per propellant, taking thrust curve into consideration
+     */
+    public GetEngineBurnTime (): [Fuel, number][] {
+        let output: [Fuel, number][] = [];
+        const thrustCurveMultiplier = this.GetThrustCurveBurnTimeMultiplier ();
+        
+        let tankContents = this.GetConstrainedTankContents ();
+        let massFlow = this.GetEngineMassFlow ();
+        
+        massFlow.forEach (fuel => {
+            let fuelReserves = tankContents.find (x => x[0] == fuel[0]);
+            let fuelMass = fuelReserves ? fuelReserves[1] * FuelInfo.GetFuelInfo (fuelReserves[0]).Density : 0;
+            
+            output.push ([
+                fuel[0],
+                thrustCurveMultiplier * fuelMass / fuel[1]
+            ]);
+            
+        });
+        
+        return output;
+    }
+    
+    public static CalculateBurnTimeMultiplier (thrustCurve: [number, number][]): number {
+        if (thrustCurve.length == 0) {
+            // No thrust curve, 100% thrust all the way through
+            return 1;
+        }
+        
+        if (thrustCurve.length == 1) {
+            // Only one point, so the thrust curve is flat, with its thrust at the value of this point
+            // 200% thrust -> 0.5 * burn time
+            // 25% thrust -> 4 * burn time
+            return 100 / thrustCurve[0][1];
+        }
+        
+        // Integral of 1 / ( x / a + b ) = a ln (|x + ab|)
+        // or x / b when a is 0
+        // 
+        // GE's thrust curves are linear
+        // 
+        // First, define ranges, and their a, b values
+        
+        let curve = thrustCurve;
+        let ranges: [number, number, number, number][] = [];
+        
+        let previousFuelPoint = 100;
+        let previousThrustPoint = curve[0][1];
+        
+        curve.forEach (point => {
+            if (point[0] == 100) {
+                // Skip the first point, as it just sets the start values
+                return; // continue;
+            }
+            
+            let a: number;
+            let b: number;
+            
+            if (point[1] - previousThrustPoint == 0) {
+                // Flat line, different calculation. Just b is needed
+                a = Infinity;
+                b = previousThrustPoint / 100;
+            } else {
+                a = (previousFuelPoint - point[0]) / (previousThrustPoint - point[1]);
+                b = (point[1] - point[0] * (1 / a)) / 100;
+            }
+            
+            ranges.push ([
+                point[0] / 100,
+                previousFuelPoint / 100,
+                a,
+                b
+            ]);
+            
+            previousFuelPoint = point[0];
+            previousThrustPoint = point[1];
+        });
+        
+        let lastPoint = curve[curve.length - 1];
+        if (lastPoint[0] != 100) {
+            ranges.push ([
+                0,
+                lastPoint[0] / 100,
+                Infinity,
+                lastPoint[1] / 100
+            ]);
+        }
+        
+        const antiderivative = (x: number, a: number, b: number): number => {
+            if (a == Infinity) {
+                // Flat line
+                return x / b;
+            } else {
+                // Curve
+                return a * Math.log (Math.abs (x + a * b));
+            }
+        }
+        
+        let output = 0;
+        ranges.forEach (range => {
+            if (range[0] != range[1]) {
+                output += antiderivative (range[1], range[2], range[3]) - antiderivative (range[0], range[2], range[3]);
+            }
+        });
+        
+        if (isNaN (output)) {
+            return Infinity;
+        }
+        
+        return output;
+    }
+    
+    public GetThrustCurveBurnTimeMultiplier (): number {
+        return Engine.CalculateBurnTimeMultiplier (this.ThrustCurve);
+    }
+    
     public GetBaseWidth (): number {
         if (this.UseBaseWidth) {
             return this.Width;
@@ -984,10 +1180,6 @@ class Engine implements ITableElement<Engine> {
     }
     
     public GetThrustCurveConfig (): string {
-        this.ThrustCurve = this.ThrustCurve.sort ((a, b) => {
-            return b[0] - a[0];
-        });
-        
         if (this.ThrustCurve.length == 0) {
             return "";
         }
@@ -997,12 +1189,36 @@ class Engine implements ITableElement<Engine> {
         let newTangent: number = 0;
         this.ThrustCurve.push ([Number.MIN_VALUE, this.ThrustCurve[this.ThrustCurve.length - 1][1]]);
         
+        const antiSquareOffsetDelta = -0.0001;
+        let antiSquareOffset = 0;
+        let wasSquare = false;
+        let isSquare = false;
         for (let i = 0; i < this.ThrustCurve.length - 1; ++i) {
-            newTangent = (this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1]) / (this.ThrustCurve[i + 1][0] - this.ThrustCurve[i][0])
+            let deltaThrust = this.ThrustCurve[i + 1][1] - this.ThrustCurve[i][1];
+            let deltaFuel = (this.ThrustCurve[i + 1][0] + antiSquareOffset) - (this.ThrustCurve[i][0] + antiSquareOffset);
+            
+            if (deltaFuel == 0) {
+                isSquare = true;
+                deltaFuel = (this.ThrustCurve[i + 1][0] + antiSquareOffset) - (this.ThrustCurve[i][0] + antiSquareOffset + antiSquareOffsetDelta);
+            } else {
+                isSquare = false;
+            }
+            
+            newTangent = deltaThrust / deltaFuel;
+            
             keys += `
-                key = ${this.ThrustCurve[i][0] / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
+                key = ${(this.ThrustCurve[i][0] + antiSquareOffset) / 100} ${this.ThrustCurve[i][1] / 100} ${newTangent} ${lastTangent}
             `;
+            
             lastTangent = newTangent;
+            
+            if (isSquare) {
+                antiSquareOffset += antiSquareOffsetDelta;
+            }
+            
+            if (!isSquare && wasSquare) {
+                antiSquareOffset = 0;
+            }
         }
         
         this.ThrustCurve.pop ();
@@ -1104,7 +1320,7 @@ class Engine implements ITableElement<Engine> {
                 maxThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust}
                 minThrust = ${(hasExhaust ? 1 - (this.ExhaustThrustPercent / 100) : 1) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.PlumeID).PlumeEffectName}
-                heatProduction = 100
+                heatProduction = 10
                 massMult = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? (this.Mass / allEngines[this.MasterEngineName].Mass) : "1")}
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = ${(this.PolyType == PolymorphismType.MultiConfigSlave ? this.Cost - allEngines[this.MasterEngineName].Cost : 0)}
@@ -1140,7 +1356,7 @@ class Engine implements ITableElement<Engine> {
                 maxThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust}
                 minThrust = ${(this.ExhaustThrustPercent / 100) * this.Thrust * this.MinThrust / 100}
                 %powerEffectName = ${PlumeInfo.GetPlumeInfo (this.ExhaustPlumeID).PlumeEffectName}
-                heatProduction = 100
+                heatProduction = 10
                 massMult = 1
                 %techRequired = ${TechNode[this.TechUnlockNode]}
                 cost = 0

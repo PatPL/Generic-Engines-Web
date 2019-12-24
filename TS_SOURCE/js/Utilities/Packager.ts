@@ -109,7 +109,7 @@ class Packager {
         let SendCallbackIfDone = () => {
             downloadedFilesCountElement.innerHTML = (toDownload - toFetch.length).toString ();
             if (toFetch.length == 0) {
-                exportStatusElement.innerHTML = `<img src="img/load16.gif"> Zipping all files <progress />`;
+                exportStatusElement.innerHTML = `<img src="svg/load16.svg"> Zipping all files <progress />`;
                 let progressElement = exportStatusElement.querySelector<HTMLProgressElement> ("progress")!;
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date ().getTime ();

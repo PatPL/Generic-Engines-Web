@@ -12,6 +12,11 @@ let MainEngineTable: HtmlTable<Engine>;
 
 let FullscreenWindows: { [id: string]: HTMLElement } = {};
 
+//@ts-ignore
+let isFirefox = typeof InstallTrigger !== 'undefined';
+//@ts-ignore
+let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+
 //Website exit confirmation
 window.onbeforeunload = (e: any) => {
     if (MainEngineTable.Items.length != 0) {
@@ -23,11 +28,8 @@ window.onbeforeunload = (e: any) => {
 }
 
 function ApplySettings () {
-    //Set color palette for dark/other theme
-    (document.getElementById ("css-palette")! as HTMLLinkElement).href = Settings.dark_theme ? "css/darkPalette.css" : "css/classicPalette.css";
-
     //Toggle info panel
-    document.documentElement.style.setProperty ("--infoPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
+    document.documentElement.style.setProperty ("--infoNotificationBackgroundPanelWidth", `${ Settings.show_info_panel ? 320 : 0 }px`);
 }
 
 ApplySettings ();
@@ -37,7 +39,7 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
         return;
     }
     
-    let gravity = 9.80665;
+    let gravity = 9.8066;
     let infoPanel = document.getElementById ("info-panel")!;    
     let properties: { [id: string]: string } = {};
     
@@ -52,6 +54,9 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     massFlow *= 9.8066; // N*s/kg
     massFlow = 1 / massFlow; // kg/N*s -> t/kN*s
     massFlow *= engine.Thrust // t/s
+    
+    let detailedMassFlow = engine.GetEngineMassFlow ();
+    let detailedBurnTime = engine.GetEngineBurnTime ();
     
     // ==
     
@@ -78,6 +83,29 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     properties["min_mass_flow"] = `${Unit.Display (massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
     properties["max_mass_flow"] = `${Unit.Display (massFlow, "t", Settings.classic_unit_display, 3)}/s`;
     
+    properties["mass_flow_detail"] = "<ul>";
+    detailedMassFlow.forEach (([fuel, flow]) => {
+        if (fuel == Fuel.ElectricCharge) {
+            properties["mass_flow_detail"] += `<li><span class='abbr' title='1 kilowatt (kW) is equal to 1 unit of Electric Charge per second (u/s) in game'>Electricity: ${Unit.Display (flow, "kW", Settings.classic_unit_display, 3)}</span></li>`
+        } else {
+            let fuelInfo = FuelInfo.GetFuelInfo (fuel);
+            properties["mass_flow_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display (flow, "t", Settings.classic_unit_display, 3)}/s<br>`;
+            properties["mass_flow_detail"] += `<span class='abbr' title='1 litre per second (L/s) is equal to 1 unit per second (u/s) in game'>${Unit.Display (flow / fuelInfo.Density, "L", Settings.classic_unit_display, 3)}/s</li>`;
+        }
+    })
+    properties["mass_flow_detail"] += "</ul>";
+    
+    properties["burn_time_detail"] = "<ul>";
+    detailedBurnTime.forEach (([fuel, time]) => {
+        if (fuel == Fuel.ElectricCharge) {
+            // Don't include Electric Charge
+        } else {
+            let fuelInfo = FuelInfo.GetFuelInfo (fuel);
+            properties["burn_time_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display (time, "", true, 2)}s<br>`;
+        }
+    })
+    properties["burn_time_detail"] += "</ul>";
+    
     // ==
     
     for (let i in properties) {
@@ -100,12 +128,12 @@ addEventListener ("DOMContentLoaded", () => {
         if (e.which != 1) { return; }
         
         let originalX = Input.MouseX;
-        let originalWidth = parseFloat (document.documentElement.style.getPropertyValue ("--infoPanelWidth"));
+        let originalWidth = parseFloat (document.documentElement.style.getPropertyValue ("--infoNotificationBackgroundPanelWidth"));
         originalWidth = isNaN (originalWidth) ? 200 : originalWidth;
         Dragger.Drag (() => {
             let newWidth = originalWidth - Input.MouseX + originalX;
             newWidth = Math.max (50, newWidth);
-            document.documentElement.style.setProperty ("--infoPanelWidth", `${newWidth}px`);
+            document.documentElement.style.setProperty ("--infoNotificationBackgroundPanelWidth", `${newWidth}px`);
         });
     });
     
@@ -157,12 +185,6 @@ addEventListener ("DOMContentLoaded", () => {
     //Set correct browser icons
     let imgs = document.querySelectorAll<HTMLImageElement> ("img.browser-relevant");
     imgs.forEach (i => {
-        //@ts-ignore
-        let isFirefox = typeof InstallTrigger !== 'undefined';
-        //@ts-ignore
-        let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
-        
-        
         
         if (isFirefox) {
             i.src = i.src.replace ("()", "firefox");
@@ -171,7 +193,6 @@ addEventListener ("DOMContentLoaded", () => {
         } else {
             i.src = i.src.replace ("()", "chrome");
         }
-        
         
     });
     
@@ -219,6 +240,7 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-remove")!.addEventListener ("click", RemoveButton_Click);
     
     document.getElementById ("option-button-settings")!.addEventListener ("click", SettingsButton_Click);
+    document.getElementById ("option-button-style")!.addEventListener ("click", StyleButton_Click);
     document.getElementById ("option-button-help")!.addEventListener ("click", HelpButton_Click);
     
     document.getElementById ("option-button-download-list")!.addEventListener ("click", DownloadListButton_Click);
@@ -232,6 +254,8 @@ addEventListener ("DOMContentLoaded", () => {
     document.getElementById ("option-button-append-cache-list")!.addEventListener ("click", AppendCacheButton_Click);
     document.getElementById ("option-button-open-clipboard-list")!.addEventListener ("click", OpenClipboardButton_Click);
     document.getElementById ("option-button-append-clipboard-list")!.addEventListener ("click", AppendClipboardButton_Click);
+    document.getElementById ("option-button-open-autosave-list")!.addEventListener ("click", OpenAutosaveButton_Click);
+    document.getElementById ("option-button-append-autosave-list")!.addEventListener ("click", AppendAutosaveButton_Click);
     
     MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
@@ -243,6 +267,14 @@ addEventListener ("DOMContentLoaded", () => {
         }
     };
     MainEngineTable.RebuildTable ();
+    
+    // Autosave
+    setInterval (
+        () => {
+            Autosave.Save (MainEngineTable.Items, ListName);
+        },
+        1000 * 60 * 2
+    );
     
 });
 
@@ -286,10 +318,10 @@ function OpenUploadButton_Click () {
                 ListNameDisplay.SetValue (filename);
                 
                 MainEngineTable.Items = Serializer.DeserializeMany (data);
-                MainEngineTable.RebuildTable ();
                 MainEngineTable.Items.forEach (e => {
                     e.EngineList = MainEngineTable.Items;
                 });
+                MainEngineTable.RebuildTable ();
                 
                 FullscreenWindows["open-box"].style.display = "none";
                 Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -320,7 +352,7 @@ function AppendUploadButton_Click () {
 
 function OpenCacheButton_Click () {
     if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
-        BrowserCacheDialog.GetEngineListData ((data, newFilename) => {
+        BrowserCacheDialog.GetListFromCache ((data, newFilename) => {
             if (!data) {
                 // Maybe send a notification?
                 return;
@@ -331,10 +363,10 @@ function OpenCacheButton_Click () {
             }
             
             MainEngineTable.Items = Serializer.DeserializeMany (data);
-            MainEngineTable.RebuildTable ();
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -343,7 +375,7 @@ function OpenCacheButton_Click () {
 }
 
 function AppendCacheButton_Click () {
-    BrowserCacheDialog.GetEngineListData (data => {
+    BrowserCacheDialog.GetListFromCache (data => {
         if (!data) {
             // Maybe send a notification?
             return;
@@ -373,10 +405,10 @@ function OpenClipboardButton_Click () {
             let data = BitConverter.Base64ToByteArray (b64);
             
             MainEngineTable.Items = Serializer.DeserializeMany (data);
-            MainEngineTable.RebuildTable ();
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
+            MainEngineTable.RebuildTable ();
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -410,6 +442,48 @@ function AppendClipboardButton_Click () {
             Notifier.Warn ("There was an error while parsing the string");
             return;
         }
+}
+
+function OpenAutosaveButton_Click () {
+    if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
+        BrowserCacheDialog.GetListFromAutosave ((data, newFilename) => {
+            if (!data) {
+                // Maybe send a notification?
+                return;
+            }
+            
+            if (newFilename) {
+                ListNameDisplay.SetValue (newFilename);
+            }
+            
+            MainEngineTable.Items = Serializer.DeserializeMany (data);
+            MainEngineTable.Items.forEach (e => {
+                e.EngineList = MainEngineTable.Items;
+            });
+            MainEngineTable.RebuildTable ();
+            
+            FullscreenWindows["open-box"].style.display = "none";
+            Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
+        }, "Open autosave:");
+    }
+}
+
+function AppendAutosaveButton_Click () {
+    BrowserCacheDialog.GetListFromAutosave (data => {
+        if (!data) {
+            // Maybe send a notification?
+            return;
+        }
+        
+        let newEngines = Serializer.DeserializeMany (data);
+        newEngines.forEach (e => {
+            e.EngineList = MainEngineTable.Items;
+        });
+        MainEngineTable.AddItems (newEngines);
+        
+        FullscreenWindows["open-box"].style.display = "none";
+        Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
+    }, "Append autosave:");
 }
 
 /* /Open dialog */
@@ -545,6 +619,10 @@ function RemoveButton_Click () {
 
 function SettingsButton_Click () {
     SettingsDialog.Show ();
+}
+
+function StyleButton_Click () {
+    StyleDialog.Show ();
 }
 
 function HelpButton_Click () {

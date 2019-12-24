@@ -95,6 +95,14 @@ const Settings: ISettings = {
         return Store.GetText ("setting:hide_disabled_fields_on_sort", "1") == "1";
     }, set hide_disabled_fields_on_sort(value: boolean) {
         Store.SetText ("setting:hide_disabled_fields_on_sort", value ? "1" : "0");
+    }, get current_theme(): string {
+        return Store.GetText ("setting:current_theme", Settings.dark_theme ? "Dark (blue accent)" : "Classic");
+    }, set current_theme(value: string) {
+        Store.SetText ("setting:current_theme", value);
+    }, get custom_theme(): string {
+        return Store.GetText ("setting:custom_theme", btoa (JSON.stringify ([])));
+    }, set custom_theme(value: string) {
+        Store.SetText ("setting:custom_theme", value);
     }
 }
 
@@ -108,4 +116,6 @@ interface ISettings {
     prettify_config: boolean;
     async_sort: boolean;
     hide_disabled_fields_on_sort: boolean;
+    current_theme: string;
+    custom_theme: string;
 }

@@ -1,10 +1,9 @@
 class Dragger {
     
-    public static currentInterval: number | null;
+    public static currentInterval: (() => void) | null;
     
     public static Drop () {
         if (this.currentInterval) {
-            clearInterval (this.currentInterval);
             this.currentInterval = null;
         }
     }
@@ -14,7 +13,16 @@ class Dragger {
             this.Drop ();
         }
         
-        this.currentInterval = setInterval (action, 20);
+        this.currentInterval = action;
+        
+        let callFrame = () => {
+            if (this.currentInterval) {
+                this.currentInterval ();
+                requestAnimationFrame (callFrame);
+            }
+        };
+        
+        requestAnimationFrame (callFrame);
     }
     
 }

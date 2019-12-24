@@ -1,27 +1,40 @@
 <!-- This visualizes a given random function's distribution -->
-<center>
-    <canvas style="margin: 8px; float: left;" width="1000" height="1000"></canvas>
-    <div style="float: left;">
-        Roll count: <input id="rollCount" value="100000"><br>
-        Args: <br>
-        a: <input id="a" value="0"><br>
-        b: <input id="b" value="0"><br>
-        c: <input id="c" value="0"><br>
-        <button onclick="roll ()">Reroll</button>
-    </div>
-</center>
+<meta charset="UTF-8" />
+<body style="margin: 0;">
+    <center>
+        <canvas style="margin: 0 8px 0 0; float: left;" width="1000" height="1000"></canvas>
+        <div style="float: left;">
+            Roll count: <input id="rollCount" value="100000"><br>
+            Args: <br>
+            a: <input id="a" value="0"><br>
+            b: <input id="b" value="0"><br>
+            c: <input id="c" value="0"><br>
+            <button onclick="roll ()">Reroll</button>
+        </div>
+    </center>
+</body>
 <script>
     let canvas = document.querySelector ("canvas").getContext ("2d");
+    
+    const linear = (min, max) => Math.random () * (max - min) + min;
+    
+    const bell = (min, max, passes) => {
+        let sum = 0;
+        for (let i = 0; i < passes; ++i) {
+            sum += Math.random ();
+        }
+        
+        return (sum / passes) * (max - min) + min;
+    }
+    
+    const logarithmic = (min, max, bellPasses) => {
+        return Math.E ** (bell (Math.log (min), Math.log (max), bellPasses));
+    }
     
     //const rollsPerCall = 1000;
     // Write the function here
     let random = (a, b, c) => {
-        let min = Math.log10 (a);
-        let max = Math.log10 (b);
-        
-        let rand = Math.random () * (max - min) + min;
-        
-        return 10 ** rand;
+        return 1 / (bell (1 / 0.8, 1 / 0.2, a));
     }
     
     let roll = () => {

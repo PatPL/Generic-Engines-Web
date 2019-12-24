@@ -9,7 +9,7 @@ class AgeRandomValue {
      */
     constructor (
         private points: [number, number, number][],
-        private type: "linear" | "bell",
+        private type: "linear" | "bell" | "logarithmic",
         private value: "float" | "integer",
         private ends: "flat" | "continue"
     ) {
@@ -29,6 +29,10 @@ class AgeRandomValue {
         });
     }
     
+    /**
+     * Get a random value at a given year
+     * @param year Year of the roll
+     */
     public Get (year: number): number {
         let output = 0;
         
@@ -93,7 +97,11 @@ class AgeRandomValue {
             case "linear":
                 output = WRand.Linear (min, max);
             break; case "bell":
-                output = WRand.Bell (min, max, 3);
+                output = WRand.Bell (min, max);
+            break; case "logarithmic":
+                output = WRand.Logarithmic (min, max);
+            break; default:
+                console.error ("You didn't link the randomness function: ", this.type);
             break;
         }
         
@@ -104,16 +112,4 @@ class AgeRandomValue {
         return output;
     }
     
-}
-
-for (let i = 0; i < 10; ++i) {
-    console.log (WRand.Linear (10, 10000));
-}
-console.log ("=== === ===");
-for (let i = 0; i < 10; ++i) {
-    console.log (WRand.Bell (10, 10000));
-}
-console.log ("=== === ===");
-for (let i = 0; i < 10; ++i) {
-    console.log (WRand.Logarithmic (10, 10000));
 }

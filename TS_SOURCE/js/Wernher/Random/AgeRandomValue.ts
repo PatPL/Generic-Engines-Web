@@ -1,5 +1,5 @@
 ///<reference path="WRand.ts" />
-class AgeRandomValue {
+class AgeRandomValue implements IRandomValueProvider {
     
     /**
      * Creates a RNG with min/max changing with given year

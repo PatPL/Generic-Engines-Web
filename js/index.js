@@ -11566,6 +11566,15 @@ function Debug_SendExampleNotifierMessages() {
     Notifier.Warn("This is a warning", 0);
     Notifier.Error("This is an error", 0);
 }
+function Debug_AppendRandomWernherEngine(year) {
+    let newEngine = Wernher.RollEngine(year);
+    if (newEngine) {
+        MainEngineTable.AddItems(newEngine);
+    }
+    else {
+        console.warn("Error while rolling an engine");
+    }
+}
 class DebugLists {
     static AppendListForExhaustPreviews() {
         let toAppend = [];
@@ -13176,90 +13185,6 @@ class Validator {
         return output;
     }
 }
-class Wernher {
-}
-class WernherHelper {
-}
-class ConstantValue {
-    constructor(value) {
-        this.value = value;
-    }
-    Get() {
-        return this.value;
-    }
-}
-const PropellantMixList = {
-    [PropellantMix.Hydrolox]: {
-        Plume: Plume.GP_Hydrolox,
-        Propellants: [
-            [Fuel.LqdHydrogen, new ConstantValue(1)],
-            [Fuel.LqdOxygen, new RandomValue(5.0, 6.5, "bell", "float")]
-        ]
-    }, [PropellantMix.Kerolox]: {
-        Plume: Plume.GP_Kerolox,
-        Propellants: [
-            [Fuel.Kerosene, new ConstantValue(1)],
-            [Fuel.LqdOxygen, new RandomValue(2.0, 3.0, "bell", "float")]
-        ]
-    }, [PropellantMix.Methalox]: {
-        Plume: Plume.GP_Methalox,
-        Propellants: [
-            [Fuel.LqdMethane, new ConstantValue(1)],
-            [Fuel.LqdOxygen, new RandomValue(3.4, 4.2, "bell", "float")]
-        ]
-    }, [PropellantMix.Alcolox]: {
-        Plume: Plume.GP_Methalox,
-        Propellants: [
-            [Fuel.Ethanol, new ConstantValue(1)],
-            [Fuel.LqdOxygen, new RandomValue(1.2, 1.8, "bell", "float")]
-        ]
-    }, [PropellantMix.Ammonialox]: {
-        Plume: Plume.GP_Methalox,
-        Propellants: [
-            [Fuel.LqdAmmonia, new ConstantValue(1)],
-            [Fuel.LqdOxygen, new RandomValue(2.7, 3.4, "bell", "float")]
-        ]
-    }, [PropellantMix.UDMH_NTO]: {
-        Plume: Plume.GP_Hypergolic,
-        Propellants: [
-            [Fuel.UDMH, new ConstantValue(1)],
-            [Fuel.NTO, new RandomValue(2.1, 3.1, "bell", "float")]
-        ]
-    }, [PropellantMix.UH25_NTO]: {
-        Plume: Plume.GP_Hypergolic,
-        Propellants: [
-            [Fuel.UH25, new ConstantValue(1)],
-            [Fuel.NTO, new RandomValue(1.5, 2.0, "bell", "float")]
-        ]
-    }, [PropellantMix.AE50_NTO]: {
-        Plume: Plume.GP_OmsRed,
-        Propellants: [
-            [Fuel.Aerozine50, new ConstantValue(1)],
-            [Fuel.NTO, new RandomValue(1.6, 2.3, "bell", "float")]
-        ]
-    }, [PropellantMix.MMH_NTO]: {
-        Plume: Plume.GP_OmsRed,
-        Propellants: [
-            [Fuel.MMH, new ConstantValue(1)],
-            [Fuel.NTO, new RandomValue(1.6, 2.2, "bell", "float")]
-        ]
-    }, [PropellantMix.Hydrazine]: {
-        Plume: Plume.GP_OmsRed,
-        Propellants: [
-            [Fuel.Hydrazine, new ConstantValue(1)]
-        ]
-    }, [PropellantMix.HTP]: {
-        Plume: Plume.GP_OmsWhite,
-        Propellants: [
-            [Fuel.HTP, new ConstantValue(1)]
-        ]
-    }, [PropellantMix.CaveaB]: {
-        Plume: Plume.GP_OmsWhite,
-        Propellants: [
-            [Fuel.CaveaB, new ConstantValue(1)]
-        ]
-    }
-};
 var EngineCycle;
 (function (EngineCycle) {
     EngineCycle[EngineCycle["GasGenerator"] = 0] = "GasGenerator";
@@ -13403,31 +13328,6 @@ class AgeRandomValue {
         return output;
     }
 }
-class FunctionRandom {
-    constructor(funcBias, leftFunction, rightFunction) {
-        this.funcBias = funcBias;
-        this.leftFunction = leftFunction;
-        this.rightFunction = rightFunction;
-    }
-    Get(...args) {
-        if (Math.random() > this.funcBias) {
-            if (typeof this.leftFunction == "function") {
-                return this.leftFunction(...args);
-            }
-            else {
-                return this.leftFunction.Get(...args);
-            }
-        }
-        else {
-            if (typeof this.rightFunction == "function") {
-                return this.rightFunction(...args);
-            }
-            else {
-                return this.rightFunction.Get(...args);
-            }
-        }
-    }
-}
 class RandomValue {
     constructor(minimum, maximum, type, value) {
         this.minimum = minimum;
@@ -13463,4 +13363,358 @@ class RandomValue {
         return output;
     }
 }
+class FunctionRandom {
+    constructor(funcBias, leftFunction, rightFunction) {
+        this.funcBias = funcBias;
+        this.leftFunction = leftFunction;
+        this.rightFunction = rightFunction;
+    }
+    Get(...args) {
+        if (Math.random() > this.funcBias) {
+            if (typeof this.leftFunction == "function") {
+                return this.leftFunction(...args);
+            }
+            else if (typeof this.leftFunction == "number") {
+                return this.leftFunction;
+            }
+            else {
+                return this.leftFunction.Get(...args);
+            }
+        }
+        else {
+            if (typeof this.rightFunction == "function") {
+                return this.rightFunction(...args);
+            }
+            else if (typeof this.rightFunction == "number") {
+                return this.rightFunction;
+            }
+            else {
+                return this.rightFunction.Get(...args);
+            }
+        }
+    }
+}
+const EngineCycleList = {
+    [EngineCycle.GasGenerator]: {
+        Variants: {
+            [PropellantMix.Hydrolox]: {
+                Thrust: new AgeRandomValue([
+                    [1950, 150, 1000],
+                    [1965, 140, 2000],
+                    [1980, 130, 4000],
+                    [2005, 120, 6000],
+                    [2020, 110, 8000],
+                    [2050, 100, 10000],
+                    [2100, 80, 11000],
+                    [2150, 60, 12000],
+                    [2200, 40, 12500],
+                ], "logarithmic", "float", "flat"), SLIsp: new AgeRandomValue([
+                    [1950, 250, 300],
+                    [1965, 240, 330],
+                    [1980, 230, 350],
+                    [2005, 220, 360],
+                    [2020, 210, 370],
+                    [2050, 200, 380],
+                    [2100, 190, 390],
+                    [2150, 180, 400],
+                    [2200, 170, 410],
+                ], "logarithmic", "float", "flat"), VacIsp: new AgeRandomValue([
+                    [1950, 360, 420],
+                    [1965, 370, 430],
+                    [1980, 380, 435],
+                    [2005, 390, 437],
+                    [2020, 400, 440],
+                    [2050, 410, 443],
+                    [2100, 417, 445],
+                    [2150, 425, 447],
+                    [2200, 430, 450],
+                ], "bell", "float", "flat"), CostMultiplier: new RandomValue(0.7, 1.3, "triangle", "float"),
+                Cost: (thrust, vacIsp, year, costMultiplier) => {
+                    let cost = 1000;
+                    let thrustCostMultiplier = (Math.pow(1.0002, thrust)) - 0.7 + (thrust / 1500);
+                    let ispCostMultiplier = 27 / (458 - vacIsp) + 0.3;
+                    let yearCostMultiplier = WernherHelper.RegularYearCostMultiplier(year);
+                    return cost * thrustCostMultiplier * ispCostMultiplier * yearCostMultiplier * costMultiplier;
+                }, BellWidth: (thrust, vacIsp, year) => {
+                    let width = 2;
+                    let thrustMultiplier = WernherHelper.ThrustBellWidthMultiplier(thrust, 1000);
+                    let IspMultiplier = WernherHelper.ImpulseBellWidthMultiplier(vacIsp, 410);
+                    return width * thrustMultiplier * IspMultiplier;
+                }, EntryCostMultiplier: new RandomValue(30, 120, "logSmooth", "float"),
+                CanonAvailabilityYear: 1960
+            }
+        }, Ignitions: new FunctionRandom(0.5, 1, new RandomValue(2, 10, "logSmooth", "integer")),
+        MinimumThrust: new FunctionRandom(0.25, 1, new RandomValue(50, 90, "linear", "integer")),
+        Ullage: true,
+        Models: [
+            Model.Bell8048,
+            Model.Bell8096,
+            Model.E1,
+            Model.F1,
+            Model.F1B,
+            Model.F1_BDB,
+            Model.Skipper,
+            Model.H1,
+            Model.H1C,
+            Model.H1D,
+            Model.J2,
+            Model.J2_BDB,
+            Model.J2SL,
+            Model.J2T,
+            Model.J2X,
+            Model.Juno45K,
+            Model.Juno6K,
+            Model.LR105,
+            Model.LR87,
+            Model.LR87S,
+            Model.LR87_11,
+            Model.LR87_11S,
+            Model.LR87_11SH,
+            Model.LR87_11SHV,
+            Model.LR87_11SV,
+            Model.LR87_5,
+            Model.LR89,
+            Model.LR91,
+            Model.LR91_BDB,
+            Model.LR91_11,
+            Model.LR91_5,
+            Model.LVT30,
+            Model.LVT45,
+            Model.Merlin1A,
+            Model.Merlin1B,
+            Model.Merlin1BV,
+            Model.Merlin1D,
+            Model.Merlin1DV,
+            Model.Navaho,
+            Model.RD107,
+            Model.RS68,
+            Model.S3D,
+            Model.Thor,
+            Model.Vanguard,
+            Model.Viking,
+            Model.VikingVac
+        ], Mass: (bellWidth, year) => {
+            let mass = 1.8;
+            let bellMultiplier = WernherHelper.BellWidthMassMultiplier(bellWidth, 2.2);
+            let yearMultiplier = WernherHelper.YearMassMultiplier(year);
+            return mass * bellMultiplier * yearMultiplier;
+        }, TestFlightRatedBurnTime: new AgeRandomValue([
+            [1940, 60, 120],
+            [1945, 90, 180],
+            [1950, 120, 240],
+            [1960, 150, 300],
+            [1980, 180, 360],
+            [2000, 210, 420],
+            [2020, 240, 480],
+            [2050, 265, 540],
+            [2100, 270, 600],
+            [2150, 285, 700],
+            [2200, 300, 800],
+        ], "logarithmic", "integer", "continue"),
+        TestFlight10kIgnition: new AgeRandomValue([
+            [1940, 80, 90],
+            [1945, 86, 94],
+            [1950, 90, 96],
+            [1960, 95, 99],
+            [1980, 98, 99.5],
+            [2000, 99, 99.9],
+            [2020, 99.9, 99.99],
+            [2200, 99.99, 99.999],
+        ], "bell", "float", "continue"),
+        TestFlight10kIgnitionDeficiency: new AgeRandomValue([
+            [1940, 15, 25],
+            [1945, 12, 20],
+            [1950, 9, 17],
+            [1960, 7, 14],
+            [1980, 5, 8],
+            [2000, 3, 6],
+            [2020, 2, 4],
+            [2200, 1, 2],
+        ], "bell", "float", "continue"),
+        TestFlight10kCycle: new AgeRandomValue([
+            [1940, 80, 90],
+            [1945, 86, 94],
+            [1950, 90, 96],
+            [1960, 95, 99],
+            [1980, 98, 99.5],
+            [2000, 99, 99.9],
+            [2020, 99.9, 99.99],
+            [2200, 99.99, 99.999],
+        ], "bell", "float", "continue"),
+        TestFlight10kCycleDeficiency: new AgeRandomValue([
+            [1940, 15, 25],
+            [1945, 12, 20],
+            [1950, 9, 17],
+            [1960, 7, 14],
+            [1980, 5, 8],
+            [2000, 3, 6],
+            [2020, 2, 4],
+            [2200, 1, 2],
+        ], "bell", "float", "continue"),
+        CanonAvailabilityYear: 1940
+    }
+};
+class Wernher {
+    static RollEngine(_year, _cycle, _prop) {
+        let year = (_year !== null && _year !== void 0 ? _year : Math.floor(Math.random() * 200) + 1940);
+        let cycle;
+        let prop;
+        if (_cycle) {
+            cycle = _cycle;
+        }
+        else {
+            let cycles = Object.getOwnPropertyNames(EngineCycleList);
+            cycle = parseInt(cycles[Math.floor(Math.random() * cycles.length)]);
+        }
+        if (!EngineCycleList[cycle]) {
+            return null;
+        }
+        if (_prop) {
+            prop = _prop;
+        }
+        else {
+            let props = Object.getOwnPropertyNames(EngineCycleList[cycle].Variants);
+            prop = parseInt(props[Math.floor(Math.random() * props.length)]);
+        }
+        if (!EngineCycleList[cycle].Variants[prop]) {
+            return null;
+        }
+        let engineCycle = EngineCycleList[cycle];
+        let propellantMix = PropellantMixList[prop];
+        let engineVariant = EngineCycleList[cycle].Variants[prop];
+        let engine = new Engine();
+        engine.Active = true;
+        engine.ID = `Wernher-${Math.floor(Math.random() * 1000000000)}`;
+        engine.EngineName = `${Math.random() > 0.5 ? "RD-" : "LR"}${Math.floor(Math.random() * 500)}, (${year})`;
+        engine.EngineManufacturer = "Wernher";
+        engine.EngineDescription = "MVP Wernher engine generator test";
+        engine.PlumeID = propellantMix.Plume;
+        engine.FuelRatioItems = [];
+        propellantMix.Propellants.forEach(([fuel, rng]) => {
+            engine.FuelRatioItems.push([fuel, rng.Get(year)]);
+        });
+        engine.Thrust = engineVariant.Thrust.Get(year);
+        engine.AtmIsp = engineVariant.SLIsp.Get(year);
+        engine.VacIsp = engineVariant.VacIsp.Get(year);
+        engine.Cost = engineVariant.CostMultiplier.Get(year);
+        engine.Cost = engineVariant.Cost(engine.Thrust, engine.VacIsp, year, engine.Cost);
+        engine.EntryCost = engine.Cost * engineVariant.EntryCostMultiplier.Get(year);
+        engine.UseBaseWidth = false;
+        engine.Width = engineVariant.BellWidth(engine.Thrust, engine.VacIsp, year);
+        engine.Mass = engineCycle.Mass(engine.Width, engine.VacIsp);
+        engine.Ignitions = engineCycle.Ignitions.Get(year);
+        engine.MinThrust = engineCycle.MinimumThrust.Get(year);
+        engine.NeedsUllage = engineCycle.Ullage;
+        engine.ModelID = engineCycle.Models[Math.floor(Math.random() * engineCycle.Models.length)];
+        engine.EnableTestFlight = true;
+        engine.StartReliability10k = engineCycle.TestFlight10kIgnition.Get(year);
+        engine.StartReliability0 = engine.StartReliability10k - engineCycle.TestFlight10kIgnitionDeficiency.Get(year);
+        engine.CycleReliability10k = engineCycle.TestFlight10kCycle.Get(year);
+        engine.CycleReliability0 = engine.CycleReliability10k - engineCycle.TestFlight10kCycleDeficiency.Get(year);
+        return engine;
+    }
+}
+class WernherHelper {
+    static RegularYearCostMultiplier(year) {
+        return 60 / (year - 1880) + 0.4;
+    }
+    static EarlyYearCostMultiplier(year) {
+        return 40 / (year - 1905) + 0.25;
+    }
+    static ModernYearCostMultiplier(year) {
+        return 30 / (year - 1916) + 0.69;
+    }
+    static ThrustBellWidthMultiplier(thrust, baseThrust) {
+        return (Math.pow(thrust, 0.3)) / (Math.pow(baseThrust, 0.3));
+    }
+    static ImpulseBellWidthMultiplier(Isp, baseIsp) {
+        return (Math.pow(Isp, 4)) / (Math.pow(baseIsp, 4));
+    }
+    static BellWidthMassMultiplier(bellWidth, baseBellWidth) {
+        return (Math.pow(bellWidth, 2.3)) / (Math.pow(baseBellWidth, 2.3));
+    }
+    static YearMassMultiplier(year) {
+        return 40 / (year - 1886) + 0.47;
+    }
+}
+class ConstantValue {
+    constructor(value) {
+        this.value = value;
+    }
+    Get() {
+        return this.value;
+    }
+}
+const PropellantMixList = {
+    [PropellantMix.Hydrolox]: {
+        Plume: Plume.GP_Hydrolox,
+        Propellants: [
+            [Fuel.LqdHydrogen, new ConstantValue(1)],
+            [Fuel.LqdOxygen, new RandomValue(5.0, 6.5, "bell", "float")]
+        ]
+    }, [PropellantMix.Kerolox]: {
+        Plume: Plume.GP_Kerolox,
+        Propellants: [
+            [Fuel.Kerosene, new ConstantValue(1)],
+            [Fuel.LqdOxygen, new RandomValue(2.0, 3.0, "bell", "float")]
+        ]
+    }, [PropellantMix.Methalox]: {
+        Plume: Plume.GP_Methalox,
+        Propellants: [
+            [Fuel.LqdMethane, new ConstantValue(1)],
+            [Fuel.LqdOxygen, new RandomValue(3.4, 4.2, "bell", "float")]
+        ]
+    }, [PropellantMix.Alcolox]: {
+        Plume: Plume.GP_Methalox,
+        Propellants: [
+            [Fuel.Ethanol, new ConstantValue(1)],
+            [Fuel.LqdOxygen, new RandomValue(1.2, 1.8, "bell", "float")]
+        ]
+    }, [PropellantMix.Ammonialox]: {
+        Plume: Plume.GP_Methalox,
+        Propellants: [
+            [Fuel.LqdAmmonia, new ConstantValue(1)],
+            [Fuel.LqdOxygen, new RandomValue(2.7, 3.4, "bell", "float")]
+        ]
+    }, [PropellantMix.UDMH_NTO]: {
+        Plume: Plume.GP_Hypergolic,
+        Propellants: [
+            [Fuel.UDMH, new ConstantValue(1)],
+            [Fuel.NTO, new RandomValue(2.1, 3.1, "bell", "float")]
+        ]
+    }, [PropellantMix.UH25_NTO]: {
+        Plume: Plume.GP_Hypergolic,
+        Propellants: [
+            [Fuel.UH25, new ConstantValue(1)],
+            [Fuel.NTO, new RandomValue(1.5, 2.0, "bell", "float")]
+        ]
+    }, [PropellantMix.AE50_NTO]: {
+        Plume: Plume.GP_OmsRed,
+        Propellants: [
+            [Fuel.Aerozine50, new ConstantValue(1)],
+            [Fuel.NTO, new RandomValue(1.6, 2.3, "bell", "float")]
+        ]
+    }, [PropellantMix.MMH_NTO]: {
+        Plume: Plume.GP_OmsRed,
+        Propellants: [
+            [Fuel.MMH, new ConstantValue(1)],
+            [Fuel.NTO, new RandomValue(1.6, 2.2, "bell", "float")]
+        ]
+    }, [PropellantMix.Hydrazine]: {
+        Plume: Plume.GP_OmsRed,
+        Propellants: [
+            [Fuel.Hydrazine, new ConstantValue(1)]
+        ]
+    }, [PropellantMix.HTP]: {
+        Plume: Plume.GP_OmsWhite,
+        Propellants: [
+            [Fuel.HTP, new ConstantValue(1)]
+        ]
+    }, [PropellantMix.CaveaB]: {
+        Plume: Plume.GP_OmsWhite,
+        Propellants: [
+            [Fuel.CaveaB, new ConstantValue(1)]
+        ]
+    }
+};
 //# sourceMappingURL=index.js.map

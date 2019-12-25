@@ -52,3 +52,13 @@ function Debug_SendExampleNotifierMessages () {
     Notifier.Warn ("This is a warning", 0);
     Notifier.Error ("This is an error", 0);
 }
+
+function Debug_AppendRandomWernherEngine (year?: number) {
+    let newEngine = Wernher.RollEngine (year);
+    
+    if (newEngine) {
+        MainEngineTable.AddItems (newEngine);
+    } else {
+        console.warn ("Error while rolling an engine");
+    }
+}

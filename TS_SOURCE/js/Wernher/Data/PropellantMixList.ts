@@ -1,4 +1,6 @@
 /// <reference path="../Random/ConstantValue.ts" />
+/// <reference path="../Random/RandomValue.ts" />
+/// <reference path="../Enums/PropellantMix.ts" />
 const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
     [PropellantMix.Hydrolox]: {
         Plume: Plume.GP_Hydrolox,
@@ -70,4 +72,4 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
             [Fuel.CaveaB, new ConstantValue (1)]
         ]
     }
-}
+};

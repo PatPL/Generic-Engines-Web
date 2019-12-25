@@ -1,21 +1,33 @@
 interface IEngineVariantProperties {
     
-    Thrust: IRandomValueProvider;
-    SLIsp: IRandomValueProvider;
-    VacIsp: IRandomValueProvider;
+    readonly Thrust: IRandomValueProvider;
+    readonly SLIsp: IRandomValueProvider;
+    readonly VacIsp: IRandomValueProvider;
+    
+    readonly CostMultiplier: IRandomValueProvider;
     
     /**
      * Per-unit cost of the engine
      */
-    Cost: (thrust: number, vacIsp: number) => number;
+    readonly Cost: (
+        thrust: number,
+        vacIsp: number,
+        year: number,
+        costMultiplier: number
+    ) => number;
+    
+    /**
+     * Height of the engine is calculated based on the bell size and selected model
+     */
+    readonly BellWidth: (thrust: number, vacIsp: number, year: number) => number;
     
     /**
      * Cost * EntryCostMultiplier -> EntryCost
      */
-    EntryCostMultiplier: IRandomValueProvider;
+    readonly EntryCostMultiplier: IRandomValueProvider;
     
     /**
      * Which year does it become available
      */
-    CanonAvailabilityYear: number;
+    readonly CanonAvailabilityYear: number;
 }

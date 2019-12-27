@@ -1,9 +1,5 @@
 interface IEngineVariantProperties {
     
-    readonly Thrust: IRandomValueProvider;
-    readonly SLIsp: IRandomValueProvider;
-    readonly VacIsp: IRandomValueProvider;
-    
     readonly CostMultiplier: IRandomValueProvider;
     
     /**
@@ -15,11 +11,6 @@ interface IEngineVariantProperties {
         year: number,
         costMultiplier: number
     ) => number;
-    
-    /**
-     * Height of the engine is calculated based on the bell size and selected model
-     */
-    readonly BellWidth: (thrust: number, vacIsp: number, year: number) => number;
     
     /**
      * Cost * EntryCostMultiplier -> EntryCost

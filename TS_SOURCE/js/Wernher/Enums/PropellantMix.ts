@@ -2,6 +2,7 @@ enum PropellantMix {
     Hydrolox,
     Kerolox,
     Methalox,
+    Hydynelox,
     Alcolox,
     Ammonialox,
     

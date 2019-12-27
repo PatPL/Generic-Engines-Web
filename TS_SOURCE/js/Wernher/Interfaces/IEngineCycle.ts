@@ -1,11 +1,18 @@
 interface IEngineCycle {
     
     readonly Variants: { [prop: number]: IEngineVariantProperties | undefined };
-    readonly Ignitions: IRandomValueProvider;
-    readonly MinimumThrust: IRandomValueProvider;
     
     readonly Ullage: boolean;
     readonly Models: Model[];
+    
+    readonly Thrust: IRandomValueProvider;
+    readonly SLEfficiency: IRandomValueProvider;
+    readonly VacEfficiency: IRandomValueProvider;
+    
+    /**
+     * Height of the engine is calculated based on the bell size and selected model
+     */
+    readonly BellWidth: (thrust: number, vacIsp: number, year: number) => number;
     
     /**
      * Dry mass of the engine

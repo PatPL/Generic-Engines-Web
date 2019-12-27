@@ -43,39 +43,37 @@ class Wernher {
         
         // Set engine values
         
-        engine.Active = true;
-        engine.ID = `Wernher-${ Math.floor (Math.random () * 1000000000) }`;
-        engine.EngineName = `${ Math.random () > 0.5 ? "RD-" : "LR" }${ Math.floor (Math.random () * 500) }, (${ year })`;
-        engine.EngineManufacturer = "Wernher";
-        engine.EngineDescription = "MVP Wernher engine generator test";
+        // engine.Active = true;
+        // engine.ID = `Wernher-${ Math.floor (Math.random () * 1000000000) }`;
+        // engine.EngineName = `${ Math.random () > 0.5 ? "RD-" : "LR" }${ Math.floor (Math.random () * 500) }, (${ year })`;
+        // engine.EngineManufacturer = "Wernher";
+        // engine.EngineDescription = "MVP Wernher engine generator test";
         
-        engine.PlumeID = propellantMix.Plume;
-        engine.FuelRatioItems = [];
-        propellantMix.Propellants.forEach (([fuel, rng]) => {
-            engine.FuelRatioItems.push ([fuel, rng.Get (year)]);
-        });
+        // engine.PlumeID = propellantMix.Plume;
+        // engine.FuelRatioItems = [];
+        // propellantMix.Propellants.forEach (([fuel, rng]) => {
+        //     engine.FuelRatioItems.push ([fuel, rng.Get (year)]);
+        // });
         
-        engine.Thrust = engineVariant.Thrust.Get (year);
-        engine.AtmIsp = engineVariant.SLIsp.Get (year);
-        engine.VacIsp = engineVariant.VacIsp.Get (year);
-        engine.Cost = engineVariant.CostMultiplier.Get (year);
-        engine.Cost = engineVariant.Cost (engine.Thrust, engine.VacIsp, year, engine.Cost);
-        engine.EntryCost = engine.Cost * engineVariant.EntryCostMultiplier.Get (year);
+        // engine.Thrust = engineVariant.Thrust.Get (year);
+        // engine.AtmIsp = engineVariant.SLIsp.Get (year);
+        // engine.VacIsp = engineVariant.VacIsp.Get (year);
+        // engine.Cost = engineVariant.CostMultiplier.Get (year);
+        // engine.Cost = engineVariant.Cost (engine.Thrust, engine.VacIsp, year, engine.Cost);
+        // engine.EntryCost = engine.Cost * engineVariant.EntryCostMultiplier.Get (year);
         
-        engine.UseBaseWidth = false;
-        engine.Width = engineVariant.BellWidth (engine.Thrust, engine.VacIsp, year);
-        engine.Mass = engineCycle.Mass (engine.Width, engine.VacIsp);
+        // engine.UseBaseWidth = false;
+        // engine.Width = engineVariant.BellWidth (engine.Thrust, engine.VacIsp, year);
+        // engine.Mass = engineCycle.Mass (engine.Width, engine.VacIsp);
         
-        engine.Ignitions = engineCycle.Ignitions.Get (year);
-        engine.MinThrust = engineCycle.MinimumThrust.Get (year);
-        engine.NeedsUllage = engineCycle.Ullage;
-        engine.ModelID = engineCycle.Models[Math.floor (Math.random () * engineCycle.Models.length)];
+        // engine.NeedsUllage = engineCycle.Ullage;
+        // engine.ModelID = engineCycle.Models[Math.floor (Math.random () * engineCycle.Models.length)];
         
-        engine.EnableTestFlight = true;
-        engine.StartReliability10k = engineCycle.TestFlight10kIgnition.Get (year);
-        engine.StartReliability0 = engine.StartReliability10k - engineCycle.TestFlight10kIgnitionDeficiency.Get (year);
-        engine.CycleReliability10k = engineCycle.TestFlight10kCycle.Get (year);
-        engine.CycleReliability0 = engine.CycleReliability10k - engineCycle.TestFlight10kCycleDeficiency.Get (year);
+        // engine.EnableTestFlight = true;
+        // engine.StartReliability10k = engineCycle.TestFlight10kIgnition.Get (year);
+        // engine.StartReliability0 = engine.StartReliability10k - engineCycle.TestFlight10kIgnitionDeficiency.Get (year);
+        // engine.CycleReliability10k = engineCycle.TestFlight10kCycle.Get (year);
+        // engine.CycleReliability0 = engine.CycleReliability10k - engineCycle.TestFlight10kCycleDeficiency.Get (year);
         
         return engine;
     }

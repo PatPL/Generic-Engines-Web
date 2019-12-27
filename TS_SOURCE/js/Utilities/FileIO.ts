@@ -1,5 +1,5 @@
 declare var zip: any;
-zip.workerScriptsPath = "lib/";
+if (window["zip"]) { zip.workerScriptsPath = "lib/"; }
 
 class FileIO {
     

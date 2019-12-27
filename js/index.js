@@ -12205,7 +12205,9 @@ class Exporter {
         `;
     }
 }
-zip.workerScriptsPath = "lib/";
+if (window["zip"]) {
+    zip.workerScriptsPath = "lib/";
+}
 class FileIO {
     static ToClipboard(value) {
         if (value.length == 0) {
@@ -13204,15 +13206,16 @@ var PropellantMix;
     PropellantMix[PropellantMix["Hydrolox"] = 0] = "Hydrolox";
     PropellantMix[PropellantMix["Kerolox"] = 1] = "Kerolox";
     PropellantMix[PropellantMix["Methalox"] = 2] = "Methalox";
-    PropellantMix[PropellantMix["Alcolox"] = 3] = "Alcolox";
-    PropellantMix[PropellantMix["Ammonialox"] = 4] = "Ammonialox";
-    PropellantMix[PropellantMix["UDMH_NTO"] = 5] = "UDMH_NTO";
-    PropellantMix[PropellantMix["UH25_NTO"] = 6] = "UH25_NTO";
-    PropellantMix[PropellantMix["AE50_NTO"] = 7] = "AE50_NTO";
-    PropellantMix[PropellantMix["MMH_NTO"] = 8] = "MMH_NTO";
-    PropellantMix[PropellantMix["Hydrazine"] = 9] = "Hydrazine";
-    PropellantMix[PropellantMix["HTP"] = 10] = "HTP";
-    PropellantMix[PropellantMix["CaveaB"] = 11] = "CaveaB";
+    PropellantMix[PropellantMix["Hydynelox"] = 3] = "Hydynelox";
+    PropellantMix[PropellantMix["Alcolox"] = 4] = "Alcolox";
+    PropellantMix[PropellantMix["Ammonialox"] = 5] = "Ammonialox";
+    PropellantMix[PropellantMix["UDMH_NTO"] = 6] = "UDMH_NTO";
+    PropellantMix[PropellantMix["UH25_NTO"] = 7] = "UH25_NTO";
+    PropellantMix[PropellantMix["AE50_NTO"] = 8] = "AE50_NTO";
+    PropellantMix[PropellantMix["MMH_NTO"] = 9] = "MMH_NTO";
+    PropellantMix[PropellantMix["Hydrazine"] = 10] = "Hydrazine";
+    PropellantMix[PropellantMix["HTP"] = 11] = "HTP";
+    PropellantMix[PropellantMix["CaveaB"] = 12] = "CaveaB";
 })(PropellantMix || (PropellantMix = {}));
 class WRand {
     static Linear(min, max) {
@@ -13398,53 +13401,29 @@ const EngineCycleList = {
     [EngineCycle.GasGenerator]: {
         Variants: {
             [PropellantMix.Hydrolox]: {
-                Thrust: new AgeRandomValue([
-                    [1950, 150, 1000],
-                    [1965, 140, 2000],
-                    [1980, 130, 4000],
-                    [2005, 120, 6000],
-                    [2020, 110, 8000],
-                    [2050, 100, 10000],
-                    [2100, 80, 11000],
-                    [2150, 60, 12000],
-                    [2200, 40, 12500],
-                ], "logarithmic", "float", "flat"), SLIsp: new AgeRandomValue([
-                    [1950, 250, 300],
-                    [1965, 240, 330],
-                    [1980, 230, 350],
-                    [2005, 220, 360],
-                    [2020, 210, 370],
-                    [2050, 200, 380],
-                    [2100, 190, 390],
-                    [2150, 180, 400],
-                    [2200, 170, 410],
-                ], "logarithmic", "float", "flat"), VacIsp: new AgeRandomValue([
-                    [1950, 360, 420],
-                    [1965, 370, 430],
-                    [1980, 380, 435],
-                    [2005, 390, 437],
-                    [2020, 400, 440],
-                    [2050, 410, 443],
-                    [2100, 417, 445],
-                    [2150, 425, 447],
-                    [2200, 430, 450],
-                ], "bell", "float", "flat"), CostMultiplier: new RandomValue(0.7, 1.3, "triangle", "float"),
+                CostMultiplier: new RandomValue(0.7, 1.3, "triangle", "float"),
                 Cost: (thrust, vacIsp, year, costMultiplier) => {
                     let cost = 1000;
                     let thrustCostMultiplier = (Math.pow(1.0002, thrust)) - 0.7 + (thrust / 1500);
                     let ispCostMultiplier = 27 / (458 - vacIsp) + 0.3;
                     let yearCostMultiplier = WernherHelper.RegularYearCostMultiplier(year);
                     return cost * thrustCostMultiplier * ispCostMultiplier * yearCostMultiplier * costMultiplier;
-                }, BellWidth: (thrust, vacIsp, year) => {
-                    let width = 2;
-                    let thrustMultiplier = WernherHelper.ThrustBellWidthMultiplier(thrust, 1000);
-                    let IspMultiplier = WernherHelper.ImpulseBellWidthMultiplier(vacIsp, 410);
-                    return width * thrustMultiplier * IspMultiplier;
-                }, EntryCostMultiplier: new RandomValue(30, 120, "logSmooth", "float"),
+                },
+                EntryCostMultiplier: new RandomValue(30, 120, "logSmooth", "float"),
                 CanonAvailabilityYear: 1960
             }
-        }, Ignitions: new FunctionRandom(0.5, 1, new RandomValue(2, 10, "logSmooth", "integer")),
-        MinimumThrust: new FunctionRandom(0.25, 1, new RandomValue(50, 90, "linear", "integer")),
+        },
+        Thrust: new AgeRandomValue([
+            [1940, 200, 400],
+        ], "logarithmic", "float", "flat"),
+        VacEfficiency: new AgeRandomValue([
+            [1940, 55, 60],
+        ], "bell", "float", "flat"),
+        SLEfficiency: new AgeRandomValue([
+            [1940, 55, 60],
+            [1945, 60, 65],
+        ], "bell", "float", "flat"),
+        BellWidth: (thrust, isp, year) => 1,
         Ullage: true,
         Models: [
             Model.Bell8048,
@@ -13494,8 +13473,8 @@ const EngineCycleList = {
             Model.Viking,
             Model.VikingVac
         ], Mass: (bellWidth, year) => {
-            let mass = 1.8;
-            let bellMultiplier = WernherHelper.BellWidthMassMultiplier(bellWidth, 2.2);
+            let mass = 2.5;
+            let bellMultiplier = WernherHelper.BellWidthMassMultiplier(bellWidth, 2.0);
             let yearMultiplier = WernherHelper.YearMassMultiplier(year);
             return mass * bellMultiplier * yearMultiplier;
         }, TestFlightRatedBurnTime: new AgeRandomValue([
@@ -13583,34 +13562,6 @@ class Wernher {
         let propellantMix = PropellantMixList[prop];
         let engineVariant = EngineCycleList[cycle].Variants[prop];
         let engine = new Engine();
-        engine.Active = true;
-        engine.ID = `Wernher-${Math.floor(Math.random() * 1000000000)}`;
-        engine.EngineName = `${Math.random() > 0.5 ? "RD-" : "LR"}${Math.floor(Math.random() * 500)}, (${year})`;
-        engine.EngineManufacturer = "Wernher";
-        engine.EngineDescription = "MVP Wernher engine generator test";
-        engine.PlumeID = propellantMix.Plume;
-        engine.FuelRatioItems = [];
-        propellantMix.Propellants.forEach(([fuel, rng]) => {
-            engine.FuelRatioItems.push([fuel, rng.Get(year)]);
-        });
-        engine.Thrust = engineVariant.Thrust.Get(year);
-        engine.AtmIsp = engineVariant.SLIsp.Get(year);
-        engine.VacIsp = engineVariant.VacIsp.Get(year);
-        engine.Cost = engineVariant.CostMultiplier.Get(year);
-        engine.Cost = engineVariant.Cost(engine.Thrust, engine.VacIsp, year, engine.Cost);
-        engine.EntryCost = engine.Cost * engineVariant.EntryCostMultiplier.Get(year);
-        engine.UseBaseWidth = false;
-        engine.Width = engineVariant.BellWidth(engine.Thrust, engine.VacIsp, year);
-        engine.Mass = engineCycle.Mass(engine.Width, engine.VacIsp);
-        engine.Ignitions = engineCycle.Ignitions.Get(year);
-        engine.MinThrust = engineCycle.MinimumThrust.Get(year);
-        engine.NeedsUllage = engineCycle.Ullage;
-        engine.ModelID = engineCycle.Models[Math.floor(Math.random() * engineCycle.Models.length)];
-        engine.EnableTestFlight = true;
-        engine.StartReliability10k = engineCycle.TestFlight10kIgnition.Get(year);
-        engine.StartReliability0 = engine.StartReliability10k - engineCycle.TestFlight10kIgnitionDeficiency.Get(year);
-        engine.CycleReliability10k = engineCycle.TestFlight10kCycle.Get(year);
-        engine.CycleReliability0 = engine.CycleReliability10k - engineCycle.TestFlight10kCycleDeficiency.Get(year);
         return engine;
     }
 }
@@ -13647,70 +13598,102 @@ class ConstantValue {
 }
 const PropellantMixList = {
     [PropellantMix.Hydrolox]: {
+        MaximumIsp: 500,
+        SLIspMultiplier: 0.81,
         Plume: Plume.GP_Hydrolox,
         Propellants: [
             [Fuel.LqdHydrogen, new ConstantValue(1)],
             [Fuel.LqdOxygen, new RandomValue(5.0, 6.5, "bell", "float")]
         ]
     }, [PropellantMix.Kerolox]: {
+        MaximumIsp: 383,
+        SLIspMultiplier: 0.9,
         Plume: Plume.GP_Kerolox,
         Propellants: [
             [Fuel.Kerosene, new ConstantValue(1)],
             [Fuel.LqdOxygen, new RandomValue(2.0, 3.0, "bell", "float")]
         ]
     }, [PropellantMix.Methalox]: {
+        MaximumIsp: 420,
+        SLIspMultiplier: 0.87,
         Plume: Plume.GP_Methalox,
         Propellants: [
             [Fuel.LqdMethane, new ConstantValue(1)],
             [Fuel.LqdOxygen, new RandomValue(3.4, 4.2, "bell", "float")]
         ]
+    }, [PropellantMix.Hydynelox]: {
+        MaximumIsp: 372,
+        SLIspMultiplier: 0.9,
+        Plume: Plume.GP_Hydynelox,
+        Propellants: [
+            [Fuel.Hydyne, new ConstantValue(1)],
+            [Fuel.LqdOxygen, new RandomValue(1.1, 1.5, "bell", "float")]
+        ]
     }, [PropellantMix.Alcolox]: {
-        Plume: Plume.GP_Methalox,
+        MaximumIsp: 360,
+        SLIspMultiplier: 0.9,
+        Plume: Plume.GP_Alcolox,
         Propellants: [
             [Fuel.Ethanol, new ConstantValue(1)],
             [Fuel.LqdOxygen, new RandomValue(1.2, 1.8, "bell", "float")]
         ]
     }, [PropellantMix.Ammonialox]: {
-        Plume: Plume.GP_Methalox,
+        MaximumIsp: 350,
+        SLIspMultiplier: 0.885,
+        Plume: Plume.GP_Ammonialox,
         Propellants: [
             [Fuel.LqdAmmonia, new ConstantValue(1)],
-            [Fuel.LqdOxygen, new RandomValue(2.7, 3.4, "bell", "float")]
+            [Fuel.LqdOxygen, new RandomValue(1.3, 1.7, "bell", "float")]
         ]
     }, [PropellantMix.UDMH_NTO]: {
+        MaximumIsp: 365,
+        SLIspMultiplier: 0.93,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UDMH, new ConstantValue(1)],
             [Fuel.NTO, new RandomValue(2.1, 3.1, "bell", "float")]
         ]
     }, [PropellantMix.UH25_NTO]: {
+        MaximumIsp: 363,
+        SLIspMultiplier: 0.935,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UH25, new ConstantValue(1)],
             [Fuel.NTO, new RandomValue(1.5, 2.0, "bell", "float")]
         ]
     }, [PropellantMix.AE50_NTO]: {
+        MaximumIsp: 361,
+        SLIspMultiplier: 0.94,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.Aerozine50, new ConstantValue(1)],
             [Fuel.NTO, new RandomValue(1.6, 2.3, "bell", "float")]
         ]
     }, [PropellantMix.MMH_NTO]: {
+        MaximumIsp: 359,
+        SLIspMultiplier: 0.94,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.MMH, new ConstantValue(1)],
             [Fuel.NTO, new RandomValue(1.6, 2.2, "bell", "float")]
         ]
     }, [PropellantMix.Hydrazine]: {
+        MaximumIsp: 320,
+        SLIspMultiplier: 0.85,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.Hydrazine, new ConstantValue(1)]
         ]
     }, [PropellantMix.HTP]: {
+        MaximumIsp: 240,
+        SLIspMultiplier: 0.9,
         Plume: Plume.GP_OmsWhite,
         Propellants: [
             [Fuel.HTP, new ConstantValue(1)]
         ]
     }, [PropellantMix.CaveaB]: {
+        MaximumIsp: 350,
+        SLIspMultiplier: 0.8,
         Plume: Plume.GP_OmsWhite,
         Propellants: [
             [Fuel.CaveaB, new ConstantValue(1)]

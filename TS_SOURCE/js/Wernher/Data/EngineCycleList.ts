@@ -9,43 +9,7 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
     [EngineCycle.GasGenerator]: {
         Variants: {
             [PropellantMix.Hydrolox]: {
-                Thrust: new AgeRandomValue (
-                    [
-                        [1950, 150,  1000],
-                        [1965, 140,  2000],
-                        [1980, 130,  4000],
-                        [2005, 120,  6000],
-                        [2020, 110,  8000],
-                        [2050, 100, 10000],
-                        [2100,  80, 11000],
-                        [2150,  60, 12000],
-                        [2200,  40, 12500],
-                    ], "logarithmic", "float", "flat"
-                ), SLIsp: new AgeRandomValue (
-                    [
-                        [1950, 250, 300],
-                        [1965, 240, 330],
-                        [1980, 230, 350],
-                        [2005, 220, 360],
-                        [2020, 210, 370],
-                        [2050, 200, 380],
-                        [2100, 190, 390],
-                        [2150, 180, 400],
-                        [2200, 170, 410],
-                    ], "logarithmic", "float", "flat"
-                ), VacIsp: new AgeRandomValue (
-                    [
-                        [1950, 360, 420],
-                        [1965, 370, 430],
-                        [1980, 380, 435],
-                        [2005, 390, 437],
-                        [2020, 400, 440],
-                        [2050, 410, 443],
-                        [2100, 417, 445],
-                        [2150, 425, 447],
-                        [2200, 430, 450],
-                    ], "bell", "float", "flat"
-                ), CostMultiplier: new RandomValue (0.7, 1.3, "triangle", "float"),
+                CostMultiplier: new RandomValue (0.7, 1.3, "triangle", "float"),
                 Cost: (thrust, vacIsp, year, costMultiplier) => {
                     let cost = 1000;
                     // https://www.desmos.com/calculator/r9t9auslhb
@@ -54,17 +18,126 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
                     let yearCostMultiplier = WernherHelper.RegularYearCostMultiplier (year);
                     
                     return cost * thrustCostMultiplier * ispCostMultiplier * yearCostMultiplier * costMultiplier;
-                }, BellWidth: (thrust: number, vacIsp: number, year: number) => {
-                    let width = 2;
-                    let thrustMultiplier = WernherHelper.ThrustBellWidthMultiplier (thrust, 1000);
-                    let IspMultiplier = WernherHelper.ImpulseBellWidthMultiplier (vacIsp, 410);
-                    
-                    return width * thrustMultiplier * IspMultiplier;
-                }, EntryCostMultiplier: new RandomValue (30, 120, "logSmooth", "float"),
+                },
+                EntryCostMultiplier: new RandomValue (30, 120, "logSmooth", "float"),
                 CanonAvailabilityYear: 1960
             }
-        }, Ignitions: new FunctionRandom (0.5, 1, new RandomValue (2, 10, "logSmooth", "integer")),
-        MinimumThrust: new FunctionRandom (0.25, 1, new RandomValue (50, 90, "linear", "integer")),
+        },
+        // * * * * References from RP-1 tech tree:
+        // * Start:
+        // * * RD-100:           307kN, 203s - 237s Alcolox (aux HTP)
+        // * * A-4:              312kN, 203s - 239s Alcolox (aux HTP)
+        // * Post-war:
+        // * * RD-101:           404kN, 210s - 237s Alcolox (aux HTP)
+        // * * A-9:              289kN, 220s - 255s Alcolox (aux HTP)
+        // * Early:
+        // * * RD-102:           428kN, 214s - 235s Alcolox (aux HTP)
+        // * Basic:
+        // * * RD-103:           490kN, 220s - 248s Alcolox (aux HTP)
+        // * * A-6:              396kN, 216s - 249s Alcolox (aux HTP)
+        // * 1956:
+        // * * RD-103M:          500kN, 220s - 248s Alcolox (aux HTP)
+        // * * A-7:              416kN, 235s - 265s Hydynelox (aux HTP)
+        // * * X-405:            136kN, 254s - 278s Kerolox (aux HTP)
+        // * * RD-107:          1000kN, 249s - 304s Kerolox (aux HTP)
+        // * * RD-108:           941kN, 241s - 306s Kerolox (aux HTP) (long burn time trait)
+        // * * LR89:             667kN, 245s - 278s Kerolox
+        // * * LR105:            240kN, 210s - 301s Kerolox (sustainer trait)
+        // * * S-3:              697kN, 248s - 288s Kerolox
+        // * 1958:
+        // * * RD-0105:           49kN, 257s - 316s Kerolox (vacuum trait) (This SLIsp seems way too high)
+        // * * LR89-3:           759kN, 248s - 282s Kerolox
+        // * * LR105-3:          352kN, 215s - 309s Kerolox (sustainer trait)
+        // * * S-3D:             766kN, 248s - 288s Kerolox
+        // * 1959:
+        // * * XLR99:            262kN, 239s - 276s Ammonialox (ignitions, throttling)
+        // * * LR87:             766kN, 250s - 286s Kerolox
+        // * * LR91:             363kN, 233s - 310s Kerolox (vacuum trait)
+        // * * LR79-9:           783kN, 245s - 284s Kerolox
+        // * 1960:
+        // * * RD-0107:          298kN, 141s - 326s Kerolox (vacuum trait, minor throttling)
+        // * * X-405H:           156kN, 209s - 312s Kerolox (ignitions) (aux HTP)
+        // * * LR105-5:          366kN, 217s - 313s Kerolox (sustainer trait)
+        // * * LR79-11:          850kN, 248s - 286s Kerolox
+        // * * LR89-5:           831kN, 251s - 290s Kerolox
+        // * * RD-0109:           55kN, 264s - 324s Kerolox (vacuum trait) (this SLIsp seems way too high)
+        // * 1961:
+        // * * H-1:              807kN, 263s - 292s Kerolox
+        // * 1962:
+        // * * LR105-6:          373kN, 217s - 313s Kerolox (sustainer trait)
+        // * * LR87-5:          1075kN, 257s - 289s Kerolox
+        // * * LR89-6:           847kN, 256s - 290s Kerolox
+        // * * LR91-5:           448kN, 200s - 312s Kerolox (vacuum trait)
+        // * 1963:
+        // * * E-1:             1885kN, 260s - 290s Kerolox
+        // * * LR79-13:          873kN, 252s - 291s Kerolox
+        // * 1964:
+        // * * RD-855:            83kN, 254s - 292s UDMH+NTO
+        // * * H-1-188:          920kN, 263s - 292s Kerolox
+        // * * LR87-7:          1093kN, 261s - 296s Kerolox
+        // * * LR91-7:           456kN, 200s - 315s Kerolox (vacuum trait)
+        // * 1965:
+        // * * LR105-7.1:        385kN, 220s - 316s Kerolox (sustainer trait)
+        // * * LR87-9:          1130kN, 262s - 298s Kerolox
+        // * * LR89-7.1:         932kN, 258s - 292s Kerolox
+        // * * LR91-9:           456kN, 200s - 316s Kerolox (vacuum trait)
+        // * * RD-0110:          298kN, 141s - 330s Kerolox (vacuum trait, minor throttling)
+        // * 1966:
+        // * * H-1-200:          979kN, 263s - 292s Kerolox
+        // * 1967:
+        // * * F-1:             7741kN, 263s - 304s Kerolox
+        // * * LR105-7.2:        386kN, 220s - 316s Kerolox (sustainer trait)
+        // * * LR89-7.2:         951kN, 259s - 293s Kerolox
+        // * 1970:
+        // * * LR87-11:         1170kN, 254s - 302s Kerolox (sustainer-ish trait)
+        // * * LR91-11:          456kN, 200s - 318s Kerolox (vacuum trait)
+        // * 1972:
+        // * * E-1+:            2335kN, 256s - 291s Kerolox
+        // * * H-1-205:         1018kN, 263s - 292s Kerolox
+        // * * LR87-11A:        1211kN, 252s - 304s Kerolox (sustainer-ish trait)
+        // * * RS-27:           1023kN, 264s - 295s Kerolox
+        // * 1976:
+        // * * E-1++:           2355kN, 264s - 301s Kerolox
+        // * * F-1A:            9190kN, 270s - 310s Kerolox (long burn time trait)
+        // * 1981:
+        // * * LR91-11A:         475kN, 200s - 318s Kerolox (vacuum trait)
+        // * 1986:
+        // * * RS-27A:          1054kN, 255s - 302s Kerolox (sustainer-ish trait)
+        // * * LR89-RS-56:      1078kN, 262s - 296s Kerolox
+        // * * LR105-RS-56:      386kN, 220s - 316s Kerolox (sustainer trait)
+        // * 1992:
+        // * * Vikas-1:          681kN, 248s - 281s UDMH+NTO
+        // * 1998:
+        // * * S5.92:             20kN, 158s - 327s UDMH+NTO (vacuum trait)
+        // * 2004:
+        // * * Merlin-1A:        369kN, 254s - 289s Kerolox
+        // * * Vikas-1+:         766kN, 255s - 288s UDMH+NTO
+        // * * Vikas-2:          725kN, 261s - 296s UDMH+NTO
+        // * 2009:
+        // * * Merlin-1C:        483kN, 267s - 305s Kerolox
+        // * * Merlin-1C-Vac:    412kN, 173s - 342s Kerolox (vacuum trait, throttling, ignitions)
+        // * * Merlin-1D:        722kN, 282s - 311s Kerolox (throttling, ignitions)
+        // * * Merlin-1D-Vac:    805kN, 200s - 345s Kerolox (vacuum trait, throttling, ignitions)
+        // * * Vikas-2B:         805kN, 261s - 302s UH25+NTO
+        // * 2014:
+        // * * Merlin-1D+:       825kN, 282s - 311s (throttling, ignitions)
+        // * * Merlin-1D++:      914kN, 289s - 311s (throttling, ignitions)
+        // * * Merlin-1D-Vac+:   934kN, 200s - 348s Kerolox (vacuum trait, throttling, ignitions)
+        // * 2020 (Near future):
+        // * * F-1B:            8815kN, 272s - 299s (throttling)
+        // * * * *
+        
+        Thrust: new AgeRandomValue ([
+            [Year.Start, 200,   400],
+        ], "logarithmic", "float", "flat"),
+        VacEfficiency: new AgeRandomValue ([
+            [Year.Start, 55, 60],
+        ], "bell", "float", "flat"),
+        SLEfficiency: new AgeRandomValue ([
+            [1940, 55, 60],
+            [1945, 60, 65],
+        ], "bell", "float", "flat"),
+        BellWidth: (thrust, isp, year) => 1,
         Ullage: true,
         Models: [
             Model.Bell8048,
@@ -114,8 +187,8 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
             Model.Viking,
             Model.VikingVac
         ], Mass: (bellWidth: number, year: number) => {
-            let mass = 1.8;
-            let bellMultiplier = WernherHelper.BellWidthMassMultiplier (bellWidth, 2.2);
+            let mass = 2.5;
+            let bellMultiplier = WernherHelper.BellWidthMassMultiplier (bellWidth, 2.0);
             let yearMultiplier = WernherHelper.YearMassMultiplier (year);
             
             return mass * bellMultiplier * yearMultiplier;

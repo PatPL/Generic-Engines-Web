@@ -30,7 +30,7 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
         // * * A-4:              312kN, 203s - 239s Alcolox (aux HTP)
         // * Post-war:
         // * * RD-101:           404kN, 210s - 237s Alcolox (aux HTP)
-        // * * A-9:              289kN, 220s - 255s Alcolox (aux HTP)
+        // * * A-9:              289kN, 220s - 255s Alcolox (aux HTP) (1945 dev only, should be in a later node tbh, doesn't really fit here)
         // * Early:
         // * * RD-102:           428kN, 214s - 235s Alcolox (aux HTP)
         // * Basic:
@@ -57,7 +57,7 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
         // * * LR79-9:           783kN, 245s - 284s Kerolox
         // * 1960:
         // * * RD-0107:          298kN, 141s - 326s Kerolox (vacuum trait, minor throttling)
-        // * * X-405H:           156kN, 209s - 312s Kerolox (ignitions) (aux HTP)
+        // * * X-405H:           156kN, 209s - 312s Kerolox (vacuum trait, ignitions, aux HTP)
         // * * LR105-5:          366kN, 217s - 313s Kerolox (sustainer trait)
         // * * LR79-11:          850kN, 248s - 286s Kerolox
         // * * LR89-5:           831kN, 251s - 290s Kerolox
@@ -93,7 +93,7 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
         // * * LR89-7.2:         951kN, 259s - 293s Kerolox
         // ### LR87-LH2-Vac:     778kN, 312s - 419s Hydrolox (sustainer trait, ignitions)
         // ### J-2-225:         1001kN, 100s - 424s Hydrolox (vacuum trait, ignitions, throttling)
-        // * 1968:
+        // # 1968: (Hydrolox-only node)
         // ### J-2-230:         1023kN, 100s - 425s Hydrolox (vacuum trait, ignitions, throttling)
         // ### LR87-LH2+         801kN, 358s - 409s Hydrolox (ignitions)
         // * 1970:
@@ -150,14 +150,100 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
         // * * * *
         
         Thrust: new AgeRandomValue ([
-            [Year.Start, 200,   400],
+            [Year.Start, 200, 400],
+            [Year.PostWar, 170, 550],
+            [Year.EarlyRocketry, 140, 700],
+            [Year.BasicRocketry, 120, 900],
+            [Year.Rocketry1956, 100, 1300],
+            [Year.Rocketry1958, 80, 1500],
+            [Year.Rocketry1959, 60, 1700],
+            [Year.Rocketry1960, 40, 1900],
+            [Year.Rocketry1961, 36, 2200],
+            [Year.Rocketry1962, 32, 2500],
+            [Year.Rocketry1963, 28, 3500],
+            [Year.Rocketry1964, 24, 4500],
+            [Year.Rocketry1965, 22, 5500],
+            [Year.Rocketry1966, 20, 6500],
+            [Year.Rocketry1967, 18, 8000],
+            [Year.Rocketry1970, 15, 9500],
+            [Year.Rocketry1972, 13, 10000],
+            [Year.Rocketry1976, 12, 10500],
+            [Year.Rocketry1981, 11, 11000],
+            [Year.Rocketry1986, 10, 11500],
+            [Year.Rocketry1992, 9.5, 12000],
+            [Year.Rocketry1998, 9, 12500],
+            [Year.Rocketry2004, 8.5, 13000],
+            [Year.Rocketry2009, 8, 13500],
+            [Year.Rocketry2014, 7.5, 14000],
+            [Year.Rocketry2020, 7, 14500],
+            [Year.Rocketry2050, 6.5, 15000],
+            [Year.Rocketry2100, 6, 16500],
+            [Year.Rocketry2150, 5.5, 18000],
+            [Year.Rocketry2200, 5, 20000],
         ], "logarithmic", "float", "flat"),
         VacEfficiency: new AgeRandomValue ([
-            [Year.Start, 55, 60],
+            [Year.Start, 62, 67],
+            [Year.PostWar, 62.5, 67.5],
+            [Year.EarlyRocketry, 63, 68],
+            [Year.BasicRocketry, 65, 71],
+            [Year.Rocketry1956, 67.5, 74],
+            [Year.Rocketry1958, 68, 74.4],
+            [Year.Rocketry1959, 68.5, 74.8],
+            [Year.Rocketry1960, 69.2, 75.2],
+            [Year.Rocketry1961, 70.5, 75.6],
+            [Year.Rocketry1962, 70.8, 75.8],
+            [Year.Rocketry1963, 71, 76],
+            [Year.Rocketry1964, 71.2, 76.2],
+            [Year.Rocketry1965, 71.3, 76.5],
+            [Year.Rocketry1966, 71.4, 76.8],
+            [Year.Rocketry1967, 71.5, 77],
+            [Year.Rocketry1970, 71.5, 77.5],
+            [Year.Rocketry1972, 71.7, 77.7],
+            [Year.Rocketry1976, 71.9, 77.9],
+            [Year.Rocketry1981, 72.1, 78.1],
+            [Year.Rocketry1986, 72.3, 78.3],
+            [Year.Rocketry1992, 72.5, 78.5],
+            [Year.Rocketry1998, 73, 79],
+            [Year.Rocketry2004, 73.5, 79.5],
+            [Year.Rocketry2009, 74, 80],
+            [Year.Rocketry2014, 74.5, 80.5],
+            [Year.Rocketry2020, 75, 81],
+            [Year.Rocketry2050, 75.5, 81.4],
+            [Year.Rocketry2100, 76, 81.7],
+            [Year.Rocketry2150, 76.5, 81.9],
+            [Year.Rocketry2200, 77, 82.1],
         ], "bell", "float", "flat"),
         SLEfficiency: new AgeRandomValue ([
-            [1940, 55, 60],
-            [1945, 60, 65],
+            [Year.Start, 57, 62],
+            [Year.PostWar, 59, 65],
+            [Year.EarlyRocketry, 61, 66.5],
+            [Year.BasicRocketry, 63, 68],
+            [Year.Rocketry1956, 65.5, 71],
+            [Year.Rocketry1958, 66.5, 72],
+            [Year.Rocketry1959, 67.2, 72.8],
+            [Year.Rocketry1960, 68.1, 73.4],
+            [Year.Rocketry1961, 69.2, 73.8],
+            [Year.Rocketry1962, 69.7, 74.1],
+            [Year.Rocketry1963, 70.2, 74.3],
+            [Year.Rocketry1964, 70.6, 74.4],
+            [Year.Rocketry1965, 71, 74.5],
+            [Year.Rocketry1966, 71.3, 75],
+            [Year.Rocketry1967, 71.7, 75.5],
+            [Year.Rocketry1970, 72, 76],
+            [Year.Rocketry1972, 72.2, 76.2],
+            [Year.Rocketry1976, 72.3, 76.4],
+            [Year.Rocketry1981, 72.6, 76.6],
+            [Year.Rocketry1986, 72.8, 76.8],
+            [Year.Rocketry1992, 73, 77],
+            [Year.Rocketry1998, 73.5, 78.6],
+            [Year.Rocketry2004, 74, 79.2],
+            [Year.Rocketry2009, 74.5, 79.9],
+            [Year.Rocketry2014, 75, 80.5],
+            [Year.Rocketry2020, 75.7, 81],
+            [Year.Rocketry2050, 76.4, 81.5],
+            [Year.Rocketry2100, 77.3, 82],
+            [Year.Rocketry2150, 78.1, 82.5],
+            [Year.Rocketry2200, 80, 83],
         ], "bell", "float", "flat"),
         BellWidth: (thrust, isp, year) => 1,
         Ullage: true,

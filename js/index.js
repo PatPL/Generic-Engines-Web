@@ -13415,13 +13415,99 @@ const EngineCycleList = {
         },
         Thrust: new AgeRandomValue([
             [1940, 200, 400],
+            [1945, 170, 550],
+            [1950, 140, 700],
+            [1952, 120, 900],
+            [1956, 100, 1300],
+            [1958, 80, 1500],
+            [1959, 60, 1700],
+            [1960, 40, 1900],
+            [1961, 36, 2200],
+            [1962, 32, 2500],
+            [1963, 28, 3500],
+            [1964, 24, 4500],
+            [1965, 22, 5500],
+            [1966, 20, 6500],
+            [1967, 18, 8000],
+            [1970, 15, 9500],
+            [1972, 13, 10000],
+            [1976, 12, 10500],
+            [1981, 11, 11000],
+            [1986, 10, 11500],
+            [1992, 9.5, 12000],
+            [1998, 9, 12500],
+            [2004, 8.5, 13000],
+            [2009, 8, 13500],
+            [2014, 7.5, 14000],
+            [2020, 7, 14500],
+            [2050, 6.5, 15000],
+            [2100, 6, 16500],
+            [2150, 5.5, 18000],
+            [2200, 5, 20000],
         ], "logarithmic", "float", "flat"),
         VacEfficiency: new AgeRandomValue([
-            [1940, 55, 60],
+            [1940, 62, 67],
+            [1945, 62.5, 67.5],
+            [1950, 63, 68],
+            [1952, 65, 71],
+            [1956, 67.5, 74],
+            [1958, 68, 74.4],
+            [1959, 68.5, 74.8],
+            [1960, 69.2, 75.2],
+            [1961, 70.5, 75.6],
+            [1962, 70.8, 75.8],
+            [1963, 71, 76],
+            [1964, 71.2, 76.2],
+            [1965, 71.3, 76.5],
+            [1966, 71.4, 76.8],
+            [1967, 71.5, 77],
+            [1970, 71.5, 77.5],
+            [1972, 71.7, 77.7],
+            [1976, 71.9, 77.9],
+            [1981, 72.1, 78.1],
+            [1986, 72.3, 78.3],
+            [1992, 72.5, 78.5],
+            [1998, 73, 79],
+            [2004, 73.5, 79.5],
+            [2009, 74, 80],
+            [2014, 74.5, 80.5],
+            [2020, 75, 81],
+            [2050, 75.5, 81.4],
+            [2100, 76, 81.7],
+            [2150, 76.5, 81.9],
+            [2200, 77, 82.1],
         ], "bell", "float", "flat"),
         SLEfficiency: new AgeRandomValue([
-            [1940, 55, 60],
-            [1945, 60, 65],
+            [1940, 57, 62],
+            [1945, 59, 65],
+            [1950, 61, 66.5],
+            [1952, 63, 68],
+            [1956, 65.5, 71],
+            [1958, 66.5, 72],
+            [1959, 67.2, 72.8],
+            [1960, 68.1, 73.4],
+            [1961, 69.2, 73.8],
+            [1962, 69.7, 74.1],
+            [1963, 70.2, 74.3],
+            [1964, 70.6, 74.4],
+            [1965, 71, 74.5],
+            [1966, 71.3, 75],
+            [1967, 71.7, 75.5],
+            [1970, 72, 76],
+            [1972, 72.2, 76.2],
+            [1976, 72.3, 76.4],
+            [1981, 72.6, 76.6],
+            [1986, 72.8, 76.8],
+            [1992, 73, 77],
+            [1998, 73.5, 78.6],
+            [2004, 74, 79.2],
+            [2009, 74.5, 79.9],
+            [2014, 75, 80.5],
+            [2020, 75.7, 81],
+            [2050, 76.4, 81.5],
+            [2100, 77.3, 82],
+            [2150, 78.1, 82.5],
+            [2200, 80, 83],
         ], "bell", "float", "flat"),
         BellWidth: (thrust, isp, year) => 1,
         Ullage: true,
@@ -13598,15 +13684,15 @@ class ConstantValue {
 }
 const PropellantMixList = {
     [PropellantMix.Hydrolox]: {
-        MaximumIsp: 500,
-        SLIspMultiplier: 0.81,
+        MaximumIsp: 510,
+        SLIspMultiplier: 0.86,
         Plume: Plume.GP_Hydrolox,
         Propellants: [
             [Fuel.LqdHydrogen, new ConstantValue(1)],
             [Fuel.LqdOxygen, new RandomValue(5.0, 6.5, "bell", "float")]
         ]
     }, [PropellantMix.Kerolox]: {
-        MaximumIsp: 383,
+        MaximumIsp: 400,
         SLIspMultiplier: 0.9,
         Plume: Plume.GP_Kerolox,
         Propellants: [
@@ -13614,8 +13700,8 @@ const PropellantMixList = {
             [Fuel.LqdOxygen, new RandomValue(2.0, 3.0, "bell", "float")]
         ]
     }, [PropellantMix.Methalox]: {
-        MaximumIsp: 420,
-        SLIspMultiplier: 0.87,
+        MaximumIsp: 430,
+        SLIspMultiplier: 0.885,
         Plume: Plume.GP_Methalox,
         Propellants: [
             [Fuel.LqdMethane, new ConstantValue(1)],
@@ -13639,39 +13725,39 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.Ammonialox]: {
         MaximumIsp: 350,
-        SLIspMultiplier: 0.885,
+        SLIspMultiplier: 0.89,
         Plume: Plume.GP_Ammonialox,
         Propellants: [
             [Fuel.LqdAmmonia, new ConstantValue(1)],
             [Fuel.LqdOxygen, new RandomValue(1.3, 1.7, "bell", "float")]
         ]
     }, [PropellantMix.UDMH_NTO]: {
-        MaximumIsp: 365,
-        SLIspMultiplier: 0.93,
+        MaximumIsp: 390,
+        SLIspMultiplier: 0.92,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UDMH, new ConstantValue(1)],
             [Fuel.NTO, new RandomValue(2.1, 3.1, "bell", "float")]
         ]
     }, [PropellantMix.UH25_NTO]: {
-        MaximumIsp: 363,
-        SLIspMultiplier: 0.935,
+        MaximumIsp: 385,
+        SLIspMultiplier: 0.925,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UH25, new ConstantValue(1)],
             [Fuel.NTO, new RandomValue(1.5, 2.0, "bell", "float")]
         ]
     }, [PropellantMix.AE50_NTO]: {
-        MaximumIsp: 361,
-        SLIspMultiplier: 0.94,
+        MaximumIsp: 380,
+        SLIspMultiplier: 0.93,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.Aerozine50, new ConstantValue(1)],
             [Fuel.NTO, new RandomValue(1.6, 2.3, "bell", "float")]
         ]
     }, [PropellantMix.MMH_NTO]: {
-        MaximumIsp: 359,
-        SLIspMultiplier: 0.94,
+        MaximumIsp: 375,
+        SLIspMultiplier: 0.93,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.MMH, new ConstantValue(1)],

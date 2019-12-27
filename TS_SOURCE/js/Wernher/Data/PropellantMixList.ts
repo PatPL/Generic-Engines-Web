@@ -3,15 +3,15 @@
 /// <reference path="../Enums/PropellantMix.ts" />
 const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
     [PropellantMix.Hydrolox]: {
-        MaximumIsp: 500,
-        SLIspMultiplier: 0.81,
+        MaximumIsp: 510,
+        SLIspMultiplier: 0.86,
         Plume: Plume.GP_Hydrolox,
         Propellants: [
             [Fuel.LqdHydrogen, new ConstantValue (1)],
             [Fuel.LqdOxygen, new RandomValue (5.0, 6.5, "bell", "float")]
         ]
     }, [PropellantMix.Kerolox]: {
-        MaximumIsp: 383,
+        MaximumIsp: 400,
         SLIspMultiplier: 0.9,
         Plume: Plume.GP_Kerolox,
         Propellants: [
@@ -19,8 +19,8 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
             [Fuel.LqdOxygen, new RandomValue (2.0, 3.0, "bell", "float")]
         ]
     }, [PropellantMix.Methalox]: {
-        MaximumIsp: 420,
-        SLIspMultiplier: 0.87,
+        MaximumIsp: 430,
+        SLIspMultiplier: 0.885,
         Plume: Plume.GP_Methalox,
         Propellants: [
             [Fuel.LqdMethane, new ConstantValue (1)],
@@ -44,39 +44,39 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.Ammonialox]: {
         MaximumIsp: 350,
-        SLIspMultiplier: 0.885,
+        SLIspMultiplier: 0.89,
         Plume: Plume.GP_Ammonialox,
         Propellants: [
             [Fuel.LqdAmmonia, new ConstantValue (1)],
             [Fuel.LqdOxygen, new RandomValue (1.3, 1.7, "bell", "float")] // Couldn't find any good info on it. This value is just my guess
         ]
     }, [PropellantMix.UDMH_NTO]: {
-        MaximumIsp: 365,
-        SLIspMultiplier: 0.93,
+        MaximumIsp: 390,
+        SLIspMultiplier: 0.92,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UDMH, new ConstantValue (1)],
             [Fuel.NTO, new RandomValue (2.1, 3.1, "bell", "float")]
         ]
     }, [PropellantMix.UH25_NTO]: {
-        MaximumIsp: 363,
-        SLIspMultiplier: 0.935,
+        MaximumIsp: 385,
+        SLIspMultiplier: 0.925,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UH25, new ConstantValue (1)],
             [Fuel.NTO, new RandomValue (1.5, 2.0, "bell", "float")]
         ]
     }, [PropellantMix.AE50_NTO]: {
-        MaximumIsp: 361,
-        SLIspMultiplier: 0.94,
+        MaximumIsp: 380,
+        SLIspMultiplier: 0.93,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.Aerozine50, new ConstantValue (1)],
             [Fuel.NTO, new RandomValue (1.6, 2.3, "bell", "float")]
         ]
     }, [PropellantMix.MMH_NTO]: {
-        MaximumIsp: 359,
-        SLIspMultiplier: 0.94,
+        MaximumIsp: 375,
+        SLIspMultiplier: 0.93,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.MMH, new ConstantValue (1)],

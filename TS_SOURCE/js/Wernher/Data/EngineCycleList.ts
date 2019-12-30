@@ -9,18 +9,33 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
     [EngineCycle.GasGenerator]: {
         Variants: {
             [PropellantMix.Hydrolox]: {
+                CostMultiplier: new RandomValue (2.0, 5.0, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue (20, 80, "logSmooth", "float"),
+                CanonAvailabilityYear: Year.HydroloxPrototype,
+            }, [PropellantMix.Kerolox]: {
                 CostMultiplier: new RandomValue (0.7, 1.3, "triangle", "float"),
-                Cost: (thrust, vacIsp, year, costMultiplier) => {
-                    let cost = 1000;
-                    // https://www.desmos.com/calculator/r9t9auslhb
-                    let thrustCostMultiplier = (1.0002 ** thrust) - 0.7 + (thrust / 1500);
-                    let ispCostMultiplier = 27 / (458 - vacIsp) + 0.3;
-                    let yearCostMultiplier = WernherHelper.RegularYearCostMultiplier (year);
-                    
-                    return cost * thrustCostMultiplier * ispCostMultiplier * yearCostMultiplier * costMultiplier;
-                },
-                EntryCostMultiplier: new RandomValue (30, 120, "logSmooth", "float"),
-                CanonAvailabilityYear: 1960
+                EntryCostMultiplier: new RandomValue (30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: Year.Rocketry1956,
+            }, [PropellantMix.Hydynelox]: {
+                CostMultiplier: new RandomValue (1.0, 2.5, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue (30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: Year.PostWar,
+            }, [PropellantMix.Alcolox]: {
+                CostMultiplier: new RandomValue (0.5, 1.2, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue (20, 60, "logSmooth", "float"),
+                CanonAvailabilityYear: Year.Start,
+            }, [PropellantMix.Ammonialox]: {
+                CostMultiplier: new RandomValue (1.0, 2.0, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue (30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: Year.Rocketry1958,
+            }, [PropellantMix.UDMH_NTO]: {
+                CostMultiplier: new RandomValue (0.7, 1.3, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue (30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: Year.Rocketry1965,
+            }, [PropellantMix.UH25_NTO]: {
+                CostMultiplier: new RandomValue (0.7, 1.3, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue (30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: Year.Rocketry1965,
             }
         },
         
@@ -30,7 +45,7 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
         // * * A-4:              312kN, 203s - 239s Alcolox (aux HTP)
         // * Post-war:
         // * * RD-101:           404kN, 210s - 237s Alcolox (aux HTP)
-        // * * A-9:              289kN, 220s - 255s Alcolox (aux HTP) (1945 dev only, should be in a later node tbh, doesn't really fit here)
+        // * * A-9:              289kN, 220s - 255s Hydynelox (aux HTP) (1945 dev only, should be in a later node tbh, doesn't really fit here)
         // * Early:
         // * * RD-102:           428kN, 214s - 235s Alcolox (aux HTP)
         // * Basic:
@@ -245,7 +260,21 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
             [Year.Rocketry2150, 78.1, 82.5],
             [Year.Rocketry2200, 80, 83],
         ], "bell", "float", "flat"),
-        BellWidth: (thrust, isp, year) => 1,
+        Cost: (thrust, year, costMultiplier) => {
+            // https://www.desmos.com/calculator/kjhbiusugt
+            let cost = (0.00004 * thrust * thrust) + (0.3 * thrust) + 30;
+            cost *= WernherHelper.RegularYearCostMultiplier (year);
+            cost *= costMultiplier;
+            
+            return cost;
+        },
+        BellWidth: (thrust, year) => {
+            // https://www.desmos.com/calculator/ast1szeb9y
+            let width = ((thrust ** 0.534) / (1440 ** 0.445)) - (thrust / 8500);
+            width *= WernherHelper.YearBellWidthMultiplier (year);
+            
+            return width;
+        },
         Ullage: true,
         Models: [
             Model.Bell8048,
@@ -295,11 +324,11 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
             Model.Viking,
             Model.VikingVac
         ], Mass: (bellWidth: number, year: number) => {
-            let mass = 2.5;
-            let bellMultiplier = WernherHelper.BellWidthMassMultiplier (bellWidth, 2.0);
-            let yearMultiplier = WernherHelper.YearMassMultiplier (year);
+            // https://www.desmos.com/calculator/vjqyuqab8e
+            let mass = (250 * bellWidth) + (200 * bellWidth ** 2.75) - 5;
+            mass *= WernherHelper.YearMassMultiplier (year);
             
-            return mass * bellMultiplier * yearMultiplier;
+            return mass;
         }, TestFlightRatedBurnTime: new AgeRandomValue ([
             [1940,  60, 120],
             [1945,  90, 180],

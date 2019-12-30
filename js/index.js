@@ -13401,16 +13401,33 @@ const EngineCycleList = {
     [EngineCycle.GasGenerator]: {
         Variants: {
             [PropellantMix.Hydrolox]: {
+                CostMultiplier: new RandomValue(2.0, 5.0, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue(20, 80, "logSmooth", "float"),
+                CanonAvailabilityYear: 1962,
+            }, [PropellantMix.Kerolox]: {
                 CostMultiplier: new RandomValue(0.7, 1.3, "triangle", "float"),
-                Cost: (thrust, vacIsp, year, costMultiplier) => {
-                    let cost = 1000;
-                    let thrustCostMultiplier = (Math.pow(1.0002, thrust)) - 0.7 + (thrust / 1500);
-                    let ispCostMultiplier = 27 / (458 - vacIsp) + 0.3;
-                    let yearCostMultiplier = WernherHelper.RegularYearCostMultiplier(year);
-                    return cost * thrustCostMultiplier * ispCostMultiplier * yearCostMultiplier * costMultiplier;
-                },
-                EntryCostMultiplier: new RandomValue(30, 120, "logSmooth", "float"),
-                CanonAvailabilityYear: 1960
+                EntryCostMultiplier: new RandomValue(30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: 1956,
+            }, [PropellantMix.Hydynelox]: {
+                CostMultiplier: new RandomValue(1.0, 2.5, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue(30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: 1945,
+            }, [PropellantMix.Alcolox]: {
+                CostMultiplier: new RandomValue(0.5, 1.2, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue(20, 60, "logSmooth", "float"),
+                CanonAvailabilityYear: 1940,
+            }, [PropellantMix.Ammonialox]: {
+                CostMultiplier: new RandomValue(1.0, 2.0, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue(30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: 1958,
+            }, [PropellantMix.UDMH_NTO]: {
+                CostMultiplier: new RandomValue(0.7, 1.3, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue(30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: 1965,
+            }, [PropellantMix.UH25_NTO]: {
+                CostMultiplier: new RandomValue(0.7, 1.3, "triangle", "float"),
+                EntryCostMultiplier: new RandomValue(30, 90, "logSmooth", "float"),
+                CanonAvailabilityYear: 1965,
             }
         },
         Thrust: new AgeRandomValue([
@@ -13509,7 +13526,17 @@ const EngineCycleList = {
             [2150, 78.1, 82.5],
             [2200, 80, 83],
         ], "bell", "float", "flat"),
-        BellWidth: (thrust, isp, year) => 1,
+        Cost: (thrust, year, costMultiplier) => {
+            let cost = (0.00004 * thrust * thrust) + (0.3 * thrust) + 30;
+            cost *= WernherHelper.RegularYearCostMultiplier(year);
+            cost *= costMultiplier;
+            return cost;
+        },
+        BellWidth: (thrust, year) => {
+            let width = ((Math.pow(thrust, 0.534)) / (Math.pow(1440, 0.445))) - (thrust / 8500);
+            width *= WernherHelper.YearBellWidthMultiplier(year);
+            return width;
+        },
         Ullage: true,
         Models: [
             Model.Bell8048,
@@ -13559,10 +13586,9 @@ const EngineCycleList = {
             Model.Viking,
             Model.VikingVac
         ], Mass: (bellWidth, year) => {
-            let mass = 2.5;
-            let bellMultiplier = WernherHelper.BellWidthMassMultiplier(bellWidth, 2.0);
-            let yearMultiplier = WernherHelper.YearMassMultiplier(year);
-            return mass * bellMultiplier * yearMultiplier;
+            let mass = (250 * bellWidth) + (200 * Math.pow(bellWidth, 2.75)) - 5;
+            mass *= WernherHelper.YearMassMultiplier(year);
+            return mass;
         }, TestFlightRatedBurnTime: new AgeRandomValue([
             [1940, 60, 120],
             [1945, 90, 180],
@@ -13648,6 +13674,32 @@ class Wernher {
         let propellantMix = PropellantMixList[prop];
         let engineVariant = EngineCycleList[cycle].Variants[prop];
         let engine = new Engine();
+        engine.Active = true;
+        engine.ID = `Wernher-${Math.floor(Math.random() * 1000000000)}`;
+        engine.EngineName = `${Math.random() > 0.5 ? "RD-" : "LR"}${Math.floor(Math.random() * 500)}, (${year})`;
+        engine.EngineManufacturer = "Wernher";
+        engine.EngineDescription = "MVP Wernher engine generator test";
+        engine.PlumeID = propellantMix.Plume;
+        engine.FuelRatioItems = [];
+        propellantMix.Propellants.forEach(([fuel, rng]) => {
+            engine.FuelRatioItems.push([fuel, rng.Get(year)]);
+        });
+        engine.Thrust = engineCycle.Thrust.Get(year);
+        engine.AtmIsp = engineCycle.SLEfficiency.Get(year) * propellantMix.MaximumIsp * propellantMix.SLIspMultiplier / 100;
+        engine.VacIsp = engineCycle.VacEfficiency.Get(year) * propellantMix.MaximumIsp / 100;
+        engine.Cost = engineVariant.CostMultiplier.Get(year);
+        engine.Cost = engineCycle.Cost(engine.Thrust, year, engineVariant.CostMultiplier.Get(year));
+        engine.EntryCost = engine.Cost * engineVariant.EntryCostMultiplier.Get(year);
+        engine.UseBaseWidth = false;
+        engine.Width = engineCycle.BellWidth(engine.Thrust, year);
+        engine.Mass = engineCycle.Mass(engine.Width, year) / 1000;
+        engine.NeedsUllage = engineCycle.Ullage;
+        engine.ModelID = engineCycle.Models[Math.floor(Math.random() * engineCycle.Models.length)];
+        engine.EnableTestFlight = true;
+        engine.StartReliability10k = engineCycle.TestFlight10kIgnition.Get(year);
+        engine.StartReliability0 = engine.StartReliability10k - engineCycle.TestFlight10kIgnitionDeficiency.Get(year);
+        engine.CycleReliability10k = engineCycle.TestFlight10kCycle.Get(year);
+        engine.CycleReliability0 = engine.CycleReliability10k - engineCycle.TestFlight10kCycleDeficiency.Get(year);
         return engine;
     }
 }
@@ -13661,14 +13713,8 @@ class WernherHelper {
     static ModernYearCostMultiplier(year) {
         return 30 / (year - 1916) + 0.69;
     }
-    static ThrustBellWidthMultiplier(thrust, baseThrust) {
-        return (Math.pow(thrust, 0.3)) / (Math.pow(baseThrust, 0.3));
-    }
-    static ImpulseBellWidthMultiplier(Isp, baseIsp) {
-        return (Math.pow(Isp, 4)) / (Math.pow(baseIsp, 4));
-    }
-    static BellWidthMassMultiplier(bellWidth, baseBellWidth) {
-        return (Math.pow(bellWidth, 2.3)) / (Math.pow(baseBellWidth, 2.3));
+    static YearBellWidthMultiplier(year) {
+        return 15 / (year - 1915) + 0.75;
     }
     static YearMassMultiplier(year) {
         return 40 / (year - 1886) + 0.47;

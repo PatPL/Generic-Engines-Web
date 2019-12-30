@@ -35,34 +35,20 @@ class WernherHelper {
      * * 2189 - 0.8
      */
     public static ModernYearCostMultiplier (year: number): number {
-        return 30 / (year - 1916) + 0.69
+        return 30 / (year - 1916) + 0.69;
     }
     
     /**
-     * Returns the multiplier of engine's width, according to its thrust
-     * @param thrust Thrust of the engine
-     * @param baseThrust Reference thrust
+     * Bell width size improvements across time
+     * (Better materials -> tighter throats)
+     * * 1940 - 1.35
+     * * 1948 - 1.2
+     * * 1975 - 1.0
+     * * 2015 - 0.9
+     * * 2200 - 0.8
      */
-    public static ThrustBellWidthMultiplier (thrust: number, baseThrust: number) {
-        return (thrust ** 0.3) / (baseThrust ** 0.3);
-    }
-    
-    /**
-     * Returns the multiplier of engine's width, according to its Isp
-     * @param Isp Isp of the engine
-     * @param baseIsp Reference Isp
-     */
-    public static ImpulseBellWidthMultiplier (Isp: number, baseIsp: number) {
-        return (Isp ** 4) / (baseIsp ** 4);
-    }
-    
-    /**
-     * Returns the multiplier of engine's mass, according to its bell size
-     * @param bellWidth 
-     * @param baseBellWidth 
-     */
-    public static BellWidthMassMultiplier (bellWidth: number, baseBellWidth: number) {
-        return (bellWidth ** 2.3) / (baseBellWidth ** 2.3);
+    public static YearBellWidthMultiplier (year: number): number {
+        return 15 / (year - 1915) + 0.75;
     }
     
     /** Improvements in material science... or something

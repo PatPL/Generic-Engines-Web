@@ -1,33 +1,39 @@
 <meta charset="UTF-8" />
 <script src="../js/index.js"></script>
+<body style="filter: invert(0.9); background: #111; font-family: Verdana;">
+    Efficiency %:
+    <table>
+        <tr>
+            <th>Low SL</th>
+            <th>High SL</th>
+            <th>Low Vac</th>
+            <th>High Vac</th>
+        </tr>
+        <tr>
+            <td><input id="ls" value="84"></td>
+            <td><input id="hs" value="90"></td>
+            <td><input id="lv" value="86"></td>
+            <td><input id="hv" value="91"></td>
+        </tr>
+    </table>
 
-Efficiency %:
-<table>
-    <tr>
-        <th>Low SL</th>
-        <th>High SL</th>
-        <th>Low Vac</th>
-        <th>High Vac</th>
-    </tr>
-    <tr>
-        <td><input id="ls" value="84"></td>
-        <td><input id="hs" value="90"></td>
-        <td><input id="lv" value="86"></td>
-        <td><input id="hv" value="91"></td>
-    </tr>
-</table>
-
-<table id="output">
-    <tr style="display: none" id="template">
-        <td>Propmix lll</td>
-        <td>Impulse lll</td>
-    </tr>
-    <tr>
-        <th>Propmix</th>
-        <th>Impulse</th>
-    </tr>
-</table>
-
+    <table id="output">
+        <tr style="display: none" id="template">
+            <td>Propmix lll</td>
+            <td style="text-align: right;">Impulse lll</td>
+            <td>Impulse lll</td>
+            <td style="text-align: right;">Impulse lll</td>
+            <td>Impulse lll</td>
+        </tr>
+        <tr>
+            <th>Propmix</th>
+            <th>Low SL Isp</th>
+            <th>High SL Isp</th>
+            <th>Low Vac Isp</th>
+            <th>High Vac Isp</th>
+        </tr>
+    </table>
+</body>
 <script>
     document.addEventListener ("DOMContentLoaded", () => {
         console.info ("Ignore the errors");
@@ -71,12 +77,15 @@ Efficiency %:
                 lowSL *= mix.SLIspMultiplier;
                 highSL *= mix.SLIspMultiplier;
                 
-                lowSL = Math.round (lowSL * 100000) / 100000;
-                highSL = Math.round (highSL * 100000) / 100000;
-                lowVac = Math.round (lowVac * 100000) / 100000;
-                highVac = Math.round (highVac * 100000) / 100000;
+                lowSL = Math.round (lowSL * 1000) / 1000;
+                highSL = Math.round (highSL * 1000) / 1000;
+                lowVac = Math.round (lowVac * 1000) / 1000;
+                highVac = Math.round (highVac * 1000) / 1000;
                 
-                line.children[1].innerHTML = `Sea level: ${ lowSL }s - ${ highSL }s; Vacuum: ${ lowVac }s - ${ highVac }s`;
+                line.children[1].innerHTML = `${ lowSL }s - `;
+                line.children[2].innerHTML = `${ highSL }s`;
+                line.children[3].innerHTML = `${ lowVac }s - `;
+                line.children[4].innerHTML = `${ highVac }s`;
             }
             
             lowSLInput.addEventListener ("input", () => Update ());

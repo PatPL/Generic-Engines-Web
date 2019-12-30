@@ -3,8 +3,8 @@
 /// <reference path="../Enums/PropellantMix.ts" />
 const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
     [PropellantMix.Hydrolox]: {
-        MaximumIsp: 510,
-        SLIspMultiplier: 0.86,
+        MaximumIsp: 540,
+        SLIspLossCoefficient: 1.35,
         Plume: Plume.GP_Hydrolox,
         Propellants: [
             [Fuel.LqdHydrogen, new ConstantValue (1)],
@@ -12,7 +12,7 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.Kerolox]: {
         MaximumIsp: 400,
-        SLIspMultiplier: 0.9,
+        SLIspLossCoefficient: 1.1,
         Plume: Plume.GP_Kerolox,
         Propellants: [
             [Fuel.Kerosene, new ConstantValue (1)],
@@ -20,7 +20,7 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.Methalox]: {
         MaximumIsp: 430,
-        SLIspMultiplier: 0.885,
+        SLIspLossCoefficient: 1.18,
         Plume: Plume.GP_Methalox,
         Propellants: [
             [Fuel.LqdMethane, new ConstantValue (1)],
@@ -28,7 +28,7 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.Hydynelox]: {
         MaximumIsp: 372,
-        SLIspMultiplier: 0.9,
+        SLIspLossCoefficient: 1.0,
         Plume: Plume.GP_Hydynelox,
         Propellants: [
             [Fuel.Hydyne, new ConstantValue (1)],
@@ -36,7 +36,7 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.Alcolox]: {
         MaximumIsp: 360,
-        SLIspMultiplier: 0.9,
+        SLIspLossCoefficient: 1.0,
         Plume: Plume.GP_Alcolox,
         Propellants: [
             [Fuel.Ethanol, new ConstantValue (1)],
@@ -44,7 +44,7 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.Ammonialox]: {
         MaximumIsp: 350,
-        SLIspMultiplier: 0.89,
+        SLIspLossCoefficient: 1.05,
         Plume: Plume.GP_Ammonialox,
         Propellants: [
             [Fuel.LqdAmmonia, new ConstantValue (1)],
@@ -52,7 +52,7 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.UDMH_NTO]: {
         MaximumIsp: 390,
-        SLIspMultiplier: 0.92,
+        SLIspLossCoefficient: 0.94,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UDMH, new ConstantValue (1)],
@@ -60,7 +60,7 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.UH25_NTO]: {
         MaximumIsp: 385,
-        SLIspMultiplier: 0.925,
+        SLIspLossCoefficient: 0.93,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UH25, new ConstantValue (1)],
@@ -68,7 +68,7 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.AE50_NTO]: {
         MaximumIsp: 380,
-        SLIspMultiplier: 0.93,
+        SLIspLossCoefficient: 0.92,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.Aerozine50, new ConstantValue (1)],
@@ -76,7 +76,7 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.MMH_NTO]: {
         MaximumIsp: 375,
-        SLIspMultiplier: 0.93,
+        SLIspLossCoefficient: 0.92,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.MMH, new ConstantValue (1)],
@@ -84,21 +84,21 @@ const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
         ]
     }, [PropellantMix.Hydrazine]: {
         MaximumIsp: 320,
-        SLIspMultiplier: 0.85,
+        SLIspLossCoefficient: 1.4,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.Hydrazine, new ConstantValue (1)]
         ]
     }, [PropellantMix.HTP]: {
         MaximumIsp: 240,
-        SLIspMultiplier: 0.9,
+        SLIspLossCoefficient: 1.0,
         Plume: Plume.GP_OmsWhite,
         Propellants: [
             [Fuel.HTP, new ConstantValue (1)]
         ]
     }, [PropellantMix.CaveaB]: {
         MaximumIsp: 350,
-        SLIspMultiplier: 0.8,
+        SLIspLossCoefficient: 1.2,
         Plume: Plume.GP_OmsWhite,
         Propellants: [
             [Fuel.CaveaB, new ConstantValue (1)]

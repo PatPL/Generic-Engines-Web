@@ -65,27 +65,35 @@
                 let lowVac = parseFloat (lowVacInput.value);
                 let highVac = parseFloat (highVacInput.value);
                 
-                lowSL /= 100;
-                lowSL *= mix.MaximumIsp;
-                highSL /= 100;
-                highSL *= mix.MaximumIsp;
                 lowVac /= 100;
                 lowVac *= mix.MaximumIsp;
                 highVac /= 100;
                 highVac *= mix.MaximumIsp;
+                let medVac = (lowVac + highVac) / 2;
                 
-                lowSL *= mix.SLIspMultiplier;
-                highSL *= mix.SLIspMultiplier;
+                lowSL = 100 - ((100 - lowSL) * mix.SLIspLossCoefficient);
+                highSL = 100 - ((100 - highSL) * mix.SLIspLossCoefficient);
                 
-                lowSL = Math.round (lowSL * 1000) / 1000;
-                highSL = Math.round (highSL * 1000) / 1000;
-                lowVac = Math.round (lowVac * 1000) / 1000;
-                highVac = Math.round (highVac * 1000) / 1000;
+                let medlowSL = ((lowVac + highVac) / 2) * lowSL / 100;
+                let medhighSL = ((lowVac + highVac) / 2) * highSL / 100;
+                lowSL /= 100;
+                lowSL *= lowVac;
+                highSL /= 100;
+                highSL *= highVac;
                 
-                line.children[1].innerHTML = `${ lowSL }s - `;
-                line.children[2].innerHTML = `${ highSL }s`;
-                line.children[3].innerHTML = `${ lowVac }s - `;
-                line.children[4].innerHTML = `${ highVac }s`;
+                const ROUNDING_FACTOR = 1000;
+                medVac = Math.round (medVac * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+                medlowSL = Math.round (medlowSL * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+                medhighSL = Math.round (medhighSL * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+                lowSL = Math.round (lowSL * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+                highSL = Math.round (highSL * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+                lowVac = Math.round (lowVac * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+                highVac = Math.round (highVac * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+                
+                line.children[1].innerHTML = `${ lowSL }s - <br>Avg: ${ medlowSL }s - `;
+                line.children[2].innerHTML = `${ highSL }s<br>${ medhighSL }s`;
+                line.children[3].innerHTML = `${ lowVac }s - <br>Avg:`;
+                line.children[4].innerHTML = `${ highVac }s<br>${ medVac }s`;
             }
             
             lowSLInput.addEventListener ("input", () => Update ());

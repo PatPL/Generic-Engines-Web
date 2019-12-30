@@ -13463,68 +13463,68 @@ const EngineCycleList = {
             [2200, 5, 20000],
         ], "logarithmic", "float", "flat"),
         VacEfficiency: new AgeRandomValue([
-            [1940, 62, 67],
-            [1945, 62.5, 67.5],
-            [1950, 63, 68],
-            [1952, 65, 71],
-            [1956, 67.5, 74],
-            [1958, 68, 74.4],
-            [1959, 68.5, 74.8],
-            [1960, 69.2, 75.2],
-            [1961, 70.5, 75.6],
-            [1962, 70.8, 75.8],
-            [1963, 71, 76],
-            [1964, 71.2, 76.2],
-            [1965, 71.3, 76.5],
-            [1966, 71.4, 76.8],
-            [1967, 71.5, 77],
-            [1970, 71.5, 77.5],
-            [1972, 71.7, 77.7],
-            [1976, 71.9, 77.9],
-            [1981, 72.1, 78.1],
-            [1986, 72.3, 78.3],
-            [1992, 72.5, 78.5],
-            [1998, 73, 79],
-            [2004, 73.5, 79.5],
-            [2009, 74, 80],
-            [2014, 74.5, 80.5],
-            [2020, 75, 81],
-            [2050, 75.5, 81.4],
-            [2100, 76, 81.7],
-            [2150, 76.5, 81.9],
-            [2200, 77, 82.1],
+            [1940, 64, 68],
+            [1945, 64.5, 68.5],
+            [1950, 65, 69],
+            [1952, 67, 71],
+            [1956, 69, 73],
+            [1958, 69.5, 73.5],
+            [1959, 70, 74],
+            [1960, 70.5, 74.5],
+            [1961, 71, 75],
+            [1962, 71.1, 75.25],
+            [1963, 71.2, 75.5],
+            [1964, 71.3, 75.75],
+            [1965, 71.4, 76],
+            [1966, 71.5, 76.25],
+            [1967, 71.6, 76.5],
+            [1970, 72, 77],
+            [1972, 72.5, 77.5],
+            [1976, 73, 78],
+            [1981, 73.25, 78.3],
+            [1986, 73.5, 78.6],
+            [1992, 73.75, 79],
+            [1998, 74, 79.25],
+            [2004, 74.3, 79.5],
+            [2009, 74.6, 79.75],
+            [2014, 75, 80],
+            [2020, 75.2, 80.1],
+            [2050, 76, 80.5],
+            [2100, 77, 81],
+            [2150, 78, 81.5],
+            [2200, 79, 82],
         ], "bell", "float", "flat"),
         SLEfficiency: new AgeRandomValue([
-            [1940, 57, 62],
-            [1945, 59, 65],
-            [1950, 61, 66.5],
-            [1952, 63, 68],
-            [1956, 65.5, 71],
-            [1958, 66.5, 72],
-            [1959, 67.2, 72.8],
-            [1960, 68.1, 73.4],
-            [1961, 69.2, 73.8],
-            [1962, 69.7, 74.1],
-            [1963, 70.2, 74.3],
-            [1964, 70.6, 74.4],
-            [1965, 71, 74.5],
-            [1966, 71.3, 75],
-            [1967, 71.7, 75.5],
-            [1970, 72, 76],
-            [1972, 72.2, 76.2],
-            [1976, 72.3, 76.4],
-            [1981, 72.6, 76.6],
-            [1986, 72.8, 76.8],
-            [1992, 73, 77],
-            [1998, 73.5, 78.6],
-            [2004, 74, 79.2],
-            [2009, 74.5, 79.9],
-            [2014, 75, 80.5],
-            [2020, 75.7, 81],
-            [2050, 76.4, 81.5],
-            [2100, 77.3, 82],
-            [2150, 78.1, 82.5],
-            [2200, 80, 83],
+            [1940, 84, 87],
+            [1945, 85, 88.5],
+            [1950, 85.5, 89.5],
+            [1952, 86, 90],
+            [1956, 86.5, 90],
+            [1958, 86.6, 90.5],
+            [1959, 86.7, 91],
+            [1960, 86.8, 91.1],
+            [1961, 86.9, 91.2],
+            [1962, 87, 91.3],
+            [1963, 87.1, 91.4],
+            [1964, 87.2, 91.5],
+            [1965, 87.3, 91.6],
+            [1966, 87.4, 91.7],
+            [1967, 87.5, 91.8],
+            [1970, 87.6, 91.9],
+            [1972, 87.7, 92],
+            [1976, 87.8, 92.1],
+            [1981, 88, 92.4],
+            [1986, 88.5, 92.7],
+            [1992, 89, 93],
+            [1998, 89.5, 93.25],
+            [2004, 90, 93.5],
+            [2009, 91, 93.75],
+            [2014, 92, 94],
+            [2020, 92.15, 94.1],
+            [2050, 92.5, 94.3],
+            [2100, 93, 94.5],
+            [2150, 93.5, 94.75],
+            [2200, 94, 95],
         ], "bell", "float", "flat"),
         Cost: (thrust, year, costMultiplier) => {
             let cost = (0.00004 * thrust * thrust) + (0.3 * thrust) + 30;
@@ -13685,8 +13685,8 @@ class Wernher {
             engine.FuelRatioItems.push([fuel, rng.Get(year)]);
         });
         engine.Thrust = engineCycle.Thrust.Get(year);
-        engine.AtmIsp = engineCycle.SLEfficiency.Get(year) * propellantMix.MaximumIsp * propellantMix.SLIspMultiplier / 100;
         engine.VacIsp = engineCycle.VacEfficiency.Get(year) * propellantMix.MaximumIsp / 100;
+        engine.AtmIsp = (100 - ((100 - engineCycle.SLEfficiency.Get(year)) * propellantMix.SLIspLossCoefficient)) * engine.VacIsp / 100;
         engine.Cost = engineVariant.CostMultiplier.Get(year);
         engine.Cost = engineCycle.Cost(engine.Thrust, year, engineVariant.CostMultiplier.Get(year));
         engine.EntryCost = engine.Cost * engineVariant.EntryCostMultiplier.Get(year);
@@ -13730,8 +13730,8 @@ class ConstantValue {
 }
 const PropellantMixList = {
     [PropellantMix.Hydrolox]: {
-        MaximumIsp: 510,
-        SLIspMultiplier: 0.86,
+        MaximumIsp: 540,
+        SLIspLossCoefficient: 1.35,
         Plume: Plume.GP_Hydrolox,
         Propellants: [
             [Fuel.LqdHydrogen, new ConstantValue(1)],
@@ -13739,7 +13739,7 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.Kerolox]: {
         MaximumIsp: 400,
-        SLIspMultiplier: 0.9,
+        SLIspLossCoefficient: 1.1,
         Plume: Plume.GP_Kerolox,
         Propellants: [
             [Fuel.Kerosene, new ConstantValue(1)],
@@ -13747,7 +13747,7 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.Methalox]: {
         MaximumIsp: 430,
-        SLIspMultiplier: 0.885,
+        SLIspLossCoefficient: 1.18,
         Plume: Plume.GP_Methalox,
         Propellants: [
             [Fuel.LqdMethane, new ConstantValue(1)],
@@ -13755,7 +13755,7 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.Hydynelox]: {
         MaximumIsp: 372,
-        SLIspMultiplier: 0.9,
+        SLIspLossCoefficient: 1.0,
         Plume: Plume.GP_Hydynelox,
         Propellants: [
             [Fuel.Hydyne, new ConstantValue(1)],
@@ -13763,7 +13763,7 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.Alcolox]: {
         MaximumIsp: 360,
-        SLIspMultiplier: 0.9,
+        SLIspLossCoefficient: 1.0,
         Plume: Plume.GP_Alcolox,
         Propellants: [
             [Fuel.Ethanol, new ConstantValue(1)],
@@ -13771,7 +13771,7 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.Ammonialox]: {
         MaximumIsp: 350,
-        SLIspMultiplier: 0.89,
+        SLIspLossCoefficient: 1.05,
         Plume: Plume.GP_Ammonialox,
         Propellants: [
             [Fuel.LqdAmmonia, new ConstantValue(1)],
@@ -13779,7 +13779,7 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.UDMH_NTO]: {
         MaximumIsp: 390,
-        SLIspMultiplier: 0.92,
+        SLIspLossCoefficient: 0.94,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UDMH, new ConstantValue(1)],
@@ -13787,7 +13787,7 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.UH25_NTO]: {
         MaximumIsp: 385,
-        SLIspMultiplier: 0.925,
+        SLIspLossCoefficient: 0.93,
         Plume: Plume.GP_Hypergolic,
         Propellants: [
             [Fuel.UH25, new ConstantValue(1)],
@@ -13795,7 +13795,7 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.AE50_NTO]: {
         MaximumIsp: 380,
-        SLIspMultiplier: 0.93,
+        SLIspLossCoefficient: 0.92,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.Aerozine50, new ConstantValue(1)],
@@ -13803,7 +13803,7 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.MMH_NTO]: {
         MaximumIsp: 375,
-        SLIspMultiplier: 0.93,
+        SLIspLossCoefficient: 0.92,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.MMH, new ConstantValue(1)],
@@ -13811,21 +13811,21 @@ const PropellantMixList = {
         ]
     }, [PropellantMix.Hydrazine]: {
         MaximumIsp: 320,
-        SLIspMultiplier: 0.85,
+        SLIspLossCoefficient: 1.4,
         Plume: Plume.GP_OmsRed,
         Propellants: [
             [Fuel.Hydrazine, new ConstantValue(1)]
         ]
     }, [PropellantMix.HTP]: {
         MaximumIsp: 240,
-        SLIspMultiplier: 0.9,
+        SLIspLossCoefficient: 1.0,
         Plume: Plume.GP_OmsWhite,
         Propellants: [
             [Fuel.HTP, new ConstantValue(1)]
         ]
     }, [PropellantMix.CaveaB]: {
         MaximumIsp: 350,
-        SLIspMultiplier: 0.8,
+        SLIspLossCoefficient: 1.2,
         Plume: Plume.GP_OmsWhite,
         Propellants: [
             [Fuel.CaveaB, new ConstantValue(1)]

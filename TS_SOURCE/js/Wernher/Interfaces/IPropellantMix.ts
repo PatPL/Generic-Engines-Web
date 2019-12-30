@@ -6,9 +6,9 @@ interface IPropellantMix {
     readonly MaximumIsp: number;
     
     /**
-     * SL Isp bonus roughly based on propellant's density
+     * Higher - propmix worse in SL (More Isp loss in atm)
      */
-    readonly SLIspMultiplier: number;
+    readonly SLIspLossCoefficient: number;
     
     /**
      * Propellants and their respective ratio be weight

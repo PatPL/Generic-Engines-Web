@@ -56,8 +56,8 @@ class Wernher {
         });
         
         engine.Thrust = engineCycle.Thrust.Get (year);
-        engine.AtmIsp = engineCycle.SLEfficiency.Get (year) * propellantMix.MaximumIsp * propellantMix.SLIspMultiplier / 100;
         engine.VacIsp = engineCycle.VacEfficiency.Get (year) * propellantMix.MaximumIsp / 100;
+        engine.AtmIsp = (100 - ((100 - engineCycle.SLEfficiency.Get (year)) * propellantMix.SLIspLossCoefficient)) * engine.VacIsp / 100;
         engine.Cost = engineVariant.CostMultiplier.Get (year);
         engine.Cost = engineCycle.Cost (engine.Thrust, year, engineVariant.CostMultiplier.Get (year));
         engine.EntryCost = engine.Cost * engineVariant.EntryCostMultiplier.Get (year);

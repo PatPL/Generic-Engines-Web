@@ -123,6 +123,11 @@ interface IModelInfo extends IImageSelectable {
      * The name of the animation, that extends the nozzle
      */
     readonly ExtendNozzleAnimation?: string;
+    /**
+     * Used by Wernher to appropiately scale engines
+     * Does NOT include exhause nozzles, only the main ones
+     */
+    readonly NozzleCount: number;
     
 }
 

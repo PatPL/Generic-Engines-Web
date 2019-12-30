@@ -1683,7 +1683,8 @@ ModelInfo.models = [
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
             exhaustBellWidth: 0.0757
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.285,
@@ -1725,7 +1726,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "aj10"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.865,
@@ -1757,7 +1759,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/RS25.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.12,
@@ -1785,7 +1788,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/Thruster.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.234,
@@ -1827,7 +1831,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "48-7SHeat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.459,
@@ -1860,7 +1865,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "colorAnimation"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.802,
@@ -1901,7 +1907,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "HeatAnimationAdvancedEngine"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.445,
@@ -1944,7 +1951,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "HeatAnimatioEmissiveLiquidEngine3"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.05265,
@@ -1974,7 +1982,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/SRBLong.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.773,
@@ -2006,7 +2015,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "Flea"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.5945,
@@ -2036,7 +2046,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "RT-2"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.043,
@@ -2066,7 +2077,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "HeatAnimationSRB"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.445,
@@ -2108,7 +2120,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "HeatAnimatioEmissiveLiquidEngine3"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.996,
@@ -2161,7 +2174,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustTransform",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.653,
@@ -2197,7 +2211,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.602,
@@ -2242,7 +2257,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.226,
@@ -2292,7 +2308,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "105-7PHeat"
-        ]
+        ],
+        NozzleCount: 2,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.773,
@@ -2320,7 +2337,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/OMSL.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.225,
@@ -2350,7 +2368,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "overheatService"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.9,
@@ -2380,7 +2399,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "ShortNTR"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.407,
@@ -2413,7 +2433,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "PoodleHeat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.16,
@@ -2458,7 +2479,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.01155,
@@ -2497,7 +2519,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "ksp_l_midrangeEngine_anim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.96,
@@ -2536,7 +2559,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "nerva"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.074,
@@ -2573,7 +2597,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "nerva"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.5,
@@ -2606,7 +2631,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "kopo4e"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.512,
@@ -2640,7 +2666,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "castoranim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.517,
@@ -2675,7 +2702,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "k170heat"
-        ]
+        ],
+        NozzleCount: 4,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.671,
@@ -2714,7 +2742,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "25midenganim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.143,
@@ -2752,7 +2781,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "blackadderheatanim"
-        ]
+        ],
+        NozzleCount: 2,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.142,
@@ -2785,7 +2815,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "blackadderheatanim"
-        ]
+        ],
+        NozzleCount: 8,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.66,
@@ -2825,7 +2856,8 @@ ModelInfo.models = [
             ["AJ10-137-Target-Fuel1", "AJ10-137-FuelJoint1"],
             ["AJ10-137-Target-Fuel2", "AJ10-137-FuelJoint2"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.707,
@@ -2861,7 +2893,8 @@ ModelInfo.models = [
             ["AJ10-190-Target-Fuel1", "AJ10-190-FuelJoint1"],
             ["AJ10-190-Target-Fuel2", "AJ10-190-FuelJoint2"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.446,
@@ -2898,7 +2931,8 @@ ModelInfo.models = [
             ["F1-Target-FuelRight", "F1-FuelLineRight"],
             ["F1-Target-FuelCenter", "F1-FuelLineCenter"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.165,
@@ -2941,7 +2975,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.757,
@@ -2977,7 +3012,8 @@ ModelInfo.models = [
             ["H-1-Target-FuelLeft", "H-1-FuelJointLeft"],
             ["H-1-Target-FuelRight", "H-1-FuelJointRight"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.332,
@@ -3013,7 +3049,8 @@ ModelInfo.models = [
             ["J-2-Target-FuelLeft", "J-2-FuelLineLeft"],
             ["J-2-Target-FuelRight", "J-2-FuelLineRight"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.943,
@@ -3049,7 +3086,8 @@ ModelInfo.models = [
             ["J-2X-Target-FuelLeft", "J-2X-FuelLineLeft"],
             ["J-2X-Target-FuelRight", "J-2X-FuelLineRight"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.512,
@@ -3078,7 +3116,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/LMAE.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.904,
@@ -3112,7 +3151,8 @@ ModelInfo.models = [
             ["LMDE-GimbalUpper2", "LMDE-GimbalLower2"],
             ["LMDE-GimbalLower2", "LMDE-GimbalUpper2"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.412,
@@ -3154,7 +3194,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.611,
@@ -3196,7 +3237,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.597,
@@ -3236,7 +3278,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "Merlin-1A-RollGimbal",
             exhaustGimbalTransform: "Merlin-1A-RollGimbal",
             exhaustEffectTransform: "Merlin-1A-RollFXTransform",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.599,
@@ -3276,7 +3319,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "Merlin-1B-RollGimbal",
             exhaustGimbalTransform: "Merlin-1B-RollGimbal",
             exhaustEffectTransform: "Merlin-1B-RollFXTransform",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.599,
@@ -3316,7 +3360,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "Merlin-1BV-RollGimbal",
             exhaustGimbalTransform: "Merlin-1BV-RollGimbal",
             exhaustEffectTransform: "Merlin-1BV-RollFXTransform",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.601,
@@ -3356,7 +3401,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "effectTransform",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.601,
@@ -3390,7 +3436,8 @@ ModelInfo.models = [
             ["Merlin-1DV-Strut-Lower2", "Merlin-1DV-Strut-Upper2"],
             ["Merlin-1DV-Strut-Upper2", "Merlin-1DV-Strut-Lower2"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.471,
@@ -3419,7 +3466,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/RD107.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 4,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.964,
@@ -3465,7 +3513,8 @@ ModelInfo.models = [
             ["RD-171-GimbalUpper8", "RD-171-GimbalLower8"],
             ["RD-171-GimbalLower8", "RD-171-GimbalUpper8"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 4,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.963,
@@ -3507,7 +3556,8 @@ ModelInfo.models = [
             ["RD-180-GimbalRightLower2", "RD-180-GimbalRightUpper2"],
             ["RD-180-GimbalRightUpper2", "RD-180-GimbalRightLower2"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 4,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.964,
@@ -3543,7 +3593,8 @@ ModelInfo.models = [
             ["RD-181-GimbalUpper2", "RD-181-GimbalLower2"],
             ["RD-181-GimbalLower2", "RD-181-GimbalUpper2"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.671,
@@ -3579,7 +3630,8 @@ ModelInfo.models = [
             ["RL10A-3-Target-FuelLeft", "RL10A-3-FuelJointLeft"],
             ["RL10A-3-Target-FuelRight", "RL10A-3-FuelJointRight"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         OriginalHeight: 1.48,
         OriginalBellWidth: 0.798,
@@ -3616,7 +3668,8 @@ ModelInfo.models = [
             ["RL10A-4-Target-FuelRight", "RL10A-4-FuelJointRight"],
         ],
         HeatAnimations: [],
-        ExtendNozzleAnimation: "SC-ENG-RL10A-4-Deploy"
+        ExtendNozzleAnimation: "SC-ENG-RL10A-4-Deploy",
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.25,
@@ -3652,7 +3705,8 @@ ModelInfo.models = [
             ["RL10A-5-Target-FuelLeft", "RL10A-5-FuelJointLeft"],
             ["RL10A-5-Target-FuelRight", "RL10A-5-FuelJointRight"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         OriginalHeight: 2.555,
         OriginalBellWidth: 1.27,
@@ -3689,7 +3743,8 @@ ModelInfo.models = [
             ["RL10B-2-Target-FuelRight", "RL10B-2-FuelJointRight"],
         ],
         HeatAnimations: [],
-        ExtendNozzleAnimation: "SC-ENG-RL10B-2-Deploy"
+        ExtendNozzleAnimation: "SC-ENG-RL10B-2-Deploy",
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.569,
@@ -3725,7 +3780,8 @@ ModelInfo.models = [
             ["RS-25-Target-FuelLeft", "RS-25-FuelJointLeft"],
             ["RS-25-Target-FuelRight", "RS-25-FuelJointRight"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.61,
@@ -3767,7 +3823,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.128,
@@ -3795,7 +3852,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/SuperDraco.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.321,
@@ -3823,7 +3881,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/SuperDracoV.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.824,
@@ -3858,7 +3917,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "FRE-1Heat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.38,
@@ -3935,7 +3995,8 @@ ModelInfo.models = [
             ["Base3.011", "Piston3.011"],
             ["Base4.011", "Piston4.011"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 12,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.517,
@@ -3971,7 +4032,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "LE-5Heat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.12,
@@ -4007,7 +4069,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "LE-7Heat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.276,
@@ -4039,7 +4102,8 @@ ModelInfo.models = [
             ["Base3", "Piston3"],
             ["Base4", "Piston4"]
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.322,
@@ -4075,7 +4139,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "RutherfordHeat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.679,
@@ -4112,7 +4177,8 @@ ModelInfo.models = [
         HeatAnimations: [
             "RutherfordHeat",
             "RutherfordVacHeat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 2.326,
@@ -4147,7 +4213,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "P80Heat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.036,
@@ -4182,7 +4249,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "Zefiro9Heat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.449,
@@ -4217,7 +4285,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "Zefiro23Heat"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.944,
@@ -4253,7 +4322,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.8,
@@ -4289,7 +4359,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.639,
@@ -4323,7 +4394,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "bluedog_ApolloBlock2Service_Emit"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.578,
@@ -4360,7 +4432,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "LEM_spsA_Emit_Anim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.81,
@@ -4395,7 +4468,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/ApolloSPSBlockV.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.531,
@@ -4426,7 +4500,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "LEM_Ascent_Emit_Anim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.811,
@@ -4457,7 +4532,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "LEM_Descent_Emit_Anim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.723,
@@ -4493,7 +4569,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "LR89_Heat_Anim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.111,
@@ -4524,7 +4601,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "LR101_Heat_Anim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.73,
@@ -4560,7 +4638,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "bluedog_Atlas_LR105_Emit"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.819,
@@ -4600,7 +4679,8 @@ ModelInfo.models = [
         ],
         HeatAnimations: [
             "RD180_Heat_Anim"
-        ]
+        ],
+        NozzleCount: 4,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.641,
@@ -4634,7 +4714,8 @@ ModelInfo.models = [
             ["lowerGimbal", "upperGimbal"],
             ["upperGimbal", "lowerGimbal"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         OriginalHeight: 1.512,
         OriginalBellWidth: 0.73,
@@ -4671,7 +4752,8 @@ ModelInfo.models = [
         HeatAnimations: [
             "RL10A41_Emit"
         ],
-        ExtendNozzleAnimation: "extend"
+        ExtendNozzleAnimation: "extend",
+        NozzleCount: 1,
     }, {
         OriginalHeight: 2.08,
         OriginalBellWidth: 0.905,
@@ -4711,7 +4793,8 @@ ModelInfo.models = [
         HeatAnimations: [
             "RL10B2_Emit"
         ],
-        ExtendNozzleAnimation: "extend"
+        ExtendNozzleAnimation: "extend",
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.508,
@@ -4742,7 +4825,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "GEM60_Emit_Anim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.813,
@@ -4771,7 +4855,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/AJ10_BDB.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.865,
@@ -4799,7 +4884,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/Rita.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.498,
@@ -4827,7 +4913,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/Rubis.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.219,
@@ -4857,7 +4944,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/Topaze.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 4,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.346,
@@ -4888,7 +4976,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "Able_Emit_Anim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.480,
@@ -4919,7 +5008,8 @@ ModelInfo.models = [
         LookatPairs: [],
         HeatAnimations: [
             "Able_Emit_Anim"
-        ]
+        ],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.269,
@@ -4955,7 +5045,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "polySurface27",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 3,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.885,
@@ -4989,7 +5080,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "vernierTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.284,
@@ -5026,7 +5118,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "vernierTransform",
             exhaustGimbalTransform: "vernierTransform",
             exhaustEffectTransform: "vernierTransform",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.975,
@@ -5068,7 +5161,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.106,
@@ -5096,7 +5190,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/Sargent.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.376,
@@ -5131,7 +5226,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "vernierEffects",
             exhaustGimbalTransform: "vernierTransform",
             exhaustEffectTransform: "vernierEffects",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.7,
@@ -5167,7 +5263,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "vernierEffects",
             exhaustGimbalTransform: "vernierTransform",
             exhaustEffectTransform: "vernierEffects",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.99,
@@ -5203,7 +5300,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.96,
@@ -5236,7 +5334,8 @@ ModelInfo.models = [
             ["lowerGimbal1", "upperGimbal1"],
             ["upperGimbal1", "lowerGimbal1"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.589,
@@ -5270,7 +5369,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.588,
@@ -5303,7 +5403,8 @@ ModelInfo.models = [
             ["LowerGimbal1", "UpperGimbal1"],
             ["UpperGimbal1", "LowerGimbal1"],
         ],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.147,
@@ -5339,7 +5440,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.248,
@@ -5369,7 +5471,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/J2T.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.904,
@@ -5405,7 +5508,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 3.914,
@@ -5442,7 +5546,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "vernierTransform",
             exhaustGimbalTransform: "vernierGimbal",
             exhaustEffectTransform: "vernierTransform",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.708,
@@ -5476,7 +5581,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.692,
@@ -5510,7 +5616,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.854,
@@ -5544,7 +5651,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustGimbal",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.497,
@@ -5572,7 +5680,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/Soltan.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.9,
@@ -5600,7 +5709,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/UA1205.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.9,
@@ -5628,7 +5738,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/UA1207.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.742,
@@ -5656,7 +5767,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/Transtage.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 2,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.677,
@@ -5701,7 +5813,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustTransform",
-        }
+        },
+        NozzleCount: 2,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.735,
@@ -5746,7 +5859,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustTransform",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.733,
@@ -5787,7 +5901,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.918,
@@ -5828,7 +5943,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.67,
@@ -5869,7 +5985,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.977,
@@ -5910,7 +6027,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "exhaustTransform",
             exhaustGimbalTransform: "exhaustTransform",
             exhaustEffectTransform: "exhaustEffect",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.95,
@@ -5951,7 +6069,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "vernierThrust",
             exhaustGimbalTransform: "vernierGimbal",
             exhaustEffectTransform: "vernierFX",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 0.934,
@@ -5992,7 +6111,8 @@ ModelInfo.models = [
             exhaustThrustTransform: "vernierThrust",
             exhaustGimbalTransform: "vernierGimbal",
             exhaustEffectTransform: "vernierFX",
-        }
+        },
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.9,
@@ -6026,7 +6146,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/SRMU.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.75,
@@ -6059,7 +6180,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/UA1205_NEW.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }, {
         get OriginalHeight() { return this.NodeStackTop - this.NodeStackBottom; },
         OriginalBellWidth: 1.75,
@@ -6092,7 +6214,8 @@ ModelInfo.models = [
         ImageSource: "img/modelPreviews/UA1207_NEW.webp",
         get ImageLabel() { return this.ModelName; },
         LookatPairs: [],
-        HeatAnimations: []
+        HeatAnimations: [],
+        NozzleCount: 1,
     }
 ];
 class PlumeInfo {
@@ -13690,11 +13813,12 @@ class Wernher {
         engine.Cost = engineVariant.CostMultiplier.Get(year);
         engine.Cost = engineCycle.Cost(engine.Thrust, year, engineVariant.CostMultiplier.Get(year));
         engine.EntryCost = engine.Cost * engineVariant.EntryCostMultiplier.Get(year);
-        engine.UseBaseWidth = false;
-        engine.Width = engineCycle.BellWidth(engine.Thrust, year);
-        engine.Mass = engineCycle.Mass(engine.Width, year) / 1000;
         engine.NeedsUllage = engineCycle.Ullage;
         engine.ModelID = engineCycle.Models[Math.floor(Math.random() * engineCycle.Models.length)];
+        let modelInfo = ModelInfo.GetModelInfo(engine.ModelID);
+        engine.UseBaseWidth = false;
+        engine.Width = engineCycle.BellWidth(engine.Thrust, year) / Math.sqrt(modelInfo.NozzleCount);
+        engine.Mass = engineCycle.Mass(engine.Width, year) / 1000;
         engine.EnableTestFlight = true;
         engine.StartReliability10k = engineCycle.TestFlight10kIgnition.Get(year);
         engine.StartReliability0 = engine.StartReliability10k - engineCycle.TestFlight10kIgnitionDeficiency.Get(year);

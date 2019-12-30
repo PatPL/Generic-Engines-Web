@@ -62,12 +62,13 @@ class Wernher {
         engine.Cost = engineCycle.Cost (engine.Thrust, year, engineVariant.CostMultiplier.Get (year));
         engine.EntryCost = engine.Cost * engineVariant.EntryCostMultiplier.Get (year);
         
-        engine.UseBaseWidth = false;
-        engine.Width = engineCycle.BellWidth (engine.Thrust, year);
-        engine.Mass = engineCycle.Mass (engine.Width, year) / 1000;
-        
         engine.NeedsUllage = engineCycle.Ullage;
         engine.ModelID = engineCycle.Models[Math.floor (Math.random () * engineCycle.Models.length)];
+        let modelInfo = ModelInfo.GetModelInfo (engine.ModelID);
+        
+        engine.UseBaseWidth = false;
+        engine.Width = engineCycle.BellWidth (engine.Thrust, year) / Math.sqrt (modelInfo.NozzleCount);
+        engine.Mass = engineCycle.Mass (engine.Width, year) / 1000;
         
         engine.EnableTestFlight = true;
         engine.StartReliability10k = engineCycle.TestFlight10kIgnition.Get (year);

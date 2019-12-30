@@ -193,7 +193,7 @@ class Engine implements ITableElement<Engine> {
             a.PlumeID, b.PlumeID,
             a.ID, b.ID
         ), Dimensions: (a, b) => Engine.RegularSort (
-            a.GetWidth (), b.GetWidth (),
+            a.GetBaseWidth (), b.GetBaseWidth (),
             a.GetHeight (), b.GetHeight (),
             a.ID, b.ID
         ), Gimbal: (a, b) => {
@@ -1117,10 +1117,10 @@ class Engine implements ITableElement<Engine> {
     
     public GetBaseWidth (): number {
         if (this.UseBaseWidth) {
-            return this.Width;
+            return this.GetWidth ();
         } else {
             let modelInfo = ModelInfo.GetModelInfo (this.GetModelID ());
-            return this.Width * modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
+            return this.GetWidth () * modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
         }
     }
     

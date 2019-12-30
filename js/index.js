@@ -9146,11 +9146,11 @@ class Engine {
     }
     GetBaseWidth() {
         if (this.UseBaseWidth) {
-            return this.Width;
+            return this.GetWidth();
         }
         else {
             let modelInfo = ModelInfo.GetModelInfo(this.GetModelID());
-            return this.Width * modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
+            return this.GetWidth() * modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
         }
     }
     RehidePolyFields(cols) {
@@ -9516,7 +9516,7 @@ Engine._ColumnSorts = {
             }
         }
         return Engine.RegularSort(a.ID, b.ID);
-    }, Ignitions: (a, b) => Engine.RegularSort(a.IsMultiMode(), b.IsMultiMode(), a.Ignitions <= 0 ? 999999999 : a.Ignitions, b.Ignitions <= 0 ? 999999999 : b.Ignitions, a.ID, b.ID), Visuals: (a, b) => Engine.RegularSort(a.GetModelID(), b.GetModelID(), a.PlumeID, b.PlumeID, a.ID, b.ID), Dimensions: (a, b) => Engine.RegularSort(a.GetWidth(), b.GetWidth(), a.GetHeight(), b.GetHeight(), a.ID, b.ID), Gimbal: (a, b) => {
+    }, Ignitions: (a, b) => Engine.RegularSort(a.IsMultiMode(), b.IsMultiMode(), a.Ignitions <= 0 ? 999999999 : a.Ignitions, b.Ignitions <= 0 ? 999999999 : b.Ignitions, a.ID, b.ID), Visuals: (a, b) => Engine.RegularSort(a.GetModelID(), b.GetModelID(), a.PlumeID, b.PlumeID, a.ID, b.ID), Dimensions: (a, b) => Engine.RegularSort(a.GetBaseWidth(), b.GetBaseWidth(), a.GetHeight(), b.GetHeight(), a.ID, b.ID), Gimbal: (a, b) => {
         let output = Engine.RegularSort(a.IsSlave(), b.IsSlave());
         if (output) {
             return output;

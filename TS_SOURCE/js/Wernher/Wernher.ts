@@ -55,6 +55,9 @@ class Wernher {
             engine.FuelRatioItems.push ([fuel, rng.Get (year)]);
         });
         
+        engine.Ignitions = engineCycle.Ignitions.Get (year);
+        engine.MinThrust = engineCycle.MinimumThrust.Get (year);
+        
         engine.Thrust = engineCycle.Thrust.Get (year);
         engine.VacIsp = engineCycle.VacEfficiency.Get (year) * propellantMix.MaximumIsp / 100;
         engine.AtmIsp = (100 - ((100 - engineCycle.SLEfficiency.Get (year)) * propellantMix.SLIspLossCoefficient)) * engine.VacIsp / 100;

@@ -13340,6 +13340,14 @@ var PropellantMix;
     PropellantMix[PropellantMix["HTP"] = 11] = "HTP";
     PropellantMix[PropellantMix["CaveaB"] = 12] = "CaveaB";
 })(PropellantMix || (PropellantMix = {}));
+class ConstantValue {
+    constructor(value) {
+        this.value = value;
+    }
+    Get() {
+        return this.value;
+    }
+}
 class WRand {
     static Linear(min, max) {
         return Math.random() * (max - min) + min;
@@ -13487,6 +13495,95 @@ class RandomValue {
             output = Math.round(output);
         }
         return output;
+    }
+}
+class AgeFunctionRandom {
+    constructor(biasPoints, leftFunction, rightFunction, ends) {
+        this.biasPoints = biasPoints;
+        this.leftFunction = leftFunction;
+        this.rightFunction = rightFunction;
+        this.ends = ends;
+        if (biasPoints.length < 2) {
+            throw "AgeFunctionRandom needs at least two year range points";
+        }
+        biasPoints.sort((a, b) => {
+            if (a[0] > b[0]) {
+                return 1;
+            }
+            else if (a[0] < b[0]) {
+                return -1;
+            }
+            else {
+                console.warn("Age duplicate in this RNG: ", this);
+                return 0;
+            }
+        });
+    }
+    Get(year) {
+        let bias = 0;
+        if (year < this.biasPoints[0][0] || year > this.biasPoints[this.biasPoints.length - 1][0]) {
+            switch (this.ends) {
+                case "flat":
+                    if (year < this.biasPoints[0][0]) {
+                        bias = this.biasPoints[0][1];
+                    }
+                    else {
+                        bias = this.biasPoints[this.biasPoints.length - 1][1];
+                    }
+                    break;
+                case "continue":
+                    let p1;
+                    let p2;
+                    if (year < this.biasPoints[0][0]) {
+                        p1 = this.biasPoints[0];
+                        p2 = this.biasPoints[1];
+                    }
+                    else {
+                        p1 = this.biasPoints[this.biasPoints.length - 1];
+                        p2 = this.biasPoints[this.biasPoints.length - 2];
+                    }
+                    let dx = p2[0] - p1[0];
+                    let dbias = p2[1] - p1[1];
+                    bias = ((year - p1[0]) / dx) * dbias + p1[1];
+                    break;
+            }
+        }
+        else {
+            let index = 0;
+            for (let i = 0; i < this.biasPoints.length - 1; ++i) {
+                if (this.biasPoints[i + 1][0] >= year) {
+                    index = i;
+                    break;
+                }
+            }
+            let p1 = this.biasPoints[index];
+            let p2 = this.biasPoints[index + 1];
+            let dx = p2[0] - p1[0];
+            let dbias = p2[1] - p1[1];
+            bias = ((year - p1[0]) / dx) * dbias + p1[1];
+        }
+        if (Math.random() > bias) {
+            if (typeof this.leftFunction == "function") {
+                return this.leftFunction(year);
+            }
+            else if (typeof this.leftFunction == "number") {
+                return this.leftFunction;
+            }
+            else {
+                return this.leftFunction.Get(year);
+            }
+        }
+        else {
+            if (typeof this.rightFunction == "function") {
+                return this.rightFunction(year);
+            }
+            else if (typeof this.rightFunction == "number") {
+                return this.rightFunction;
+            }
+            else {
+                return this.rightFunction.Get(year);
+            }
+        }
     }
 }
 class FunctionRandom {
@@ -13649,6 +13746,34 @@ const EngineCycleList = {
             [2150, 93.5, 94.75],
             [2200, 94, 95],
         ], "bell", "float", "flat"),
+        Ignitions: new AgeFunctionRandom([
+            [1940, 0.0],
+            [1955, 0.0],
+            [1965, 0.1],
+            [1980, 0.2],
+            [2020, 0.4],
+            [2200, 0.8],
+        ], 1, new AgeRandomValue([
+            [1955, 2, 3],
+            [1980, 2, 5],
+            [2020, 3, 8],
+            [2200, 4, 12]
+        ], "logarithmic", "integer", "flat"), "flat"),
+        MinimumThrust: new AgeFunctionRandom([
+            [1940, 0.0],
+            [1950, 0.0],
+            [1955, 0.1],
+            [1965, 0.2],
+            [1980, 0.4],
+            [2020, 0.6],
+            [2200, 0.9],
+        ], 100, new AgeRandomValue([
+            [1950, 85, 95],
+            [1965, 70, 90],
+            [1980, 60, 85],
+            [2020, 40, 80],
+            [2200, 20, 75],
+        ], "linear", "integer", "flat"), "flat"),
         Cost: (thrust, year, costMultiplier) => {
             let cost = (0.00004 * thrust * thrust) + (0.3 * thrust) + 30;
             cost *= WernherHelper.RegularYearCostMultiplier(year);
@@ -13807,6 +13932,8 @@ class Wernher {
         propellantMix.Propellants.forEach(([fuel, rng]) => {
             engine.FuelRatioItems.push([fuel, rng.Get(year)]);
         });
+        engine.Ignitions = engineCycle.Ignitions.Get(year);
+        engine.MinThrust = engineCycle.MinimumThrust.Get(year);
         engine.Thrust = engineCycle.Thrust.Get(year);
         engine.VacIsp = engineCycle.VacEfficiency.Get(year) * propellantMix.MaximumIsp / 100;
         engine.AtmIsp = (100 - ((100 - engineCycle.SLEfficiency.Get(year)) * propellantMix.SLIspLossCoefficient)) * engine.VacIsp / 100;
@@ -13844,17 +13971,9 @@ class WernherHelper {
         return 40 / (year - 1886) + 0.47;
     }
 }
-class ConstantValue {
-    constructor(value) {
-        this.value = value;
-    }
-    Get() {
-        return this.value;
-    }
-}
 const PropellantMixList = {
     [PropellantMix.Hydrolox]: {
-        MaximumIsp: 540,
+        MaximumIsp: 520,
         SLIspLossCoefficient: 1.35,
         Plume: Plume.GP_Hydrolox,
         Propellants: [

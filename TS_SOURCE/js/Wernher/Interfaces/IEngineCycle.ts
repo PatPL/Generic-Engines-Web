@@ -9,6 +9,9 @@ interface IEngineCycle {
     readonly SLEfficiency: IRandomValueProvider;
     readonly VacEfficiency: IRandomValueProvider;
     
+    readonly Ignitions: IRandomValueProvider;
+    readonly MinimumThrust: IRandomValueProvider;
+    
     /**
      * Per-unit cost of the engine (VF)
      */

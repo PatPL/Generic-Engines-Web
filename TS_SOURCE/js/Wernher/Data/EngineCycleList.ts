@@ -1,7 +1,9 @@
 /// <reference path="../Enums/EngineCycle.ts" />
 /// <reference path="../Enums/PropellantMix.ts" />
+/// <reference path="../Random/ConstantValue.ts" />
 /// <reference path="../Random/AgeRandomValue.ts" />
 /// <reference path="../Random/RandomValue.ts" />
+/// <reference path="../Random/AgeFunctionRandom.ts" />
 /// <reference path="../Random/FunctionRandom.ts" />
 // why the hell do I have to do this by hand?
 
@@ -260,6 +262,54 @@ const EngineCycleList: { [cycle: number]: IEngineCycle } = { // { [cycle in Engi
             [Year.Rocketry2150, 93.5, 94.75],
             [Year.Rocketry2200, 94, 95],
         ], "bell", "float", "flat"),
+        Ignitions: new AgeFunctionRandom (
+            [
+                [1940, 0.0],
+                [1955, 0.0],
+                [1965, 0.1],
+                [1980, 0.2],
+                [2020, 0.4],
+                [2200, 0.8],
+            ],
+            1,
+            new AgeRandomValue (
+                [
+                    [1955, 2, 3],
+                    [1980, 2, 5],
+                    [2020, 3, 8],
+                    [2200, 4, 12]
+                ],
+                "logarithmic",
+                "integer",
+                "flat"
+            ),
+            "flat"
+        ),
+        MinimumThrust: new AgeFunctionRandom (
+            [
+                [1940, 0.0],
+                [1950, 0.0],
+                [1955, 0.1],
+                [1965, 0.2],
+                [1980, 0.4],
+                [2020, 0.6],
+                [2200, 0.9],
+            ],
+            100,
+            new AgeRandomValue (
+                [
+                    [1950, 85, 95],
+                    [1965, 70, 90],
+                    [1980, 60, 85],
+                    [2020, 40, 80],
+                    [2200, 20, 75],
+                ],
+                "linear",
+                "integer",
+                "flat",
+            ),
+            "flat"
+        ),
         Cost: (thrust, year, costMultiplier) => {
             // https://www.desmos.com/calculator/kjhbiusugt
             let cost = (0.00004 * thrust * thrust) + (0.3 * thrust) + 30;

@@ -3,7 +3,7 @@
 /// <reference path="../Enums/PropellantMix.ts" />
 const PropellantMixList: { [propmix in PropellantMix]: IPropellantMix } = {
     [PropellantMix.Hydrolox]: {
-        MaximumIsp: 540,
+        MaximumIsp: 520,
         SLIspLossCoefficient: 1.35,
         Plume: Plume.GP_Hydrolox,
         Propellants: [

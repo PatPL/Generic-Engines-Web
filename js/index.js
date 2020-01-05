@@ -638,7 +638,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.3";
+Version.CurrentVersion = "Web.0.9.3.1";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -994,9 +994,6 @@ addEventListener("DOMContentLoaded", () => {
         }
     };
     MainEngineTable.RebuildTable();
-    setInterval(() => {
-        Autosave.Save(MainEngineTable.Items, ListName);
-    }, 1000 * 60 * 2);
 });
 function NewButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to clear current list?")) {

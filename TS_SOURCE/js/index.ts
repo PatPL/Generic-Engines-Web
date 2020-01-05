@@ -268,14 +268,6 @@ addEventListener ("DOMContentLoaded", () => {
     };
     MainEngineTable.RebuildTable ();
     
-    // Autosave
-    setInterval (
-        () => {
-            Autosave.Save (MainEngineTable.Items, ListName);
-        },
-        1000 * 60 * 2
-    );
-    
 });
 
 /* Interferes with copy-pasting other values

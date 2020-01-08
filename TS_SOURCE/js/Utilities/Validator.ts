@@ -1,21 +1,21 @@
 class Validator {
     
-    public static Validate (engines: Engine[]): string[] {
+    public static Validate (engines: Engine[], checkInactiveEnginesToo: boolean = false): string[] {
         let output: string[] = [];
         
-        output = output.concat (this.CheckDuplicateIDs (engines));
-        output = output.concat (this.CheckPolymorphismConsistency (engines));
+        output = output.concat (this.CheckDuplicateIDs (engines, checkInactiveEnginesToo));
+        output = output.concat (this.CheckPolymorphismConsistency (engines, checkInactiveEnginesToo));
         
         return output;
     }
     
-    private static CheckPolymorphismConsistency (engines: Engine[]): string[] {
+    private static CheckPolymorphismConsistency (engines: Engine[], checkInactiveEnginesToo: boolean): string[] {
         let output: string[] = [];
         // Name, isModeMaster, Links
         let Masters: { [id: string]: [boolean, number] } = {};
         
         engines.forEach (e => {
-            if (!e.Active) {
+            if (!e.Active && !checkInactiveEnginesToo) {
                 //Ignore inactive engines
                 return; //continue?
             }
@@ -32,7 +32,7 @@ class Validator {
         });
         
         engines.forEach (e => {
-            if (!e.Active) {
+            if (!e.Active && !checkInactiveEnginesToo) {
                 //Ignore inactive engines
                 return; //continue?
             }
@@ -75,12 +75,12 @@ class Validator {
         return output;
     }
     
-    private static CheckDuplicateIDs (engines: Engine[]): string[] {
+    private static CheckDuplicateIDs (engines: Engine[], checkInactiveEnginesToo: boolean): string[] {
         let output: string[] = [];
         let takenIDs: string[] = [];
         
         engines.forEach (e => {
-            if (!e.Active) {
+            if (!e.Active && !checkInactiveEnginesToo) {
                 //Ignore inactive engines
                 return; //continue?
             }

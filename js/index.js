@@ -330,8 +330,18 @@ class HtmlTable {
             columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter).toString());
             let cellField = new EditableField(newItem, columnID, columnCell);
             cellField.OnValueChange = () => {
-                if (this.currentSort && this.currentSort[0] == columnID) {
-                    this.SortItems();
+                if (this.currentSort) {
+                    if (this.currentSort[0] == columnID) {
+                        this.SortItems();
+                    }
+                    let sortDependencies = newItem.ColumnSortDependencies();
+                    if (sortDependencies[this.currentSort[0]]) {
+                        sortDependencies[this.currentSort[0]].forEach(d => {
+                            if (d == columnID) {
+                                this.SortItems();
+                            }
+                        });
+                    }
                 }
                 if (this.OnChange) {
                     this.OnChange();
@@ -557,6 +567,7 @@ class HtmlTable {
     SortItems() {
         this.DisplayedRowOrder.length = 0;
         if (this.currentSort && this.Items.length > 0) {
+            let hadErrors = false;
             let sorts = this.Items[0].ColumnSorts();
             if (sorts.hasOwnProperty(this.currentSort[0])) {
                 let sortFunction = sorts[this.currentSort[0]];
@@ -565,7 +576,13 @@ class HtmlTable {
                     map.push([i, this.Rows[i][0], this.Rows[i][1]]);
                 }
                 map.sort((a, b) => {
-                    return sortFunction(a[2], b[2]) * this.currentSort[1];
+                    try {
+                        return sortFunction(a[2], b[2]) * this.currentSort[1];
+                    }
+                    catch (e) {
+                        hadErrors = true;
+                        return -1 * this.currentSort[1];
+                    }
                 });
                 map.forEach(row => {
                     let hideRow = null;
@@ -585,6 +602,10 @@ class HtmlTable {
                         }
                     });
                 });
+                if (hadErrors && this.Items[0] instanceof Engine) {
+                    Notifier.Warn("Most likely caused by incorrect polymorphism. (Check disabled engines too)", 5000);
+                    Notifier.Warn("There are some validation errors in this list, that prevent correct sorting", 5000);
+                }
                 return;
             }
             else {
@@ -8456,6 +8477,9 @@ class Engine {
         }
         return 0;
     }
+    ColumnSortDependencies() {
+        return Engine._ColumnSortDependencies;
+    }
     ColumnSorts() {
         return Engine._ColumnSorts;
     }
@@ -9383,6 +9407,29 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b00000
     }
 };
+Engine._ColumnSortDependencies = {
+    Active: ["ID"],
+    Labels: ["Polymorphism", "ID"],
+    EngineVariant: ["Polymorphism", "ID"],
+    Mass: ["Polymorphism", "ID"],
+    Propulsion: ["ID"],
+    MinThrust: ["ID"],
+    PressureFed: ["ID"],
+    NeedsUllage: ["ID"],
+    TechUnlockNode: ["Polymorphism", "ID"],
+    EntryCost: ["Polymorphism", "ID"],
+    Cost: ["Polymorphism", "ID"],
+    AlternatorPower: ["Polymorphism", "ID"],
+    ThrustCurve: ["ID"],
+    Polymorphism: ["ID"],
+    FuelRatios: ["ID"],
+    Ignitions: ["Polymorphism", "ID"],
+    Visuals: ["Polymorphism", "ID"],
+    Dimensions: ["Polymorphism", "ID"],
+    Gimbal: ["Polymorphism", "ID"],
+    TestFlight: ["Polymorphism", "ID"],
+    Tank: ["Polymorphism", "ID"],
+};
 Engine._ColumnSorts = {
     Active: (a, b) => Engine.RegularSort(a.Active, b.Active, a.ID, b.ID),
     ID: (a, b) => Engine.RegularSort(a.ID, b.ID),
@@ -9394,25 +9441,25 @@ Engine._ColumnSorts = {
     TechUnlockNode: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID), EntryCost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.EntryCost, b.EntryCost, a.ID, b.ID), Cost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.Cost, b.Cost, a.ID, b.ID), AlternatorPower: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.AlternatorPower, b.AlternatorPower, a.ID, b.ID), ThrustCurve: (a, b) => Engine.RegularSort(a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
     Polymorphism: (a, b) => {
         let output = Engine.RegularSort(a.PolyType, b.PolyType);
-        if (output) {
+        if (output != 0) {
             return output;
         }
         if (a.PolyType == PolymorphismType.MultiModeSlave ||
             a.PolyType == PolymorphismType.MultiConfigSlave) {
             output = Engine.RegularSort(a.MasterEngineName, b.MasterEngineName);
-            if (output) {
+            if (output != 0) {
                 return output;
             }
         }
         return Engine.RegularSort(a.ID, b.ID);
     }, FuelRatios: (a, b) => {
         let output = Engine.RegularSort(a.FuelRatioItems.length, b.FuelRatioItems.length);
-        if (output) {
+        if (output != 0) {
             return output;
         }
         for (let i = 0; i < a.FuelRatioItems.length; ++i) {
             output = Engine.RegularSort(a.FuelRatioItems[i][0], b.FuelRatioItems[i][0]);
-            if (output) {
+            if (output != 0) {
                 return output;
             }
         }
@@ -13178,17 +13225,17 @@ const MetricPrefix = [
     ["y", 1e-24],
 ];
 class Validator {
-    static Validate(engines) {
+    static Validate(engines, checkInactiveEnginesToo = false) {
         let output = [];
-        output = output.concat(this.CheckDuplicateIDs(engines));
-        output = output.concat(this.CheckPolymorphismConsistency(engines));
+        output = output.concat(this.CheckDuplicateIDs(engines, checkInactiveEnginesToo));
+        output = output.concat(this.CheckPolymorphismConsistency(engines, checkInactiveEnginesToo));
         return output;
     }
-    static CheckPolymorphismConsistency(engines) {
+    static CheckPolymorphismConsistency(engines, checkInactiveEnginesToo) {
         let output = [];
         let Masters = {};
         engines.forEach(e => {
-            if (!e.Active) {
+            if (!e.Active && !checkInactiveEnginesToo) {
                 return;
             }
             switch (e.PolyType) {
@@ -13201,7 +13248,7 @@ class Validator {
             }
         });
         engines.forEach(e => {
-            if (!e.Active) {
+            if (!e.Active && !checkInactiveEnginesToo) {
                 return;
             }
             switch (e.PolyType) {
@@ -13232,11 +13279,11 @@ class Validator {
         });
         return output;
     }
-    static CheckDuplicateIDs(engines) {
+    static CheckDuplicateIDs(engines, checkInactiveEnginesToo) {
         let output = [];
         let takenIDs = [];
         engines.forEach(e => {
-            if (!e.Active) {
+            if (!e.Active && !checkInactiveEnginesToo) {
                 return;
             }
             if (/[^A-Za-z0-9-]/.test(e.ID)) {

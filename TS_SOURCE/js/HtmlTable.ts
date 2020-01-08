@@ -68,10 +68,24 @@ class HtmlTable<T extends ITableElement<T>> {
             columnCell.setAttribute ("data-tableRow", (HtmlTable.RowCounter).toString ());
             let cellField = new EditableField (newItem, columnID, columnCell);
             cellField.OnValueChange = () => {
-                // Resort the list only if the change was made in the currently sorted column
-                if (this.currentSort && this.currentSort[0] == columnID) {
-                    this.SortItems ();
+                // Resort the list only if the change was made in the currently sorted column,
+                // or in a column that influences how this column gets sorted
+                if (this.currentSort) {
+                    if (this.currentSort[0] == columnID) {
+                        this.SortItems ();
+                    }
+                    
+                    let sortDependencies = newItem.ColumnSortDependencies ();
+                    if (sortDependencies[this.currentSort[0]]) {
+                        sortDependencies[this.currentSort[0]].forEach (d => {
+                            // Sort if this column is a dependency to the current sort
+                            if (d == columnID) {
+                                this.SortItems ();
+                            }
+                        });
+                    }
                 }
+                
                 if (this.OnChange) { this.OnChange () };
             }
             
@@ -338,6 +352,7 @@ class HtmlTable<T extends ITableElement<T>> {
         this.DisplayedRowOrder.length = 0;
         
         if (this.currentSort && this.Items.length > 0) {
+            let hadErrors = false;
             let sorts = this.Items[0].ColumnSorts ();
             if ((sorts as Object).hasOwnProperty (this.currentSort[0])) {
                 let sortFunction = sorts[this.currentSort[0]];
@@ -349,7 +364,12 @@ class HtmlTable<T extends ITableElement<T>> {
                 
                 // Sort items according to the selected sort function
                 map.sort ((a, b) => {
-                    return sortFunction (a[2], b[2]) * this.currentSort![1];
+                    try {
+                        return sortFunction (a[2], b[2]) * this.currentSort![1];
+                    } catch (e) {
+                        hadErrors = true;
+                        return -1 * this.currentSort![1];
+                    }
                 });
                 
                 // Apply the new item order
@@ -374,6 +394,14 @@ class HtmlTable<T extends ITableElement<T>> {
                         }
                     });
                 });
+                
+                // Special case to report errors in engine lists
+                if (hadErrors && this.Items[0] instanceof Engine) {
+                    // Notifiers spawns messages bottom to top, so this message is flipped
+                    Notifier.Warn ("Most likely caused by incorrect polymorphism. (Check disabled engines too)", 5000);
+                    Notifier.Warn ("There are some validation errors in this list, that prevent correct sorting", 5000);
+                }
+                
                 return; // Don't fall-through to regular item order
             } else {
                 // This column has no sort function, revert to regular item order (Fall-through)

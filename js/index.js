@@ -58,13 +58,16 @@ class EditableField {
         }
         EditableField.EditedField = null;
         this.ShowEditMode(false);
-        if (this.OnSaveEdit && saveChanges) {
-            this.OnSaveEdit();
+        if (this.OnValueChange && saveChanges) {
+            this.OnValueChange();
         }
     }
     SetValue(newValue) {
         this.ValueOwner[this.ValueName] = newValue;
         this.ApplyValueToDisplayElement();
+        if (this.OnValueChange) {
+            this.OnValueChange();
+        }
     }
     RefreshDisplayElement() {
         this.ApplyValueToDisplayElement();
@@ -99,8 +102,8 @@ class EditableField {
             tmp.type = "checkbox";
             tmp.addEventListener("change", (e) => {
                 this.ValueOwner[this.ValueName] = tmp.checked;
-                if (this.OnSaveEdit) {
-                    this.OnSaveEdit();
+                if (this.OnValueChange) {
+                    this.OnValueChange();
                 }
             });
             output = tmp;
@@ -326,8 +329,12 @@ class HtmlTable {
             columnCell.classList.add("content-cell");
             columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter).toString());
             let cellField = new EditableField(newItem, columnID, columnCell);
-            cellField.OnSaveEdit = () => {
+            cellField.OnValueChange = () => {
                 this.SortItems();
+                if (this.OnChange) {
+                    this.OnChange();
+                }
+                ;
             };
             if (newItem.hasOwnProperty("EditableFields")) {
                 newItem.EditableFields.push(cellField);
@@ -344,32 +351,48 @@ class HtmlTable {
     }
     AddItems(newItem) {
         if (Array.isArray(newItem)) {
-            newItem.forEach(item => {
-                this.RawAddItem(item);
-            });
+            if (newItem.length > 0) {
+                newItem.forEach(item => {
+                    this.RawAddItem(item);
+                });
+                if (this.currentSort) {
+                    this.SortItems();
+                }
+                if (this.OnChange) {
+                    this.OnChange();
+                }
+            }
         }
         else {
             this.RawAddItem(newItem);
-        }
-        if (this.currentSort) {
-            this.SortItems();
+            if (this.currentSort) {
+                this.SortItems();
+            }
+            if (this.OnChange) {
+                this.OnChange();
+            }
         }
     }
     RemoveSelectedItems() {
-        this.SelectedRows.forEach(row => {
-            this.Rows[row][0].forEach(element => {
-                element.remove();
+        if (this.SelectedRows.length > 0) {
+            this.SelectedRows.forEach(row => {
+                this.Rows[row][0].forEach(element => {
+                    element.remove();
+                });
+                this.Items.splice(this.Items.indexOf(this.Rows[row][1]), 1);
+                this.DisplayedRowOrder.splice(this.DisplayedRowOrder.findIndex(x => x == row.toString()), 1);
+                delete this.Rows[row];
             });
-            this.Items.splice(this.Items.indexOf(this.Rows[row][1]), 1);
-            this.DisplayedRowOrder.splice(this.DisplayedRowOrder.findIndex(x => x == row.toString()), 1);
-            delete this.Rows[row];
-        });
-        this.SelectedRows = [];
-        if (this.OnSelectedItemChange) {
-            this.OnSelectedItemChange(undefined);
-        }
-        if (this.currentSort) {
-            this.SortItems();
+            this.SelectedRows = [];
+            if (this.OnSelectedItemChange) {
+                this.OnSelectedItemChange(undefined);
+            }
+            if (this.currentSort) {
+                this.SortItems();
+            }
+            if (this.OnChange) {
+                this.OnChange();
+            }
         }
     }
     SelectRow(appendToggle, row, rangeSelect = false) {
@@ -638,7 +661,7 @@ class Notifier {
 Notifier.NotificationLifetime = 7500;
 class Version {
 }
-Version.CurrentVersion = "Web.0.9.3.1";
+Version.CurrentVersion = "Web.0.9.3.2";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
@@ -807,6 +830,11 @@ window.onbeforeunload = (e) => {
         return;
     }
 };
+for (let i in localStorage) {
+    if (/.enl.autosave$/.test(i)) {
+        localStorage.removeItem(i);
+    }
+}
 function ApplySettings() {
     document.documentElement.style.setProperty("--infoNotificationBackgroundPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
 }
@@ -992,6 +1020,13 @@ addEventListener("DOMContentLoaded", () => {
         else {
             ApplyEngineToInfoPanel(new Engine(), true);
         }
+    };
+    Autosave.SetSession(ListName);
+    ListNameDisplay.OnValueChange = () => {
+        Autosave.SetSession(ListName);
+    };
+    MainEngineTable.OnChange = () => {
+        Autosave.Save(MainEngineTable.Items);
     };
     MainEngineTable.RebuildTable();
 });
@@ -7368,7 +7403,7 @@ class BrowserCacheDialog {
         container.innerHTML = "";
         let lists = [];
         for (let i in localStorage) {
-            if (/^(.)+\.enl.autosave$/.test(i)) {
+            if (/^(.)+\.enl.autosave2$/.test(i)) {
                 lists.push(i);
             }
         }
@@ -7377,15 +7412,17 @@ class BrowserCacheDialog {
             let listItem = document.createElement("div");
             listItem.classList.add("option-button");
             listItem.addEventListener("click", () => {
-                this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl.autosave$/, ""));
+                Autosave.Enabled = false;
+                this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl.autosave2$/, "").replace(/^[0-9]+-/, ""));
+                Autosave.Enabled = true;
             });
-            let tmp = i.replace(/\.enl.autosave$/, "").split("-");
+            let tmp = i.replace(/\.enl.autosave2$/, "").split("-");
             for (let i = 2; i < tmp.length; ++i) {
                 tmp[1] += `-${tmp[i]}`;
             }
             tmp.length = 2;
             let time = new Date(parseInt(tmp[0]));
-            listItem.title = `@${time.toLocaleString()} | ${tmp[1]}`;
+            listItem.title = `This file started being edited at ${time.toLocaleString()} | ${tmp[1]}`;
             listItem.innerHTML = `@${time.toLocaleString()} | ${tmp[1]}`;
             container.appendChild(listItem);
         });
@@ -11467,28 +11504,64 @@ class AllTankDefinition {
     }
 }
 class Autosave {
-    static Save(list, name) {
-        let data = Serializer.SerializeMany(list);
-        let timestamp = new Date().getTime().toString();
-        timestamp = "0".repeat(24 - timestamp.length) + timestamp;
-        let autosaveName = `${timestamp}-${name}.enl.autosave`;
-        Store.SetBinary(autosaveName, data);
-        this.Trim();
+    static RequestAutosaveToken(force = false) {
+        if (force) {
+            this.ResetAutosaveTimeout();
+        }
+        if (this.recentlyAutosaved) {
+            return false;
+        }
+        else {
+            this.recentlyAutosaved = true;
+            this.autosaveTimeoutID = setTimeout(() => {
+                this.recentlyAutosaved = false;
+                if (this.LOGGING) {
+                    console.log("Autosave armed");
+                }
+            }, this.AUTOSAVE_TIMEOUT);
+            return true;
+        }
     }
-    static Trim() {
-        let autosaves = [];
-        for (let i in localStorage) {
-            if (/^(.)+\.enl.autosave$/.test(i)) {
-                autosaves.push(i);
+    static ResetAutosaveTimeout() {
+        clearTimeout(this.autosaveTimeoutID);
+        this.recentlyAutosaved = false;
+        if (this.LOGGING) {
+            console.log("Autosave armed");
+        }
+    }
+    static Save(list) {
+        if (this.Enabled && this.RequestAutosaveToken()) {
+            if (this.currentEngineListName && this.sessionStartTimestamp) {
+                let data = Serializer.SerializeMany(list);
+                let timestamp = this.sessionStartTimestamp.getTime().toString();
+                timestamp = "0".repeat(24 - timestamp.length) + timestamp;
+                let autosaveName = `${timestamp}-${this.currentEngineListName}.enl.autosave2`;
+                Store.SetBinary(autosaveName, data);
+                if (this.LOGGING) {
+                    console.log("Autosave fired");
+                }
+            }
+            else {
+                console.warn("Can't autosave without setting any session first. Use `Autosave.SetSession (filename)` first.");
             }
         }
-        autosaves = autosaves.sort((a, b) => a < b ? 1 : -1);
-        for (let i = autosaves.length - 1; i >= this.AUTOSAVE_LIMIT; --i) {
-            localStorage.removeItem(autosaves[i]);
+    }
+    static SetSession(listName) {
+        if (listName != this.currentEngineListName) {
+            this.currentEngineListName = listName;
+            this.sessionStartTimestamp = new Date();
+            this.ResetAutosaveTimeout();
+            if (this.LOGGING) {
+                console.log("Started a new autosave session: ", this.currentEngineListName, this.sessionStartTimestamp);
+            }
         }
     }
+    ;
 }
-Autosave.AUTOSAVE_LIMIT = 128;
+Autosave.LOGGING = false;
+Autosave.Enabled = true;
+Autosave.AUTOSAVE_TIMEOUT = 60 * 1000;
+Autosave.recentlyAutosaved = false;
 class BitConverter {
     static ByteArrayToBase64(data) {
         return btoa(String.fromCharCode.apply(null, data));
@@ -11525,8 +11598,14 @@ BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
-function Debug_AutosaveImmediately() {
-    Autosave.Save(MainEngineTable.Items, ListName);
+function Debug_RemoveAllAutosaves() {
+    if (confirm("You are about to permanently remove all autosaves.\n\nAre you sure?")) {
+        for (let i in localStorage) {
+            if (/.enl.autosave2$/.test(i)) {
+                localStorage.removeItem(i);
+            }
+        }
+    }
 }
 function Debug_LogLocalStorageUsage() {
     let usedB = 0;
@@ -11544,7 +11623,7 @@ function Debug_LogLocalStorageUsage() {
     console.log(`Used bytes: ${usedB}`);
     console.log(`Used chars: ${usedB / 2}`);
     console.log("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
-    console.log("Maximum should be around 5MB");
+    console.log("Maximum should be around 5MB or 5 million chars, It's a poorly defined standard tbh");
 }
 function Debug_GetCurrentCustomThemeAsCSSRule() {
     let vars = JSON.parse(atob(Settings.custom_theme));

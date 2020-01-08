@@ -80,7 +80,7 @@ class BrowserCacheDialog {
         let lists: string[] = [];
         
         for (let i in localStorage) {
-            if (/^(.)+\.enl.autosave$/.test (i)) {
+            if (/^(.)+\.enl.autosave2$/.test (i)) {
                 lists.push (i);
             }
         }
@@ -92,11 +92,16 @@ class BrowserCacheDialog {
             listItem.classList.add ("option-button");
             
             listItem.addEventListener ("click", () => {
-                this.FinishTransaction (Store.GetBinary (i), i.replace (/\.enl.autosave$/, ""));
+                // do not re-autosave this file
+                Autosave.Enabled = false;
+                
+                this.FinishTransaction (Store.GetBinary (i), i.replace (/\.enl.autosave2$/, "").replace (/^[0-9]+-/, ""));
+                
+                Autosave.Enabled = true;
             });
             
-            // [timestamp]-[name].enl.autosave
-            let tmp = i.replace (/\.enl.autosave$/, "").split ("-");
+            // [timestamp]-[name].enl.autosave2
+            let tmp = i.replace (/\.enl.autosave2$/, "").split ("-");
             for (let i = 2; i < tmp.length; ++i) {
                 // .split (limit) skips the rest of the string once it hits the limit
                 // It needs to be reappended
@@ -105,7 +110,7 @@ class BrowserCacheDialog {
             tmp.length = 2;
             
             let time = new Date (parseInt (tmp[0]));
-            listItem.title = `@${ time.toLocaleString () } | ${ tmp[1] }`;
+            listItem.title = `This file started being edited at ${ time.toLocaleString () } | ${ tmp[1] }`;
             listItem.innerHTML = `@${ time.toLocaleString () } | ${ tmp[1] }`;
             container.appendChild (listItem);
         });

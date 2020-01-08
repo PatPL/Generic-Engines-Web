@@ -27,6 +27,15 @@ window.onbeforeunload = (e: any) => {
     }
 }
 
+// Purge the old autosaves, if any exist
+// *.enl.autosave  <- old autosave file
+// *.enl.autosave2 <- new autosave file
+for (let i in localStorage) {
+    if (/.enl.autosave$/.test (i)) {
+        localStorage.removeItem (i);
+    }
+}
+
 function ApplySettings () {
     //Toggle info panel
     document.documentElement.style.setProperty ("--infoNotificationBackgroundPanelWidth", `${ Settings.show_info_panel ? 320 : 0 }px`);
@@ -259,6 +268,7 @@ addEventListener ("DOMContentLoaded", () => {
     
     MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
+    
     MainEngineTable.OnSelectedItemChange = selectedEngine => {
         if (selectedEngine) {
             ApplyEngineToInfoPanel (selectedEngine);
@@ -266,6 +276,16 @@ addEventListener ("DOMContentLoaded", () => {
             ApplyEngineToInfoPanel (new Engine (), true);
         }
     };
+    
+    Autosave.SetSession (ListName);
+    ListNameDisplay.OnValueChange = () => {
+        Autosave.SetSession (ListName);
+    };
+    
+    MainEngineTable.OnChange = () => {
+        Autosave.Save (MainEngineTable.Items);
+    };
+    
     MainEngineTable.RebuildTable ();
     
 });
@@ -306,6 +326,7 @@ function OpenUploadButton_Click () {
     if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from file?")) {
         FileIO.OpenBinary (".enl", (data, filename) => {
             if (data) {
+                
                 filename = filename.replace (/\.enl$/, "");
                 ListNameDisplay.SetValue (filename);
                 

@@ -1,5 +1,7 @@
 class HtmlTable<T extends ITableElement<T>> {
     
+    // Fires when the contents of the table were changed
+    OnChange?: () => void;
     OnSelectedItemChange?: (selected?: T) => void;
     
     Items: T[] = [];
@@ -65,8 +67,9 @@ class HtmlTable<T extends ITableElement<T>> {
             columnCell.classList.add ("content-cell");
             columnCell.setAttribute ("data-tableRow", (HtmlTable.RowCounter).toString ());
             let cellField = new EditableField (newItem, columnID, columnCell);
-            cellField.OnSaveEdit = () => {
+            cellField.OnValueChange = () => {
                 this.SortItems ();
+                if (this.OnChange) { this.OnChange () };
             }
             
             if ((newItem as Object).hasOwnProperty ("EditableFields")) {
@@ -89,35 +92,45 @@ class HtmlTable<T extends ITableElement<T>> {
     
     public AddItems (newItem: T | T[]) {
         if (Array.isArray (newItem)) {
-            newItem.forEach (item => {
-                this.RawAddItem (item);
-            })
+            if (newItem.length > 0) {
+                newItem.forEach (item => {
+                    this.RawAddItem (item);
+                });
+                
+                // Resort the items if any sort is currently enabled
+                if (this.currentSort) { this.SortItems (); }
+                if (this.OnChange) { this.OnChange (); }
+            }
         } else {
             this.RawAddItem (newItem);
+            
+            // Resort the items if any sort is currently enabled
+            if (this.currentSort) { this.SortItems (); }
+            if (this.OnChange) { this.OnChange (); }
         }
-        
-        // Resort the items if any sort is currently enabled
-        if (this.currentSort) { this.SortItems (); }
     }
     
     public RemoveSelectedItems () {
-        this.SelectedRows.forEach (row => {
-            this.Rows[row][0].forEach (element => {
-                element.remove ();
+        if (this.SelectedRows.length > 0) {
+            this.SelectedRows.forEach (row => {
+                this.Rows[row][0].forEach (element => {
+                    element.remove ();
+                });
+                
+                this.Items.splice (this.Items.indexOf (this.Rows[row][1]), 1);
+                this.DisplayedRowOrder.splice (this.DisplayedRowOrder.findIndex (x => x == row.toString ()), 1);
+                delete this.Rows[row];
             });
             
-            this.Items.splice (this.Items.indexOf (this.Rows[row][1]), 1);
-            this.DisplayedRowOrder.splice (this.DisplayedRowOrder.findIndex (x => x == row.toString ()), 1);
-            delete this.Rows[row];
-        });
-        
-        this.SelectedRows = [];
-        if (this.OnSelectedItemChange) {
-            this.OnSelectedItemChange (undefined);
+            this.SelectedRows = [];
+            if (this.OnSelectedItemChange) {
+                this.OnSelectedItemChange (undefined);
+            }
+            
+            // Resort the items if any sort is currently enabled
+            if (this.currentSort) { this.SortItems (); }
+            if (this.OnChange) { this.OnChange (); }
         }
-        
-        // Resort the items if any sort is currently enabled
-        if (this.currentSort) { this.SortItems (); }
     }
     
     // appendToggle -> add to current selection (Ctrl key)

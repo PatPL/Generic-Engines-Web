@@ -239,4 +239,18 @@ class DebugLists {
         MainEngineTable.AddItems (toAppend);
     }
     
+    public static JustSpawnEngines (count?: number) {
+        if (!count) {
+            console.warn ("Usage: DebugLists.JustSpawnEngines (engineCount), ex. DebugLists.JustSpawnEngines (500)");
+            return;
+        }
+        
+        let toAppend = [];
+        for (let i = 0; i < count; ++i) {
+            toAppend.push (new Engine ());
+        }
+        
+        MainEngineTable.AddItems (toAppend);
+    }
+    
 }

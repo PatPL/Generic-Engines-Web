@@ -327,15 +327,6 @@ class HtmlTable<T extends ITableElement<T>> {
     }
     
     private SortItems () {
-        // Call it according to the setting
-        if (Settings.async_sort) {
-            setTimeout (() => this._SortItems (), 0);
-        } else {
-            this._SortItems ();
-        }
-    }
-    
-    private _SortItems () {
         this.DisplayedRowOrder.length = 0;
         
         if (this.currentSort && this.Items.length > 0) {

@@ -553,14 +553,6 @@ class HtmlTable {
         this.SortItems();
     }
     SortItems() {
-        if (Settings.async_sort) {
-            setTimeout(() => this._SortItems(), 0);
-        }
-        else {
-            this._SortItems();
-        }
-    }
-    _SortItems() {
         this.DisplayedRowOrder.length = 0;
         if (this.currentSort && this.Items.length > 0) {
             let sorts = this.Items[0].ColumnSorts();
@@ -790,10 +782,6 @@ const Settings = {
         return Store.GetText("setting:prettify_config", "0") == "1";
     }, set prettify_config(value) {
         Store.SetText("setting:prettify_config", value ? "1" : "0");
-    }, get async_sort() {
-        return Store.GetText("setting:async_sort", "0") == "1";
-    }, set async_sort(value) {
-        Store.SetText("setting:async_sort", value ? "1" : "0");
     }, get hide_disabled_fields_on_sort() {
         return Store.GetText("setting:hide_disabled_fields_on_sort", "1") == "1";
     }, set hide_disabled_fields_on_sort(value) {
@@ -11839,6 +11827,17 @@ class DebugLists {
             newEngine.UseTanks = true;
             newEngine.TanksVolume = newEngine.GetTankSizeEstimate();
             toAppend.push(newEngine);
+        }
+        MainEngineTable.AddItems(toAppend);
+    }
+    static JustSpawnEngines(count) {
+        if (!count) {
+            console.warn("Usage: DebugLists.JustSpawnEngines (engineCount), ex. DebugLists.JustSpawnEngines (500)");
+            return;
+        }
+        let toAppend = [];
+        for (let i = 0; i < count; ++i) {
+            toAppend.push(new Engine());
         }
         MainEngineTable.AddItems(toAppend);
     }

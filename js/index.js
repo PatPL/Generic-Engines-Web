@@ -330,7 +330,9 @@ class HtmlTable {
             columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter).toString());
             let cellField = new EditableField(newItem, columnID, columnCell);
             cellField.OnValueChange = () => {
-                this.SortItems();
+                if (this.currentSort && this.currentSort[0] == columnID) {
+                    this.SortItems();
+                }
                 if (this.OnChange) {
                     this.OnChange();
                 }

@@ -68,7 +68,10 @@ class HtmlTable<T extends ITableElement<T>> {
             columnCell.setAttribute ("data-tableRow", (HtmlTable.RowCounter).toString ());
             let cellField = new EditableField (newItem, columnID, columnCell);
             cellField.OnValueChange = () => {
-                this.SortItems ();
+                // Resort the list only if the change was made in the currently sorted column
+                if (this.currentSort && this.currentSort[0] == columnID) {
+                    this.SortItems ();
+                }
                 if (this.OnChange) { this.OnChange () };
             }
             
@@ -326,6 +329,11 @@ class HtmlTable<T extends ITableElement<T>> {
         this.SortItems ();
     }
     
+    // TODO: Room for improvement. Add 'sort' but only for swapping around single rows
+    // if the list is already sorted.
+    // ex. a row was changed.resort the list, find new position and insert the row there
+    // do the same thing to the poly children too, as some of their values might depend on its parent.
+    // (do it the other way around too?)
     private SortItems () {
         this.DisplayedRowOrder.length = 0;
         

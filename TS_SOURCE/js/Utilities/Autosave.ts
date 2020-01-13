@@ -6,9 +6,12 @@ class Autosave {
     // Used to temporarily disable autosave
     public static Enabled = true;
     
-    private static readonly AUTOSAVE_TIMEOUT = 60 * 1000;
+    private static readonly AUTOSAVE_TIMEOUT = 45 * 1000;
     private static autosaveTimeoutID?: number;
     private static recentlyAutosaved = false;
+    
+    private static readonly IDLE_AUTOSAVE_TIMEOUT = 15 * 1000;
+    private static inactivityAutosaveTimeoutID?: number;
     
     private static GetCurrentAutosaveName (): string {
         if (this.sessionStartTimestamp) {
@@ -22,6 +25,13 @@ class Autosave {
     }
     
     private static RequestAutosaveToken (force: boolean = false) {
+        if (!force) {
+            clearTimeout (this.inactivityAutosaveTimeoutID);
+            this.inactivityAutosaveTimeoutID = setTimeout (() => {
+                Autosave.Save (true);
+            }, this.IDLE_AUTOSAVE_TIMEOUT);
+        }
+        
         if (force) {
             this.ResetAutosaveTimeout ();
         }
@@ -46,10 +56,10 @@ class Autosave {
         if (this.LOGGING) { console.log ("Autosave armed"); }
     }
     
-    public static Save (list: Engine[]) {
-        if (this.Enabled && this.RequestAutosaveToken ()) {
+    public static Save (force: boolean = false) {
+        if (this.Enabled && this.RequestAutosaveToken (force)) {
             if (this.currentEngineListName && this.sessionStartTimestamp) {
-                let data = Serializer.SerializeMany (list);
+                let data = Serializer.SerializeMany (MainEngineTable.Items);
                 Store.SetBinary (this.GetCurrentAutosaveName (), data);
                 
                 if (this.LOGGING) { console.log ("Autosave fired"); }

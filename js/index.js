@@ -1100,7 +1100,7 @@ addEventListener("DOMContentLoaded", () => {
         Autosave.SetSession(ListName);
     };
     MainEngineTable.OnChange = () => {
-        Autosave.Save(MainEngineTable.Items);
+        Autosave.Save();
     };
     MainEngineTable.RebuildTable();
     if (!Settings.ignore_localstorage_usage) {
@@ -11639,6 +11639,12 @@ class Autosave {
         }
     }
     static RequestAutosaveToken(force = false) {
+        if (!force) {
+            clearTimeout(this.inactivityAutosaveTimeoutID);
+            this.inactivityAutosaveTimeoutID = setTimeout(() => {
+                Autosave.Save(true);
+            }, this.IDLE_AUTOSAVE_TIMEOUT);
+        }
         if (force) {
             this.ResetAutosaveTimeout();
         }
@@ -11663,10 +11669,10 @@ class Autosave {
             console.log("Autosave armed");
         }
     }
-    static Save(list) {
-        if (this.Enabled && this.RequestAutosaveToken()) {
+    static Save(force = false) {
+        if (this.Enabled && this.RequestAutosaveToken(force)) {
             if (this.currentEngineListName && this.sessionStartTimestamp) {
-                let data = Serializer.SerializeMany(list);
+                let data = Serializer.SerializeMany(MainEngineTable.Items);
                 Store.SetBinary(this.GetCurrentAutosaveName(), data);
                 if (this.LOGGING) {
                     console.log("Autosave fired");
@@ -11703,8 +11709,9 @@ class Autosave {
 }
 Autosave.LOGGING = false;
 Autosave.Enabled = true;
-Autosave.AUTOSAVE_TIMEOUT = 60 * 1000;
+Autosave.AUTOSAVE_TIMEOUT = 45 * 1000;
 Autosave.recentlyAutosaved = false;
+Autosave.IDLE_AUTOSAVE_TIMEOUT = 15 * 1000;
 class BitConverter {
     static ByteArrayToBase64(data) {
         return btoa(String.fromCharCode.apply(null, data));

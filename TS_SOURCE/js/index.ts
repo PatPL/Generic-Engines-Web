@@ -283,7 +283,7 @@ addEventListener ("DOMContentLoaded", () => {
     };
     
     MainEngineTable.OnChange = () => {
-        Autosave.Save (MainEngineTable.Items);
+        Autosave.Save ();
     };
     
     MainEngineTable.RebuildTable ();

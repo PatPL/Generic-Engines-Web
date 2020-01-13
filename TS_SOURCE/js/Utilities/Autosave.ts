@@ -10,6 +10,17 @@ class Autosave {
     private static autosaveTimeoutID?: number;
     private static recentlyAutosaved = false;
     
+    private static GetCurrentAutosaveName (): string {
+        if (this.sessionStartTimestamp) {
+            let timestamp = this.sessionStartTimestamp.getTime ().toString ();
+            timestamp = "0".repeat (24 - timestamp.length) + timestamp;
+            
+            return `${ timestamp }-${ this.currentEngineListName }.enl.autosave2`;
+        } else {
+            throw "No session in progress";
+        }
+    }
+    
     private static RequestAutosaveToken (force: boolean = false) {
         if (force) {
             this.ResetAutosaveTimeout ();
@@ -39,12 +50,7 @@ class Autosave {
         if (this.Enabled && this.RequestAutosaveToken ()) {
             if (this.currentEngineListName && this.sessionStartTimestamp) {
                 let data = Serializer.SerializeMany (list);
-                
-                let timestamp = this.sessionStartTimestamp.getTime ().toString ();
-                timestamp = "0".repeat (24 - timestamp.length) + timestamp;
-                
-                let autosaveName = `${ timestamp }-${ this.currentEngineListName }.enl.autosave2`;
-                Store.SetBinary (autosaveName, data);
+                Store.SetBinary (this.GetCurrentAutosaveName (), data);
                 
                 if (this.LOGGING) { console.log ("Autosave fired"); }
             } else {
@@ -71,5 +77,26 @@ class Autosave {
             }
         }
     };
+    
+    // Deletes current autosave file and resets the session
+    // (Called for example while saving current file)
+    // TODO: Hook it up & test
+    public static RestartSession () {
+        if (this.currentEngineListName) {
+            Store.Remove (this.GetCurrentAutosaveName ());
+            
+            if (this.LOGGING) {
+                console.log (
+                    "Ended autosave session: ",
+                    this.currentEngineListName,
+                    this.sessionStartTimestamp
+                );
+            }
+            
+            this.SetSession (this.currentEngineListName);
+        } else {
+            console.warn ("No session in progress that could be restarted");
+        }
+    }
     
 }

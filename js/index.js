@@ -1292,6 +1292,7 @@ function CacheListButton_Click() {
     let data = Serializer.SerializeMany(MainEngineTable.Items);
     if (!Store.Exists(`${ListName}.enl`) || confirm(`${ListName}.enl already exists in cache.\n\nDo you want to overwrite? Old file will be lost.`)) {
         Notifier.Info(`${ListName}.enl saved in cache`);
+        Autosave.RestartSession();
         Store.SetBinary(`${ListName}.enl`, data);
         FullscreenWindows["save-box"].style.display = "none";
     }
@@ -11627,6 +11628,16 @@ class AllTankDefinition {
     }
 }
 class Autosave {
+    static GetCurrentAutosaveName() {
+        if (this.sessionStartTimestamp) {
+            let timestamp = this.sessionStartTimestamp.getTime().toString();
+            timestamp = "0".repeat(24 - timestamp.length) + timestamp;
+            return `${timestamp}-${this.currentEngineListName}.enl.autosave2`;
+        }
+        else {
+            throw "No session in progress";
+        }
+    }
     static RequestAutosaveToken(force = false) {
         if (force) {
             this.ResetAutosaveTimeout();
@@ -11656,10 +11667,7 @@ class Autosave {
         if (this.Enabled && this.RequestAutosaveToken()) {
             if (this.currentEngineListName && this.sessionStartTimestamp) {
                 let data = Serializer.SerializeMany(list);
-                let timestamp = this.sessionStartTimestamp.getTime().toString();
-                timestamp = "0".repeat(24 - timestamp.length) + timestamp;
-                let autosaveName = `${timestamp}-${this.currentEngineListName}.enl.autosave2`;
-                Store.SetBinary(autosaveName, data);
+                Store.SetBinary(this.GetCurrentAutosaveName(), data);
                 if (this.LOGGING) {
                     console.log("Autosave fired");
                 }
@@ -11680,6 +11688,18 @@ class Autosave {
         }
     }
     ;
+    static RestartSession() {
+        if (this.currentEngineListName) {
+            Store.Remove(this.GetCurrentAutosaveName());
+            if (this.LOGGING) {
+                console.log("Ended autosave session: ", this.currentEngineListName, this.sessionStartTimestamp);
+            }
+            this.SetSession(this.currentEngineListName);
+        }
+        else {
+            console.warn("No session in progress that could be restarted");
+        }
+    }
 }
 Autosave.LOGGING = false;
 Autosave.Enabled = true;

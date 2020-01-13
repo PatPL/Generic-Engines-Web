@@ -542,6 +542,9 @@ function SaveButton_Click () {
 function DownloadListButton_Click () {
     let data = Serializer.SerializeMany (MainEngineTable.Items);
     
+    // Could not actually accept the file
+    // Autosave.RestartSession ();
+    
     FileIO.SaveBinary (`${ListName}.enl`, data);
     FullscreenWindows["save-box"].style.display = "none";
 }
@@ -551,6 +554,9 @@ function CacheListButton_Click () {
     
     if (!Store.Exists (`${ListName}.enl`) || confirm (`${ListName}.enl already exists in cache.\n\nDo you want to overwrite? Old file will be lost.`)) {
         Notifier.Info (`${ListName}.enl saved in cache`);
+        
+        Autosave.RestartSession ();
+        
         Store.SetBinary (`${ListName}.enl`, data);
         FullscreenWindows["save-box"].style.display = "none";
     } else {
@@ -567,6 +573,10 @@ function ClipboardListButton_Click () {
     
     if (success) {
         Notifier.Info ("Engine list has been copied to clipboard");
+        
+        // Could be easily lost
+        // Autosave.RestartSession ();
+        
         FullscreenWindows["save-box"].style.display = "none";
     } else {
         Notifier.Warn ("There was an error. Engine list was NOT copied to clipboard");

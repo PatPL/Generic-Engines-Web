@@ -343,11 +343,7 @@ class HtmlTable<T extends ITableElement<T>> {
         this.SortItems ();
     }
     
-    // TODO: Room for improvement. Add 'sort' but only for swapping around single rows
-    // if the list is already sorted.
-    // ex. a row was changed.resort the list, find new position and insert the row there
-    // do the same thing to the poly children too, as some of their values might depend on its parent.
-    // (do it the other way around too?)
+    private static readonly LOG_SORTING_PERFORMANCE: boolean = false;
     private SortItems () {
         this.DisplayedRowOrder.length = 0;
         
@@ -355,11 +351,38 @@ class HtmlTable<T extends ITableElement<T>> {
             let hadErrors = false;
             let sorts = this.Items[0].ColumnSorts ();
             if ((sorts as Object).hasOwnProperty (this.currentSort[0])) {
+                let startTime: number = 0;
+                let lapTime: number = 0;
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    console.warn ("Sort performance logging enabled");
+                    console.log (`Sorting action: Sort by ${ this.currentSort[0] }`);
+                    startTime = new Date ().getTime ();
+                    lapTime = startTime;
+                }
+                
                 let sortFunction = sorts[this.currentSort[0]];
                 // First, remap HTMLElements and Items to sort them
-                let map: [string, HTMLElement[], T][] = [];
+                // RowID, Cells, Item, original order
+                let originalMap: [string, HTMLElement[], T, number][] = [];
+                let map: [string, HTMLElement[], T, number][] = [];
                 for (let i in this.Rows) {
-                    map.push ([i, this.Rows[i][0], this.Rows[i][1]]);
+                    let order = 0;
+                    let marker = this.Rows[i][0][0].previousSibling;
+                    while (marker) {
+                        ++order;
+                        marker = marker.previousSibling;
+                    }
+                    
+                    map.push ([i, this.Rows[i][0], this.Rows[i][1], order]);
+                }
+                
+                // Copy the map, while remapping the objects to the order in the DOM
+                map.forEach (e => { originalMap[e[3]] = e });
+                
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date ().getTime ();
+                    console.log (`Sorting action: Items mapped in ${ now - lapTime }ms`);
+                    lapTime = now;
                 }
                 
                 // Sort items according to the selected sort function
@@ -371,6 +394,49 @@ class HtmlTable<T extends ITableElement<T>> {
                         return -1 * this.currentSort![1];
                     }
                 });
+                
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date ().getTime ();
+                    console.log (`Sorting action: Items sorted in ${ now - lapTime }ms`);
+                    lapTime = now;
+                }
+                
+                // Works, but doesn't save that many DOM operations overall.
+                // (Or my algorithm is bad, which is more likely IMO)
+                // Not that there's much to save, ID fallback causes everything to fly around
+                // Also, reversing the list is just as slow as it was before, as every element
+                // needs to be moved
+                // 
+                // // Calculate the necessary swaps
+                // let DOMSwaps: number[] = [];
+                // let lastIndex = map.length - 1;
+                // let lastCorrectIndex = lastIndex;
+                // for (let i = map.length - 2; i >= 0; --i) {
+                //     let thisIndex = map.findIndex (x => x[3] == originalMap[i][3]);
+                //     if (thisIndex >= lastCorrectIndex) {
+                //         continue;
+                //     }
+                    
+                //     if (thisIndex != lastIndex - 1) {
+                //         for (let i = lastCorrectIndex; i > thisIndex; --i) {
+                //             DOMSwaps.push (i);
+                //         }
+                //     } else {
+                        
+                //     }
+                    
+                //     lastIndex = thisIndex;
+                //     lastCorrectIndex = thisIndex;
+                // }
+                // DOMSwaps.push (0); // Doesn't work without it and I don't really want to try and figure out why
+                // console.log (`Saved ${ map.length - DOMSwaps.length } DOM operations (Performed ${ Math.floor (1000000 * DOMSwaps.length / map.length) / 10000 }% work of original one)`);
+                
+                // // Apply the swaps
+                // DOMSwaps.forEach (i => {
+                //     map[i][1].forEach ((cell, cellIndex) => {
+                //         cell.parentElement!.insertBefore (cell, map.length == i + 1 ? null : map[i + 1][1][cellIndex]);
+                //     });
+                // });
                 
                 // Apply the new item order
                 map.forEach (row => {
@@ -395,6 +461,12 @@ class HtmlTable<T extends ITableElement<T>> {
                     });
                 });
                 
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date ().getTime ();
+                    console.log (`Sorting action: DOM Manipulation finished in ${ now - lapTime }ms`);
+                    console.log (`Sorting action finished in ${ now - startTime }ms`);
+                }
+                
                 // Special case to report errors in engine lists
                 if (hadErrors && this.Items[0] instanceof Engine) {
                     // Notifiers spawns messages bottom to top, so this message is flipped
@@ -410,6 +482,13 @@ class HtmlTable<T extends ITableElement<T>> {
             // Disable sort, revert to regular item order (Fall-through)
         }
         
+        let startTime: number = 0;
+        if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+            console.warn ("Sort performance logging enabled");
+            console.log ("Sorting action: Reset item order");
+            startTime = new Date ().getTime ();
+        }
+        
         // Regular item order
         for (let i in this.Rows) {
             this.DisplayedRowOrder.push (i);
@@ -417,6 +496,12 @@ class HtmlTable<T extends ITableElement<T>> {
                 cell.parentNode!.appendChild (cell);
                 cell.style.display = "block";
             });
+        }
+        
+        if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+            let now = new Date ().getTime ();
+            console.log (`Sorting action: DOM Manipulation finished in ${ now - startTime }ms`);
+            console.log (`Sorting action finished in ${ now - startTime }ms`);
         }
     }
 }

@@ -570,10 +570,31 @@ class HtmlTable {
             let hadErrors = false;
             let sorts = this.Items[0].ColumnSorts();
             if (sorts.hasOwnProperty(this.currentSort[0])) {
+                let startTime = 0;
+                let lapTime = 0;
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    console.warn("Sort performance logging enabled");
+                    console.log(`Sorting action: Sort by ${this.currentSort[0]}`);
+                    startTime = new Date().getTime();
+                    lapTime = startTime;
+                }
                 let sortFunction = sorts[this.currentSort[0]];
+                let originalMap = [];
                 let map = [];
                 for (let i in this.Rows) {
-                    map.push([i, this.Rows[i][0], this.Rows[i][1]]);
+                    let order = 0;
+                    let marker = this.Rows[i][0][0].previousSibling;
+                    while (marker) {
+                        ++order;
+                        marker = marker.previousSibling;
+                    }
+                    map.push([i, this.Rows[i][0], this.Rows[i][1], order]);
+                }
+                map.forEach(e => { originalMap[e[3]] = e; });
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date().getTime();
+                    console.log(`Sorting action: Items mapped in ${now - lapTime}ms`);
+                    lapTime = now;
                 }
                 map.sort((a, b) => {
                     try {
@@ -584,6 +605,11 @@ class HtmlTable {
                         return -1 * this.currentSort[1];
                     }
                 });
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date().getTime();
+                    console.log(`Sorting action: Items sorted in ${now - lapTime}ms`);
+                    lapTime = now;
+                }
                 map.forEach(row => {
                     let hideRow = null;
                     if (Settings.hide_disabled_fields_on_sort && row[2] instanceof Engine) {
@@ -602,6 +628,11 @@ class HtmlTable {
                         }
                     });
                 });
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date().getTime();
+                    console.log(`Sorting action: DOM Manipulation finished in ${now - lapTime}ms`);
+                    console.log(`Sorting action finished in ${now - startTime}ms`);
+                }
                 if (hadErrors && this.Items[0] instanceof Engine) {
                     Notifier.Warn("Most likely caused by incorrect polymorphism. (Check disabled engines too)", 5000);
                     Notifier.Warn("There are some validation errors in this list, that prevent correct sorting", 5000);
@@ -613,6 +644,12 @@ class HtmlTable {
         }
         else {
         }
+        let startTime = 0;
+        if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+            console.warn("Sort performance logging enabled");
+            console.log("Sorting action: Reset item order");
+            startTime = new Date().getTime();
+        }
         for (let i in this.Rows) {
             this.DisplayedRowOrder.push(i);
             this.Rows[i][0].forEach(cell => {
@@ -620,9 +657,15 @@ class HtmlTable {
                 cell.style.display = "block";
             });
         }
+        if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+            let now = new Date().getTime();
+            console.log(`Sorting action: DOM Manipulation finished in ${now - startTime}ms`);
+            console.log(`Sorting action finished in ${now - startTime}ms`);
+        }
     }
 }
 HtmlTable.RowCounter = 1;
+HtmlTable.LOG_SORTING_PERFORMANCE = false;
 addEventListener("DOMContentLoaded", () => {
     Notifier.Container = document.querySelector(".notify-container");
 });
@@ -11886,7 +11929,18 @@ class DebugLists {
         }
         let toAppend = [];
         for (let i = 0; i < count; ++i) {
-            toAppend.push(new Engine());
+            let newEngine = new Engine();
+            newEngine.Active = true;
+            newEngine.ID = `SPAMMED-ENGINES-${("000000" + i).slice(-6)}`;
+            newEngine.EngineName = `ENGINE ${("00000000" + Math.floor(Math.random() * 100000000)).slice(-8)}; @${("000000" + i).slice(-6)}`;
+            newEngine.Thrust = Math.random() * 10000;
+            newEngine.MinThrust = Math.random() * 100;
+            newEngine.AtmIsp = Math.random() * 400;
+            newEngine.VacIsp = Math.random() * 500;
+            newEngine.Active = Math.random() > 0.5;
+            newEngine.PressureFed = Math.random() > 0.5;
+            newEngine.NeedsUllage = Math.random() > 0.5;
+            toAppend.push(newEngine);
         }
         MainEngineTable.AddItems(toAppend);
     }

@@ -790,6 +790,7 @@ document.addEventListener("DOMContentLoaded", () => {
 class SettingsDialog {
     static RefreshLocalStorageUsage() {
         document.getElementById("settings-localStorage-usage-display").innerHTML = Debug_GetLocalStorageUsage().toString();
+        document.getElementById("settings-localStorage-autosave-usage-display").innerHTML = Debug_GetLocalStorageUsage(/.enl.autosave2$/).toString();
     }
     static Show() {
         let inputs = this.SettingsBoxElement.querySelectorAll("input");
@@ -11718,7 +11719,7 @@ function Debug_RemoveAllAutosaves() {
         }
     }
 }
-function Debug_GetLocalStorageUsage() {
+function Debug_GetLocalStorageUsage(matchRegex) {
     let usedChars = 0;
     for (var k in localStorage) {
         if (k == "key" ||
@@ -11727,6 +11728,9 @@ function Debug_GetLocalStorageUsage() {
             k == "removeItem" ||
             k == "clear" ||
             k == "length") {
+            continue;
+        }
+        if (matchRegex && !matchRegex.test(k)) {
             continue;
         }
         usedChars += (k.length + localStorage[k].length);

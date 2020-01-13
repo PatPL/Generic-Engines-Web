@@ -27,6 +27,7 @@ class SettingsDialog {
     
     public static RefreshLocalStorageUsage () {
         document.getElementById ("settings-localStorage-usage-display")!.innerHTML = Debug_GetLocalStorageUsage ().toString ();
+        document.getElementById ("settings-localStorage-autosave-usage-display")!.innerHTML = Debug_GetLocalStorageUsage (/.enl.autosave2$/).toString ();
     }
     
     public static Show () {

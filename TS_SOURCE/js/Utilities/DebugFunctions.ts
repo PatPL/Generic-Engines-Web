@@ -9,7 +9,7 @@ function Debug_RemoveAllAutosaves () {
     }
 }
 
-function Debug_GetLocalStorageUsage () {
+function Debug_GetLocalStorageUsage (matchRegex?: RegExp) {
     let usedChars = 0;
     for (var k in localStorage) {
         if (
@@ -21,6 +21,11 @@ function Debug_GetLocalStorageUsage () {
             k == "length"
         ) {
             // Ignore built-in stuff
+            continue;
+        }
+        
+        if (matchRegex && !matchRegex.test (k)) {
+            // Ignore keys that don't match the given Regex
             continue;
         }
         

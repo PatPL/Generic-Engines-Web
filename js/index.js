@@ -775,8 +775,22 @@ document.addEventListener("DOMContentLoaded", () => {
     SettingsDialog.SettingsBoxElement.querySelector("div.fullscreen-grayout").addEventListener("click", () => {
         SettingsDialog.Apply();
     });
+    document.getElementById("settings-remove-all-autosaves").addEventListener("click", () => {
+        if (confirm("Are you sure you want to permanently remove all autosaves?")) {
+            for (let i in localStorage) {
+                if (/.enl.autosave2$/.test(i)) {
+                    localStorage.removeItem(i);
+                }
+            }
+            SettingsDialog.RefreshLocalStorageUsage();
+            Notifier.Info("All autosaves removed");
+        }
+    });
 });
 class SettingsDialog {
+    static RefreshLocalStorageUsage() {
+        document.getElementById("settings-localStorage-usage-display").innerHTML = Debug_GetLocalStorageUsage().toString();
+    }
     static Show() {
         let inputs = this.SettingsBoxElement.querySelectorAll("input");
         inputs.forEach(i => {
@@ -801,6 +815,7 @@ class SettingsDialog {
                 return;
             }
         });
+        this.RefreshLocalStorageUsage();
         FullscreenWindows["settings-box"].style.display = "flex";
     }
     static Apply() {
@@ -860,6 +875,10 @@ const Settings = {
         return Store.GetText("setting:custom_theme", btoa(JSON.stringify([])));
     }, set custom_theme(value) {
         Store.SetText("setting:custom_theme", value);
+    }, get ignore_localstorage_usage() {
+        return Store.GetText("setting:ignore_localstorage_usage", "0") == "1";
+    }, set ignore_localstorage_usage(value) {
+        Store.SetText("setting:ignore_localstorage_usage", value ? "1" : "0");
     }
 };
 var ListName = "Unnamed";
@@ -1083,6 +1102,18 @@ addEventListener("DOMContentLoaded", () => {
         Autosave.Save(MainEngineTable.Items);
     };
     MainEngineTable.RebuildTable();
+    if (!Settings.ignore_localstorage_usage) {
+        let localStorageUsage = Debug_GetLocalStorageUsage();
+        if (localStorageUsage > 2000000) {
+            Notifier.Info(`You are using over 2.000.000 characters of storage: ${localStorageUsage}. Check settings.`, 6000);
+        }
+        else if (localStorageUsage > 4000000) {
+            Notifier.Warn(`You are using over 4.000.000 characters of storage: ${localStorageUsage}. Check settings.`, 6000);
+        }
+        else if (localStorageUsage > 5000000) {
+            Notifier.Error(`You are using over 5.000.000 characters of storage: ${localStorageUsage}. Saving may not work. Check settings.`, 6000);
+        }
+    }
 });
 function NewButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to clear current list?")) {
@@ -11687,8 +11718,8 @@ function Debug_RemoveAllAutosaves() {
         }
     }
 }
-function Debug_LogLocalStorageUsage() {
-    let usedB = 0;
+function Debug_GetLocalStorageUsage() {
+    let usedChars = 0;
     for (var k in localStorage) {
         if (k == "key" ||
             k == "getItem" ||
@@ -11698,10 +11729,14 @@ function Debug_LogLocalStorageUsage() {
             k == "length") {
             continue;
         }
-        usedB += (k.length + localStorage[k].length) * 2;
+        usedChars += (k.length + localStorage[k].length);
     }
-    console.log(`Used bytes: ${usedB}`);
-    console.log(`Used chars: ${usedB / 2}`);
+    return usedChars;
+}
+function Debug_LogLocalStorageUsage() {
+    let usedChars = Debug_GetLocalStorageUsage();
+    console.log(`Used bytes: ${usedChars * 2}`);
+    console.log(`Used chars: ${usedChars}`);
     console.log("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
     console.log("Maximum should be around 5MB or 5 million chars, It's a poorly defined standard tbh");
 }

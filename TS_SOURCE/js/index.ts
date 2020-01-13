@@ -288,6 +288,17 @@ addEventListener ("DOMContentLoaded", () => {
     
     MainEngineTable.RebuildTable ();
     
+    if (!Settings.ignore_localstorage_usage) {
+        let localStorageUsage = Debug_GetLocalStorageUsage ();
+        if (localStorageUsage > 2000000) {
+            Notifier.Info (`You are using over 2.000.000 characters of storage: ${ localStorageUsage }. Check settings.`, 6000);
+        } else if (localStorageUsage > 4000000) {
+            Notifier.Warn (`You are using over 4.000.000 characters of storage: ${ localStorageUsage }. Check settings.`, 6000);
+        } else if (localStorageUsage > 5000000) {
+            Notifier.Error (`You are using over 5.000.000 characters of storage: ${ localStorageUsage }. Saving may not work. Check settings.`, 6000);
+        }
+    }
+    
 });
 
 /* Interferes with copy-pasting other values

@@ -9,8 +9,8 @@ function Debug_RemoveAllAutosaves () {
     }
 }
 
-function Debug_LogLocalStorageUsage () {
-    let usedB = 0;
+function Debug_GetLocalStorageUsage () {
+    let usedChars = 0;
     for (var k in localStorage) {
         if (
             k == "key" ||
@@ -25,11 +25,17 @@ function Debug_LogLocalStorageUsage () {
         }
         
         // JS uses UTF-16 internally (* 2)
-        usedB += (k.length + localStorage[k].length) * 2;
+        usedChars += (k.length + localStorage[k].length);
     }
     
-    console.log (`Used bytes: ${ usedB }`);
-    console.log (`Used chars: ${ usedB / 2 }`);
+    return usedChars;
+}
+
+function Debug_LogLocalStorageUsage () {
+    let usedChars = Debug_GetLocalStorageUsage ();
+    
+    console.log (`Used bytes: ${ usedChars * 2 }`);
+    console.log (`Used chars: ${ usedChars }`);
     console.log ("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
     console.log ("Maximum should be around 5MB or 5 million chars, It's a poorly defined standard tbh");
 }

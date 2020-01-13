@@ -341,11 +341,16 @@ function OpenUploadButton_Click () {
                 filename = filename.replace (/\.enl$/, "");
                 ListNameDisplay.SetValue (filename);
                 
+                // Disable autosave for a list that was just opened
+                Autosave.Enabled = false;
+                
                 MainEngineTable.Items = Serializer.DeserializeMany (data);
                 MainEngineTable.Items.forEach (e => {
                     e.EngineList = MainEngineTable.Items;
                 });
                 MainEngineTable.RebuildTable ();
+                
+                Autosave.Enabled = true;
                 
                 FullscreenWindows["open-box"].style.display = "none";
                 Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -386,11 +391,16 @@ function OpenCacheButton_Click () {
                 ListNameDisplay.SetValue (newFilename);
             }
             
+            // Disable autosave for a list that was just opened
+            Autosave.Enabled = false;
+            
             MainEngineTable.Items = Serializer.DeserializeMany (data);
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable ();
+            
+            Autosave.Enabled = true;
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -428,11 +438,18 @@ function OpenClipboardButton_Click () {
         try {
             let data = BitConverter.Base64ToByteArray (b64);
             
+            ListNameDisplay.SetValue ("Pasted from clipboard");
+            
+            // Disable autosave for a list that was just opened
+            Autosave.Enabled = false;
+            
             MainEngineTable.Items = Serializer.DeserializeMany (data);
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable ();
+            
+            Autosave.Enabled = true;
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -480,11 +497,16 @@ function OpenAutosaveButton_Click () {
                 ListNameDisplay.SetValue (newFilename);
             }
             
+            // Disable autosave for a list that was just opened
+            Autosave.Enabled = false;
+            
             MainEngineTable.Items = Serializer.DeserializeMany (data);
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable ();
+            
+            Autosave.Enabled = true;
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);

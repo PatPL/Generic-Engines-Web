@@ -1132,11 +1132,13 @@ function OpenUploadButton_Click() {
             if (data) {
                 filename = filename.replace(/\.enl$/, "");
                 ListNameDisplay.SetValue(filename);
+                Autosave.Enabled = false;
                 MainEngineTable.Items = Serializer.DeserializeMany(data);
                 MainEngineTable.Items.forEach(e => {
                     e.EngineList = MainEngineTable.Items;
                 });
                 MainEngineTable.RebuildTable();
+                Autosave.Enabled = true;
                 FullscreenWindows["open-box"].style.display = "none";
                 Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
             }
@@ -1170,11 +1172,13 @@ function OpenCacheButton_Click() {
             if (newFilename) {
                 ListNameDisplay.SetValue(newFilename);
             }
+            Autosave.Enabled = false;
             MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.Items.forEach(e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable();
+            Autosave.Enabled = true;
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }, "Choose a list to open");
@@ -1203,11 +1207,14 @@ function OpenClipboardButton_Click() {
         }
         try {
             let data = BitConverter.Base64ToByteArray(b64);
+            ListNameDisplay.SetValue("Pasted from clipboard");
+            Autosave.Enabled = false;
             MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.Items.forEach(e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable();
+            Autosave.Enabled = true;
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }
@@ -1247,11 +1254,13 @@ function OpenAutosaveButton_Click() {
             if (newFilename) {
                 ListNameDisplay.SetValue(newFilename);
             }
+            Autosave.Enabled = false;
             MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.Items.forEach(e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable();
+            Autosave.Enabled = true;
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }, "Open autosave:");
@@ -7587,11 +7596,13 @@ class BrowserCacheDialog {
             openButton.addEventListener("click", () => {
                 if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
                     ListNameDisplay.SetValue(i.replace(/\.enl$/, ""));
+                    Autosave.Enabled = false;
                     MainEngineTable.Items = Serializer.DeserializeMany(Store.GetBinary(i));
                     MainEngineTable.Items.forEach(e => {
                         e.EngineList = MainEngineTable.Items;
                     });
                     MainEngineTable.RebuildTable();
+                    Autosave.Enabled = true;
                     this.DialogBoxElement.style.display = "none";
                 }
             });

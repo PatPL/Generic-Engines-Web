@@ -206,11 +206,16 @@ class BrowserCacheDialog {
                 if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
                     ListNameDisplay.SetValue (i.replace (/\.enl$/, ""))
                     
+                    // Disable autosave for a list that was just opened
+                    Autosave.Enabled = false;
+                    
                     MainEngineTable.Items = Serializer.DeserializeMany (Store.GetBinary (i));
                     MainEngineTable.Items.forEach (e => {
                         e.EngineList = MainEngineTable.Items;
                     });
                     MainEngineTable.RebuildTable ();
+                    
+                    Autosave.Enabled = true;
                     
                     this.DialogBoxElement.style.display = "none";
                 }

@@ -95,8 +95,16 @@
             <input setting-field="classic_unit_display" type="checkbox"><span class="checkbox-label">Display only KSP units (t, kN, l, kW (EC/s))</span><br>
             <input setting-field="show_info_panel" type="checkbox"><span class="checkbox-label">Show side panel with additional info</span><br>
             <input setting-field="prettify_config" type="checkbox"><span class="checkbox-label">Prettify exported config (For debug purposes)</span><br>
-            <input setting-field="async_sort" type="checkbox"><span class="checkbox-label">Sort items asynchronously (UI should be a bit snappier for larger lists)</span><br>
-            <input setting-field="hide_disabled_fields_on_sort" type="checkbox"><span class="checkbox-label">Hide rows with an inaccessible value on sorted column</span>
+            <input setting-field="hide_disabled_fields_on_sort" type="checkbox"><span class="checkbox-label">Hide rows with an inaccessible value on sorted column</span><br>
+            <input setting-field="ignore_localstorage_usage" type="checkbox"><span class="checkbox-label">Ignore localStorage usage notification on start</span>
+            <hr>
+            <span>Currently, you are using <b><span id="settings-localStorage-usage-display"></span></b> characters in your localStorage.</span><br>
+            <span>Check your localStorage character limit <a target="_blank" href="https://arty.name/localstorage.html">here</a></span><br><br>
+            <!--
+            <button id="settings-export-localStorage-button" class="option-button" style="width: 49%; float: left;">Export localStorage</button>
+            <button id="settings-import-localStorage-button" class="option-button" style="width: 49%; float: right">Import localStorage</button><br><br>
+            -->
+            <button id="settings-remove-all-autosaves" class="option-button" style="width: 100%; clear: both;">Remove all autosaves (<span id="settings-localStorage-autosave-usage-display"></span> characters used)</button>
         </div>
     </div>
     <div class="fullscreen-box" id="about-box" style="display: none;">

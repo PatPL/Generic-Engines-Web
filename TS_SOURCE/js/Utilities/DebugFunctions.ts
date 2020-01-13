@@ -1,12 +1,16 @@
 
-function Debug_AutosaveImmediately () {
-    
-    Autosave.Save (MainEngineTable.Items, ListName);
-    
+function Debug_RemoveAllAutosaves () {
+    if (confirm ("You are about to permanently remove all autosaves.\n\nAre you sure?")) {
+        for (let i in localStorage) {
+            if (/.enl.autosave2$/.test (i)) {
+                localStorage.removeItem (i);
+            }
+        }
+    }
 }
 
-function Debug_LogLocalStorageUsage () {
-    let usedB = 0;
+function Debug_GetLocalStorageUsage (matchRegex?: RegExp) {
+    let usedChars = 0;
     for (var k in localStorage) {
         if (
             k == "key" ||
@@ -20,14 +24,25 @@ function Debug_LogLocalStorageUsage () {
             continue;
         }
         
+        if (matchRegex && !matchRegex.test (k)) {
+            // Ignore keys that don't match the given Regex
+            continue;
+        }
+        
         // JS uses UTF-16 internally (* 2)
-        usedB += (k.length + localStorage[k].length) * 2;
+        usedChars += (k.length + localStorage[k].length);
     }
     
-    console.log (`Used bytes: ${ usedB }`);
-    console.log (`Used chars: ${ usedB / 2 }`);
+    return usedChars;
+}
+
+function Debug_LogLocalStorageUsage () {
+    let usedChars = Debug_GetLocalStorageUsage ();
+    
+    console.log (`Used bytes: ${ usedChars * 2 }`);
+    console.log (`Used chars: ${ usedChars }`);
     console.log ("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
-    console.log ("Maximum should be around 5MB");
+    console.log ("Maximum should be around 5MB or 5 million chars, It's a poorly defined standard tbh");
 }
 
 function Debug_GetCurrentCustomThemeAsCSSRule () {

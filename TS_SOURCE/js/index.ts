@@ -27,6 +27,15 @@ window.onbeforeunload = (e: any) => {
     }
 }
 
+// Purge the old autosaves, if any exist
+// *.enl.autosave  <- old autosave file
+// *.enl.autosave2 <- new autosave file
+for (let i in localStorage) {
+    if (/.enl.autosave$/.test (i)) {
+        localStorage.removeItem (i);
+    }
+}
+
 function ApplySettings () {
     //Toggle info panel
     document.documentElement.style.setProperty ("--infoNotificationBackgroundPanelWidth", `${ Settings.show_info_panel ? 320 : 0 }px`);
@@ -259,6 +268,7 @@ addEventListener ("DOMContentLoaded", () => {
     
     MainEngineTable = new HtmlTable (document.getElementById ("list-container")!);
     MainEngineTable.ColumnsDefinitions = Engine.ColumnDefinitions;
+    
     MainEngineTable.OnSelectedItemChange = selectedEngine => {
         if (selectedEngine) {
             ApplyEngineToInfoPanel (selectedEngine);
@@ -266,7 +276,28 @@ addEventListener ("DOMContentLoaded", () => {
             ApplyEngineToInfoPanel (new Engine (), true);
         }
     };
+    
+    Autosave.SetSession (ListName);
+    ListNameDisplay.OnValueChange = () => {
+        Autosave.SetSession (ListName);
+    };
+    
+    MainEngineTable.OnChange = () => {
+        Autosave.Save ();
+    };
+    
     MainEngineTable.RebuildTable ();
+    
+    if (!Settings.ignore_localstorage_usage) {
+        let localStorageUsage = Debug_GetLocalStorageUsage ();
+        if (localStorageUsage > 2000000) {
+            Notifier.Info (`You are using over 2.000.000 characters of storage: ${ localStorageUsage }. Check settings.`, 6000);
+        } else if (localStorageUsage > 4000000) {
+            Notifier.Warn (`You are using over 4.000.000 characters of storage: ${ localStorageUsage }. Check settings.`, 6000);
+        } else if (localStorageUsage > 5000000) {
+            Notifier.Error (`You are using over 5.000.000 characters of storage: ${ localStorageUsage }. Saving may not work. Check settings.`, 6000);
+        }
+    }
     
 });
 
@@ -306,14 +337,20 @@ function OpenUploadButton_Click () {
     if (MainEngineTable.Items.length == 0 || confirm ("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from file?")) {
         FileIO.OpenBinary (".enl", (data, filename) => {
             if (data) {
+                
                 filename = filename.replace (/\.enl$/, "");
                 ListNameDisplay.SetValue (filename);
+                
+                // Disable autosave for a list that was just opened
+                Autosave.Enabled = false;
                 
                 MainEngineTable.Items = Serializer.DeserializeMany (data);
                 MainEngineTable.Items.forEach (e => {
                     e.EngineList = MainEngineTable.Items;
                 });
                 MainEngineTable.RebuildTable ();
+                
+                Autosave.Enabled = true;
                 
                 FullscreenWindows["open-box"].style.display = "none";
                 Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -354,11 +391,16 @@ function OpenCacheButton_Click () {
                 ListNameDisplay.SetValue (newFilename);
             }
             
+            // Disable autosave for a list that was just opened
+            Autosave.Enabled = false;
+            
             MainEngineTable.Items = Serializer.DeserializeMany (data);
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable ();
+            
+            Autosave.Enabled = true;
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -396,11 +438,18 @@ function OpenClipboardButton_Click () {
         try {
             let data = BitConverter.Base64ToByteArray (b64);
             
+            ListNameDisplay.SetValue ("Pasted from clipboard");
+            
+            // Disable autosave for a list that was just opened
+            Autosave.Enabled = false;
+            
             MainEngineTable.Items = Serializer.DeserializeMany (data);
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable ();
+            
+            Autosave.Enabled = true;
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -448,11 +497,16 @@ function OpenAutosaveButton_Click () {
                 ListNameDisplay.SetValue (newFilename);
             }
             
+            // Disable autosave for a list that was just opened
+            Autosave.Enabled = false;
+            
             MainEngineTable.Items = Serializer.DeserializeMany (data);
             MainEngineTable.Items.forEach (e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable ();
+            
+            Autosave.Enabled = true;
             
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
@@ -488,6 +542,9 @@ function SaveButton_Click () {
 function DownloadListButton_Click () {
     let data = Serializer.SerializeMany (MainEngineTable.Items);
     
+    // Could not actually accept the file
+    // Autosave.RestartSession ();
+    
     FileIO.SaveBinary (`${ListName}.enl`, data);
     FullscreenWindows["save-box"].style.display = "none";
 }
@@ -497,6 +554,9 @@ function CacheListButton_Click () {
     
     if (!Store.Exists (`${ListName}.enl`) || confirm (`${ListName}.enl already exists in cache.\n\nDo you want to overwrite? Old file will be lost.`)) {
         Notifier.Info (`${ListName}.enl saved in cache`);
+        
+        Autosave.RestartSession ();
+        
         Store.SetBinary (`${ListName}.enl`, data);
         FullscreenWindows["save-box"].style.display = "none";
     } else {
@@ -513,6 +573,10 @@ function ClipboardListButton_Click () {
     
     if (success) {
         Notifier.Info ("Engine list has been copied to clipboard");
+        
+        // Could be easily lost
+        // Autosave.RestartSession ();
+        
         FullscreenWindows["save-box"].style.display = "none";
     } else {
         Notifier.Warn ("There was an error. Engine list was NOT copied to clipboard");

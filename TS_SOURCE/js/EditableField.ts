@@ -12,7 +12,7 @@ class EditableField {
     static EditedField: EditableField | null = null;
     static IDCounter: number = 0;
     
-    OnSaveEdit?: () => void;
+    OnValueChange?: () => void;
     
     constructor (valueOwner: { [id: string]: any }, valueName: string, container: HTMLElement) {
         this.FieldID = EditableField.IDCounter++;
@@ -91,14 +91,17 @@ class EditableField {
         
         this.ShowEditMode (false);
         
-        if (this.OnSaveEdit && saveChanges) {
-            this.OnSaveEdit ();
+        if (this.OnValueChange && saveChanges) {
+            this.OnValueChange ();
         }
     }
     
     public SetValue (newValue: any) {
         this.ValueOwner[this.ValueName] = newValue;
         this.ApplyValueToDisplayElement ();
+        if (this.OnValueChange) {
+            this.OnValueChange ();
+        }
     }
     
     public RefreshDisplayElement () {
@@ -143,7 +146,7 @@ class EditableField {
             
             tmp.addEventListener ("change", (e) => {
                 this.ValueOwner[this.ValueName] = tmp.checked;
-                if (this.OnSaveEdit) { this.OnSaveEdit (); }
+                if (this.OnValueChange) { this.OnValueChange (); }
             })
             
             output = tmp;

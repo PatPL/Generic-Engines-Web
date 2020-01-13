@@ -58,13 +58,16 @@ class EditableField {
         }
         EditableField.EditedField = null;
         this.ShowEditMode(false);
-        if (this.OnSaveEdit && saveChanges) {
-            this.OnSaveEdit();
+        if (this.OnValueChange && saveChanges) {
+            this.OnValueChange();
         }
     }
     SetValue(newValue) {
         this.ValueOwner[this.ValueName] = newValue;
         this.ApplyValueToDisplayElement();
+        if (this.OnValueChange) {
+            this.OnValueChange();
+        }
     }
     RefreshDisplayElement() {
         this.ApplyValueToDisplayElement();
@@ -99,8 +102,8 @@ class EditableField {
             tmp.type = "checkbox";
             tmp.addEventListener("change", (e) => {
                 this.ValueOwner[this.ValueName] = tmp.checked;
-                if (this.OnSaveEdit) {
-                    this.OnSaveEdit();
+                if (this.OnValueChange) {
+                    this.OnValueChange();
                 }
             });
             output = tmp;
@@ -326,8 +329,24 @@ class HtmlTable {
             columnCell.classList.add("content-cell");
             columnCell.setAttribute("data-tableRow", (HtmlTable.RowCounter).toString());
             let cellField = new EditableField(newItem, columnID, columnCell);
-            cellField.OnSaveEdit = () => {
-                this.SortItems();
+            cellField.OnValueChange = () => {
+                if (this.currentSort) {
+                    if (this.currentSort[0] == columnID) {
+                        this.SortItems();
+                    }
+                    let sortDependencies = newItem.ColumnSortDependencies();
+                    if (sortDependencies[this.currentSort[0]]) {
+                        sortDependencies[this.currentSort[0]].forEach(d => {
+                            if (d == columnID) {
+                                this.SortItems();
+                            }
+                        });
+                    }
+                }
+                if (this.OnChange) {
+                    this.OnChange();
+                }
+                ;
             };
             if (newItem.hasOwnProperty("EditableFields")) {
                 newItem.EditableFields.push(cellField);
@@ -344,32 +363,48 @@ class HtmlTable {
     }
     AddItems(newItem) {
         if (Array.isArray(newItem)) {
-            newItem.forEach(item => {
-                this.RawAddItem(item);
-            });
+            if (newItem.length > 0) {
+                newItem.forEach(item => {
+                    this.RawAddItem(item);
+                });
+                if (this.currentSort) {
+                    this.SortItems();
+                }
+                if (this.OnChange) {
+                    this.OnChange();
+                }
+            }
         }
         else {
             this.RawAddItem(newItem);
-        }
-        if (this.currentSort) {
-            this.SortItems();
+            if (this.currentSort) {
+                this.SortItems();
+            }
+            if (this.OnChange) {
+                this.OnChange();
+            }
         }
     }
     RemoveSelectedItems() {
-        this.SelectedRows.forEach(row => {
-            this.Rows[row][0].forEach(element => {
-                element.remove();
+        if (this.SelectedRows.length > 0) {
+            this.SelectedRows.forEach(row => {
+                this.Rows[row][0].forEach(element => {
+                    element.remove();
+                });
+                this.Items.splice(this.Items.indexOf(this.Rows[row][1]), 1);
+                this.DisplayedRowOrder.splice(this.DisplayedRowOrder.findIndex(x => x == row.toString()), 1);
+                delete this.Rows[row];
             });
-            this.Items.splice(this.Items.indexOf(this.Rows[row][1]), 1);
-            this.DisplayedRowOrder.splice(this.DisplayedRowOrder.findIndex(x => x == row.toString()), 1);
-            delete this.Rows[row];
-        });
-        this.SelectedRows = [];
-        if (this.OnSelectedItemChange) {
-            this.OnSelectedItemChange(undefined);
-        }
-        if (this.currentSort) {
-            this.SortItems();
+            this.SelectedRows = [];
+            if (this.OnSelectedItemChange) {
+                this.OnSelectedItemChange(undefined);
+            }
+            if (this.currentSort) {
+                this.SortItems();
+            }
+            if (this.OnChange) {
+                this.OnChange();
+            }
         }
     }
     SelectRow(appendToggle, row, rangeSelect = false) {
@@ -530,26 +565,51 @@ class HtmlTable {
         this.SortItems();
     }
     SortItems() {
-        if (Settings.async_sort) {
-            setTimeout(() => this._SortItems(), 0);
-        }
-        else {
-            this._SortItems();
-        }
-    }
-    _SortItems() {
         this.DisplayedRowOrder.length = 0;
         if (this.currentSort && this.Items.length > 0) {
+            let hadErrors = false;
             let sorts = this.Items[0].ColumnSorts();
             if (sorts.hasOwnProperty(this.currentSort[0])) {
+                let startTime = 0;
+                let lapTime = 0;
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    console.warn("Sort performance logging enabled");
+                    console.log(`Sorting action: Sort by ${this.currentSort[0]}`);
+                    startTime = new Date().getTime();
+                    lapTime = startTime;
+                }
                 let sortFunction = sorts[this.currentSort[0]];
+                let originalMap = [];
                 let map = [];
                 for (let i in this.Rows) {
-                    map.push([i, this.Rows[i][0], this.Rows[i][1]]);
+                    let order = 0;
+                    let marker = this.Rows[i][0][0].previousSibling;
+                    while (marker) {
+                        ++order;
+                        marker = marker.previousSibling;
+                    }
+                    map.push([i, this.Rows[i][0], this.Rows[i][1], order]);
+                }
+                map.forEach(e => { originalMap[e[3]] = e; });
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date().getTime();
+                    console.log(`Sorting action: Items mapped in ${now - lapTime}ms`);
+                    lapTime = now;
                 }
                 map.sort((a, b) => {
-                    return sortFunction(a[2], b[2]) * this.currentSort[1];
+                    try {
+                        return sortFunction(a[2], b[2]) * this.currentSort[1];
+                    }
+                    catch (e) {
+                        hadErrors = true;
+                        return -1 * this.currentSort[1];
+                    }
                 });
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date().getTime();
+                    console.log(`Sorting action: Items sorted in ${now - lapTime}ms`);
+                    lapTime = now;
+                }
                 map.forEach(row => {
                     let hideRow = null;
                     if (Settings.hide_disabled_fields_on_sort && row[2] instanceof Engine) {
@@ -568,12 +628,27 @@ class HtmlTable {
                         }
                     });
                 });
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date().getTime();
+                    console.log(`Sorting action: DOM Manipulation finished in ${now - lapTime}ms`);
+                    console.log(`Sorting action finished in ${now - startTime}ms`);
+                }
+                if (hadErrors && this.Items[0] instanceof Engine) {
+                    Notifier.Warn("Most likely caused by incorrect polymorphism. (Check disabled engines too)", 5000);
+                    Notifier.Warn("There are some validation errors in this list, that prevent correct sorting", 5000);
+                }
                 return;
             }
             else {
             }
         }
         else {
+        }
+        let startTime = 0;
+        if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+            console.warn("Sort performance logging enabled");
+            console.log("Sorting action: Reset item order");
+            startTime = new Date().getTime();
         }
         for (let i in this.Rows) {
             this.DisplayedRowOrder.push(i);
@@ -582,9 +657,15 @@ class HtmlTable {
                 cell.style.display = "block";
             });
         }
+        if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+            let now = new Date().getTime();
+            console.log(`Sorting action: DOM Manipulation finished in ${now - startTime}ms`);
+            console.log(`Sorting action finished in ${now - startTime}ms`);
+        }
     }
 }
 HtmlTable.RowCounter = 1;
+HtmlTable.LOG_SORTING_PERFORMANCE = false;
 addEventListener("DOMContentLoaded", () => {
     Notifier.Container = document.querySelector(".notify-container");
 });
@@ -694,8 +775,23 @@ document.addEventListener("DOMContentLoaded", () => {
     SettingsDialog.SettingsBoxElement.querySelector("div.fullscreen-grayout").addEventListener("click", () => {
         SettingsDialog.Apply();
     });
+    document.getElementById("settings-remove-all-autosaves").addEventListener("click", () => {
+        if (confirm("Are you sure you want to permanently remove all autosaves?")) {
+            for (let i in localStorage) {
+                if (/.enl.autosave2$/.test(i)) {
+                    localStorage.removeItem(i);
+                }
+            }
+            SettingsDialog.RefreshLocalStorageUsage();
+            Notifier.Info("All autosaves removed");
+        }
+    });
 });
 class SettingsDialog {
+    static RefreshLocalStorageUsage() {
+        document.getElementById("settings-localStorage-usage-display").innerHTML = Debug_GetLocalStorageUsage().toString();
+        document.getElementById("settings-localStorage-autosave-usage-display").innerHTML = Debug_GetLocalStorageUsage(/.enl.autosave2$/).toString();
+    }
     static Show() {
         let inputs = this.SettingsBoxElement.querySelectorAll("input");
         inputs.forEach(i => {
@@ -720,6 +816,7 @@ class SettingsDialog {
                 return;
             }
         });
+        this.RefreshLocalStorageUsage();
         FullscreenWindows["settings-box"].style.display = "flex";
     }
     static Apply() {
@@ -767,10 +864,6 @@ const Settings = {
         return Store.GetText("setting:prettify_config", "0") == "1";
     }, set prettify_config(value) {
         Store.SetText("setting:prettify_config", value ? "1" : "0");
-    }, get async_sort() {
-        return Store.GetText("setting:async_sort", "0") == "1";
-    }, set async_sort(value) {
-        Store.SetText("setting:async_sort", value ? "1" : "0");
     }, get hide_disabled_fields_on_sort() {
         return Store.GetText("setting:hide_disabled_fields_on_sort", "1") == "1";
     }, set hide_disabled_fields_on_sort(value) {
@@ -783,6 +876,10 @@ const Settings = {
         return Store.GetText("setting:custom_theme", btoa(JSON.stringify([])));
     }, set custom_theme(value) {
         Store.SetText("setting:custom_theme", value);
+    }, get ignore_localstorage_usage() {
+        return Store.GetText("setting:ignore_localstorage_usage", "0") == "1";
+    }, set ignore_localstorage_usage(value) {
+        Store.SetText("setting:ignore_localstorage_usage", value ? "1" : "0");
     }
 };
 var ListName = "Unnamed";
@@ -807,6 +904,11 @@ window.onbeforeunload = (e) => {
         return;
     }
 };
+for (let i in localStorage) {
+    if (/.enl.autosave$/.test(i)) {
+        localStorage.removeItem(i);
+    }
+}
 function ApplySettings() {
     document.documentElement.style.setProperty("--infoNotificationBackgroundPanelWidth", `${Settings.show_info_panel ? 320 : 0}px`);
 }
@@ -993,10 +1095,26 @@ addEventListener("DOMContentLoaded", () => {
             ApplyEngineToInfoPanel(new Engine(), true);
         }
     };
+    Autosave.SetSession(ListName);
+    ListNameDisplay.OnValueChange = () => {
+        Autosave.SetSession(ListName);
+    };
+    MainEngineTable.OnChange = () => {
+        Autosave.Save();
+    };
     MainEngineTable.RebuildTable();
-    setInterval(() => {
-        Autosave.Save(MainEngineTable.Items, ListName);
-    }, 1000 * 60 * 2);
+    if (!Settings.ignore_localstorage_usage) {
+        let localStorageUsage = Debug_GetLocalStorageUsage();
+        if (localStorageUsage > 2000000) {
+            Notifier.Info(`You are using over 2.000.000 characters of storage: ${localStorageUsage}. Check settings.`, 6000);
+        }
+        else if (localStorageUsage > 4000000) {
+            Notifier.Warn(`You are using over 4.000.000 characters of storage: ${localStorageUsage}. Check settings.`, 6000);
+        }
+        else if (localStorageUsage > 5000000) {
+            Notifier.Error(`You are using over 5.000.000 characters of storage: ${localStorageUsage}. Saving may not work. Check settings.`, 6000);
+        }
+    }
 });
 function NewButton_Click() {
     if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to clear current list?")) {
@@ -1014,11 +1132,13 @@ function OpenUploadButton_Click() {
             if (data) {
                 filename = filename.replace(/\.enl$/, "");
                 ListNameDisplay.SetValue(filename);
+                Autosave.Enabled = false;
                 MainEngineTable.Items = Serializer.DeserializeMany(data);
                 MainEngineTable.Items.forEach(e => {
                     e.EngineList = MainEngineTable.Items;
                 });
                 MainEngineTable.RebuildTable();
+                Autosave.Enabled = true;
                 FullscreenWindows["open-box"].style.display = "none";
                 Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
             }
@@ -1052,11 +1172,13 @@ function OpenCacheButton_Click() {
             if (newFilename) {
                 ListNameDisplay.SetValue(newFilename);
             }
+            Autosave.Enabled = false;
             MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.Items.forEach(e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable();
+            Autosave.Enabled = true;
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }, "Choose a list to open");
@@ -1085,11 +1207,14 @@ function OpenClipboardButton_Click() {
         }
         try {
             let data = BitConverter.Base64ToByteArray(b64);
+            ListNameDisplay.SetValue("Pasted from clipboard");
+            Autosave.Enabled = false;
             MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.Items.forEach(e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable();
+            Autosave.Enabled = true;
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }
@@ -1129,11 +1254,13 @@ function OpenAutosaveButton_Click() {
             if (newFilename) {
                 ListNameDisplay.SetValue(newFilename);
             }
+            Autosave.Enabled = false;
             MainEngineTable.Items = Serializer.DeserializeMany(data);
             MainEngineTable.Items.forEach(e => {
                 e.EngineList = MainEngineTable.Items;
             });
             MainEngineTable.RebuildTable();
+            Autosave.Enabled = true;
             FullscreenWindows["open-box"].style.display = "none";
             Notifier.Info(`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
         }, "Open autosave:");
@@ -1165,6 +1292,7 @@ function CacheListButton_Click() {
     let data = Serializer.SerializeMany(MainEngineTable.Items);
     if (!Store.Exists(`${ListName}.enl`) || confirm(`${ListName}.enl already exists in cache.\n\nDo you want to overwrite? Old file will be lost.`)) {
         Notifier.Info(`${ListName}.enl saved in cache`);
+        Autosave.RestartSession();
         Store.SetBinary(`${ListName}.enl`, data);
         FullscreenWindows["save-box"].style.display = "none";
     }
@@ -7494,7 +7622,7 @@ class BrowserCacheDialog {
         container.innerHTML = "";
         let lists = [];
         for (let i in localStorage) {
-            if (/^(.)+\.enl.autosave$/.test(i)) {
+            if (/^(.)+\.enl.autosave2$/.test(i)) {
                 lists.push(i);
             }
         }
@@ -7503,15 +7631,17 @@ class BrowserCacheDialog {
             let listItem = document.createElement("div");
             listItem.classList.add("option-button");
             listItem.addEventListener("click", () => {
-                this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl.autosave$/, ""));
+                Autosave.Enabled = false;
+                this.FinishTransaction(Store.GetBinary(i), i.replace(/\.enl.autosave2$/, "").replace(/^[0-9]+-/, ""));
+                Autosave.Enabled = true;
             });
-            let tmp = i.replace(/\.enl.autosave$/, "").split("-");
+            let tmp = i.replace(/\.enl.autosave2$/, "").split("-");
             for (let i = 2; i < tmp.length; ++i) {
                 tmp[1] += `-${tmp[i]}`;
             }
             tmp.length = 2;
             let time = new Date(parseInt(tmp[0]));
-            listItem.title = `@${time.toLocaleString()} | ${tmp[1]}`;
+            listItem.title = `This file started being edited at ${time.toLocaleString()} | ${tmp[1]}`;
             listItem.innerHTML = `@${time.toLocaleString()} | ${tmp[1]}`;
             container.appendChild(listItem);
         });
@@ -7590,11 +7720,13 @@ class BrowserCacheDialog {
             openButton.addEventListener("click", () => {
                 if (MainEngineTable.Items.length == 0 || confirm("All unsaved changes to this list will be lost.\n\nAre you sure you want to open a list from cache?")) {
                     ListNameDisplay.SetValue(i.replace(/\.enl$/, ""));
+                    Autosave.Enabled = false;
                     MainEngineTable.Items = Serializer.DeserializeMany(Store.GetBinary(i));
                     MainEngineTable.Items.forEach(e => {
                         e.EngineList = MainEngineTable.Items;
                     });
                     MainEngineTable.RebuildTable();
+                    Autosave.Enabled = true;
                     this.DialogBoxElement.style.display = "none";
                 }
             });
@@ -8555,6 +8687,9 @@ class Engine {
         }
         return 0;
     }
+    ColumnSortDependencies() {
+        return Engine._ColumnSortDependencies;
+    }
     ColumnSorts() {
         return Engine._ColumnSorts;
     }
@@ -9482,6 +9617,29 @@ Engine.ColumnDefinitions = {
         DisplayFlags: 0b00000
     }
 };
+Engine._ColumnSortDependencies = {
+    Active: ["ID"],
+    Labels: ["Polymorphism", "ID"],
+    EngineVariant: ["Polymorphism", "ID"],
+    Mass: ["Polymorphism", "ID"],
+    Propulsion: ["ID"],
+    MinThrust: ["ID"],
+    PressureFed: ["ID"],
+    NeedsUllage: ["ID"],
+    TechUnlockNode: ["Polymorphism", "ID"],
+    EntryCost: ["Polymorphism", "ID"],
+    Cost: ["Polymorphism", "ID"],
+    AlternatorPower: ["Polymorphism", "ID"],
+    ThrustCurve: ["ID"],
+    Polymorphism: ["ID"],
+    FuelRatios: ["ID"],
+    Ignitions: ["Polymorphism", "ID"],
+    Visuals: ["Polymorphism", "ID"],
+    Dimensions: ["Polymorphism", "ID"],
+    Gimbal: ["Polymorphism", "ID"],
+    TestFlight: ["Polymorphism", "ID"],
+    Tank: ["Polymorphism", "ID"],
+};
 Engine._ColumnSorts = {
     Active: (a, b) => Engine.RegularSort(a.Active, b.Active, a.ID, b.ID),
     ID: (a, b) => Engine.RegularSort(a.ID, b.ID),
@@ -9493,25 +9651,25 @@ Engine._ColumnSorts = {
     TechUnlockNode: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.TechUnlockNode, b.TechUnlockNode, a.ID, b.ID), EntryCost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.EntryCost, b.EntryCost, a.ID, b.ID), Cost: (a, b) => Engine.RegularSort(a.PolyType == PolymorphismType.MultiModeSlave, b.PolyType == PolymorphismType.MultiModeSlave, a.Cost, b.Cost, a.ID, b.ID), AlternatorPower: (a, b) => Engine.RegularSort(a.IsSlave(), b.IsSlave(), a.AlternatorPower, b.AlternatorPower, a.ID, b.ID), ThrustCurve: (a, b) => Engine.RegularSort(a.ThrustCurve.length, b.ThrustCurve.length, a.ID, b.ID),
     Polymorphism: (a, b) => {
         let output = Engine.RegularSort(a.PolyType, b.PolyType);
-        if (output) {
+        if (output != 0) {
             return output;
         }
         if (a.PolyType == PolymorphismType.MultiModeSlave ||
             a.PolyType == PolymorphismType.MultiConfigSlave) {
             output = Engine.RegularSort(a.MasterEngineName, b.MasterEngineName);
-            if (output) {
+            if (output != 0) {
                 return output;
             }
         }
         return Engine.RegularSort(a.ID, b.ID);
     }, FuelRatios: (a, b) => {
         let output = Engine.RegularSort(a.FuelRatioItems.length, b.FuelRatioItems.length);
-        if (output) {
+        if (output != 0) {
             return output;
         }
         for (let i = 0; i < a.FuelRatioItems.length; ++i) {
             output = Engine.RegularSort(a.FuelRatioItems[i][0], b.FuelRatioItems[i][0]);
-            if (output) {
+            if (output != 0) {
                 return output;
             }
         }
@@ -11593,28 +11751,90 @@ class AllTankDefinition {
     }
 }
 class Autosave {
-    static Save(list, name) {
-        let data = Serializer.SerializeMany(list);
-        let timestamp = new Date().getTime().toString();
-        timestamp = "0".repeat(24 - timestamp.length) + timestamp;
-        let autosaveName = `${timestamp}-${name}.enl.autosave`;
-        Store.SetBinary(autosaveName, data);
-        this.Trim();
+    static GetCurrentAutosaveName() {
+        if (this.sessionStartTimestamp) {
+            let timestamp = this.sessionStartTimestamp.getTime().toString();
+            timestamp = "0".repeat(24 - timestamp.length) + timestamp;
+            return `${timestamp}-${this.currentEngineListName}.enl.autosave2`;
+        }
+        else {
+            throw "No session in progress";
+        }
     }
-    static Trim() {
-        let autosaves = [];
-        for (let i in localStorage) {
-            if (/^(.)+\.enl.autosave$/.test(i)) {
-                autosaves.push(i);
+    static RequestAutosaveToken(force = false) {
+        if (!force) {
+            clearTimeout(this.inactivityAutosaveTimeoutID);
+            this.inactivityAutosaveTimeoutID = setTimeout(() => {
+                Autosave.Save(true);
+            }, this.IDLE_AUTOSAVE_TIMEOUT);
+        }
+        if (force) {
+            this.ResetAutosaveTimeout();
+        }
+        if (this.recentlyAutosaved) {
+            return false;
+        }
+        else {
+            this.recentlyAutosaved = true;
+            this.autosaveTimeoutID = setTimeout(() => {
+                this.recentlyAutosaved = false;
+                if (this.LOGGING) {
+                    console.log("Autosave armed");
+                }
+            }, this.AUTOSAVE_TIMEOUT);
+            return true;
+        }
+    }
+    static ResetAutosaveTimeout() {
+        clearTimeout(this.autosaveTimeoutID);
+        this.recentlyAutosaved = false;
+        if (this.LOGGING) {
+            console.log("Autosave armed");
+        }
+    }
+    static Save(force = false) {
+        if (this.Enabled && this.RequestAutosaveToken(force)) {
+            if (this.currentEngineListName && this.sessionStartTimestamp) {
+                let data = Serializer.SerializeMany(MainEngineTable.Items);
+                Store.SetBinary(this.GetCurrentAutosaveName(), data);
+                if (this.LOGGING) {
+                    console.log("Autosave fired");
+                }
+            }
+            else {
+                console.warn("Can't autosave without setting any session first. Use `Autosave.SetSession (filename)` first.");
             }
         }
-        autosaves = autosaves.sort((a, b) => a < b ? 1 : -1);
-        for (let i = autosaves.length - 1; i >= this.AUTOSAVE_LIMIT; --i) {
-            localStorage.removeItem(autosaves[i]);
+    }
+    static SetSession(listName) {
+        if (listName != this.currentEngineListName) {
+            this.currentEngineListName = listName;
+            this.sessionStartTimestamp = new Date();
+            this.ResetAutosaveTimeout();
+            if (this.LOGGING) {
+                console.log("Started a new autosave session: ", this.currentEngineListName, this.sessionStartTimestamp);
+            }
+        }
+    }
+    ;
+    static RestartSession() {
+        if (this.currentEngineListName) {
+            Store.Remove(this.GetCurrentAutosaveName());
+            if (this.LOGGING) {
+                console.log("Ended autosave session: ", this.currentEngineListName, this.sessionStartTimestamp);
+            }
+            this.SetSession(this.currentEngineListName);
+        }
+        else {
+            console.warn("No session in progress that could be restarted");
         }
     }
 }
-Autosave.AUTOSAVE_LIMIT = 128;
+Autosave.LOGGING = false;
+Autosave.Enabled = true;
+Autosave.AUTOSAVE_TIMEOUT = 45 * 1000;
+Autosave.recentlyAutosaved = false;
+Autosave.IDLE_AUTOSAVE_TIMEOUT = 15 * 1000;
 class BitConverter {
     static ByteArrayToBase64(data) {
         return btoa(String.fromCharCode.apply(null, data));
@@ -11651,11 +11871,17 @@ BitConverter.doubleBuffer = new Float64Array(BitConverter.buffer8);
 BitConverter.intBuffer = new Int32Array(BitConverter.buffer4);
 BitConverter.encoder = new TextEncoder();
 BitConverter.decoder = new TextDecoder();
-function Debug_AutosaveImmediately() {
-    Autosave.Save(MainEngineTable.Items, ListName);
+function Debug_RemoveAllAutosaves() {
+    if (confirm("You are about to permanently remove all autosaves.\n\nAre you sure?")) {
+        for (let i in localStorage) {
+            if (/.enl.autosave2$/.test(i)) {
+                localStorage.removeItem(i);
+            }
+        }
+    }
 }
-function Debug_LogLocalStorageUsage() {
-    let usedB = 0;
+function Debug_GetLocalStorageUsage(matchRegex) {
+    let usedChars = 0;
     for (var k in localStorage) {
         if (k == "key" ||
             k == "getItem" ||
@@ -11665,12 +11891,19 @@ function Debug_LogLocalStorageUsage() {
             k == "length") {
             continue;
         }
-        usedB += (k.length + localStorage[k].length) * 2;
+        if (matchRegex && !matchRegex.test(k)) {
+            continue;
+        }
+        usedChars += (k.length + localStorage[k].length);
     }
-    console.log(`Used bytes: ${usedB}`);
-    console.log(`Used chars: ${usedB / 2}`);
+    return usedChars;
+}
+function Debug_LogLocalStorageUsage() {
+    let usedChars = Debug_GetLocalStorageUsage();
+    console.log(`Used bytes: ${usedChars * 2}`);
+    console.log(`Used chars: ${usedChars}`);
     console.log("Check your total localStorage size here: ", "https://arty.name/localstorage.html");
-    console.log("Maximum should be around 5MB");
+    console.log("Maximum should be around 5MB or 5 million chars, It's a poorly defined standard tbh");
 }
 function Debug_GetCurrentCustomThemeAsCSSRule() {
     let vars = JSON.parse(atob(Settings.custom_theme));
@@ -11894,6 +12127,28 @@ class DebugLists {
             newEngine.Height = 4;
             newEngine.UseTanks = true;
             newEngine.TanksVolume = newEngine.GetTankSizeEstimate();
+            toAppend.push(newEngine);
+        }
+        MainEngineTable.AddItems(toAppend);
+    }
+    static JustSpawnEngines(count) {
+        if (!count) {
+            console.warn("Usage: DebugLists.JustSpawnEngines (engineCount), ex. DebugLists.JustSpawnEngines (500)");
+            return;
+        }
+        let toAppend = [];
+        for (let i = 0; i < count; ++i) {
+            let newEngine = new Engine();
+            newEngine.Active = true;
+            newEngine.ID = `SPAMMED-ENGINES-${("000000" + i).slice(-6)}`;
+            newEngine.EngineName = `ENGINE ${("00000000" + Math.floor(Math.random() * 100000000)).slice(-8)}; @${("000000" + i).slice(-6)}`;
+            newEngine.Thrust = Math.random() * 10000;
+            newEngine.MinThrust = Math.random() * 100;
+            newEngine.AtmIsp = Math.random() * 400;
+            newEngine.VacIsp = Math.random() * 500;
+            newEngine.Active = Math.random() > 0.5;
+            newEngine.PressureFed = Math.random() > 0.5;
+            newEngine.NeedsUllage = Math.random() > 0.5;
             toAppend.push(newEngine);
         }
         MainEngineTable.AddItems(toAppend);
@@ -13235,17 +13490,17 @@ const MetricPrefix = [
     ["y", 1e-24],
 ];
 class Validator {
-    static Validate(engines) {
+    static Validate(engines, checkInactiveEnginesToo = false) {
         let output = [];
-        output = output.concat(this.CheckDuplicateIDs(engines));
-        output = output.concat(this.CheckPolymorphismConsistency(engines));
+        output = output.concat(this.CheckDuplicateIDs(engines, checkInactiveEnginesToo));
+        output = output.concat(this.CheckPolymorphismConsistency(engines, checkInactiveEnginesToo));
         return output;
     }
-    static CheckPolymorphismConsistency(engines) {
+    static CheckPolymorphismConsistency(engines, checkInactiveEnginesToo) {
         let output = [];
         let Masters = {};
         engines.forEach(e => {
-            if (!e.Active) {
+            if (!e.Active && !checkInactiveEnginesToo) {
                 return;
             }
             switch (e.PolyType) {
@@ -13258,7 +13513,7 @@ class Validator {
             }
         });
         engines.forEach(e => {
-            if (!e.Active) {
+            if (!e.Active && !checkInactiveEnginesToo) {
                 return;
             }
             switch (e.PolyType) {
@@ -13289,11 +13544,11 @@ class Validator {
         });
         return output;
     }
-    static CheckDuplicateIDs(engines) {
+    static CheckDuplicateIDs(engines, checkInactiveEnginesToo) {
         let output = [];
         let takenIDs = [];
         engines.forEach(e => {
-            if (!e.Active) {
+            if (!e.Active && !checkInactiveEnginesToo) {
                 return;
             }
             if (/[^A-Za-z0-9-]/.test(e.ID)) {

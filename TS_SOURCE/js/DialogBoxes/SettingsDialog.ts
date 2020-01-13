@@ -6,11 +6,29 @@ document.addEventListener ("DOMContentLoaded", () => {
     SettingsDialog.SettingsBoxElement.querySelector ("div.fullscreen-grayout")!.addEventListener ("click", () => {
         SettingsDialog.Apply ();
     })
+    
+    document.getElementById ("settings-remove-all-autosaves")!.addEventListener ("click", () => {
+        if (confirm ("Are you sure you want to permanently remove all autosaves?")) {
+            for (let i in localStorage) {
+                if (/.enl.autosave2$/.test (i)) {
+                    localStorage.removeItem (i);
+                }
+            }
+            
+            SettingsDialog.RefreshLocalStorageUsage ();
+            Notifier.Info ("All autosaves removed");
+        }
+    });
 });
 
 class SettingsDialog {
     
     public static SettingsBoxElement: HTMLElement;
+    
+    public static RefreshLocalStorageUsage () {
+        document.getElementById ("settings-localStorage-usage-display")!.innerHTML = Debug_GetLocalStorageUsage ().toString ();
+        document.getElementById ("settings-localStorage-autosave-usage-display")!.innerHTML = Debug_GetLocalStorageUsage (/.enl.autosave2$/).toString ();
+    }
     
     public static Show () {
         let inputs = this.SettingsBoxElement.querySelectorAll ("input");
@@ -35,6 +53,8 @@ class SettingsDialog {
                 return; //continue
             }
         });
+        
+        this.RefreshLocalStorageUsage ();
         
         FullscreenWindows["settings-box"].style.display = "flex";
     }
@@ -87,10 +107,6 @@ const Settings: ISettings = {
         return Store.GetText ("setting:prettify_config", "0") == "1";
     }, set prettify_config(value: boolean) {
         Store.SetText ("setting:prettify_config", value ? "1" : "0");
-    }, get async_sort(): boolean {
-        return Store.GetText ("setting:async_sort", "0") == "1";
-    }, set async_sort(value: boolean) {
-        Store.SetText ("setting:async_sort", value ? "1" : "0");
     }, get hide_disabled_fields_on_sort(): boolean {
         return Store.GetText ("setting:hide_disabled_fields_on_sort", "1") == "1";
     }, set hide_disabled_fields_on_sort(value: boolean) {
@@ -103,6 +119,10 @@ const Settings: ISettings = {
         return Store.GetText ("setting:custom_theme", btoa (JSON.stringify ([])));
     }, set custom_theme(value: string) {
         Store.SetText ("setting:custom_theme", value);
+    }, get ignore_localstorage_usage(): boolean {
+        return Store.GetText ("setting:ignore_localstorage_usage", "0") == "1";
+    }, set ignore_localstorage_usage(value: boolean) {
+        Store.SetText ("setting:ignore_localstorage_usage", value ? "1" : "0");
     }
 }
 
@@ -114,8 +134,8 @@ interface ISettings {
     dark_theme: boolean;
     show_info_panel: boolean;
     prettify_config: boolean;
-    async_sort: boolean;
     hide_disabled_fields_on_sort: boolean;
     current_theme: string;
     custom_theme: string;
+    ignore_localstorage_usage: boolean;
 }

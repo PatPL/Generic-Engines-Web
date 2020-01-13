@@ -1,5 +1,7 @@
 class HtmlTable<T extends ITableElement<T>> {
     
+    // Fires when the contents of the table were changed
+    OnChange?: () => void;
     OnSelectedItemChange?: (selected?: T) => void;
     
     Items: T[] = [];
@@ -65,8 +67,26 @@ class HtmlTable<T extends ITableElement<T>> {
             columnCell.classList.add ("content-cell");
             columnCell.setAttribute ("data-tableRow", (HtmlTable.RowCounter).toString ());
             let cellField = new EditableField (newItem, columnID, columnCell);
-            cellField.OnSaveEdit = () => {
-                this.SortItems ();
+            cellField.OnValueChange = () => {
+                // Resort the list only if the change was made in the currently sorted column,
+                // or in a column that influences how this column gets sorted
+                if (this.currentSort) {
+                    if (this.currentSort[0] == columnID) {
+                        this.SortItems ();
+                    }
+                    
+                    let sortDependencies = newItem.ColumnSortDependencies ();
+                    if (sortDependencies[this.currentSort[0]]) {
+                        sortDependencies[this.currentSort[0]].forEach (d => {
+                            // Sort if this column is a dependency to the current sort
+                            if (d == columnID) {
+                                this.SortItems ();
+                            }
+                        });
+                    }
+                }
+                
+                if (this.OnChange) { this.OnChange () };
             }
             
             if ((newItem as Object).hasOwnProperty ("EditableFields")) {
@@ -89,35 +109,45 @@ class HtmlTable<T extends ITableElement<T>> {
     
     public AddItems (newItem: T | T[]) {
         if (Array.isArray (newItem)) {
-            newItem.forEach (item => {
-                this.RawAddItem (item);
-            })
+            if (newItem.length > 0) {
+                newItem.forEach (item => {
+                    this.RawAddItem (item);
+                });
+                
+                // Resort the items if any sort is currently enabled
+                if (this.currentSort) { this.SortItems (); }
+                if (this.OnChange) { this.OnChange (); }
+            }
         } else {
             this.RawAddItem (newItem);
+            
+            // Resort the items if any sort is currently enabled
+            if (this.currentSort) { this.SortItems (); }
+            if (this.OnChange) { this.OnChange (); }
         }
-        
-        // Resort the items if any sort is currently enabled
-        if (this.currentSort) { this.SortItems (); }
     }
     
     public RemoveSelectedItems () {
-        this.SelectedRows.forEach (row => {
-            this.Rows[row][0].forEach (element => {
-                element.remove ();
+        if (this.SelectedRows.length > 0) {
+            this.SelectedRows.forEach (row => {
+                this.Rows[row][0].forEach (element => {
+                    element.remove ();
+                });
+                
+                this.Items.splice (this.Items.indexOf (this.Rows[row][1]), 1);
+                this.DisplayedRowOrder.splice (this.DisplayedRowOrder.findIndex (x => x == row.toString ()), 1);
+                delete this.Rows[row];
             });
             
-            this.Items.splice (this.Items.indexOf (this.Rows[row][1]), 1);
-            this.DisplayedRowOrder.splice (this.DisplayedRowOrder.findIndex (x => x == row.toString ()), 1);
-            delete this.Rows[row];
-        });
-        
-        this.SelectedRows = [];
-        if (this.OnSelectedItemChange) {
-            this.OnSelectedItemChange (undefined);
+            this.SelectedRows = [];
+            if (this.OnSelectedItemChange) {
+                this.OnSelectedItemChange (undefined);
+            }
+            
+            // Resort the items if any sort is currently enabled
+            if (this.currentSort) { this.SortItems (); }
+            if (this.OnChange) { this.OnChange (); }
         }
-        
-        // Resort the items if any sort is currently enabled
-        if (this.currentSort) { this.SortItems (); }
     }
     
     // appendToggle -> add to current selection (Ctrl key)
@@ -313,32 +343,100 @@ class HtmlTable<T extends ITableElement<T>> {
         this.SortItems ();
     }
     
+    private static readonly LOG_SORTING_PERFORMANCE: boolean = false;
     private SortItems () {
-        // Call it according to the setting
-        if (Settings.async_sort) {
-            setTimeout (() => this._SortItems (), 0);
-        } else {
-            this._SortItems ();
-        }
-    }
-    
-    private _SortItems () {
         this.DisplayedRowOrder.length = 0;
         
         if (this.currentSort && this.Items.length > 0) {
+            let hadErrors = false;
             let sorts = this.Items[0].ColumnSorts ();
             if ((sorts as Object).hasOwnProperty (this.currentSort[0])) {
+                let startTime: number = 0;
+                let lapTime: number = 0;
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    console.warn ("Sort performance logging enabled");
+                    console.log (`Sorting action: Sort by ${ this.currentSort[0] }`);
+                    startTime = new Date ().getTime ();
+                    lapTime = startTime;
+                }
+                
                 let sortFunction = sorts[this.currentSort[0]];
                 // First, remap HTMLElements and Items to sort them
-                let map: [string, HTMLElement[], T][] = [];
+                // RowID, Cells, Item, original order
+                let originalMap: [string, HTMLElement[], T, number][] = [];
+                let map: [string, HTMLElement[], T, number][] = [];
                 for (let i in this.Rows) {
-                    map.push ([i, this.Rows[i][0], this.Rows[i][1]]);
+                    let order = 0;
+                    let marker = this.Rows[i][0][0].previousSibling;
+                    while (marker) {
+                        ++order;
+                        marker = marker.previousSibling;
+                    }
+                    
+                    map.push ([i, this.Rows[i][0], this.Rows[i][1], order]);
+                }
+                
+                // Copy the map, while remapping the objects to the order in the DOM
+                map.forEach (e => { originalMap[e[3]] = e });
+                
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date ().getTime ();
+                    console.log (`Sorting action: Items mapped in ${ now - lapTime }ms`);
+                    lapTime = now;
                 }
                 
                 // Sort items according to the selected sort function
                 map.sort ((a, b) => {
-                    return sortFunction (a[2], b[2]) * this.currentSort![1];
+                    try {
+                        return sortFunction (a[2], b[2]) * this.currentSort![1];
+                    } catch (e) {
+                        hadErrors = true;
+                        return -1 * this.currentSort![1];
+                    }
                 });
+                
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date ().getTime ();
+                    console.log (`Sorting action: Items sorted in ${ now - lapTime }ms`);
+                    lapTime = now;
+                }
+                
+                // Works, but doesn't save that many DOM operations overall.
+                // (Or my algorithm is bad, which is more likely IMO)
+                // Not that there's much to save, ID fallback causes everything to fly around
+                // Also, reversing the list is just as slow as it was before, as every element
+                // needs to be moved
+                // 
+                // // Calculate the necessary swaps
+                // let DOMSwaps: number[] = [];
+                // let lastIndex = map.length - 1;
+                // let lastCorrectIndex = lastIndex;
+                // for (let i = map.length - 2; i >= 0; --i) {
+                //     let thisIndex = map.findIndex (x => x[3] == originalMap[i][3]);
+                //     if (thisIndex >= lastCorrectIndex) {
+                //         continue;
+                //     }
+                    
+                //     if (thisIndex != lastIndex - 1) {
+                //         for (let i = lastCorrectIndex; i > thisIndex; --i) {
+                //             DOMSwaps.push (i);
+                //         }
+                //     } else {
+                        
+                //     }
+                    
+                //     lastIndex = thisIndex;
+                //     lastCorrectIndex = thisIndex;
+                // }
+                // DOMSwaps.push (0); // Doesn't work without it and I don't really want to try and figure out why
+                // console.log (`Saved ${ map.length - DOMSwaps.length } DOM operations (Performed ${ Math.floor (1000000 * DOMSwaps.length / map.length) / 10000 }% work of original one)`);
+                
+                // // Apply the swaps
+                // DOMSwaps.forEach (i => {
+                //     map[i][1].forEach ((cell, cellIndex) => {
+                //         cell.parentElement!.insertBefore (cell, map.length == i + 1 ? null : map[i + 1][1][cellIndex]);
+                //     });
+                // });
                 
                 // Apply the new item order
                 map.forEach (row => {
@@ -362,12 +460,33 @@ class HtmlTable<T extends ITableElement<T>> {
                         }
                     });
                 });
+                
+                if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+                    let now = new Date ().getTime ();
+                    console.log (`Sorting action: DOM Manipulation finished in ${ now - lapTime }ms`);
+                    console.log (`Sorting action finished in ${ now - startTime }ms`);
+                }
+                
+                // Special case to report errors in engine lists
+                if (hadErrors && this.Items[0] instanceof Engine) {
+                    // Notifiers spawns messages bottom to top, so this message is flipped
+                    Notifier.Warn ("Most likely caused by incorrect polymorphism. (Check disabled engines too)", 5000);
+                    Notifier.Warn ("There are some validation errors in this list, that prevent correct sorting", 5000);
+                }
+                
                 return; // Don't fall-through to regular item order
             } else {
                 // This column has no sort function, revert to regular item order (Fall-through)
             }
         } else {
             // Disable sort, revert to regular item order (Fall-through)
+        }
+        
+        let startTime: number = 0;
+        if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+            console.warn ("Sort performance logging enabled");
+            console.log ("Sorting action: Reset item order");
+            startTime = new Date ().getTime ();
         }
         
         // Regular item order
@@ -377,6 +496,12 @@ class HtmlTable<T extends ITableElement<T>> {
                 cell.parentNode!.appendChild (cell);
                 cell.style.display = "block";
             });
+        }
+        
+        if (HtmlTable.LOG_SORTING_PERFORMANCE) {
+            let now = new Date ().getTime ();
+            console.log (`Sorting action: DOM Manipulation finished in ${ now - startTime }ms`);
+            console.log (`Sorting action finished in ${ now - startTime }ms`);
         }
     }
 }

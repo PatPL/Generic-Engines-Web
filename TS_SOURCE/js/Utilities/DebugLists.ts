@@ -239,4 +239,33 @@ class DebugLists {
         MainEngineTable.AddItems (toAppend);
     }
     
+    public static JustSpawnEngines (count?: number) {
+        if (!count) {
+            console.warn ("Usage: DebugLists.JustSpawnEngines (engineCount), ex. DebugLists.JustSpawnEngines (500)");
+            return;
+        }
+        
+        let toAppend = [];
+        for (let i = 0; i < count; ++i) {
+            let newEngine = new Engine ();
+            
+            newEngine.Active = true;
+            newEngine.ID = `SPAMMED-ENGINES-${("000000" + i).slice(-6)}`;
+            newEngine.EngineName = `ENGINE ${ ("00000000" + Math.floor (Math.random () * 100000000)).slice(-8) }; @${("000000" + i).slice(-6)}`;
+            
+            newEngine.Thrust = Math.random () * 10000;
+            newEngine.MinThrust = Math.random () * 100;
+            newEngine.AtmIsp = Math.random () * 400;
+            newEngine.VacIsp = Math.random () * 500;
+            
+            newEngine.Active = Math.random () > 0.5;
+            newEngine.PressureFed = Math.random () > 0.5;
+            newEngine.NeedsUllage = Math.random () > 0.5;
+            
+            toAppend.push (newEngine);
+        }
+        
+        MainEngineTable.AddItems (toAppend);
+    }
+    
 }

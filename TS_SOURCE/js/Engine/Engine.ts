@@ -120,6 +120,35 @@ class Engine implements ITableElement<Engine> {
         return 0;
     }
     
+    // Dependencies don't need to include itself
+    // Active: ["Active", "ID"], // "Active" is unnecessary here
+    // Active: ["ID"], // It'll work
+    // ID: [] // Can be omitted altogether (Would be ID: ["ID"])
+    public static readonly _ColumnSortDependencies: { [columnID: string]: string[] } = {
+        Active: ["ID"],
+        Labels: ["Polymorphism", "ID"],
+        EngineVariant: ["Polymorphism", "ID"],
+        Mass: ["Polymorphism", "ID"], // GetMass () depends on the polymorphism setting
+        Propulsion: ["ID"],
+        MinThrust: ["ID"],
+        PressureFed: ["ID"],
+        NeedsUllage: ["ID"],
+        TechUnlockNode: ["Polymorphism", "ID"],
+        EntryCost: ["Polymorphism", "ID"],
+        Cost: ["Polymorphism", "ID"],
+        AlternatorPower: ["Polymorphism", "ID"],
+        ThrustCurve: ["ID"],
+        Polymorphism: ["ID"],
+        FuelRatios: ["ID"],
+        Ignitions: ["Polymorphism", "ID"],
+        Visuals: ["Polymorphism", "ID"], // GetModelID () depends on the polymorphism setting
+        Dimensions: ["Polymorphism", "ID"], // GetWidth () & GetHeight () depend on the polymorphism setting
+        Gimbal: ["Polymorphism", "ID"],
+        TestFlight: ["Polymorphism", "ID"],
+        Tank: ["Polymorphism", "ID"],
+    };
+    
+    // Make sure to add used columns to the _ColumnSortDependencies too.
     public static readonly _ColumnSorts: { [columnID: string]: (a: Engine, b: Engine) => number } = {
         Active: (a, b) => Engine.RegularSort (a.Active, b.Active, a.ID, b.ID),
         ID: (a, b) => Engine.RegularSort (a.ID, b.ID),
@@ -156,7 +185,7 @@ class Engine implements ITableElement<Engine> {
         Polymorphism: (a, b) => {
             let output = Engine.RegularSort (a.PolyType, b.PolyType);
             
-            if (output) { return output } // Return if non 0
+            if (output != 0) { return output }
             
             // Both have the same PolyType value
             if (
@@ -165,21 +194,21 @@ class Engine implements ITableElement<Engine> {
             ) {
                 output = Engine.RegularSort (a.MasterEngineName, b.MasterEngineName);
                 
-                if (output) { return output } // Return if non 0
+                if (output != 0) { return output }
             }
             
-            // a & b have the same gimbal, sort by ID, as a last resort
+            // a & b have the same polymorphism, sort by ID, as a last resort
             return Engine.RegularSort (a.ID, b.ID);
         }, FuelRatios: (a, b) => {
             let output = Engine.RegularSort (a.FuelRatioItems.length, b.FuelRatioItems.length);
             
-            if (output) { return output } // Return if non 0
+            if (output != 0) { return output }
             
             // At this point both a & b have the same propellant count
             for (let i = 0; i < a.FuelRatioItems.length; ++i) {
                 output = Engine.RegularSort (a.FuelRatioItems[i][0], b.FuelRatioItems[i][0]);
                 
-                if (output) { return output } // Return if non 0
+                if (output != 0) { return output }
             }
             
             // a & b have the same propellants, sort by ID, as a last resort
@@ -274,6 +303,12 @@ class Engine implements ITableElement<Engine> {
             // a & b have the same gimbal, sort by ID, as a last resort
             return Engine.RegularSort (a.ID, b.ID);
         }, // first by enabled, then by volume
+    }
+    
+    public ColumnSortDependencies () {
+        // TS doesn't allow static properties in interfaces :/
+        // This is a workaround, not to keep that list of functions in every single Engine instance
+        return Engine._ColumnSortDependencies;
     }
     
     public ColumnSorts () {

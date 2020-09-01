@@ -6,7 +6,7 @@ namespace EngineEditableFieldMetadata {
             return tmp;
         }, ApplyValueToDisplayElement: (e, engine) => {
             if (engine.EnableTestFlight) {
-                e.innerHTML = `Enabled | ${engine.StartReliability0}% - ${engine.StartReliability10k}% | ${Math.round ((1 / (1 - (engine.CycleReliability0 / 100))) * engine.RatedBurnTime)}s - ${Math.round ((1 / (1 - (engine.CycleReliability10k / 100))) * engine.RatedBurnTime)}s`;
+                e.innerHTML = `Enabled | ${ engine.StartReliability0 }% - ${ engine.StartReliability10k }% | ${ Math.round ((1 / (1 - (engine.CycleReliability0 / 100))) * engine.RatedBurnTime) }s - ${ Math.round ((1 / (1 - (engine.CycleReliability10k / 100))) * engine.RatedBurnTime) }s`;
             } else {
                 if (engine.IsTestFlightDefault ()) {
                     e.innerHTML = `Disabled`;

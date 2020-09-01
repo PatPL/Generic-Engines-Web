@@ -14,12 +14,12 @@ class DebugLists {
             }
             
             newEngine.Active = true;
-            newEngine.ID = `PREVIEW-E${("0000" + i).slice(-4)}`;
-            newEngine.EngineName = `(E${("0000" + i).slice(-4)}) Exhaust preview - ${modelInfo.ModelName}`;
+            newEngine.ID = `PREVIEW-E${ ("0000" + i).slice (-4) }`;
+            newEngine.EngineName = `(E${ ("0000" + i).slice (-4) }) Exhaust preview - ${ modelInfo.ModelName }`;
             newEngine.ModelID = i;
             newEngine.UseBaseWidth = true;
             
-            newEngine.Width = 2; //2m wide & keep correct width:height ratio to make the engine look good
+            newEngine.Width = 2; // 2m wide & keep correct width:height ratio to make the engine look good
             // Trim to 3 closest decimal places (1mm)
             newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
             let trimmed = newEngine.Height.toFixed (3);
@@ -61,12 +61,12 @@ class DebugLists {
             newEngine.EngineList = MainEngineTable.Items;
             let modelInfo = ModelInfo.GetModelInfo (i);
             newEngine.Active = true;
-            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}`;
-            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Model preview - ${modelInfo.ModelName}`;
+            newEngine.ID = `PREVIEW-P${ ("0000" + i).slice (-4) }`;
+            newEngine.EngineName = `(P${ ("0000" + i).slice (-4) }) Model preview - ${ modelInfo.ModelName }`;
             newEngine.ModelID = i;
             newEngine.UseBaseWidth = true;
             
-            newEngine.Width = 2; //2m wide & keep correct width:height ratio to make the engine look good
+            newEngine.Width = 2; // 2m wide & keep correct width:height ratio to make the engine look good
             // Trim to 3 closest decimal places (1mm)
             newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
             let trimmed = newEngine.Height.toFixed (3);
@@ -100,8 +100,8 @@ class DebugLists {
             newEngine.EngineList = MainEngineTable.Items;
             let plumeInfo = PlumeInfo.GetPlumeInfo (i);
             newEngine.Active = true;
-            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUMETEST`;
-            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Plume test - ${plumeInfo.PlumeName}`;
+            newEngine.ID = `PREVIEW-P${ ("0000" + i).slice (-4) }PLUMETEST`;
+            newEngine.EngineName = `(P${ ("0000" + i).slice (-4) }) Plume test - ${ plumeInfo.PlumeName }`;
             newEngine.UseBaseWidth = true;
             
             newEngine.Width = Math.random () * 2 + 0.5;
@@ -128,11 +128,11 @@ class DebugLists {
             let modelInfo = ModelInfo.GetModelInfo (Model.RS25_2);
             let plumeInfo = PlumeInfo.GetPlumeInfo (i);
             newEngine.Active = true;
-            newEngine.ID = `PREVIEW-P${("0000" + i).slice(-4)}PLUME`;
-            newEngine.EngineName = `(P${("0000" + i).slice(-4)}) Plume preview - ${plumeInfo.PlumeName}`;
+            newEngine.ID = `PREVIEW-P${ ("0000" + i).slice (-4) }PLUME`;
+            newEngine.EngineName = `(P${ ("0000" + i).slice (-4) }) Plume preview - ${ plumeInfo.PlumeName }`;
             newEngine.UseBaseWidth = true;
             
-            newEngine.Width = 2; //2m wide & keep correct width:height ratio to make the engine look good
+            newEngine.Width = 2; // 2m wide & keep correct width:height ratio to make the engine look good
             // Trim to 3 closest decimal places (1mm)
             newEngine.Height = 2 * (modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth);
             let trimmed = newEngine.Height.toFixed (3);
@@ -162,8 +162,8 @@ class DebugLists {
             newEngine.EngineList = MainEngineTable.Items;
             modelInfo = ModelInfo.GetModelInfo (i);
             newEngine.Active = true;
-            newEngine.ID = `MODEL-${("0000" + i).slice(-4)}-1`;
-            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model check 1 - ${modelInfo.ModelName}`;
+            newEngine.ID = `MODEL-${ ("0000" + i).slice (-4) }-1`;
+            newEngine.EngineName = `(${ ("0000" + i).slice (-4) }) Model check 1 - ${ modelInfo.ModelName }`;
             newEngine.ModelID = i;
             newEngine.UseBaseWidth = true;
             newEngine.Width = 2;
@@ -177,8 +177,8 @@ class DebugLists {
             newEngine = new Engine ();
             modelInfo = ModelInfo.GetModelInfo (i);
             newEngine.Active = true;
-            newEngine.ID = `MODEL-${("0000" + i).slice(-4)}-2`;
-            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model check 2 - ${modelInfo.ModelName}`;
+            newEngine.ID = `MODEL-${ ("0000" + i).slice (-4) }-2`;
+            newEngine.EngineName = `(${ ("0000" + i).slice (-4) }) Model check 2 - ${ modelInfo.ModelName }`;
             newEngine.ModelID = i;
             newEngine.UseBaseWidth = false;
             newEngine.Width = 2;
@@ -192,8 +192,8 @@ class DebugLists {
             newEngine = new Engine ();
             modelInfo = ModelInfo.GetModelInfo (i);
             newEngine.Active = true;
-            newEngine.ID = `MODEL-${("0000" + i).slice(-4)}-3`;
-            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Model check 3 - ${modelInfo.ModelName}`;
+            newEngine.ID = `MODEL-${ ("0000" + i).slice (-4) }-3`;
+            newEngine.EngineName = `(${ ("0000" + i).slice (-4) }) Model check 3 - ${ modelInfo.ModelName }`;
             newEngine.ModelID = i;
             newEngine.UseBaseWidth = true;
             newEngine.Width = 2;
@@ -222,8 +222,8 @@ class DebugLists {
             newEngine.EngineList = MainEngineTable.Items;
             
             newEngine.Active = true;
-            newEngine.ID = `TANKTEST-${("0000" + i).slice(-4)}`;
-            newEngine.EngineName = `(${("0000" + i).slice(-4)}) Tank volume test - ${modelInfo.ModelName}`;
+            newEngine.ID = `TANKTEST-${ ("0000" + i).slice (-4) }`;
+            newEngine.EngineName = `(${ ("0000" + i).slice (-4) }) Tank volume test - ${ modelInfo.ModelName }`;
             newEngine.ModelID = i;
             
             newEngine.UseBaseWidth = true;
@@ -250,8 +250,8 @@ class DebugLists {
             let newEngine = new Engine ();
             
             newEngine.Active = true;
-            newEngine.ID = `SPAMMED-ENGINES-${("000000" + i).slice(-6)}`;
-            newEngine.EngineName = `ENGINE ${ ("00000000" + Math.floor (Math.random () * 100000000)).slice(-8) }; @${("000000" + i).slice(-6)}`;
+            newEngine.ID = `SPAMMED-ENGINES-${ ("000000" + i).slice (-6) }`;
+            newEngine.EngineName = `ENGINE ${ ("00000000" + Math.floor (Math.random () * 100000000)).slice (-8) }; @${ ("000000" + i).slice (-6) }`;
             
             newEngine.Thrust = Math.random () * 10000;
             newEngine.MinThrust = Math.random () * 100;

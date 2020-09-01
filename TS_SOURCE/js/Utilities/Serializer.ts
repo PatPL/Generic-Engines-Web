@@ -44,108 +44,108 @@ class Serializer {
         return deserializedEngines;
     }
     
-    public static Serialize(e: Engine): Uint8Array {
+    public static Serialize (e: Engine): Uint8Array {
         let i = 0;
-        let output = new Uint8Array(
-            2 + //short - Version (BIG ENDIAN - BACKWARDS COMPATIBILITY)
-            1 + //bool - Active
-            (e.ID.length + 2) + //1B * length + 2B length header - ID
-            8 + //double - Mass
-            8 + //double - Thrust
-            8 + //double - AtmIsp
-            8 + //double - VacIsp
-            e.FuelRatioItems.length * 10 + 2 + //(2B + 8B) * count + 2B length header - PropellantRatio
-            8 + //double - Width
-            8 + //double - Height
-            8 + //double - Gimbal
-            4 + //int - Cost
-            8 + //double - MinThrust
-            4 + //int - Ignitions
-            1 + //bool - PressureFed
-            1 + //bool - NeedsUllage
-            1 + //bool - FuelVolumeRatios
-            1 + //bool - TestFlightConfigNotDefault
-            (!e.IsTestFlightDefault () ? 1 : 0) * ( //Include all properties inside brackets only if any Test Flight properties were changed
-            1 + //bool - EnableTestFlight
-            4 + //int - RatedBurnTime
-            8 + //double - StartReliability0
-            8 + //double - StartReliability10k
-            8 + //double - CycleReliability0
-            8)+ //double - CycleReliability10k
-            8 + //double - AlternatorPower
-            1 + //bool - GimbalConfigNotDefault
-            (!e.IsGimbalDefault () ? 1 : 0) * ( //Include all properties inside brackets only if any Gimbal properties were changed
-            1 + //bool - AdvancedGimbal
-            8 + //double - GimbalNX
-            8 + //double - GimbalPX
-            8 + //double - GimbalNY
-            8)+ //double - GimbalPY
-            2 + //short - ModelID
-            2 + //short - PlumeID
-            2 + //short - TechUnlockNode
-            4 + //int - EntryCost
-            (e.EngineName.length + 2) + //1B * length + 2B length header - EngineName
-            1 + //bool - ManufacturerNotDefault
-            (!e.IsManufacturerDefault () ? 1 : 0) * (e.EngineManufacturer.length + 2) + //(1B * length + 2B length header) if manufacturer was changed - EngineManufacturer
-            1 + //bool - DescriptionNotDefault
-            (!e.IsDescriptionDefault () ? 1 : 0) * (e.EngineDescription.length + 2) + //(1B * length + 2B length header) if description was changed - EngineDescription
-            1 + //bool - UseBaseWidth
-            1 + //EngineType - EngineVariant
-            8 + //double - TanksVolume
-            e.TanksContents.length * 10 + 2 + //(2B + 8B) * count + 2B length header - TanksContents
-            e.ThrustCurve.length * 16 + 2 + //(8B + 8B) * count + 2B length header - ThrustCurve
-            1 + //bool - UseTanks
-            1 + //bool - LimitTanks
-            1 + //Polymorphism - PolyType
-            e.MasterEngineName.length + 2 + //1B * length + 2B length header - MasterEngineName
-            1 + //bool - ExhaustConfigNotDefault
-            (!e.IsExhaustDefault () ? 1 : 0) * ( //Include exhaust settings if they're not default
-            1 + //bool - UseExhaustEffect
-            2 + //short - ExhaustPlumeID
-            8 + //double - ExhaustThrustPercent
-            8 + //double - ExhaustIspMultiplier
-            8 + //double - ExhaustGimbal
-            1 //bool - ExhaustGimbalOnlyRoll
+        let output = new Uint8Array (
+            2 + // short - Version (BIG ENDIAN - BACKWARDS COMPATIBILITY)
+            1 + // bool - Active
+            (e.ID.length + 2) + // 1B * length + 2B length header - ID
+            8 + // double - Mass
+            8 + // double - Thrust
+            8 + // double - AtmIsp
+            8 + // double - VacIsp
+            e.FuelRatioItems.length * 10 + 2 + // (2B + 8B) * count + 2B length header - PropellantRatio
+            8 + // double - Width
+            8 + // double - Height
+            8 + // double - Gimbal
+            4 + // int - Cost
+            8 + // double - MinThrust
+            4 + // int - Ignitions
+            1 + // bool - PressureFed
+            1 + // bool - NeedsUllage
+            1 + // bool - FuelVolumeRatios
+            1 + // bool - TestFlightConfigNotDefault
+            (!e.IsTestFlightDefault () ? 1 : 0) * ( // Include all properties inside brackets only if any Test Flight properties were changed
+            1 + // bool - EnableTestFlight
+            4 + // int - RatedBurnTime
+            8 + // double - StartReliability0
+            8 + // double - StartReliability10k
+            8 + // double - CycleReliability0
+            8)+ // double - CycleReliability10k
+            8 + // double - AlternatorPower
+            1 + // bool - GimbalConfigNotDefault
+            (!e.IsGimbalDefault () ? 1 : 0) * ( // Include all properties inside brackets only if any Gimbal properties were changed
+            1 + // bool - AdvancedGimbal
+            8 + // double - GimbalNX
+            8 + // double - GimbalPX
+            8 + // double - GimbalNY
+            8)+ // double - GimbalPY
+            2 + // short - ModelID
+            2 + // short - PlumeID
+            2 + // short - TechUnlockNode
+            4 + // int - EntryCost
+            (e.EngineName.length + 2) + // 1B * length + 2B length header - EngineName
+            1 + // bool - ManufacturerNotDefault
+            (!e.IsManufacturerDefault () ? 1 : 0) * (e.EngineManufacturer.length + 2) + // (1B * length + 2B length header) if manufacturer was changed - EngineManufacturer
+            1 + // bool - DescriptionNotDefault
+            (!e.IsDescriptionDefault () ? 1 : 0) * (e.EngineDescription.length + 2) + // (1B * length + 2B length header) if description was changed - EngineDescription
+            1 + // bool - UseBaseWidth
+            1 + // EngineType - EngineVariant
+            8 + // double - TanksVolume
+            e.TanksContents.length * 10 + 2 + // (2B + 8B) * count + 2B length header - TanksContents
+            e.ThrustCurve.length * 16 + 2 + // (8B + 8B) * count + 2B length header - ThrustCurve
+            1 + // bool - UseTanks
+            1 + // bool - LimitTanks
+            1 + // Polymorphism - PolyType
+            e.MasterEngineName.length + 2 + // 1B * length + 2B length header - MasterEngineName
+            1 + // bool - ExhaustConfigNotDefault
+            (!e.IsExhaustDefault () ? 1 : 0) * ( // Include exhaust settings if they're not default
+            1 + // bool - UseExhaustEffect
+            2 + // short - ExhaustPlumeID
+            8 + // double - ExhaustThrustPercent
+            8 + // double - ExhaustIspMultiplier
+            8 + // double - ExhaustGimbal
+            1 // bool - ExhaustGimbalOnlyRoll
             )
         );
         
-        //short - Version (BIG ENDIAN - BACKWARDS COMPATIBILITY)
+        // short - Version (BIG ENDIAN - BACKWARDS COMPATIBILITY)
         output[i++] = Serializer.Version / 256;
         output[i++] = Serializer.Version % 256;
         
-        //bool - Active
+        // bool - Active
         output[i++] = e.Active ? 1 : 0;
         
-        //String + 2B length header - Name
-        //String length header
+        // String + 2B length header - Name
+        // String length header
         output[i++] = e.ID.length % 256;
         output[i++] = e.ID.length / 256;
-        //String data
+        // String data
         for (let c = 0; c < e.ID.length; ++c) {
             output[i++] = e.ID.charCodeAt (c);
         }
         
-        //double - Mass
+        // double - Mass
         output.set (BitConverter.DoubleToByteArray (e.Mass), i);
         i += 8;
         
-        //double - Thrust
+        // double - Thrust
         output.set (BitConverter.DoubleToByteArray (e.Thrust), i);
         i += 8;
         
-        //double - AtmIsp
+        // double - AtmIsp
         output.set (BitConverter.DoubleToByteArray (e.AtmIsp), i);
         i += 8;
         
-        //double - VacIsp
+        // double - VacIsp
         output.set (BitConverter.DoubleToByteArray (e.VacIsp), i);
         i += 8;
         
-        //(2B + 8B) * count + 2B length header - PropellantRatio
-        //Length header
+        // (2B + 8B) * count + 2B length header - PropellantRatio
+        // Length header
         output[i++] = e.FuelRatioItems.length % 256;
         output[i++] = e.FuelRatioItems.length / 256;
-        //Data
+        // Data
         e.FuelRatioItems.forEach (f => {
             output[i++] = f[0] % 256;
             output[i++] = f[0] / 256;
@@ -153,165 +153,165 @@ class Serializer {
             i += 8;
         });
         
-        //double - Width
+        // double - Width
         output.set (BitConverter.DoubleToByteArray (e.Width), i);
         i += 8;
         
-        //double - Height
+        // double - Height
         output.set (BitConverter.DoubleToByteArray (e.Height), i);
         i += 8;
         
-        //double - Gimbal
+        // double - Gimbal
         output.set (BitConverter.DoubleToByteArray (e.Gimbal), i);
         i += 8;
         
-        //int - Cost
+        // int - Cost
         output.set (BitConverter.IntToByteArray (e.Cost), i);
         i += 4;
         
-        //double - MinThrust
+        // double - MinThrust
         output.set (BitConverter.DoubleToByteArray (e.MinThrust), i);
         i += 8;
         
-        //int - Ignitions
+        // int - Ignitions
         output.set (BitConverter.IntToByteArray (e.Ignitions), i);
         i += 4;
         
-        //bool - PressureFed
+        // bool - PressureFed
         output[i++] = e.PressureFed ? 1 : 0;
         
-        //bool - NeedsUllage
+        // bool - NeedsUllage
         output[i++] = e.NeedsUllage ? 1 : 0;
         
-        //bool - FuelVolumeRatios
+        // bool - FuelVolumeRatios
         output[i++] = e.FuelVolumeRatios ? 1 : 0;
         
-        //bool - TestFlightConfigNotDefault
+        // bool - TestFlightConfigNotDefault
         output[i++] = !e.IsTestFlightDefault () ? 1 : 0;
         
-        //Include all properties inside brackets only if any Test Flight properties were changed
+        // Include all properties inside brackets only if any Test Flight properties were changed
         if (!e.IsTestFlightDefault ()) {
-            //bool - EnableTestFlight
+            // bool - EnableTestFlight
             output[i++] = e.EnableTestFlight ? 1 : 0;
             
-            //int - RatedBurnTime
+            // int - RatedBurnTime
             output.set (BitConverter.IntToByteArray (e.RatedBurnTime), i);
             i += 4;
             
-            //double - StartReliability0
+            // double - StartReliability0
             output.set (BitConverter.DoubleToByteArray (e.StartReliability0), i);
             i += 8;
             
-            //double - StartReliability10k
+            // double - StartReliability10k
             output.set (BitConverter.DoubleToByteArray (e.StartReliability10k), i);
             i += 8;
             
-            //double - CycleReliability0
+            // double - CycleReliability0
             output.set (BitConverter.DoubleToByteArray (e.CycleReliability0), i);
             i += 8;
             
-            //double - CycleReliability10k
+            // double - CycleReliability10k
             output.set (BitConverter.DoubleToByteArray (e.CycleReliability10k), i);
             i += 8;
         }
         
-        //double - AlternatorPower
+        // double - AlternatorPower
         output.set (BitConverter.DoubleToByteArray (e.AlternatorPower), i);
         i += 8;
         
-        //bool - GimbalConfigNotDefault
+        // bool - GimbalConfigNotDefault
         output[i++] = !e.IsGimbalDefault () ? 1 : 0;
         
-        //Include all properties inside brackets only if any Gimbal properties were changed
+        // Include all properties inside brackets only if any Gimbal properties were changed
         if (!e.IsGimbalDefault ()) {
-            //bool - AdvancedGimbal
+            // bool - AdvancedGimbal
             output[i++] = e.AdvancedGimbal ? 1 : 0;
 
-            //double - GimbalNX
+            // double - GimbalNX
             output.set (BitConverter.DoubleToByteArray (e.GimbalNX), i);
             i += 8;
 
-            //double - GimbalPX
+            // double - GimbalPX
             output.set (BitConverter.DoubleToByteArray (e.GimbalPX), i);
             i += 8;
 
-            //double - GimbalNY
+            // double - GimbalNY
             output.set (BitConverter.DoubleToByteArray (e.GimbalNY), i);
             i += 8;
 
-            //double - GimbalPY
+            // double - GimbalPY
             output.set (BitConverter.DoubleToByteArray (e.GimbalPY), i);
             i += 8;
         }
         
-        //short - ModelID
+        // short - ModelID
         output[i++] = e.ModelID % 256;
         output[i++] = e.ModelID / 256;
         
-        //short - PlumeID
+        // short - PlumeID
         output[i++] = e.PlumeID % 256;
         output[i++] = e.PlumeID / 256;
         
-        //short - TechUnlockNode
+        // short - TechUnlockNode
         output[i++] = e.TechUnlockNode % 256;
         output[i++] = e.TechUnlockNode / 256;
         
-        //int - EntryCost
+        // int - EntryCost
         output.set (BitConverter.IntToByteArray (e.EntryCost), i);
         i += 4;
         
-        //1B * length + 2B length header - EngineName
-        //String header
+        // 1B * length + 2B length header - EngineName
+        // String header
         output[i++] = e.EngineName.length % 256;
         output[i++] = e.EngineName.length / 256;
-        //String data
+        // String data
         for (let c = 0; c < e.EngineName.length; ++c) {
             output[i++] = e.EngineName.charCodeAt (c);
         }
         
-        //bool - ManufacturerNotDefault
+        // bool - ManufacturerNotDefault
         output[i++] = !e.IsManufacturerDefault () ? 1 : 0;
         
         if (!e.IsManufacturerDefault ()) {
-            //1B * length + 2B length header - EngineManufacturer
-            //String header
+            //  1B * length + 2B length header - EngineManufacturer
+            // String header
             output[i++] = e.EngineManufacturer.length % 256;
             output[i++] = e.EngineManufacturer.length / 256;
-            //String data
+            // String data
             for (let c = 0; c < e.EngineManufacturer.length; ++c) {
                 output[i++] = e.EngineManufacturer.charCodeAt (c);
             }
         }
         
-        //bool - DescriptionNotDefault
+        // bool - DescriptionNotDefault
         output[i++] = !e.IsDescriptionDefault () ? 1 : 0;
         
         if (!e.IsDescriptionDefault ()) {
-            //1B * length + 2B length header - EngineDescription
-            //String header
+            // 1B * length + 2B length header - EngineDescription
+            // String header
             output[i++] = e.EngineDescription.length % 256;
             output[i++] = e.EngineDescription.length / 256;
-            //String data
+            // String data
             for (let c = 0; c < e.EngineDescription.length; ++c) {
                 output[i++] = e.EngineDescription.charCodeAt (c);
             }
         }
         
-        //bool - UseBaseWidth
+        // bool - UseBaseWidth
         output[i++] = e.UseBaseWidth ? 1 : 0;
         
-        //byte - EngineVariant
+        // byte - EngineVariant
         output[i++] = e.EngineVariant;
         
-        //double - TanksVolume
+        // double - TanksVolume
         output.set (BitConverter.DoubleToByteArray (e.TanksVolume), i);
         i += 8;
         
-        //(2B + 8B) * count + 2B length header - TanksContents
-        //Length header
+        // (2B + 8B) * count + 2B length header - TanksContents
+        // Length header
         output[i++] = e.TanksContents.length % 256;
         output[i++] = e.TanksContents.length / 256;
-        //Data
+        // Data
         e.TanksContents.forEach (f => {
             output[i++] = f[0] % 256;
             output[i++] = f[0] / 256;
@@ -319,11 +319,11 @@ class Serializer {
             i += 8;
         });
         
-        //(8B + 8B) * count + 2B length header - ThrustCurve
-        //Length header
+        // (8B + 8B) * count + 2B length header - ThrustCurve
+        // Length header
         output[i++] = e.ThrustCurve.length % 256;
         output[i++] = e.ThrustCurve.length / 256;
-        //Data
+        // Data
         e.ThrustCurve.forEach (f => {
             output.set (BitConverter.DoubleToByteArray (f[0]), i);
             i += 8;
@@ -331,48 +331,48 @@ class Serializer {
             i += 8;
         });
         
-        //bool - UseTanks
+        // bool - UseTanks
         output[i++] = e.UseTanks ? 1 : 0;
         
-        //bool - LimitTanks
+        // bool - LimitTanks
         output[i++] = e.LimitTanks ? 1 : 0;
         
-        //byte - PolyType
+        // byte - PolyType
         output[i++] = e.PolyType;
         
-        //1B * length + 2B length header - MasterEngineName
-        //String header
+        // 1B * length + 2B length header - MasterEngineName
+        // String header
         output[i++] = e.MasterEngineName.length % 256;
         output[i++] = e.MasterEngineName.length / 256;
-        //String data
+        // String data
         for (let c = 0; c < e.MasterEngineName.length; ++c) {
             output[i++] = e.MasterEngineName.charCodeAt (c);
         }
         
-        //bool - ExhaustNotDefault
+        // bool - ExhaustNotDefault
         output[i++] = !e.IsExhaustDefault () ? 1 : 0;
         
         if (!e.IsExhaustDefault ()) {
-            //bool - UseExhaustEffect
+            // bool - UseExhaustEffect
             output[i++] = e.UseExhaustEffect ? 1 : 0;
             
-            //short - ExhaustPlumeID
+            // short - ExhaustPlumeID
             output[i++] = e.ExhaustPlumeID % 256;
             output[i++] = e.ExhaustPlumeID / 256;
             
-            //double - ExhaustThrustPercent
+            // double - ExhaustThrustPercent
             output.set (BitConverter.DoubleToByteArray (e.ExhaustThrustPercent), i);
             i += 8;
             
-            //double - ExhaustIspMultiplier
+            // double - ExhaustIspMultiplier
             output.set (BitConverter.DoubleToByteArray (e.ExhaustIspPercent), i);
             i += 8;
             
-            //double - ExhaustGimbal
+            // double - ExhaustGimbal
             output.set (BitConverter.DoubleToByteArray (e.ExhaustGimbal), i);
             i += 8;
             
-            //bool - ExhaustGimbalOnlyRoll
+            // bool - ExhaustGimbalOnlyRoll
             output[i++] = e.ExhaustGimbalOnlyRoll ? 1 : 0;
         }
         
@@ -383,17 +383,17 @@ class Serializer {
         let output = new Engine ();
         let i = startOffset;
         
-        //short - Version
+        // short - Version
         let version = 0;
         version += input[i++];
         version *= 256;
         version += input[i++];
         
         if (version >= 0) {
-            //bool - Active
+            // bool - Active
             output.Active = input[i++] == 1;
             
-            //string - ID
+            // string - ID
             let stringLength = 0;
             if (version >= 3) {
                 stringLength += input[i++];
@@ -408,23 +408,23 @@ class Serializer {
                 output.ID += String.fromCharCode (input[i++]);
             }
             
-            //double - Mass
+            // double - Mass
             output.Mass = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
             
-            //double - Thrust
+            // double - Thrust
             output.Thrust = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
             
-            //double - AtmIsp
+            // double - AtmIsp
             output.AtmIsp = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
             
-            //double - VacIsp
+            // double - VacIsp
             output.VacIsp = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
             
-            //PropellantRatio
+            // PropellantRatio
             let dataLength = 0;
             if (version >= 3) {
                 dataLength += input[i++];
@@ -434,7 +434,7 @@ class Serializer {
                 dataLength += input[i++];
             }
             
-            output.FuelRatioItems = []; //Constructor gives one element to this list
+            output.FuelRatioItems = []; // Constructor gives one element to this list
             for (let c = 0; c < dataLength; ++c) {
                 let fuelType: Fuel = 0;
                 if (version >= 3) {
@@ -449,109 +449,109 @@ class Serializer {
                 i += 8;
             }
             
-            //double - Width
+            // double - Width
             output.Width = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
             
-            //double - Height
+            // double - Height
             output.Height = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
             
-            //double - Gimbal
+            // double - Gimbal
             output.Gimbal = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
             
-            //int - Cost
+            // int - Cost
             output.Cost = BitConverter.ByteArrayToInt (input, i);
             i += 4;
         }
         
         if (version >= 1) {
-            //double - MinThrust
+            // double - MinThrust
             output.MinThrust = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
             
-            //int - Ignitions
+            // int - Ignitions
             output.Ignitions = BitConverter.ByteArrayToInt (input, i);
             i += 4;
             
-            //bool - PressureFed
+            // bool - PressureFed
             output.PressureFed = input[i++] == 1;
             
-            //bool - NeedsUllage
+            // bool - NeedsUllage
             output.NeedsUllage = input[i++] == 1;
         }
         
         if (version >= 2) {
-            //bool - FuelVolumeRatios
+            // bool - FuelVolumeRatios
             output.FuelVolumeRatios = input[i++] == 1;
         }
         
         if (version >= 3) {
-            //bool - TestFlightConfigNotDefault
+            // bool - TestFlightConfigNotDefault
             if (input[i++] == 1) {
-                //bool - EnableTestFlight
+                // bool - EnableTestFlight
                 output.EnableTestFlight = input[i++] == 1;
                 
-                //int - RatedBurnTime
+                // int - RatedBurnTime
                 output.RatedBurnTime = BitConverter.ByteArrayToInt (input, i);
                 i += 4;
                 
-                //double - StartReliability0
+                // double - StartReliability0
                 output.StartReliability0 = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
-                //double - StartReliability10k
+                // double - StartReliability10k
                 output.StartReliability10k = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
-                //double - CycleReliability0
+                // double - CycleReliability0
                 output.CycleReliability0 = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
-                //double - CycleReliability10k
+                // double - CycleReliability10k
                 output.CycleReliability10k = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
             }
         }
         
         if (version >= 4) {
-            //double - AlternatorPower
+            // double - AlternatorPower
             output.AlternatorPower = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
         }
         
         if (version >= 5) {
-            //bool - GimbalConfigNotDefault
+            // bool - GimbalConfigNotDefault
             if (input[i++] == 1) {
-                //bool - AdvancedGimbal
+                // bool - AdvancedGimbal
                 output.AdvancedGimbal = input[i++] == 1;
                 
-                //double - GimbalNX
+                // double - GimbalNX
                 output.GimbalNX = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
-                //double - GimbalPX
+                // double - GimbalPX
                 output.GimbalPX = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
-                //double - GimbalNY
+                // double - GimbalNY
                 output.GimbalNY = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
-                //double - GimbalPY
+                // double - GimbalPY
                 output.GimbalPY = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
             }
         }
         
         if (version >= 6) {
-            //short - ModelID
-            output.ModelID = input[i++]; //Might be a problem if I change default engine from value 0
-            output.ModelID += input[i++] * 256; //Will keep as it is for now though.
+            // short - ModelID
+            output.ModelID = input[i++]; // Might be a problem if I change default engine from value 0
+            output.ModelID += input[i++] * 256; // Will keep as it is for now though.
             
-            //short - PlumeID
-            output.PlumeID = input[i++]; //Same here
+            // short - PlumeID
+            output.PlumeID = input[i++]; // Same here
             output.PlumeID += input[i++] * 256; // EDIT: This became a problem. Fixed.
             
             // As of 0.9.0, Real Plume is deprecated
@@ -559,15 +559,15 @@ class Serializer {
         }
         
         if (version >= 7) {
-            //short - TechUnlockNode
-            output.TechUnlockNode += input[i++]; //Same as with ModelID & PlumeID
+            // short - TechUnlockNode
+            output.TechUnlockNode += input[i++]; // Same as with ModelID & PlumeID
             output.TechUnlockNode += input[i++] * 256;
             
-            //int - EntryCost
+            // int - EntryCost
             output.EntryCost = BitConverter.ByteArrayToInt (input, i);
             i += 4;
             
-            //string - EngineName
+            // string - EngineName
             let stringLength = 0;
             stringLength += input[i++];
             stringLength += input[i++] * 256;
@@ -577,9 +577,9 @@ class Serializer {
                 output.EngineName += String.fromCharCode (input[i++]);
             }
             
-            //bool - ManufacturerNotDefault
+            // bool - ManufacturerNotDefault
             if (input[i++] == 1) {
-                //string - EngineManufacturer
+                // string - EngineManufacturer
                 let stringLength = 0;
                 stringLength += input[i++];
                 stringLength += input[i++] * 256;
@@ -590,9 +590,9 @@ class Serializer {
                 }
             }
             
-            //bool - DescriptionNotDefault
+            // bool - DescriptionNotDefault
             if (input[i++] == 1) {
-                //string - EngineDescription
+                // string - EngineDescription
                 let stringLength = 0;
                 stringLength += input[i++];
                 stringLength += input[i++] * 256;
@@ -605,22 +605,22 @@ class Serializer {
         }
         
         if (version >= 8) {
-            //bool - UseBaseWidth
+            // bool - UseBaseWidth
             output.UseBaseWidth = input[i++] == 1;
-        } else { //Versions lower than 8
-            //Default value before version 8 was false. Now the default value is true, so this has to be changed.
+        } else { // Versions lower than 8
+            // Default value before version 8 was false. Now the default value is true, so this has to be changed.
             output.UseBaseWidth = false;
         }
         
         if (version >= 9) {
-            //byte - EngineVariant
+            // byte - EngineVariant
             output.EngineVariant = input[i++];
             
-            //double - TanksVolume
+            // double - TanksVolume
             output.TanksVolume = BitConverter.ByteArrayToDouble (input, i);
             i += 8;
             
-            //TanksContents
+            // TanksContents
             let dataLength = 0;
             dataLength += input[i++];
             dataLength += input[i++] * 256;
@@ -634,7 +634,7 @@ class Serializer {
                 i += 8;
             }
             
-            //ThrustCurve
+            // ThrustCurve
             dataLength = 0;
             dataLength += input[i++];
             dataLength += input[i++] * 256;
@@ -649,18 +649,18 @@ class Serializer {
         }
         
         if (version >= 10) {
-            //bool - UseTanks
+            // bool - UseTanks
             output.UseTanks = input[i++] == 1;
 
-            //bool - LimitTanks
+            // bool - LimitTanks
             output.LimitTanks = input[i++] == 1;
         }
         
         if (version >= 11) {
-            //byte - PolyType
+            // byte - PolyType
             output.PolyType = input[i++];
             
-            //string - MasterEngineName
+            // string - MasterEngineName
             let stringLength = 0;
             stringLength += input[i++];
             stringLength += input[i++] * 256;
@@ -672,35 +672,35 @@ class Serializer {
         }
         
         if (version == 12) {
-            //Version 12 added two variables, that were removed in version 13
-            //Only version 12 has these in the file
-            //They are not read, but we need to add 12B to the byte counter to avoid errors.
+            // Version 12 added two variables, that were removed in version 13
+            // Only version 12 has these in the file
+            // They are not read, but we need to add 12B to the byte counter to avoid errors.
             i += 12;
         }
         
         if (version >= 14) {
-            //bool - ExhaustNotDefault
+            // bool - ExhaustNotDefault
             if (input[i++] == 1) {
-                //bool - UseExhaustEffect
+                // bool - UseExhaustEffect
                 output.UseExhaustEffect = input[i++] == 1;
                 
-                //short - ExhaustPlumeID
+                // short - ExhaustPlumeID
                 output.ExhaustPlumeID = input[i++];
                 output.ExhaustPlumeID += input[i++] * 256;
                 
-                //double - ExhaustThrustPercent
+                // double - ExhaustThrustPercent
                 output.ExhaustThrustPercent = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
-                //double - ExhaustIspMultiplier
+                // double - ExhaustIspMultiplier
                 output.ExhaustIspPercent = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
-                //double - ExhaustGimbal
+                // double - ExhaustGimbal
                 output.ExhaustGimbal = BitConverter.ByteArrayToDouble (input, i);
                 i += 8;
                 
-                //bool - ExhaustGimbalOnlyRoll
+                // bool - ExhaustGimbalOnlyRoll
                 output.ExhaustGimbalOnlyRoll = input[i++] == 1;
             }
         }

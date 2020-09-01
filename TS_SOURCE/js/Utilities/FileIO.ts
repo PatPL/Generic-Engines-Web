@@ -54,7 +54,7 @@ class FileIO {
                 let blobname = blobnames[index];
                 let blob = blobs[blobname];
                 if (blob instanceof Uint8Array) {
-                    writer.add (`${rootDirName}/${blobname}`, new zip.BlobReader (new Blob ([blob])), () => {
+                    writer.add (`${ rootDirName }/${ blobname }`, new zip.BlobReader (new Blob ([blob])), () => {
                         ++zippedCount;
                         if (progressStatus) { progressStatus (zippedCount, fileCount); }
                         if (zippedCount == fileCount) {
@@ -64,7 +64,7 @@ class FileIO {
                         }
                     });
                 } else {
-                    writer.add (`${rootDirName}/${blobname}`, new zip.TextReader (blob), () => {
+                    writer.add (`${ rootDirName }/${ blobname }`, new zip.TextReader (blob), () => {
                         ++zippedCount;
                         if (progressStatus) { progressStatus (zippedCount, fileCount); }
                         if (zippedCount == fileCount) {
@@ -86,8 +86,8 @@ class FileIO {
         
     }
     
-    public static OpenText(extensions?: string, callback?: (data: string | null, filename: string) => void) {
-        this.Open(FileType.Text, extensions, (result, filename) => {
+    public static OpenText (extensions?: string, callback?: (data: string | null, filename: string) => void) {
+        this.Open (FileType.Text, extensions, (result, filename) => {
             if (callback) {
                 if (result) {
                     if (typeof result === "string") {
@@ -102,8 +102,8 @@ class FileIO {
         });
     }
     
-    public static OpenBinary(extensions?: string, callback?: (data: Uint8Array | null, filename: string) => void) {
-        this.Open(FileType.Binary, extensions, (result, filename) => {
+    public static OpenBinary (extensions?: string, callback?: (data: Uint8Array | null, filename: string) => void) {
+        this.Open (FileType.Binary, extensions, (result, filename) => {
             if (callback) {
                 if (result) {
                     if (result instanceof Uint8Array) {
@@ -118,20 +118,20 @@ class FileIO {
         });
     }
 
-    private static Open(type: FileType, extensions?: string, callback?: (data: string | Uint8Array | null, filename: string) => void) {
-        let fileDialog: HTMLInputElement = document.createElement("input");
+    private static Open (type: FileType, extensions?: string, callback?: (data: string | Uint8Array | null, filename: string) => void) {
+        let fileDialog: HTMLInputElement = document.createElement ("input");
         fileDialog.type = "file";
         if (extensions && extensions != "") {
             fileDialog.accept = extensions;
         }
-        fileDialog.click();
+        fileDialog.click ();
 
-        fileDialog.addEventListener("change", () => {
+        fileDialog.addEventListener ("change", () => {
             if (!fileDialog.files || !fileDialog.files[0]) {
-                console.warn("No file selected?");
+                console.warn ("No file selected?");
 
                 if (callback) {
-                    callback(null, "");
+                    callback (null, "");
                 }
 
                 return;
@@ -139,35 +139,35 @@ class FileIO {
 
             let file = fileDialog.files[0];
 
-            let reader = new FileReader();
+            let reader = new FileReader ();
             reader.onload = () => {
                 if (callback) {
                     if (reader.result instanceof ArrayBuffer) {
-                        callback(new Uint8Array(reader.result), file.name);
+                        callback (new Uint8Array (reader.result), file.name);
                     } else {
-                        callback(reader.result, file.name);
+                        callback (reader.result, file.name);
                     }
 
                 }
             }
 
             if (type == FileType.Text) {
-                reader.readAsText(file);
+                reader.readAsText (file);
             } else if (type == FileType.Binary) {
-                reader.readAsArrayBuffer(file);
+                reader.readAsArrayBuffer (file);
             }
         });
     }
     
     public static SaveText (filename: string, contents: string) {
         let saveDialog = document.createElement ("a");
-        saveDialog.href = `data:application/x-none;charset=UTF-8;base64,${btoa(contents)}`;
+        saveDialog.href = `data:application/x-none;charset=UTF-8;base64,${ btoa (contents) }`;
         saveDialog.download = filename;
         
-        //saveDialog.click ();
-        let evt = document.createEvent("MouseEvents"); 
-        evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null); 
-        saveDialog.dispatchEvent(evt);
+        // saveDialog.click ();
+        let evt = document.createEvent ("MouseEvents"); 
+        evt.initMouseEvent ("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null); 
+        saveDialog.dispatchEvent (evt);
     }
     
     public static SaveBinary (filename: string, contents: Uint8Array) {
@@ -179,10 +179,10 @@ class FileIO {
         saveDialog.href = URL.createObjectURL (blob);
         saveDialog.download = filename;
         
-        //saveDialog.click ();
-        let evt = document.createEvent("MouseEvents"); 
-        evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null); 
-        saveDialog.dispatchEvent(evt);
+        // saveDialog.click ();
+        let evt = document.createEvent ("MouseEvents"); 
+        evt.initMouseEvent ("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null); 
+        saveDialog.dispatchEvent (evt);
     }
     
 }

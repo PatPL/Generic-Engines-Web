@@ -24,7 +24,7 @@ document.addEventListener ("DOMContentLoaded", () => {
         models.push ([id, ModelInfo.GetModelInfo (id)]);
     }
     
-    //Sort
+    // Sort
     models.sort ((a, b) => {
         if (a[1].ModelName > b[1].ModelName) {
             return 1;
@@ -35,12 +35,12 @@ document.addEventListener ("DOMContentLoaded", () => {
         }
     })
     
-    //Serve
+    // Serve
     models.forEach (([id, modelInfo]) => {
         let newElement = document.createElement ("div");
         newElement.innerHTML = `
-            <span>${modelInfo.ImageLabel}</span>
-            <div class="option-button"><img src="${modelInfo.ImageSource}"></div>
+            <span>${ modelInfo.ImageLabel }</span>
+            <div class="option-button"><img src="${ modelInfo.ImageSource }"></div>
         `;
         
         newElement.querySelector ("div")!.addEventListener ("click", () => {

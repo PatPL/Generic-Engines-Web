@@ -181,7 +181,7 @@ class StyleDialog {
                 }
             });
             
-            select.innerHTML += `</optgroup>`
+            select.innerHTML += "</optgroup>"
         });
         // for (let i in StyleDialog.ThemeFiles) {
         //     select.innerHTML += `<option value="${ i }">${ i }</option>`

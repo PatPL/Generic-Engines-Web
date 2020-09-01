@@ -5,7 +5,7 @@ namespace EngineEditableFieldMetadata {
             tmp.classList.add ("content-cell-content");
             return tmp;
         }, ApplyValueToDisplayElement: (e, engine) => {
-            e.innerHTML = `↔${Unit.Display (engine.GetBaseWidth (), "m", false, 3)} x ↕${Unit.Display (engine.Height, "m", false, 3)}`;
+            e.innerHTML = `↔${ Unit.Display (engine.GetBaseWidth (), "m", false, 3) } x ↕${ Unit.Display (engine.Height, "m", false, 3) }`;
         }, GetEditElement: () => {
             let tmp = document.createElement ("div");
             tmp.classList.add ("content-cell-content");

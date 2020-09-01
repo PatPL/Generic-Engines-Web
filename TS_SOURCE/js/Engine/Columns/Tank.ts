@@ -20,7 +20,7 @@ namespace EngineEditableFieldMetadata {
                         
                         usedVolume = Math.min (usedVolume, engine.TanksVolume);
                         
-                        output = `Enabled, ${Unit.Display (usedVolume, "L",  Settings.classic_unit_display, 3)}/${Unit.Display (engine.TanksVolume, "L",  Settings.classic_unit_display, 3)}`;
+                        output = `Enabled, ${ Unit.Display (usedVolume, "L", Settings.classic_unit_display, 3) }/${ Unit.Display (engine.TanksVolume, "L", Settings.classic_unit_display, 3) }`;
                     }
                 } else {
                     if (engine.TanksContents.length == 0) {
@@ -32,7 +32,7 @@ namespace EngineEditableFieldMetadata {
                             usedVolume += v[1] / FuelInfo.GetFuelInfo (v[0]).TankUtilisation;
                         });
                         
-                        output = `Enabled, ${Unit.Display (usedVolume, "L",  Settings.classic_unit_display, 3)}`;
+                        output = `Enabled, ${ Unit.Display (usedVolume, "L", Settings.classic_unit_display, 3) }`;
                     }
                 }
             } else {
@@ -123,12 +123,12 @@ namespace EngineEditableFieldMetadata {
                 
                 let tr = document.createElement ("tr");
                 let select = FuelInfo.Dropdown.cloneNode (true) as HTMLSelectElement;
-                select.querySelector<HTMLOptionElement> (`option[value="${v[0]}"]`)!.selected = true;
+                select.querySelector<HTMLOptionElement> (`option[value="${ v[0] }"]`)!.selected = true;
                 
                 tr.innerHTML = `
                     <td></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display (v[1], "L",  Settings.classic_unit_display, 3)}"></td>
-                    <td><input style="width: calc(100%);" value="${Unit.Display (v[1] * fuelInfo.Density, "t",  Settings.classic_unit_display, 3)}"></td>
+                    <td><input style="width: calc(100%);" value="${ Unit.Display (v[1], "L", Settings.classic_unit_display, 3) }"></td>
+                    <td><input style="width: calc(100%);" value="${ Unit.Display (v[1] * fuelInfo.Density, "t", Settings.classic_unit_display, 3) }"></td>
                     <td><input style="width: calc(100%);" ${ thisBurnTime == 0 ? "disabled" : "" } value="${ Unit.Display (thisBurnTime, "s", true, 3) }"></td>
                 `;
                 
@@ -136,7 +136,7 @@ namespace EngineEditableFieldMetadata {
                 
                 select.addEventListener ("change", () => {
                     let newFuel: Fuel = parseInt (select.value);
-                    inputs[1].value = Unit.Display (Unit.Parse (inputs[0].value, "L") * FuelInfo.GetFuelInfo (newFuel).Density, "t",  Settings.classic_unit_display, 3);
+                    inputs[1].value = Unit.Display (Unit.Parse (inputs[0].value, "L") * FuelInfo.GetFuelInfo (newFuel).Density, "t", Settings.classic_unit_display, 3);
                     
                     thisRawMassFlow = massFlow.find (x => newFuel == x[0]);
                     fuelInfo = FuelInfo.GetFuelInfo (newFuel);
@@ -148,7 +148,7 @@ namespace EngineEditableFieldMetadata {
                 });
                 
                 const newVolume = () => {
-                    inputs[1].value = Unit.Display (Unit.Parse (inputs[0].value, "L") * FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "t",  Settings.classic_unit_display, 3);
+                    inputs[1].value = Unit.Display (Unit.Parse (inputs[0].value, "L") * FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "t", Settings.classic_unit_display, 3);
                     if (!inputs[2].disabled) {
                         inputs[2].value = Unit.Display ((Unit.Parse (inputs[0].value, "L") * FuelInfo.GetFuelInfo (parseInt (select.value)).Density) / thisMassFlow, "s", true, 3);
                     } else {
@@ -164,26 +164,26 @@ namespace EngineEditableFieldMetadata {
                 }
                 
                 const newTime = () => {
-                    inputs[0].value = Unit.Display ((Unit.Parse (inputs[2].value, "s") * thisMassFlow) / FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "L",  Settings.classic_unit_display, 3);
-                    inputs[1].value = Unit.Display (Unit.Parse (inputs[2].value, "s") * thisMassFlow, "t",  Settings.classic_unit_display, 3);
+                    inputs[0].value = Unit.Display ((Unit.Parse (inputs[2].value, "s") * thisMassFlow) / FuelInfo.GetFuelInfo (parseInt (select.value)).Density, "L", Settings.classic_unit_display, 3);
+                    inputs[1].value = Unit.Display (Unit.Parse (inputs[2].value, "s") * thisMassFlow, "t", Settings.classic_unit_display, 3);
                 }
                 
                 inputs[0].addEventListener ("keydown", (e) => {
                     setTimeout (() => {
                         newVolume ();
-                    }, 20); //Update value before using it
+                    }, 20); // Update value before using it
                 });
                 
                 inputs[1].addEventListener ("keydown", (e) => {
                     setTimeout (() => {
                         newMass ();
-                    }, 20); //Update value before using it
+                    }, 20); // Update value before using it
                 });
                 
                 inputs[2].addEventListener ("keydown", (e) => {
                     setTimeout (() => {
                         newTime ();
-                    }, 20); //Update value before using it
+                    }, 20); // Update value before using it
                 });
                 
                 tr.children[0].appendChild (select);
@@ -198,7 +198,7 @@ namespace EngineEditableFieldMetadata {
                 // setTimeout (() => {
                 //     let newAllInputs = e.querySelectorAll<HTMLInputElement> (`input`);
                 //     let thisMassFlow = massFlow.find (x => Fuel.Hydrazine == x[0]);
-                //     let fuelInfo = FuelInfo.GetFuelInfo (Fuel.Hydrazine);
+                //     let fue lInfo = FuelInfo.GetFuelInfo (Fuel.Hydrazine);
                 //     let thisBurnTime = thisMassFlow ? ((1 * fuelInfo.Density) / thisMassFlow[1]) * thrustCurveMultiplier : 0;
                     
                 //     newAllInputs[newAllInputs.length - 1].disabled = thisBurnTime == 0;
@@ -211,9 +211,9 @@ namespace EngineEditableFieldMetadata {
             
             allInputs[0].checked = engine.UseTanks;
             allInputs[1].checked = engine.LimitTanks;
-            allInputs[2].value = Unit.Display (engine.TanksVolume, "L",  Settings.classic_unit_display, 3);
+            allInputs[2].value = Unit.Display (engine.TanksVolume, "L", Settings.classic_unit_display, 3);
             
-            e.querySelectorAll ("span")[1].innerHTML = Unit.Display (engine.GetTankSizeEstimate (), "L",  Settings.classic_unit_display, 3);
+            e.querySelectorAll ("span")[1].innerHTML = Unit.Display (engine.GetTankSizeEstimate (), "L", Settings.classic_unit_display, 3);
             
             (e.children[1] as HTMLElement).style.display = engine.UseTanks ? "grid" : "none";
             allInputs[2].disabled = !engine.LimitTanks;
@@ -227,7 +227,7 @@ namespace EngineEditableFieldMetadata {
                 }
             });
             
-            engine.TanksContents.forEach(v => {
+            engine.TanksContents.forEach (v => {
                 addRow (table, v);
             });
         }, ApplyChangesToValue: (e, engine) => {

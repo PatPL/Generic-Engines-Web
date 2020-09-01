@@ -29,7 +29,7 @@ document.addEventListener ("DOMContentLoaded", () => {
         }
     }
     
-    //Sort first by plume mod, than by plume name
+    // Sort first by plume mod, than by plume name
     plumes.sort ((a, b) => {
         if (a[1].PlumeMod > b[1].PlumeMod) {
             return 1;
@@ -46,12 +46,12 @@ document.addEventListener ("DOMContentLoaded", () => {
         }
     })
     
-    //Serve
+    // Serve
     plumes.forEach (([id, plumeInfo]) => {
         let newElement = document.createElement ("div");
         newElement.innerHTML = `
-            <span>${plumeInfo.ImageLabel}</span>
-            <div class="option-button"><img src="${plumeInfo.ImageSource}"></div>
+            <span>${ plumeInfo.ImageLabel }</span>
+            <div class="option-button"><img src="${ plumeInfo.ImageSource }"></div>
         `;
         
         newElement.querySelector ("div")!.addEventListener ("click", () => {

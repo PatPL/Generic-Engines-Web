@@ -15,7 +15,7 @@
     <script>
         // Detect IE and Edge, and display 'use Firefox or Chromium browser' notice
         function checkIE () {
-            if (document.documentMode || /Edge/.test(navigator.userAgent)) {
+            if (document.documentMode || /Edge/.test (navigator.userAgent)) {
                 var noticeHTML = "";
                 
                 // IE doesn't support multiline backtick strings
@@ -50,7 +50,7 @@
         <div class="fullscreen-grayout"></div>
         <div class="fullscreen-content">
             <div>
-                You can click off this window. Exporting will continue on background. Click 'Export' again to reopen this window. (Only while current exporting is still in progress)<br><br>
+                You can click off this window. Exporting will continue in the background. Click 'Export' again to reopen this window. (Only while current exporting is still in progress)<br><br>
                 
                 Downloaded files: <span id="export-done"></span>/<span id="export-to-download"></span> | Current status: <span id="export-status">Waiting</span><br><br>
                 

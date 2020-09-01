@@ -74,7 +74,7 @@ interface IModelInfo extends IImageSelectable {
      * ```
      * `
      *  texture = model000 , Squad/Parts/Engine/liquidEngineLV-N/model000
-     *  texture = model001_NRM , Squad/Parts/Engine/liquidEngineLV-N/model001	
+     *  texture = model001_NRM , Squad/Parts/Engine/liquidEngineLV-N/model001
      *  texture = model002 , Squad/Parts/Engine/liquidEngineLV-N/model002
      *  texture = fairing , Squad/Parts/Engine/liquidEngineLV-N/model003
      * `

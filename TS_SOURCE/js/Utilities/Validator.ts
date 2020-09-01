@@ -16,11 +16,11 @@ class Validator {
         
         engines.forEach (e => {
             if (!e.Active && !checkInactiveEnginesToo) {
-                //Ignore inactive engines
-                return; //continue?
+                // Ignore inactive engines
+                return; // continue?
             }
             
-            //Find all masters for later
+            // Find all masters for later
             switch (e.PolyType) {
                 case PolymorphismType.MultiConfigMaster:
                 Masters[e.ID] = [false, 0];
@@ -33,40 +33,40 @@ class Validator {
         
         engines.forEach (e => {
             if (!e.Active && !checkInactiveEnginesToo) {
-                //Ignore inactive engines
-                return; //continue?
+                // Ignore inactive engines
+                return; // continue?
             }
             
-            //Check every slave
+            // Check every slave
             switch (e.PolyType) {
                 case PolymorphismType.MultiConfigSlave:
-                if ( //Check whether ConfigMaster exists
+                if ( // Check whether ConfigMaster exists
                     Masters[e.MasterEngineName] &&
                     !Masters[e.MasterEngineName][0]
                 ) {
-                    //Master exists
+                    // Master exists
                     Masters[e.MasterEngineName][1] += 1;
                 } else {
-                    //Master doesn't exist
-                    output.push (`Polymorphism error in engine ${e.ID}. There is no active MultiConfigMaster with ID ${e.MasterEngineName}`);
+                    // Master doesn't exist
+                    output.push (`Polymorphism error in engine ${ e.ID }. There is no active MultiConfigMaster with ID ${ e.MasterEngineName }`);
                 }
                 break;
                 case PolymorphismType.MultiModeSlave:
-                if ( //Check whether ModeMaster exists
+                if ( // Check whether ModeMaster exists
                     Masters[e.MasterEngineName] &&
                     Masters[e.MasterEngineName][0]
                 ) {
-                    //Master exists
+                    // Master exists
                     if (Masters[e.MasterEngineName][1] == 0) {
-                        //Not linked yet, OK
+                        // Not linked yet, OK
                     } else {
-                        //Already linked, Error
-                        output.push (`Polymorphism error in engine ${e.ID}. ${e.MasterEngineName} already has a slave MultiMode engine config`);
+                        // Already linked, Error
+                        output.push (`Polymorphism error in engine ${ e.ID }. ${ e.MasterEngineName } already has a slave MultiMode engine config`);
                     }
                     Masters[e.MasterEngineName][1] += 1;
                 } else {
-                    //Master doesn't exist
-                    output.push (`Polymorphism error in engine ${e.ID}. There is no active MultiModeMaster with ID ${e.MasterEngineName}`);
+                    // Master doesn't exist
+                    output.push (`Polymorphism error in engine ${ e.ID }. There is no active MultiModeMaster with ID ${ e.MasterEngineName }`);
                 }
                 break;
             }
@@ -81,17 +81,17 @@ class Validator {
         
         engines.forEach (e => {
             if (!e.Active && !checkInactiveEnginesToo) {
-                //Ignore inactive engines
-                return; //continue?
+                // Ignore inactive engines
+                return; // continue?
             }
             
             if (/[^A-Za-z0-9-]/.test (e.ID)) {
-                output.push (`ID contains invalid characters: ${e.ID}. Change the ID`);
-                return; //continue
+                output.push (`ID contains invalid characters: ${ e.ID }. Change the ID`);
+                return; // continue
             }
             
             if (takenIDs.some (x => x == e.ID)) {
-                output.push (`ID duplicate found: ${e.ID}. Change the ID`);
+                output.push (`ID duplicate found: ${ e.ID }. Change the ID`);
             } else {
                 takenIDs.push (e.ID);
             }

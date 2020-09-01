@@ -107,7 +107,8 @@ class HtmlTable<T extends ITableElement<T>> {
         ++HtmlTable.RowCounter;
     }
     
-    public AddItems (newItem: T | T[]) {
+    public AddItems (newItem: T | T[] | null) {
+        if (!newItem) { return; }
         if (Array.isArray (newItem)) {
             if (newItem.length > 0) {
                 newItem.forEach (item => {
@@ -181,7 +182,7 @@ class HtmlTable<T extends ITableElement<T>> {
                     });
                 }
                 
-                if (decodedI == row) { //Include the last one (Break AFTER this one is already processed)
+                if (decodedI == row) { // Include the last one (Break AFTER this one is already processed)
                     break;
                 }
             }
@@ -254,18 +255,18 @@ class HtmlTable<T extends ITableElement<T>> {
         this.TableElement.appendChild (headerContainer);
         
         this.TableElement.addEventListener ("scroll", (e) => {
-            headerContainer.style.left = `-${this.TableElement.scrollLeft}px`;
+            headerContainer.style.left = `-${ this.TableElement.scrollLeft }px`;
         });
         
         for (let columnID in this.ColumnsDefinitions) {
             let column = document.createElement ("div");
             column.classList.add ("content-column");
-            column.style.width = `${this.ColumnsDefinitions[columnID].DefaultWidth}px`;
+            column.style.width = `${ this.ColumnsDefinitions[columnID].DefaultWidth }px`;
             this.Columns[columnID] = column;
             
             let columnHeader = document.createElement ("div");
             columnHeader.classList.add ("content-header");
-            columnHeader.style.width = `${this.ColumnsDefinitions[columnID].DefaultWidth}px`;
+            columnHeader.style.width = `${ this.ColumnsDefinitions[columnID].DefaultWidth }px`;
             columnHeader.innerHTML = this.ColumnsDefinitions[columnID].Name;
             columnHeader.title = this.ColumnsDefinitions[columnID].Name;
             headerContainer.appendChild (columnHeader);
@@ -292,8 +293,8 @@ class HtmlTable<T extends ITableElement<T>> {
                 Dragger.Drag (() => {
                     let newWidth = originalWidth + Input.MouseX - originalX;
                     newWidth = Math.max (24, newWidth);
-                    column.style.width = `${newWidth}px`;
-                    columnHeader.style.width = `${newWidth}px`;
+                    column.style.width = `${ newWidth }px`;
+                    columnHeader.style.width = `${ newWidth }px`;
                 });
             });
             columnHeader.appendChild (columnResizer);

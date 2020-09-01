@@ -9,7 +9,7 @@ class PlumeInfo {
             PlumeID: "Kerolox-Upper",
             PlumeName: "Kerolox Upper",
             Scale: 0.4,
-            PositionOffset: -0.002, //mu offset
+            PositionOffset: -0.002, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -21,7 +21,7 @@ class PlumeInfo {
             PlumeID: "Kerolox-Lower",
             PlumeName: "Kerolox Lower",
             Scale: 0.4,
-            PositionOffset: -0.002, //mu offset
+            PositionOffset: -0.002, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -33,7 +33,7 @@ class PlumeInfo {
             PlumeID: "Kerolox-Vernier",
             PlumeName: "Kerolox Vernier",
             Scale: 8.5,
-            PositionOffset: 0.0, //mu offset
+            PositionOffset: 0.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 0.5,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -45,7 +45,7 @@ class PlumeInfo {
             PlumeID: "Cryogenic-UpperLower-125",
             PlumeName: "Cryogenic 1.25",
             Scale: 0.35,
-            PositionOffset: 0.0, //mu offset
+            PositionOffset: 0.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -57,7 +57,7 @@ class PlumeInfo {
             PlumeID: "Cryogenic-UpperLower-25",
             PlumeName: "Cryogenic 2.5",
             Scale: 0.6,
-            PositionOffset: 0.0, //mu offset
+            PositionOffset: 0.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -69,7 +69,7 @@ class PlumeInfo {
             PlumeID: "Cryogenic-UpperLower-375",
             PlumeName: "Cryogenic 3.75",
             Scale: 0.3,
-            PositionOffset: 0.0, //mu offset
+            PositionOffset: 0.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -81,7 +81,7 @@ class PlumeInfo {
             PlumeID: "Alcolox-Lower-A6",
             PlumeName: "Alcolox Lower (A6)",
             Scale: 0.6,
-            PositionOffset: 0.032638, //mu offset
+            PositionOffset: 0.032638, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -93,7 +93,7 @@ class PlumeInfo {
             PlumeID: "Ammonialox",
             PlumeName: "Ammonialox",
             Scale: 0.85,
-            PositionOffset: 1.0319, //mu offset
+            PositionOffset: 1.0319, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -105,7 +105,7 @@ class PlumeInfo {
             PlumeID: "Hydrogen-NTR",
             PlumeName: "Hydrogen NTR",
             Scale: 0.8,
-            PositionOffset: -0.8, //mu offset
+            PositionOffset: -0.8, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -117,7 +117,7 @@ class PlumeInfo {
             PlumeID: "Hydrolox-Lower",
             PlumeName: "Hydrolox Lower",
             Scale: 0.7,
-            PositionOffset: 1.0, //mu offset
+            PositionOffset: 1.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -129,7 +129,7 @@ class PlumeInfo {
             PlumeID: "Hydrolox-Upper",
             PlumeName: "Hydrolox Upper",
             Scale: 0.8,
-            PositionOffset: 1.0, //mu offset
+            PositionOffset: 1.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -141,7 +141,7 @@ class PlumeInfo {
             PlumeID: "Hydynelox-A7",
             PlumeName: "Hydynelox (A7)",
             Scale: 0.7,
-            PositionOffset: -0.854729, //mu offset
+            PositionOffset: -0.854729, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -153,7 +153,7 @@ class PlumeInfo {
             PlumeID: "Hypergolic-Lower",
             PlumeName: "Hypergolic Lower",
             Scale: 0.95,
-            PositionOffset: 0.0, //mu offset
+            PositionOffset: 0.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -165,7 +165,7 @@ class PlumeInfo {
             PlumeID: "Hypergolic-Upper",
             PlumeName: "Hypergolic Upper",
             Scale: 1.1,
-            PositionOffset: 0.0, //mu offset
+            PositionOffset: 0.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -177,7 +177,7 @@ class PlumeInfo {
             PlumeID: "Hypergolic-OMS-Red",
             PlumeName: "Hypergolic OMS (Red)",
             Scale: 1.7,
-            PositionOffset: 0.514995, //mu offset
+            PositionOffset: 0.514995, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -189,7 +189,7 @@ class PlumeInfo {
             PlumeID: "Hypergolic-OMS-White",
             PlumeName: "Hypergolic OMS (White)", // (?) - Doesn't have plume definition in RealPlume preset, only flare
             Scale: 1.8,                          //       Flares get scale 0, so the plume might not show at all
-            PositionOffset: 0, //mu offset (Of plume boundary)
+            PositionOffset: 0, // mu offset (Of plume boundary)
             FinalOffset: -0.04,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -201,7 +201,7 @@ class PlumeInfo {
             PlumeID: "Hypergolic-Vernier",
             PlumeName: "Hypergolic Vernier",
             Scale: 4.0,
-            PositionOffset: 1.0, //mu offset
+            PositionOffset: 1.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -213,7 +213,7 @@ class PlumeInfo {
             PlumeID: "Ion-Argon-Gridded",
             PlumeName: "Ion Argon (Gridded)",
             Scale: 1.2,
-            PositionOffset: 0.0, //mu offset
+            PositionOffset: 0.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -225,7 +225,7 @@ class PlumeInfo {
             PlumeID: "Ion-Krypton-Gridded",
             PlumeName: "Ion Krypton (Gridded)",
             Scale: 1.5,
-            PositionOffset: -0.854729, //mu offset
+            PositionOffset: -0.854729, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -237,7 +237,7 @@ class PlumeInfo {
             PlumeID: "Ion-Krypton-Hall",
             PlumeName: "Ion Krypton (Hall)",
             Scale: 1.5,
-            PositionOffset: -0.015503, //mu offset
+            PositionOffset: -0.015503, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -249,7 +249,7 @@ class PlumeInfo {
             PlumeID: "Ion-Xenon-Gridded",
             PlumeName: "Ion Xenon (Gridded)",
             Scale: 1.0,
-            PositionOffset: 1.0, //mu offset
+            PositionOffset: 1.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -261,7 +261,7 @@ class PlumeInfo {
             PlumeID: "Ion-Xenon-Hall",
             PlumeName: "Ion Xenon (Hall)",
             Scale: 1.6,
-            PositionOffset: -0.015503, //mu offset
+            PositionOffset: -0.015503, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -273,7 +273,7 @@ class PlumeInfo {
             PlumeID: "Solid-Lower",
             PlumeName: "Solid Lower",
             Scale: 0.3,
-            PositionOffset: -0.002, //mu offset
+            PositionOffset: -0.002, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -285,7 +285,7 @@ class PlumeInfo {
             PlumeID: "Solid-Upper",
             PlumeName: "Solid Upper",
             Scale: 0.3,
-            PositionOffset: -0.002, //mu offset
+            PositionOffset: -0.002, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -297,7 +297,7 @@ class PlumeInfo {
             PlumeID: "Solid-Sepmotor",
             PlumeName: "Solid Sepmotor",
             Scale: 3.0,
-            PositionOffset: 0.0, //mu offset
+            PositionOffset: 0.0, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -309,7 +309,7 @@ class PlumeInfo {
             PlumeID: "Solid-Vacuum",
             PlumeName: "Solid Vacuum",
             Scale: 1.44,
-            PositionOffset: 0.35831, //mu offset
+            PositionOffset: 0.35831, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -321,7 +321,7 @@ class PlumeInfo {
             PlumeID: "Turbofan",
             PlumeName: "Turbofan",
             Scale: 1.2,
-            PositionOffset: -0.41932, //mu offset
+            PositionOffset: -0.41932, // mu offset
             FinalOffset: 0.0,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -333,7 +333,7 @@ class PlumeInfo {
             PlumeID: "Turbojet",
             PlumeName: "Turbojet",
             Scale: 1.2,
-            PositionOffset: 1.0, //mu offset
+            PositionOffset: 1.0, // mu offset
             FinalOffset: -0.6,
             EnergyMultiplier: 1.0,
             PlumeFiles: [], // No required files. This plume depends on RealPlume
@@ -357,7 +357,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Alcolox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "ammonialox",
             PlumeName: "Ammonialox",
@@ -374,7 +374,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Ammonialox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "hydrogenNTR",
             PlumeName: "Thermal rocket hydrogen exhaust",
@@ -391,7 +391,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Thermal_Rocket_Hydrogen_Exhaust.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "hydrolox",
             PlumeName: "Hydrolox",
@@ -408,7 +408,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Hydrolox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "hydynelox",
             PlumeName: "Hydynelox",
@@ -425,7 +425,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Hydynelox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "hypergolic",
             PlumeName: "Hypergolic",
@@ -442,7 +442,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Hypergolic.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "ionArgon",
             PlumeName: "Ion Argon",
@@ -459,7 +459,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Ion_Argon.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "ionKrypton",
             PlumeName: "Ion Krypton",
@@ -476,7 +476,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Ion_Krypton.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "ionXenon",
             PlumeName: "Ion Xenon",
@@ -493,7 +493,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Ion_Xenon.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "kerolox",
             PlumeName: "Kerolox",
@@ -510,7 +510,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Kerolox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "methalox",
             PlumeName: "Methalox",
@@ -527,7 +527,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Methalox.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "omsRed",
             PlumeName: "OMS Red",
@@ -544,7 +544,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_OMS_Red.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "omsWhite",
             PlumeName: "OMS White",
@@ -561,7 +561,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_OMS_White.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "solid",
             PlumeName: "Solid",
@@ -578,7 +578,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Solid.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }, {
             PlumeID: "turbopumpSmoke",
             PlumeName: "Turbopump Smoke",
@@ -595,7 +595,7 @@ class PlumeInfo {
             ImageSource: "img/plumePreviews/GP_Turbopump_Smoke.webp",
             get ImageLabel (): string { return this.PlumeName },
             PlumeMod: "GenericPlumes",
-            get PlumeEffectName (): string { return `${this.PlumeID}Flame` }
+            get PlumeEffectName (): string { return `${ this.PlumeID }Flame` }
         }
     ];
     
@@ -637,16 +637,16 @@ class PlumeInfo {
         }
     }
 
-    public static readonly Dropdown: HTMLSelectElement = PlumeInfo.BuildDropdown();
+    public static readonly Dropdown: HTMLSelectElement = PlumeInfo.BuildDropdown ();
     private static BuildDropdown (): HTMLSelectElement {
-        let output = document.createElement("select");
+        let output = document.createElement ("select");
 
-        PlumeInfo.plumes.forEach((v, i) => {
-            let option = document.createElement("option");
-            option.value = i.toString();
+        PlumeInfo.plumes.forEach ((v, i) => {
+            let option = document.createElement ("option");
+            option.value = i.toString ();
             option.text = v.PlumeName;
 
-            output.options.add(option);
+            output.options.add (option);
         });
 
         return output;

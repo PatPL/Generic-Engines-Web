@@ -6,9 +6,9 @@ namespace EngineEditableFieldMetadata {
             return tmp;
         }, ApplyValueToDisplayElement: (e, engine) => {
             if (engine.AdvancedGimbal) {
-                e.innerHTML = `X:<-${engine.GimbalNX}°:${engine.GimbalPX}°>, Y:<-${engine.GimbalNY}°:${engine.GimbalPY}°>`;
+                e.innerHTML = `X:<-${ engine.GimbalNX }°:${ engine.GimbalPX }°>, Y:<-${ engine.GimbalNY }°:${ engine.GimbalPY }°>`;
             } else {
-                e.innerHTML = `${engine.Gimbal}°`;
+                e.innerHTML = `${ engine.Gimbal }°`;
             }
         }, GetEditElement: () => {
             let tmp = document.createElement ("div");

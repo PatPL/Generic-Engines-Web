@@ -308,7 +308,7 @@ namespace EngineEditableFieldMetadata {
             inputs[1].value = yValue.toString ();
         }
         
-        //Resort the columns
+        // Resort the columns
         sortChartTableRows (chartTableRow.parentElement!);
     }
     
@@ -323,7 +323,7 @@ namespace EngineEditableFieldMetadata {
             rows.push ([r, value]);
         });
         
-        rows.sort ((a, b) =>  {
+        rows.sort ((a, b) => {
             let output = b[1] - a[1];
             
             if (output == 0) {

@@ -8,7 +8,7 @@ class Version {
 addEventListener ("DOMContentLoaded", () => {
     if (Store.Exists ("lastVersion")) {
         if (Store.GetText ("lastVersion") != Version.CurrentVersion) {
-            Notifier.Info (`Generic Engines updated to version ${Version.CurrentVersion}; Click to dismiss`, 0);
+            Notifier.Info (`Generic Engines updated to version ${ Version.CurrentVersion }. Click to dismiss`, 0);
         } else {
             
         }
@@ -18,7 +18,7 @@ addEventListener ("DOMContentLoaded", () => {
     
     Store.SetText ("lastVersion", Version.CurrentVersion);
     
-    //Set version numbers
+    // Set version numbers
     
     document.head.querySelector ("title")!.innerHTML += Version.CurrentVersion;
     

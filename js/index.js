@@ -362,6 +362,9 @@ class HtmlTable {
         ++HtmlTable.RowCounter;
     }
     AddItems(newItem) {
+        if (!newItem) {
+            return;
+        }
         if (Array.isArray(newItem)) {
             if (newItem.length > 0) {
                 newItem.forEach(item => {
@@ -723,7 +726,7 @@ Version.CurrentVersion = "Web.0.10.0 Dev";
 addEventListener("DOMContentLoaded", () => {
     if (Store.Exists("lastVersion")) {
         if (Store.GetText("lastVersion") != Version.CurrentVersion) {
-            Notifier.Info(`Generic Engines updated to version ${Version.CurrentVersion}; Click to dismiss`, 0);
+            Notifier.Info(`Generic Engines updated to version ${Version.CurrentVersion}. Click to dismiss`, 0);
         }
         else {
         }
@@ -917,7 +920,6 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     if (!Settings.show_info_panel) {
         return;
     }
-    let gravity = 9.8066;
     let infoPanel = document.getElementById("info-panel");
     let properties = {};
     let engineMass = engine.GetMass();
@@ -926,7 +928,7 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
         propellantMass += i[1] * FuelInfo.GetFuelInfo(i[0]).Density;
     });
     let massFlow = engine.VacIsp;
-    massFlow *= 9.8066;
+    massFlow *= GRAVITY;
     massFlow = 1 / massFlow;
     massFlow *= engine.Thrust;
     let detailedMassFlow = engine.GetEngineMassFlow();
@@ -938,14 +940,14 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
     properties["thrust_max_vac"] = Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 3);
     properties["thrust_min_atm"] = Unit.Display(engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
     properties["thrust_max_atm"] = Unit.Display(engine.Thrust * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
-    properties["twr_wet_vac"] = (engine.Thrust / (engineMass + propellantMass) / gravity).toFixed(3);
-    properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / gravity).toFixed(3);
-    properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed(3);
-    properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed(3);
-    properties["twr_wet_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass + propellantMass) / gravity).toFixed(3);
-    properties["twr_dry_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass) / gravity).toFixed(3);
-    properties["twr_wet_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed(3);
-    properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed(3);
+    properties["twr_wet_vac"] = (engine.Thrust / (engineMass + propellantMass) / GRAVITY).toFixed(3);
+    properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / GRAVITY).toFixed(3);
+    properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / GRAVITY).toFixed(3);
+    properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / GRAVITY).toFixed(3);
+    properties["twr_wet_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass + propellantMass) / GRAVITY).toFixed(3);
+    properties["twr_dry_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass) / GRAVITY).toFixed(3);
+    properties["twr_wet_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / GRAVITY).toFixed(3);
+    properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / GRAVITY).toFixed(3);
     properties["min_mass_flow"] = `${Unit.Display(massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
     properties["max_mass_flow"] = `${Unit.Display(massFlow, "t", Settings.classic_unit_display, 3)}/s`;
     properties["mass_flow_detail"] = "<ul>";
@@ -979,8 +981,6 @@ function ApplyEngineToInfoPanel(engine, clear = false) {
 }
 addEventListener("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField(window, "ListName", document.getElementById("list-name"));
-    let infoPanel = document.getElementById("info-panel");
-    let mainCSS = document.getElementById("main-css");
     document.getElementById("info-panel-resize").addEventListener("pointerdown", e => {
         if (e.which != 1) {
             return;
@@ -2707,7 +2707,7 @@ ModelInfo.models = [
         ],
         TextureDefinitions: `
                 texture = model000 , Squad/Parts/Engine/liquidEngineLV-N/model000
-                texture = model001_NRM , Squad/Parts/Engine/liquidEngineLV-N/model001	
+                texture = model001_NRM , Squad/Parts/Engine/liquidEngineLV-N/model001
                 texture = model002 , Squad/Parts/Engine/liquidEngineLV-N/model002
                 texture = fairing , Squad/Parts/Engine/liquidEngineLV-N/model003
             `,
@@ -2889,7 +2889,7 @@ ModelInfo.models = [
         ],
         TextureDefinitions: `
                 texture = model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
-                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001	
+                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001
                 texture = fairing , Squad/Parts/Engine/liquidEngineLV-T45/model002
             `,
         ThrustTransformName: "thrustTransform",
@@ -2927,7 +2927,7 @@ ModelInfo.models = [
         ],
         TextureDefinitions: `
                 texture = model000 , Squad/Parts/Engine/liquidEngineLV-T45/model000
-                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001	
+                texture = model001 , Squad/Parts/Engine/liquidEngineLV-T45/model001
             `,
         ThrustTransformName: "thrustTransform",
         GimbalTransformName: "thrustTransform",
@@ -7371,8 +7371,8 @@ const TechNodeNames = new Map([
     [TechNode.hydrolox2009, "2009-2018 Hydrolox Engines"],
     [TechNode.hydroloxNF, "Near Future Hydrolox Engines"],
     [TechNode.colonization2051Hydrolox, "2051-2099 Hydrolox Engines"],
-    [TechNode.colonization2100Hydrolox, "2100-2149  Hydrolox Engines"],
-    [TechNode.colonization2150Hydrolox, "2150+  Hydrolox Engines"],
+    [TechNode.colonization2100Hydrolox, "2100-2149 Hydrolox Engines"],
+    [TechNode.colonization2150Hydrolox, "2150+ Hydrolox Engines"],
     [TechNode.rocketryTesting, "Post-War Rocketry Testing"],
     [TechNode.earlyRocketry, "Early Rocketry"],
     [TechNode.basicRocketryRP0, "Basic Rocketry"],
@@ -7399,8 +7399,8 @@ const TechNodeNames = new Map([
     [TechNode.orbitalRocketry2014, "2014-2018 Orbital Rocketry"],
     [TechNode.orbitalRocketryNF, "Near Future Orbital Rocketry"],
     [TechNode.colonization2051Orbital, "2051-2099 Orbital Rocketry"],
-    [TechNode.colonization2100Orbital, "2100-2149  Orbital Rocketry"],
-    [TechNode.colonization2150Orbital, "2150+  Orbital Rocketry"],
+    [TechNode.colonization2100Orbital, "2100-2149 Orbital Rocketry"],
+    [TechNode.colonization2150Orbital, "2150+ Orbital Rocketry"],
     [TechNode.firstStagedCombustion, "First Staged Combustion Engines"],
     [TechNode.stagedCombustion1964, "1964 Staged Combustion Engines"],
     [TechNode.stagedCombustion1966, "1966 Staged Combustion Engines"],
@@ -7417,8 +7417,8 @@ const TechNodeNames = new Map([
     [TechNode.stagedCombustion2014, "2014-2018 Staged Combustion Engines"],
     [TechNode.stagedCombustionNF, "Near Future Staged Combustion Engines"],
     [TechNode.colonization2051Staged, "2051-2099 Staged Combustion"],
-    [TechNode.colonization2100Staged, "2100-2149  Staged Combustion"],
-    [TechNode.colonization2150Staged, "2150+  Staged Combustion"],
+    [TechNode.colonization2100Staged, "2100-2149 Staged Combustion"],
+    [TechNode.colonization2150Staged, "2150+ Staged Combustion"],
     [TechNode.earlySolids, "Early Solid Rocket Engines"],
     [TechNode.solids1956, "1956-1957 Solid Rocket Engines"],
     [TechNode.solids1958, "1958 Solid Rocket Engines"],
@@ -8424,7 +8424,7 @@ class StyleDialog {
                     console.warn(`Theme named "${themeName}" not found in ThemeFiles, but is assigned in ThemeGroups (skipping). Is it a typo?`);
                 }
             });
-            select.innerHTML += `</optgroup>`;
+            select.innerHTML += "</optgroup>";
         });
         let currentTheme = indexMap.find(x => x[0] == Settings.current_theme);
         if (currentTheme) {
@@ -8696,10 +8696,10 @@ class Engine {
     GetDisplayLabel() {
         let isSlave = this.PolyType == PolymorphismType.MultiModeSlave || this.PolyType == PolymorphismType.MultiConfigSlave;
         if (this.EngineName == "" || isSlave) {
-            return `${this.ID}`;
+            return this.ID;
         }
         else {
-            return `${this.EngineName}`;
+            return this.EngineName;
         }
     }
     UpdateEveryDisplay() {
@@ -9011,7 +9011,7 @@ class Engine {
                 x.Active &&
                 x.PolyType == PolymorphismType.MultiModeMaster).forEach(e => {
                 let option = document.createElement("option");
-                option.value = `${e.ID}`;
+                option.value = e.ID;
                 option.text = e.ID;
                 option.selected = e.ID == this.MasterEngineName;
                 selects[1].options.add(option);
@@ -9022,7 +9022,7 @@ class Engine {
                 x.Active &&
                 x.PolyType == PolymorphismType.MultiConfigMaster).forEach(e => {
                 let option = document.createElement("option");
-                option.value = `${e.ID}`;
+                option.value = e.ID;
                 option.text = e.ID;
                 option.selected = e.ID == this.MasterEngineName;
                 selects[1].options.add(option);
@@ -9135,7 +9135,7 @@ class Engine {
             });
             averageDensity /= normalFuelRatios;
             let x = this.VacIsp;
-            x *= 9.8066;
+            x *= GRAVITY;
             x = 1 / x;
             x /= averageDensity;
             x *= this.Thrust;
@@ -9166,7 +9166,7 @@ class Engine {
     }
     GetEngineMassFlow() {
         let massFlow = this.VacIsp;
-        massFlow *= 9.8066;
+        massFlow *= GRAVITY;
         massFlow = 1 / massFlow;
         massFlow *= this.Thrust;
         let propellantMassRatios = [];
@@ -10267,10 +10267,9 @@ var EngineEditableFieldMetadata;
 })(EngineEditableFieldMetadata || (EngineEditableFieldMetadata = {}));
 var EngineEditableFieldMetadata;
 (function (EngineEditableFieldMetadata) {
-    const g = 9.8066;
-    const MF_GetFlow_t = (thrust_kN, impulse_s) => thrust_kN / g / impulse_s;
-    const MF_GetThrust_kN = (massflow_t, impulse_s) => massflow_t * g * impulse_s;
-    const MF_GetIsp_s = (thrust_kN, massflow_t) => thrust_kN / g / massflow_t;
+    const MF_GetFlow_t = (thrust_kN, impulse_s) => thrust_kN / GRAVITY / impulse_s;
+    const MF_GetThrust_kN = (massflow_t, impulse_s) => massflow_t * GRAVITY * impulse_s;
+    const MF_GetIsp_s = (thrust_kN, massflow_t) => thrust_kN / GRAVITY / massflow_t;
     EngineEditableFieldMetadata.Propulsion = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = `${Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 6)} | ${Unit.Display(engine.VacIsp, "s", true, 3)}-${Unit.Display(engine.AtmIsp, "s", true, 3)}`;
@@ -12763,6 +12762,7 @@ class FileIO {
         saveDialog.dispatchEvent(evt);
     }
 }
+const GRAVITY = 9.8066;
 class ImageOverflowPreview {
     static Hook(root) {
         const deadzone = 16;
@@ -14106,11 +14106,13 @@ const EngineCycleList = {
             Model.Vanguard,
             Model.Viking,
             Model.VikingVac
-        ], Mass: (bellWidth, year) => {
+        ],
+        Mass: (bellWidth, year) => {
             let mass = (250 * bellWidth) + (200 * Math.pow(bellWidth, 2.75)) - 5;
             mass *= WernherHelper.YearMassMultiplier(year);
             return mass;
-        }, TestFlightRatedBurnTime: new AgeRandomValue([
+        },
+        TestFlightRatedBurnTime: new AgeRandomValue([
             [1940, 60, 120],
             [1945, 90, 180],
             [1950, 120, 240],
@@ -14168,7 +14170,7 @@ const EngineCycleList = {
 };
 class Wernher {
     static RollEngine(_year, _cycle, _prop) {
-        let year = (_year !== null && _year !== void 0 ? _year : Math.floor(Math.random() * 200) + 1940);
+        let year = _year !== null && _year !== void 0 ? _year : Math.floor(Math.random() * 200) + 1940;
         let cycle;
         let prop;
         if (_cycle) {
@@ -14189,6 +14191,7 @@ class Wernher {
             prop = parseInt(props[Math.floor(Math.random() * props.length)]);
         }
         if (!EngineCycleList[cycle].Variants[prop]) {
+            console.warn(`Following propellant-cycle combination is invalid: ${PropellantMix[prop]}, ${EngineCycle[cycle]}`);
             return null;
         }
         let engineCycle = EngineCycleList[cycle];

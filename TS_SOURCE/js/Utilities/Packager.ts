@@ -53,7 +53,7 @@ class Packager {
          */
         let toFetch: [string, string, HTMLElement?][] = [];
         
-        blobs[`GenericEngines/${name}.cfg`] = Exporter.ConvertEngineListToConfig (engines);
+        blobs[`GenericEngines/${ name }.cfg`] = Exporter.ConvertEngineListToConfig (engines);
         blobs[`GenericEngines/GEAllTankDefinition.cfg`] = AllTankDefinition.Get ();
         
         toFetch.push (["files/PlumeScaleFixer.dll", "GenericEngines/PlumeScaleFixer.dll"]);
@@ -61,7 +61,7 @@ class Packager {
         let needsDeployableEngines = false;
         engines.forEach (e => {
             if (!e.Active) {
-                return; //continue;
+                return; // continue;
             }
             
             let modelInfo = ModelInfo.GetModelInfo (e.GetModelID ());
@@ -72,14 +72,14 @@ class Packager {
             
             modelInfo.ModelFiles.forEach (f => {
                 if (!toFetch.some (x => x[0] == f)) {
-                    //Add to the list if it's not on it already
+                    // Add to the list if it's not on it already
                     toFetch.push ([f, f.replace (/^files\//, "GenericEngines/")]);
                 }
             });
             
             plumeInfo.PlumeFiles.forEach (f => {
                 if (!toFetch.some (x => x[0] == f)) {
-                    //Add to the list if it's not on it already
+                    // Add to the list if it's not on it already
                     toFetch.push ([f, f.replace (/^files\//, "")]);
                 }
             });
@@ -87,7 +87,7 @@ class Packager {
             if (exhaustPlumeInfo) {
                 exhaustPlumeInfo.PlumeFiles.forEach (f => {
                     if (!toFetch.some (x => x[0] == f)) {
-                        //Add to the list if it's not on it already
+                        // Add to the list if it's not on it already
                         toFetch.push ([f, f.replace (/^files\//, "")]);
                     }
                 });
@@ -114,7 +114,7 @@ class Packager {
                 let thisRequest = ++RequestRound;
                 let zipStart = new Date ().getTime ();
                 FileIO.ZipBlobs ("GameData", blobs, zipData => {
-                    console.info (`Zipped in ${(new Date ().getTime () - zipStart).toLocaleString ("us").replace (/[^0-9]/g, "'")}ms`);
+                    console.info (`Zipped in ${ (new Date ().getTime () - zipStart).toLocaleString ("us").replace (/[^0-9]/g, "'") }ms`);
                     if (this.IsWorking && thisRequest == RequestRound) {
                         latestData = zipData;
                         exportStatusElement.innerHTML = "Done. <button>Redownload finished zip</button>";
@@ -136,7 +136,7 @@ class Packager {
         toFetch.forEach (resource => {
             resource[2] = document.createElement ("div");
             resource[2].innerHTML = `
-                <span class="left">${resource[1]}</span>
+                <span class="left">${ resource[1] }</span>
                 <span class="right">Waiting</span>
             `;
             
@@ -154,12 +154,12 @@ class Packager {
                     signal: fetchAborter.signal
                 }).then (res => {
                     if (thisRound != RequestRound) {
-                        console.warn (`(fetch) Promise finished for expired round: ${resource[0]}`);
+                        console.warn (`(fetch) Promise finished for expired round: ${ resource[0] }`);
                     }
                     
                     if (!res.ok) {
                         resource[2]!.children[1].innerHTML = "Error. Not fetched";
-                        console.warn (`Resource not fetched: ${resource[0]}`);
+                        console.warn (`Resource not fetched: ${ resource[0] }`);
                         return;
                     }
                     
@@ -167,7 +167,7 @@ class Packager {
                     if (this.IsWorking) {
                         res.arrayBuffer ().then (data => {
                             if (thisRound != RequestRound) {
-                                console.warn (`(download) Promise finished for expired round: ${resource[0]}`);
+                                console.warn (`(download) Promise finished for expired round: ${ resource[0] }`);
                             }
                             
                             blobs[resource[1]] = new Uint8Array (data);
@@ -181,7 +181,7 @@ class Packager {
                         resource[2]!.children[1].innerHTML = "Refetching resource";
                     } else {
                         resource[2]!.children[1].innerHTML = "Fetch error";
-                        console.warn (`(Fetch error) Resource not fetched: ${resource[0]}`);
+                        console.warn (`(Fetch error) Resource not fetched: ${ resource[0] }`);
                     }
                     return;
                 });

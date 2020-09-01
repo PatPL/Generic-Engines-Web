@@ -53,7 +53,7 @@ class EditableField {
         this.ApplyValueToEditElement ();
         this.ShowEditMode (true);
         
-        //Autoselect number in fields with numbers
+        // Autoselect number in fields with numbers
         if (/^[0-9]/.test ((this.EditElement as HTMLInputElement).value)) {
             let length = /^[0-9,.]+/.exec ((this.EditElement as HTMLInputElement).value)!;
             (this.EditElement as HTMLInputElement).focus ();
@@ -65,7 +65,7 @@ class EditableField {
         if (this.EditElement.parentElement!.getAttribute ("data-tablerow")) {
             document.getElementById ("edit-cell-height-override")!.innerHTML = `
                 .selected {
-                    height: ${this.EditElement.offsetHeight + 1}px;
+                    height: ${ this.EditElement.offsetHeight + 1 }px;
                 }
             `;
         }
@@ -119,7 +119,7 @@ class EditableField {
                 )
             )
         ) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
+            throw `${ this.ValueOwner } or ${ this.ValueOwner }.${ this.ValueName } is not set up as EditableField`;
         }
         
         let output: HTMLElement;
@@ -151,8 +151,8 @@ class EditableField {
             
             output = tmp;
         } else {
-            //console.warn (this.ValueOwner[this.ValueName]);
-            //console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            // console.warn (this.ValueOwner[this.ValueName]);
+            // console.warn (`${ this.ValueOwner[this.ValueName] } doesn't implement IEditable`);
             let tmp = document.createElement ("div");
             tmp.classList.add ("content-cell-content");
             output = tmp;
@@ -180,7 +180,7 @@ class EditableField {
                 )
             )
         ) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
+            throw `${ this.ValueOwner } or ${ this.ValueOwner }.${ this.ValueName } is not set up as EditableField`;
         }
         
         let output: HTMLElement;
@@ -205,8 +205,8 @@ class EditableField {
             tmp.classList.add ("content-cell-content");
             output = tmp;
         } else {
-            //console.warn (this.ValueOwner[this.ValueName]);
-            //console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            // console.warn (this.ValueOwner[this.ValueName]);
+            // console.warn (`${ this.ValueOwner[this.ValueName] } doesn't implement IEditable`);
             let tmp = document.createElement ("div");
             tmp.classList.add ("content-cell-content");
             output = tmp;
@@ -228,7 +228,7 @@ class EditableField {
                 )
             )
         ) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
+            throw `${ this.ValueOwner } or ${ this.ValueOwner }.${ this.ValueName } is not set up as EditableField`;
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
@@ -247,7 +247,7 @@ class EditableField {
             (<HTMLInputElement> this.DisplayElement).checked = this.ValueOwner[this.ValueName];
         } else {
             console.warn (this.ValueOwner[this.ValueName]);
-            console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            console.warn (`${ this.ValueOwner[this.ValueName] } doesn't implement IEditable`);
         }
     }
     
@@ -262,7 +262,7 @@ class EditableField {
                 )
             )
         ) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
+            throw `${ this.ValueOwner } or ${ this.ValueOwner }.${ this.ValueName } is not set up as EditableField`;
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToEditElement" in this.ValueOwner[this.ValueName]) {
@@ -281,7 +281,7 @@ class EditableField {
             this.EditElement.innerHTML = "This shouldn't be visible";
         } else {
             console.warn (this.ValueOwner[this.ValueName]);
-            console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            console.warn (`${ this.ValueOwner[this.ValueName] } doesn't implement IEditable`);
         }
     }
     
@@ -296,7 +296,7 @@ class EditableField {
                 )
             )
         ) {
-            throw `${this.ValueOwner} or ${this.ValueOwner}.${this.ValueName} is not set up as EditableField`;
+            throw `${ this.ValueOwner } or ${ this.ValueOwner }.${ this.ValueName } is not set up as EditableField`;
         }
         
         if (typeof this.ValueOwner[this.ValueName] == "object" && "ApplyValueToDisplayElement" in this.ValueOwner[this.ValueName]) {
@@ -315,7 +315,7 @@ class EditableField {
             console.warn ("Boolean doesn't use edit mode, this shouldn't be called");
         } else {
             console.warn (this.ValueOwner[this.ValueName]);
-            console.warn (`${this.ValueOwner[this.ValueName]} doesn't implement IEditable`);
+            console.warn (`${ this.ValueOwner[this.ValueName] } doesn't implement IEditable`);
         }
     }
     
@@ -326,7 +326,7 @@ window.addEventListener ("pointerdown", (e) => {
     if (e.which != 1) { return; }
     
     if (EditableField.EditedField) {
-        //Check whether pointer was over current field
+        // Check whether pointer was over current field
         if (e.srcElement) {
             let currentElement: Element | null = e.srcElement as Element;
             let foundEdited = false;
@@ -347,15 +347,15 @@ window.addEventListener ("pointerdown", (e) => {
             }
             
             if (foundEdited) {
-                //Pointer released over edited element, no change
+                // Pointer released over edited element, no change
             } else {
-                //Pointer released somewhere else, exit edit mode
+                // Pointer released somewhere else, exit edit mode
                 EditableField.EditedField.EndEdit ();
             }
             
         }
     } else {
-        //No field currently edited, no change
+        // No field currently edited, no change
     }
 });
 

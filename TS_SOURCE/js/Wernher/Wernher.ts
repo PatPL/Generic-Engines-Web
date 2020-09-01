@@ -31,6 +31,7 @@ class Wernher {
         
         // Check is given prop mix is defined in the given cycle
         if (!EngineCycleList[cycle].Variants[prop]) {
+            console.warn (`Following propellant-cycle combination is invalid: ${ PropellantMix[prop] }, ${ EngineCycle[cycle] }`);
             return null;
         }
         

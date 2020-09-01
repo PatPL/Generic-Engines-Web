@@ -5,7 +5,7 @@ namespace EngineEditableFieldMetadata {
         }, GetEditElement: () => {
             let tmp = document.createElement ("input");
             tmp.classList.add ("content-cell-content");
-            tmp.setAttribute ("list", "techNodeItems"); //tmp.list is readonly because reasons, apparently
+            tmp.setAttribute ("list", "techNodeItems"); // tmp.list is readonly because reasons, apparently
             return tmp;
         }, ApplyValueToEditElement: (e, engine) => {
             (e as HTMLInputElement).value = TechNodeNames.get (engine.TechUnlockNode)!;

@@ -11,11 +11,11 @@ namespace EngineEditableFieldMetadata {
                 break; case PolymorphismType.MultiModeMaster:
                 e.innerHTML = `Multimode master`;
                 break; case PolymorphismType.MultiModeSlave:
-                e.innerHTML = `Multimode slave to ${engine.MasterEngineName}`;
+                e.innerHTML = `Multimode slave to ${ engine.MasterEngineName }`;
                 break; case PolymorphismType.MultiConfigMaster:
                 e.innerHTML = `Multiconfig master`;
                 break; case PolymorphismType.MultiConfigSlave:
-                e.innerHTML = `Multiconfig slave to ${engine.MasterEngineName}`;
+                e.innerHTML = `Multiconfig slave to ${ engine.MasterEngineName }`;
                 break;
             }
         }, GetEditElement: () => {
@@ -34,7 +34,7 @@ namespace EngineEditableFieldMetadata {
             `;
             
             grid.innerHTML = `
-                <div style="grid-area: a;">${Engine.PolymorphismTypeDropdown.outerHTML}</div>
+                <div style="grid-area: a;">${ Engine.PolymorphismTypeDropdown.outerHTML }</div>
                 <div style="grid-area: b;"><select></select></div>
             `;
             

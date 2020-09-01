@@ -13,9 +13,9 @@ class AllTankDefinition {
             definitions += `
                 TANK
                 {
-                    name = ${fuelInfo.FuelID}
+                    name = ${ fuelInfo.FuelID }
                     mass = 0.00007
-                    utilization = ${fuelInfo.TankUtilisation}
+                    utilization = ${ fuelInfo.TankUtilisation }
                     fillable = True
                     amount = 0.0
                     maxAmount = 0.0
@@ -29,7 +29,7 @@ class AllTankDefinition {
                 highltPressurized = true
                 basemass = 0.00007 * volume
 
-                ${definitions}
+                ${ definitions }
 
             }
         `);

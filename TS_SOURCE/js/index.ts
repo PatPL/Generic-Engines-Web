@@ -3,21 +3,21 @@ var ListName = "Unnamed";
 var EditableFieldMetadata: { [id: string]: IEditable<any> } = {
     ListName: {
         ApplyValueToDisplayElement: e => {
-            e.innerHTML = `${ListName}.enl`;
+            e.innerHTML = `${ ListName }.enl`;
         }
     }
 }
 let ListNameDisplay: EditableField;
 let MainEngineTable: HtmlTable<Engine>;
 
-let FullscreenWindows: { [id: string]: HTMLElement } = {};
+let FullscreenWindows: { [id: string]: HTMLElement } = { };
 
 //@ts-ignore
 let isFirefox = typeof InstallTrigger !== 'undefined';
 //@ts-ignore
-let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+let isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf (' OPR/') >= 0;
 
-//Website exit confirmation
+// Website exit confirmation
 window.onbeforeunload = (e: any) => {
     if (MainEngineTable.Items.length != 0) {
         e.returnValue = "Are you sure that you want to leave this page? You will lose all unsaved data";
@@ -37,7 +37,7 @@ for (let i in localStorage) {
 }
 
 function ApplySettings () {
-    //Toggle info panel
+    // Toggle info panel
     document.documentElement.style.setProperty ("--infoNotificationBackgroundPanelWidth", `${ Settings.show_info_panel ? 320 : 0 }px`);
 }
 
@@ -48,7 +48,6 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
         return;
     }
     
-    let gravity = 9.8066;
     let infoPanel = document.getElementById ("info-panel")!;    
     let properties: { [id: string]: string } = {};
     
@@ -60,7 +59,7 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     });
     
     let massFlow = engine.VacIsp; // s
-    massFlow *= 9.8066; // N*s/kg
+    massFlow *= GRAVITY; // N*s/kg
     massFlow = 1 / massFlow; // kg/N*s -> t/kN*s
     massFlow *= engine.Thrust // t/s
     
@@ -79,27 +78,27 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     properties["thrust_min_atm"] = Unit.Display (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
     properties["thrust_max_atm"] = Unit.Display (engine.Thrust * engine.AtmIsp / engine.VacIsp, "kN", Settings.classic_unit_display, 3);
     
-    properties["twr_wet_vac"] = (engine.Thrust / (engineMass + propellantMass) / gravity).toFixed (3);
-    properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / gravity).toFixed (3);
-    properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed (3);
-    properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed (3);
+    properties["twr_wet_vac"] = (engine.Thrust / (engineMass + propellantMass) / GRAVITY).toFixed (3);
+    properties["twr_dry_vac"] = (engine.Thrust / (engineMass) / GRAVITY).toFixed (3);
+    properties["twr_wet_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / GRAVITY).toFixed (3);
+    properties["twr_dry_atm"] = (engine.Thrust * engine.AtmIsp / engine.VacIsp / (engineMass) / GRAVITY).toFixed (3);
     
-    properties["twr_wet_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass + propellantMass) / gravity).toFixed (3);
-    properties["twr_dry_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass) / gravity).toFixed (3);
-    properties["twr_wet_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / gravity).toFixed (3);
-    properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / gravity).toFixed (3);
+    properties["twr_wet_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass + propellantMass) / GRAVITY).toFixed (3);
+    properties["twr_dry_vac_min"] = (engine.Thrust * engine.MinThrust / 100 / (engineMass) / GRAVITY).toFixed (3);
+    properties["twr_wet_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass + propellantMass) / GRAVITY).toFixed (3);
+    properties["twr_dry_atm_min"] = (engine.Thrust * engine.MinThrust / 100 * engine.AtmIsp / engine.VacIsp / (engineMass) / GRAVITY).toFixed (3);
     
-    properties["min_mass_flow"] = `${Unit.Display (massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3)}/s`;
-    properties["max_mass_flow"] = `${Unit.Display (massFlow, "t", Settings.classic_unit_display, 3)}/s`;
+    properties["min_mass_flow"] = `${ Unit.Display (massFlow * engine.MinThrust / 100, "t", Settings.classic_unit_display, 3) }/s`;
+    properties["max_mass_flow"] = `${ Unit.Display (massFlow, "t", Settings.classic_unit_display, 3) }/s`;
     
     properties["mass_flow_detail"] = "<ul>";
     detailedMassFlow.forEach (([fuel, flow]) => {
         if (fuel == Fuel.ElectricCharge) {
-            properties["mass_flow_detail"] += `<li><span class='abbr' title='1 kilowatt (kW) is equal to 1 unit of Electric Charge per second (u/s) in game'>Electricity: ${Unit.Display (flow, "kW", Settings.classic_unit_display, 3)}</span></li>`
+            properties["mass_flow_detail"] += `<li><span class='abbr' title='1 kilowatt (kW) is equal to 1 unit of Electric Charge per second (u/s) in game'>Electricity: ${ Unit.Display (flow, "kW", Settings.classic_unit_display, 3) }</span></li>`
         } else {
             let fuelInfo = FuelInfo.GetFuelInfo (fuel);
-            properties["mass_flow_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display (flow, "t", Settings.classic_unit_display, 3)}/s<br>`;
-            properties["mass_flow_detail"] += `<span class='abbr' title='1 litre per second (L/s) is equal to 1 unit per second (u/s) in game'>${Unit.Display (flow / fuelInfo.Density, "L", Settings.classic_unit_display, 3)}/s</li>`;
+            properties["mass_flow_detail"] += `<li>${ fuelInfo.FuelName }: ${ Unit.Display (flow, "t", Settings.classic_unit_display, 3) }/s<br>`;
+            properties["mass_flow_detail"] += `<span class='abbr' title='1 litre per second (L/s) is equal to 1 unit per second (u/s) in game'>${ Unit.Display (flow / fuelInfo.Density, "L", Settings.classic_unit_display, 3) }/s</li>`;
         }
     })
     properties["mass_flow_detail"] += "</ul>";
@@ -110,7 +109,7 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
             // Don't include Electric Charge
         } else {
             let fuelInfo = FuelInfo.GetFuelInfo (fuel);
-            properties["burn_time_detail"] += `<li>${fuelInfo.FuelName}: ${Unit.Display (time, "", true, 2)}s<br>`;
+            properties["burn_time_detail"] += `<li>${ fuelInfo.FuelName }: ${ Unit.Display (time, "", true, 2) }s<br>`;
         }
     })
     properties["burn_time_detail"] += "</ul>";
@@ -118,7 +117,7 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
     // ==
     
     for (let i in properties) {
-        let element = infoPanel.querySelector (`span[info-field="${i}"]`);
+        let element = infoPanel.querySelector (`span[info-field="${ i }"]`);
         
         if (element) {
             element.innerHTML = clear ? "" : properties[i];
@@ -129,9 +128,9 @@ function ApplyEngineToInfoPanel (engine: Engine, clear: boolean = false) {
 addEventListener ("DOMContentLoaded", () => {
     ListNameDisplay = new EditableField (window, "ListName", document.getElementById ("list-name")!);
     
-    //Info panel resize
-    let infoPanel = document.getElementById ("info-panel")!;
-    let mainCSS = document.getElementById ("main-css")!;
+    // Info panel resize
+    // let infoPanel = document.getElementById ("info-panel")!;
+    // let mainCSS = document.getElementById ("main-css")!;
     document.getElementById ("info-panel-resize")!.addEventListener ("pointerdown", e => {
         // Only listen for LMB presses
         if (e.which != 1) { return; }
@@ -142,11 +141,11 @@ addEventListener ("DOMContentLoaded", () => {
         Dragger.Drag (() => {
             let newWidth = originalWidth - Input.MouseX + originalX;
             newWidth = Math.max (50, newWidth);
-            document.documentElement.style.setProperty ("--infoNotificationBackgroundPanelWidth", `${newWidth}px`);
+            document.documentElement.style.setProperty ("--infoNotificationBackgroundPanelWidth", `${ newWidth }px`);
         });
     });
     
-    //File drag&drop (append list)
+    // File drag&drop (append list)
     window.addEventListener ("dragover", e => {
         e.stopPropagation ();
         e.preventDefault ();
@@ -170,7 +169,7 @@ addEventListener ("DOMContentLoaded", () => {
         }
         
         for (let i = 0; i < files.length; ++i) {
-            let reader = new FileReader();
+            let reader = new FileReader ();
             reader.onload = () => {
                 let data = new Uint8Array (reader.result as ArrayBuffer);
                 
@@ -180,18 +179,18 @@ addEventListener ("DOMContentLoaded", () => {
                 });
                 MainEngineTable.AddItems (newEngines);
                 
-                Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""} using drag&drop`);
+                Notifier.Info (`Appended ${ newEngines.length } engine${ newEngines.length > 1 ? "s" : "" } using drag&drop`);
             }
 
-            reader.readAsArrayBuffer(files[i]);
+            reader.readAsArrayBuffer (files[i]);
         }
         
     });
     
-    //Disable default RMB context menu
-    //document.addEventListener('contextmenu', event => event.preventDefault());
+    // Disable default RMB context menu
+    // document.addEventListener ('contextmenu', event => event.preventDefault ());
     
-    //Set correct browser icons
+    // Set correct browser icons
     let imgs = document.querySelectorAll<HTMLImageElement> ("img.browser-relevant");
     imgs.forEach (i => {
         
@@ -205,7 +204,7 @@ addEventListener ("DOMContentLoaded", () => {
         
     });
     
-    //Setup fullscreen windows
+    // Setup fullscreen windows
     let windows = document.querySelectorAll<HTMLElement> (".fullscreen-box");
     windows.forEach (w => {
         let bg = w.querySelector<HTMLElement> (".fullscreen-grayout")!;
@@ -219,13 +218,13 @@ addEventListener ("DOMContentLoaded", () => {
         FullscreenWindows[w.id] = w;
     });
     
-    //Disable option image dragging (user-select: none; doesn't do it)
+    // Disable option image dragging (user-select: none; doesn't do it)
     let images = document.querySelectorAll<HTMLElement> (".option-button");
     images.forEach (image => {
         image.ondragstart = () => { return false; }
     });
     
-    //Build datalist for Technode input
+    // Build datalist for Technode input
     let TechNodeAutocomplete = document.createElement ("datalist");
     TechNodeAutocomplete.id = "techNodeItems";
     for (let i in TechNode) {
@@ -234,7 +233,7 @@ addEventListener ("DOMContentLoaded", () => {
             break;
         }
         
-        TechNodeAutocomplete.innerHTML += `<option>${TechNodeNames.get (x)}</option>`;
+        TechNodeAutocomplete.innerHTML += `<option>${ TechNodeNames.get (x) }</option>`;
     }
     document.body.appendChild (TechNodeAutocomplete);
     
@@ -353,9 +352,9 @@ function OpenUploadButton_Click () {
                 Autosave.Enabled = true;
                 
                 FullscreenWindows["open-box"].style.display = "none";
-                Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
+                Notifier.Info (`Opened ${ MainEngineTable.Items.length } engine${ MainEngineTable.Items.length > 1 ? "s" : "" }`);
             } else {
-                //No file chosen?
+                // No file chosen?
                 Notifier.Warn ("You didn't choose any file");
             }
         });
@@ -372,9 +371,9 @@ function AppendUploadButton_Click () {
             MainEngineTable.AddItems (newEngines);
             
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
+            Notifier.Info (`Appended ${ newEngines.length } engine${ newEngines.length > 1 ? "s" : "" }`);
         } else {
-            //No file chosen?
+            // No file chosen?
         }
     });
 }
@@ -403,7 +402,7 @@ function OpenCacheButton_Click () {
             Autosave.Enabled = true;
             
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
+            Notifier.Info (`Opened ${ MainEngineTable.Items.length } engine${ MainEngineTable.Items.length > 1 ? "s" : "" }`);
         }, "Choose a list to open");
     }
 }
@@ -422,7 +421,7 @@ function AppendCacheButton_Click () {
         MainEngineTable.AddItems (newEngines);
         
         FullscreenWindows["open-box"].style.display = "none";
-        Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
+        Notifier.Info (`Appended ${ newEngines.length } engine${ newEngines.length > 1 ? "s" : "" }`);
     }, "Choose a list to append");
 }
 
@@ -452,7 +451,7 @@ function OpenClipboardButton_Click () {
             Autosave.Enabled = true;
             
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
+            Notifier.Info (`Opened ${ MainEngineTable.Items.length } engine${ MainEngineTable.Items.length > 1 ? "s" : "" }`);
         } catch (e) {
             Notifier.Warn ("There was an error while parsing the string");
             return;
@@ -478,7 +477,7 @@ function AppendClipboardButton_Click () {
             MainEngineTable.AddItems (newEngines);
             
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
+            Notifier.Info (`Appended ${ newEngines.length } engine${ newEngines.length > 1 ? "s" : "" }`);
         } catch (e) {
             Notifier.Warn ("There was an error while parsing the string");
             return;
@@ -509,7 +508,7 @@ function OpenAutosaveButton_Click () {
             Autosave.Enabled = true;
             
             FullscreenWindows["open-box"].style.display = "none";
-            Notifier.Info (`Opened ${MainEngineTable.Items.length} engine${MainEngineTable.Items.length > 1 ? "s" : ""}`);
+            Notifier.Info (`Opened ${ MainEngineTable.Items.length } engine${ MainEngineTable.Items.length > 1 ? "s" : "" }`);
         }, "Open autosave:");
     }
 }
@@ -528,7 +527,7 @@ function AppendAutosaveButton_Click () {
         MainEngineTable.AddItems (newEngines);
         
         FullscreenWindows["open-box"].style.display = "none";
-        Notifier.Info (`Appended ${newEngines.length} engine${newEngines.length > 1 ? "s" : ""}`);
+        Notifier.Info (`Appended ${ newEngines.length } engine${ newEngines.length > 1 ? "s" : "" }`);
     }, "Append autosave:");
 }
 
@@ -545,22 +544,22 @@ function DownloadListButton_Click () {
     // Could not actually accept the file
     // Autosave.RestartSession ();
     
-    FileIO.SaveBinary (`${ListName}.enl`, data);
+    FileIO.SaveBinary (`${ ListName }.enl`, data);
     FullscreenWindows["save-box"].style.display = "none";
 }
 
 function CacheListButton_Click () {
     let data = Serializer.SerializeMany (MainEngineTable.Items);
     
-    if (!Store.Exists (`${ListName}.enl`) || confirm (`${ListName}.enl already exists in cache.\n\nDo you want to overwrite? Old file will be lost.`)) {
-        Notifier.Info (`${ListName}.enl saved in cache`);
+    if (!Store.Exists (`${ ListName }.enl`) || confirm (`${ ListName }.enl already exists in cache.\n\nDo you want to overwrite? Old file will be lost.`)) {
+        Notifier.Info (`${ ListName }.enl saved in cache`);
         
         Autosave.RestartSession ();
         
-        Store.SetBinary (`${ListName}.enl`, data);
+        Store.SetBinary (`${ ListName }.enl`, data);
         FullscreenWindows["save-box"].style.display = "none";
     } else {
-        Notifier.Warn (`${ListName}.enl already exists in the cache. Current file was not saved`);
+        Notifier.Warn (`${ ListName }.enl already exists in the cache. Current file was not saved`);
     }
 }
 
@@ -622,7 +621,7 @@ function ValidateButton_Click () {
         Notifier.Info ("No errors found in this list");
     } else {
         Notifier.Warn ("There are errors in this list");
-        alert (`Following errors were found:\n\n-> ${errors.join ("\n-> ")}`);
+        alert (`Following errors were found:\n\n-> ${ errors.join ("\n-> ") }`);
     }
 }
 
@@ -635,14 +634,14 @@ function ExportButton_Click () {
             let errors = Validator.Validate (MainEngineTable.Items);
             if (errors.length != 0) {
                 Notifier.Error ("Fix validation errors before exporting");
-                alert (`Fix following errors before exporting the engine:\n\n-> ${errors.join ("\n-> ")}`);
+                alert (`Fix following errors before exporting the engine:\n\n-> ${ errors.join ("\n-> ") }`);
                 return;
             }
             
             Packager.BuildMod (ListName, MainEngineTable.Items, (data) => {
                 if (data) {
                     Notifier.Info ("Exporting finished");
-                    FileIO.SaveBinary (`${ListName}.zip`, data);
+                    FileIO.SaveBinary (`${ ListName }.zip`, data);
                 } else {
                     Notifier.Warn ("Exporting aborted");
                 }
@@ -668,7 +667,7 @@ function AddButton_Click () {
 }
 
 function RemoveButton_Click () {
-    if (MainEngineTable.SelectedRows.length > 0 && confirm (`You are about to delete ${MainEngineTable.SelectedRows.length} items from the list.\n\nAre you sure?`)) {
+    if (MainEngineTable.SelectedRows.length > 0 && confirm (`You are about to delete ${ MainEngineTable.SelectedRows.length } items from the list.\n\nAre you sure?`)) {
         MainEngineTable.RemoveSelectedItems ();
     }
 }

@@ -4,7 +4,7 @@ class Unit {
         if (forceUnit) {
             let trimmed = value.toFixed (decimalPlaces);
             let valueString = value.toString ().length >= trimmed.length ? trimmed : value.toString ();
-            return `${parseFloat (valueString)}${unit}`;
+            return `${ parseFloat (valueString) }${ unit }`;
         }
         
         let targetUnit = this.ParseUnit (unit);
@@ -34,7 +34,7 @@ class Unit {
         let number = rawValue / closestPrefix[1];
         let trimmed = number.toFixed (decimalPlaces);
         let numberString = number.toString ().length >= trimmed.length ? trimmed : number.toString ();
-        return `${parseFloat (numberString)}${closestPrefix[0]}${targetUnit[1]}`;
+        return `${ parseFloat (numberString) }${ closestPrefix[0] }${ targetUnit[1] }`;
     }
     
     /** Changes string into a unit
@@ -57,17 +57,17 @@ class Unit {
         }
         
         if (rawUnit.length == 1) {
-            //Stuff like m
+            // Stuff like m
             return [1, rawUnit];
         }
         
         let prefix = MetricPrefix.find (x => x[0] == rawUnit[0]);
         if (prefix) {
-            //Metric prefix, i.e kg or mN
+            // Metric prefix, i.e kg or mN
             return [prefix[1], rawUnit.substring (1)];
         } else {
             // No metric prefix, i.e. N or s
-            if (rawUnit[0] == "c") { //Allow centi- ONLY for input. (For cm)
+            if (rawUnit[0] == "c") { // Allow centi- ONLY for input. (For cm)
                 return [0.01, rawUnit.substring (1)];
             } else {
                 return [1, rawUnit];

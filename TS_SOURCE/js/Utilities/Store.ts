@@ -22,7 +22,7 @@ class Store {
     }
     
     public static GetBinary (id: string): Uint8Array {
-        return new Uint8Array ((localStorage[id] as string).split ("").map (c => { return c.charCodeAt(0); }));
+        return new Uint8Array ((localStorage[id] as string).split ("").map (c => { return c.charCodeAt (0); }));
     }
     
     public static SetText (id: string, value: string) {

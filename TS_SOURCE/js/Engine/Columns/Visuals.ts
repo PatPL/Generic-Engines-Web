@@ -8,9 +8,9 @@ namespace EngineEditableFieldMetadata {
             let isSlave = engine.PolyType == PolymorphismType.MultiModeSlave || engine.PolyType == PolymorphismType.MultiConfigSlave;
             
             if (isSlave) {
-                e.innerHTML = `${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeName}`;
+                e.innerHTML = `${ PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeName }`;
             } else {
-                e.innerHTML = `${ModelInfo.GetModelInfo (engine.ModelID).ModelName}, ${PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeName}`;
+                e.innerHTML = `${ ModelInfo.GetModelInfo (engine.ModelID).ModelName }, ${ PlumeInfo.GetPlumeInfo (engine.PlumeID).PlumeName }`;
             }
         }, GetEditElement: () => {
             let tmp = document.createElement ("div");

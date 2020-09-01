@@ -146,10 +146,10 @@ class BrowserCacheDialog {
             removeButton.classList.add ("option-button");
             removeButton.classList.add ("cache-option-button");
             removeButton.addEventListener ("click", () => {
-                if (confirm (`You are going to delete ${i}\n\nAre you sure?`)) {
+                if (confirm (`You are going to delete ${ i }\n\nAre you sure?`)) {
                     Store.Remove (i);
                     this.DisplayCache ();
-                    Notifier.Info (`${i} deleted from cache`);
+                    Notifier.Info (`${ i } deleted from cache`);
                 }
             });
             listItem.appendChild (removeButton);

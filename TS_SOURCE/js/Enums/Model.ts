@@ -46,7 +46,7 @@ enum Model {
     Merlin1A,
     Merlin1B,
     Merlin1BV,
-    Merlin1D, //Merlin1C and Merlin1CV models look the same as Merlin1D and Merlin1DV
+    Merlin1D, // Merlin1C and Merlin1CV models look the same as Merlin1D and Merlin1DV
     Merlin1DV,
     RD107,
     RD171,

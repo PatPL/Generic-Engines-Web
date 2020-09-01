@@ -1,9 +1,7 @@
 namespace EngineEditableFieldMetadata {
-    
-    const g = 9.8066;
-    const MF_GetFlow_t = (thrust_kN: number, impulse_s: number) => thrust_kN / g / impulse_s;
-    const MF_GetThrust_kN = (massflow_t: number, impulse_s: number) => massflow_t * g * impulse_s;
-    const MF_GetIsp_s = (thrust_kN: number, massflow_t: number) => thrust_kN / g / massflow_t;
+    const MF_GetFlow_t = (thrust_kN: number, impulse_s: number) => thrust_kN / GRAVITY / impulse_s;
+    const MF_GetThrust_kN = (massflow_t: number, impulse_s: number) => massflow_t * GRAVITY * impulse_s;
+    const MF_GetIsp_s = (thrust_kN: number, massflow_t: number) => thrust_kN / GRAVITY / massflow_t;
     
     export const Propulsion: IEditable<Engine> = {
         ApplyValueToDisplayElement: (e, engine) => {

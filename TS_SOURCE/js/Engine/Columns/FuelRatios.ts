@@ -26,18 +26,18 @@ namespace EngineEditableFieldMetadata {
                 let names = "";
                 
                 fuels.forEach (v => {
-                    ratios += `${v[1]}:`;
-                    names += `${FuelInfo.GetFuelInfo (v[0]).FuelName}:`;
+                    ratios += `${ v[1] }:`;
+                    names += `${ FuelInfo.GetFuelInfo (v[0]).FuelName }:`;
                 });
                 
                 ratios = ratios.substring (0, ratios.length - 1);
                 names = names.substring (0, names.length - 1);
                 
-                output += `${ratios} ${names}`;
+                output += `${ ratios } ${ names }`;
             }
             
             if (electric > 0) {
-                output += ` | Electric: ${Unit.Display (electric, "kW", Settings.classic_unit_display, 9)}`;
+                output += ` | Electric: ${ Unit.Display (electric, "kW", Settings.classic_unit_display, 9) }`;
             }
             
             e.innerHTML = output;
@@ -69,7 +69,7 @@ namespace EngineEditableFieldMetadata {
             imgs[0].addEventListener ("click", () => {
                 let tr = document.createElement ("tr");
                 let select = FuelInfo.Dropdown.cloneNode (true) as HTMLSelectElement;
-                select.querySelector<HTMLOptionElement> (`option[value="${Fuel.Hydrazine}"]`)!.selected = true;
+                select.querySelector<HTMLOptionElement> (`option[value="${ Fuel.Hydrazine }"]`)!.selected = true;
                 
                 tr.innerHTML = `
                     <td></td>
@@ -118,14 +118,14 @@ namespace EngineEditableFieldMetadata {
                 }
             });
             
-            engine.FuelRatioItems.forEach(v => {
+            engine.FuelRatioItems.forEach (v => {
                 let tr = document.createElement ("tr");
                 let select = FuelInfo.Dropdown.cloneNode (true) as HTMLSelectElement;
-                select.querySelector<HTMLOptionElement> (`option[value="${v[0]}"]`)!.selected = true;
+                select.querySelector<HTMLOptionElement> (`option[value="${ v[0] }"]`)!.selected = true;
                 
                 tr.innerHTML = `
                     <td></td>
-                    <td><input style="width: calc(100%);" value="${v[1]}"></td>
+                    <td><input style="width: calc(100%);" value="${ v[1] }"></td>
                 `;
                 
                 tr.children[0].appendChild (select);

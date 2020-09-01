@@ -50,7 +50,7 @@ class SettingsDialog {
                     console.error ("Unknown setting field");
                 }
             } else {
-                return; //continue
+                return; // continue
             }
         });
         
@@ -79,11 +79,11 @@ class SettingsDialog {
                     console.error ("Unknown setting field");
                 }
             } else {
-                return; //continue
+                return; // continue
             }
         });
         
-        //Update stuff
+        // Update stuff
         ApplySettings ();
         MainEngineTable.RebuildTable ();
     }
@@ -91,37 +91,37 @@ class SettingsDialog {
 }
 
 const Settings: ISettings = {
-    get classic_unit_display(): boolean {
+    get classic_unit_display (): boolean {
         return Store.GetText ("setting:classic_unit_display", "0") == "1";
-    }, set classic_unit_display(value: boolean) {
+    }, set classic_unit_display (value: boolean) {
         Store.SetText ("setting:classic_unit_display", value ? "1" : "0");
-    }, get dark_theme(): boolean {
+    }, get dark_theme (): boolean {
         return Store.GetText ("setting:dark_theme", "0") == "1";
-    }, set dark_theme(value: boolean) {
+    }, set dark_theme (value: boolean) {
         Store.SetText ("setting:dark_theme", value ? "1" : "0");
-    }, get show_info_panel(): boolean {
+    }, get show_info_panel (): boolean {
         return Store.GetText ("setting:show_info_panel", "1") == "1";
-    }, set show_info_panel(value: boolean) {
+    }, set show_info_panel (value: boolean) {
         Store.SetText ("setting:show_info_panel", value ? "1" : "0");
-    }, get prettify_config(): boolean {
+    }, get prettify_config (): boolean {
         return Store.GetText ("setting:prettify_config", "0") == "1";
-    }, set prettify_config(value: boolean) {
+    }, set prettify_config (value: boolean) {
         Store.SetText ("setting:prettify_config", value ? "1" : "0");
-    }, get hide_disabled_fields_on_sort(): boolean {
+    }, get hide_disabled_fields_on_sort (): boolean {
         return Store.GetText ("setting:hide_disabled_fields_on_sort", "1") == "1";
-    }, set hide_disabled_fields_on_sort(value: boolean) {
+    }, set hide_disabled_fields_on_sort (value: boolean) {
         Store.SetText ("setting:hide_disabled_fields_on_sort", value ? "1" : "0");
-    }, get current_theme(): string {
+    }, get current_theme (): string {
         return Store.GetText ("setting:current_theme", Settings.dark_theme ? "Dark (blue accent)" : "Classic");
-    }, set current_theme(value: string) {
+    }, set current_theme (value: string) {
         Store.SetText ("setting:current_theme", value);
-    }, get custom_theme(): string {
+    }, get custom_theme (): string {
         return Store.GetText ("setting:custom_theme", btoa (JSON.stringify ([])));
-    }, set custom_theme(value: string) {
+    }, set custom_theme (value: string) {
         Store.SetText ("setting:custom_theme", value);
-    }, get ignore_localstorage_usage(): boolean {
+    }, get ignore_localstorage_usage (): boolean {
         return Store.GetText ("setting:ignore_localstorage_usage", "0") == "1";
-    }, set ignore_localstorage_usage(value: boolean) {
+    }, set ignore_localstorage_usage (value: boolean) {
         Store.SetText ("setting:ignore_localstorage_usage", value ? "1" : "0");
     }
 }

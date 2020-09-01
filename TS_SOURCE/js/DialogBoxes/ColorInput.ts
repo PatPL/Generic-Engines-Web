@@ -219,9 +219,9 @@ class ColorInput {
         this.ElementRevert.onclick = () => {
             target.value = valueBackup;
             // Doesn't fire on its own
-            let event = document.createEvent("HTMLEvents");
-            event.initEvent("input", false, true);
-            target.dispatchEvent(event);
+            let event = document.createEvent ("HTMLEvents");
+            event.initEvent ("input", false, true);
+            target.dispatchEvent (event);
             
             FullscreenWindows["color-box"].style.display = "none";
             this.EndTransaction ();
@@ -397,9 +397,9 @@ class ColorInput {
             this.CurrentlyTargetedInput.value = this.RGBToCSSColor (this.CurrentColorRGB);
             
             // Doesn't fire on its own
-            let event = document.createEvent("HTMLEvents");
-            event.initEvent("input", false, true);
-            this.CurrentlyTargetedInput.dispatchEvent(event);
+            let event = document.createEvent ("HTMLEvents");
+            event.initEvent ("input", false, true);
+            this.CurrentlyTargetedInput.dispatchEvent (event);
         }
     }
     

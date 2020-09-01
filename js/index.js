@@ -9621,7 +9621,8 @@ var EngineEditableFieldMetadata;
     EngineEditableFieldMetadata.AlternatorPower = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = Unit.Display(engine.AlternatorPower, "kW", Settings.classic_unit_display, 9);
-        }, ApplyValueToEditElement: (e, engine) => {
+        },
+        ApplyValueToEditElement: (e, engine) => {
             e.value = Unit.Display(engine.AlternatorPower, "kW", Settings.classic_unit_display);
         }, ApplyChangesToValue: (e, engine) => {
             engine.AlternatorPower = Unit.Parse(e.value, "kW");
@@ -9633,7 +9634,8 @@ var EngineEditableFieldMetadata;
     EngineEditableFieldMetadata.Cost = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = Unit.Display(engine.Cost, " VF", Settings.classic_unit_display);
-        }, ApplyValueToEditElement: (e, engine) => {
+        },
+        ApplyValueToEditElement: (e, engine) => {
             e.value = Unit.Display(engine.Cost, " VF", Settings.classic_unit_display);
         }, ApplyChangesToValue: (e, engine) => {
             engine.Cost = Unit.Parse(e.value, " VF");
@@ -9677,7 +9679,8 @@ var EngineEditableFieldMetadata;
             `;
             tmp.appendChild(grid);
             return tmp;
-        }, ApplyValueToEditElement: (e, engine) => {
+        },
+        ApplyValueToEditElement: (e, engine) => {
             let inputs = e.querySelectorAll("input");
             const modelInfo = ModelInfo.GetModelInfo(engine.GetModelID());
             const baseToBellRatio = modelInfo.OriginalBaseWidth / modelInfo.OriginalBellWidth;
@@ -9705,7 +9708,8 @@ var EngineEditableFieldMetadata;
             e.querySelector("img").onclick = () => {
                 inputs[2].value = Unit.Display(Unit.Parse(inputs[1].value, "m") * modelInfo.OriginalHeight / modelInfo.OriginalBaseWidth, "m", false, 3);
             };
-        }, ApplyChangesToValue: (e, engine) => {
+        },
+        ApplyChangesToValue: (e, engine) => {
             let inputs = e.querySelectorAll("input");
             engine.UseBaseWidth = true;
             engine.Width = Unit.Parse(inputs[1].value, "m");
@@ -9740,7 +9744,8 @@ var EngineEditableFieldMetadata;
     EngineEditableFieldMetadata.EntryCost = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = Unit.Display(engine.EntryCost, " VF", Settings.classic_unit_display);
-        }, ApplyValueToEditElement: (e, engine) => {
+        },
+        ApplyValueToEditElement: (e, engine) => {
             e.value = Unit.Display(engine.EntryCost, " VF", Settings.classic_unit_display);
         }, ApplyChangesToValue: (e, engine) => {
             engine.EntryCost = Unit.Parse(e.value, " VF");
@@ -9754,7 +9759,8 @@ var EngineEditableFieldMetadata;
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             return tmp;
-        }, ApplyValueToDisplayElement: (e, engine) => {
+        },
+        ApplyValueToDisplayElement: (e, engine) => {
             let fuels = [];
             let electric = 0;
             let output = "";
@@ -9948,7 +9954,8 @@ var EngineEditableFieldMetadata;
                 <div style="grid-area: g;"><input data-ref="gimbalpy" style="width: calc(100%);"></div>
             `;
             return tmp;
-        }, ApplyValueToEditElement: (e, engine) => {
+        },
+        ApplyValueToEditElement: (e, engine) => {
             e.querySelector(`input[data-ref="checkbox"]`).checked = engine.AdvancedGimbal;
             e.querySelector(`input[data-ref="gimbal"]`).value = engine.Gimbal.toString();
             e.querySelector(`input[data-ref="gimbalnx"]`).value = engine.GimbalNX.toString();
@@ -9997,7 +10004,8 @@ var EngineEditableFieldMetadata;
     EngineEditableFieldMetadata.Ignitions = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = engine.Ignitions <= 0 ? "Infinite" : engine.Ignitions.toString();
-        }, ApplyChangesToValue: (e, engine) => {
+        },
+        ApplyChangesToValue: (e, engine) => {
             engine.Ignitions = parseInt(e.value);
         }
     };
@@ -10038,7 +10046,8 @@ var EngineEditableFieldMetadata;
             `;
             tmp.appendChild(grid);
             return tmp;
-        }, ApplyValueToEditElement: (e, engine) => {
+        },
+        ApplyValueToEditElement: (e, engine) => {
             let inputs = e.querySelectorAll("input");
             inputs[0].value = engine.EngineName;
             inputs[1].value = engine.EngineManufacturer;
@@ -10058,7 +10067,8 @@ var EngineEditableFieldMetadata;
     EngineEditableFieldMetadata.Mass = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = Unit.Display(engine.Mass, "t", Settings.classic_unit_display, 9);
-        }, ApplyValueToEditElement: (e, engine) => {
+        },
+        ApplyValueToEditElement: (e, engine) => {
             e.value = Unit.Display(engine.Mass, "t", Settings.classic_unit_display);
         }, ApplyChangesToValue: (e, engine) => {
             engine.Mass = Unit.Parse(e.value, "t");
@@ -10141,7 +10151,8 @@ var EngineEditableFieldMetadata;
     EngineEditableFieldMetadata.Propulsion = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = `${Unit.Display(engine.Thrust, "kN", Settings.classic_unit_display, 6)} | ${Unit.Display(engine.VacIsp, "s", true, 3)}-${Unit.Display(engine.AtmIsp, "s", true, 3)}`;
-        }, GetEditElement: () => {
+        },
+        GetEditElement: () => {
             let output = document.createElement("div");
             let container = document.createElement("div");
             container.classList.add("propulsionContainer");
@@ -10404,7 +10415,8 @@ var EngineEditableFieldMetadata;
                 output = "Disabled";
             }
             e.innerHTML = output;
-        }, GetEditElement: () => {
+        },
+        GetEditElement: () => {
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             tmp.style.height = "222px";
@@ -10568,12 +10580,14 @@ var EngineEditableFieldMetadata;
     EngineEditableFieldMetadata.TechUnlockNode = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = TechNodeNames.get(engine.TechUnlockNode);
-        }, GetEditElement: () => {
+        },
+        GetEditElement: () => {
             let tmp = document.createElement("input");
             tmp.classList.add("content-cell-content");
             tmp.setAttribute("list", "techNodeItems");
             return tmp;
-        }, ApplyValueToEditElement: (e, engine) => {
+        },
+        ApplyValueToEditElement: (e, engine) => {
             e.value = TechNodeNames.get(engine.TechUnlockNode);
         }, ApplyChangesToValue: (e, engine) => {
             let value = 0;
@@ -10605,7 +10619,8 @@ var EngineEditableFieldMetadata;
                     e.innerHTML = `Disabled, but configured`;
                 }
             }
-        }, GetEditElement: () => {
+        },
+        GetEditElement: () => {
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             tmp.style.height = "147px";
@@ -10660,7 +10675,8 @@ var EngineEditableFieldMetadata;
             inputs[3].value = engine.StartReliability10k.toString();
             inputs[4].value = engine.CycleReliability0.toString();
             inputs[5].value = engine.CycleReliability10k.toString();
-        }, ApplyChangesToValue: (e, engine) => {
+        },
+        ApplyChangesToValue: (e, engine) => {
             let inputs = e.querySelectorAll("input");
             engine.EnableTestFlight = inputs[0].checked;
             engine.RatedBurnTime = parseInt(inputs[1].value);
@@ -10805,7 +10821,8 @@ var EngineEditableFieldMetadata;
     EngineEditableFieldMetadata.ThrustCurve = {
         ApplyValueToDisplayElement: (e, engine) => {
             e.innerHTML = engine.ThrustCurve.length > 0 ? `Custom: ${engine.GetThrustCurveBurnTimeMultiplier().toFixed(3)} * Burn time` : "Default";
-        }, GetEditElement: () => {
+        },
+        GetEditElement: () => {
             let style = getComputedStyle(document.body);
             let tmp = document.createElement("div");
             tmp.style.width = "100%";
@@ -11244,7 +11261,8 @@ var EngineEditableFieldMetadata;
             else {
                 e.innerHTML = `${ModelInfo.GetModelInfo(engine.ModelID).ModelName}, ${PlumeInfo.GetPlumeInfo(engine.PlumeID).PlumeName}`;
             }
-        }, GetEditElement: () => {
+        },
+        GetEditElement: () => {
             let tmp = document.createElement("div");
             tmp.classList.add("content-cell-content");
             tmp.style.padding = "0";
